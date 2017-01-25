@@ -1,0 +1,18 @@
+The Blinky project is a simple CMSIS RTOS2 Kernel based example
+for a simulated Cortex-M3 device.
+
+The example simulates the step-motor driver. Four phase variables are
+simulating the activation of the four output driver stages. The state
+changes are output on the Watch window variable g_phases:
+
+- phase A
+- phase B
+- phase C
+- phase D
+
+This example simulates Half step driver mode and CW rotation direction.
+
+
+The Blinky example program is available for one target:
+
+  Simulation:          configured for a simulated on-chip Flash
