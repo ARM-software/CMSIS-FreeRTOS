@@ -5,7 +5,7 @@
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M</description>
   <url>http://www.freertos.org/</url>
-  <!-- <license>license.txt</license> -->
+  <license>license.txt</license>
     
   <releases>
     <release version="9.0.0-RC1">
