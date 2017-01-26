@@ -1,0 +1,73 @@
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/** 
+\mainpage Introduction
+
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
+operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
+components that can work across multiple RTOS systems. It supports the ARMv8-M architecture, dynamic object creation, for
+multi-core systems, and has a binary compatible interface across ABI compliant compilers.
+
+This implementation of <a href="http://www.freertos.org/">FreeRTOS</a> complies to the CMSIS-RTOS2 API so that users can now
+choose between <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtx5_impl.html">Keil RTX5</a> and FreeRTOS if they
+decide to use the API to create portable application code.
+
+
+\section License License
+
+The CMSIS-FreeRTOS implementation is provided free of charge by ARM under the <a href="license.txt">FreeRTOS license</a>.
+
+
+\section Limitations
+
+The following list briefly describes the limitations and unsupported features of the CMSIS-RTOS2 wrapper for FreeRTOS:
+- Static memory allocation will only work if \a all memory (from attributes structure) is provided statically. In order to
+  allocate object memory statically, you need to:
+  - provide the memory for control blocks and stack in the \c osThreadAttr_t structure for threads.
+  - provide the memory for control blocks and message data in the \c osMessageQueueAttr_t structure for memory queues.
+  - provide the memory for control blocks for other objects in the object's attributes structure.
+- Each timer object requires additional 8 bytes of dynamic memory.
+- \c osKernelSuspend and \c osKernelResume are not supported.
+- \c osKernelGetTickCount is limited to a 32-bit return value.
+- \c osThreadDetach, \c osThreadJoin() and attribute \c osThreadJoinable are not supported (\c osThreadNew returns NULL when
+  osThreadJoinable attribute is specified).
+- \c osThreadGetStackSize is not implemented.
+- Event flags are limited to 24 bits.
+- \c osEventFlagsGetName is not implemented.
+- \c osEventFlagsWait cannot be called from an ISR.
+- Priority inherit protocol is used as default mutex behavior (\c osMutexNew creates priority inherit mutex object by default
+  and ignores \c osMutexPrioInherit attribute when specified).
+- Robust mutex objects are not supported (\c osMutexNew returns NULL when \c osMutexRobust attribute is specified).
+- \c osMutexGetName is not implemented and always returns NULL.
+- \c osSemaphoreGetName is not implemented and always returns NULL.
+- Memory Pool functions are not implemented and will always return with error.
+- \c osMessageQueueGetName is not implemented and always returns NULL.
+- \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
+
+
+\section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
+
+The <b>ARM::CMSIS-FreeRTOS</b> Pack contains the following:
+
+File/Directory             |Content                                                                           
+:--------------------------|:---------------------------------------------------------------------------------
+\b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
+\b license.txt             | FreeRTOS license agreement.
+\b CMSIS                   | CMSIS-RTOS2 compliant implementation of FreeRTOS.
+\b Config                  | FreeRTOS configuration header file.
+\b Demo                    | FreeRTOS demo projects.
+\b Documentation           | This documentation.
+\b Source                  | FreeRTOS source code.
+\b Utilities               | Utilities to build the pack.
+*/
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page cm_revisionHistory Revision History 
+
+<table class="cmtable" summary="Revision History">
+    <tr>
+      <td>1.0.0</td>
+      <td>Initial release</td>
+    </tr>
+</table>
+*/

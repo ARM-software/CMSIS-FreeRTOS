@@ -62,6 +62,45 @@ XCOPY /Q /S /Y .\..\License\*.* %RELEASE_PATH%\License\*.*
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
 
 
+:: Generate Documentation 
+:: -- Generate doxygen files 
+PUSHD ..\DoxyGen
+
+:: -- Delete previous generated HTML files
+ECHO.
+ECHO Delete previous generated HTML files
+
+PUSHD ..\Documentation
+RMDIR /S /Q General
+REM FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
+POPD
+
+:: -- Generate HTML Files
+ECHO.
+ECHO Generate HTML Files
+
+pushd General
+doxygen general.dxy
+popd
+
+:: -- Copy search style sheet
+ECHO.
+ECHO Copy search style sheets
+copy /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\. 
+  
+ECHO.
+POPD
+
+:: -- Copy generated doxygen files 
+XCOPY /Q /S /Y ..\Documentation\*.* %RELEASE_PATH%\CMSIS\Documentation\*.*
+
+:: -- Remove generated doxygen files
+PUSHD ..\Documentation
+RMDIR /S /Q General
+REM FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
+POPD
+
+
 :: Checking 
 Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364
 
