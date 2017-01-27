@@ -20,7 +20,7 @@ SET MSCGENPATH=C:\Program Files (x86)\Mscgen
 SET PATH=%ZIPPATH%;%DOXYGENPATH%;%MSCGENPATH%;%PATH%
 
 :: Pack Path (where generated pack is stored)
-SET RELEASE_PATH=..\..\Local_Release
+SET RELEASE_PATH=..\Local_Release
 
 :: !!!!!!!!!!!!!!!!!
 :: DO NOT EDIT BELOW
@@ -40,7 +40,7 @@ MKDIR %RELEASE_PATH%
 COPY .\..\ARM.CMSIS-FreeRTOS.pdsc %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc
 
 :: Copy LICENSE file
-REM COPY .\..\LICENSE.txt %RELEASE_PATH%\LICENSE.txt
+COPY .\..\license.txt %RELEASE_PATH%\license.txt
 
 :: Copy various root files
 COPY .\..\readme.txt %RELEASE_PATH%\readme.txt
@@ -55,9 +55,6 @@ XCOPY /Q /S /Y .\..\Config\*.* %RELEASE_PATH%\Config\*.*
 :: Copy Demo folder
 XCOPY /Q /S /Y .\..\Demo\*.* %RELEASE_PATH%\Demo\*.*
 
-:: Copy License folder
-XCOPY /Q /S /Y .\..\License\*.* %RELEASE_PATH%\License\*.*
-
 :: Copy Source folder
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
 
@@ -70,10 +67,15 @@ PUSHD ..\DoxyGen
 ECHO.
 ECHO Delete previous generated HTML files
 
-PUSHD ..\Documentation
-RMDIR /S /Q General
-REM FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
-POPD
+IF EXIST ..\Documentation (
+  ECHO Documenation folder already exists
+  PUSHD ..\Documentation
+  FOR %%A IN (General) DO IF EXIST %%A (RMDIR /S /Q %%A)
+  POPD
+) ELSE (
+  ECHO create Documentation folder
+  MKDIR ..\Documentation
+)
 
 :: -- Generate HTML Files
 ECHO.
@@ -86,7 +88,7 @@ popd
 :: -- Copy search style sheet
 ECHO.
 ECHO Copy search style sheets
-copy /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\. 
+XCOPY /Q /S /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\ 
   
 ECHO.
 POPD
@@ -96,8 +98,7 @@ XCOPY /Q /S /Y ..\Documentation\*.* %RELEASE_PATH%\CMSIS\Documentation\*.*
 
 :: -- Remove generated doxygen files
 PUSHD ..\Documentation
-RMDIR /S /Q General
-REM FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
+FOR %%A IN (General) DO IF EXIST %%A (RMDIR /S /Q %%A)
 POPD
 
 
@@ -127,13 +128,12 @@ EXIT /b
 
 :End
 ECHO Removing temporary files and folders
-RMDIR /Q /S  %RELEASE_PATH%\CMSIS
-RMDIR /Q /S  %RELEASE_PATH%\Config
-RMDIR /Q /S  %RELEASE_PATH%\Demo
-RMDIR /Q /S  %RELEASE_PATH%\License
-RMDIR /Q /S  %RELEASE_PATH%\Source
-DEL %RELEASE_PATH%\links_to_doc_pages_for_the_demo_projects.url
-DEL %RELEASE_PATH%\readme.txt
-DEL %RELEASE_PATH%\zip.log
+PUSHD %RELEASE_PATH%
+FOR %%A IN (CMSIS Config Demo Source) DO IF EXIST %%A (RMDIR /S /Q %%A)
+DEL links_to_doc_pages_for_the_demo_projects.url
+DEL readme.txt
+DEL license.txt
+DEL zip.log
+POPD
 
 ECHO gen_pack.bat completed successfully
