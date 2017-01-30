@@ -2,19 +2,161 @@
 /** 
 \mainpage Introduction
 
+<a target="_blank" href="http://www.freertos.org/">FreeRTOS</a> is one of the market leading real-time operating systems
+(RTOS) for embedded microcontrollers. It is professionally developed,
+<a target="_blank" href="http://www.freertos.org/FreeRTOS-Coding-Standard-and-Style-Guide.html">strictly quality controlled</a>,
+robust,
+<a target="_blank" href="http://www.freertos.org/FreeRTOS_Support_Forum_Archive/freertos_support_forum_archive_index.html">supported</a>,
+free to <a target="_blank" href="http://www.freertos.org/a00114.html">use in commercial products</a> without a requirement to
+expose proprietary source code, and has
+<a target="_blank" href="http://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html">no IP infringement</a>
+risk.
+
 <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
 operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
 components that can work across multiple RTOS systems. It supports the ARMv8-M architecture, dynamic object creation, for
 multi-core systems, and has a binary compatible interface across ABI compliant compilers.
 
-This implementation of <a href="http://www.freertos.org/">FreeRTOS</a> complies to the CMSIS-RTOS2 API so that users can now
-choose between <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtx5_impl.html">Keil RTX5</a> and FreeRTOS if they
-decide to use the API to create portable application code.
+Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
+CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application
+code to be used with different RTOS kernels (for example
+<a class="el" href="http://www.keil.com/mdk5/cmsis/rtx">Keil RTX5</a>).
+
+This documentation shows you:
+- how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
+- Various \ref examples show you the usage of FreeRTOS in native and CMSIS-RTOS2 mode.
+- the \ref tech_data of this implementation.
 
 
 \section License License
 
 The CMSIS-FreeRTOS implementation is provided free of charge by ARM under the <a href="license.txt">FreeRTOS license</a>.
+
+
+\section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
+
+The <b>ARM::CMSIS-FreeRTOS</b> Pack contains the following:
+
+File/Directory             |Content                                                                           
+:--------------------------|:---------------------------------------------------------------------------------
+\b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
+\b license.txt             | FreeRTOS license agreement.
+\b CMSIS                   | CMSIS-RTOS2 compliant implementation of FreeRTOS.
+\b Config                  | FreeRTOS configuration header file.
+\b Demo                    | FreeRTOS demo projects.
+\b Documentation           | This documentation.
+\b Source                  | FreeRTOS source code.
+\b Utilities               | Utilities to build the pack.
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page cm_revisionHistory Revision History 
+
+<table class="cmtable" summary="Revision History">
+    <tr>
+      <td>1.0.0</td>
+      <td>Initial release</td>
+    </tr>
+</table>
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page cre_freertos_proj Create a FreeRTOS project
+
+You can basically choose between two option when creating a FreeRTOS project:
+-# \ref native_freertos using the FreeRTOS API and kernel.
+-# \ref cmsis_freertos using the CMSIS-RTOS2 API with an underlying FreeRTOS kernel.
+
+\section native_freertos Create a native FreeRTOS project
+
+The steps to create a microcontroller application using FreeRTOS are:
+- Create a new project and select a microcontroller device.
+- In the Manage Run-Time Environment window, select <b>\::Device\:Startup</b> and <b>\::RTOS\:FreeRTOS\:CORE</b>. Also, add
+  the <b>\::RTOS\:FreeRTOS\:Config</b> component in the \b FreeRTOS variant and an applicable <b>\::RTOS\:FreeRTOS\:Heap</b>
+  scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
+  
+  \image html manage_rte_freertos_native.png
+
+- If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
+- Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
+  \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
+
+  \image html project_window_freertos_native.png
+  
+\todo Do we add user code templates for the native FreeRTOS implementation?
+
+  - You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting
+  <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side
+  you will see all available template files for CMSIS-RTOS RTX:
+  
+  
+\todo Do we offer an SCVD file for the native FreeRTOS implementation?
+
+\subsection native_freertos_er Add Event Recorder Visibility
+- To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.
+- Select the \b Source variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.
+- Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in \c main()).
+- Build the application code and download it to the debug hardware.
+  
+Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
+ \b Recorder.
+ 
+
+\section cmsis_freertos Create a CMSIS-FreeRTOS project
+
+The steps to create a microcontroller application using CMSIS-FreeRTOS are:
+- Create a new project and select a microcontroller device.
+- In the Manage Run-Time Environment window, select <b>\::Device\:Startup</b>, <b>\::CMSIS\::RTOS2 (API)\::FreeRTOS</b> and
+  <b>\::RTOS\:FreeRTOS\:CORE</b>. Also, add the <b>\::RTOS\:FreeRTOS\:Config</b> component in the \b CMSIS \b RTOS2 variant,
+  <b>\::RTOS\:FreeRTOS\:Timers</b>, <b>\::RTOS\:FreeRTOS\:Event Groups</b>, and an applicable <b>\::RTOS\:FreeRTOS\:Heap</b>,
+  scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
+  
+  \image html manage_rte_freertos_rtos2.png
+
+- If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
+- Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
+  \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
+
+  \image html project_window_freertos_rtos2.png
+  
+\todo Do we add user code templates for the RTOS2 FreeRTOS implementation?\
+
+- You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting
+  <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side
+  you will see all available template files for CMSIS-RTOS RTX:
+  
+  
+\todo Do we offer an SCVD file for the RTOS2 FreeRTOS implementation?
+
+\subsection cmsis_freertos_er Add Event Recorder Visibility
+- To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.
+- Select the \b Source variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.
+- Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in \c main()).
+- Build the application code and download it to the debug hardware.
+  
+Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
+ \b Recorder.
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page examples Example projects
+
+\todo Add info on examples here.
+
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page tech_data Technical data and limitations
+
+This lists the technical data of CMSIS-FreeRTOS.
 
 
 \section Limitations
@@ -42,32 +184,4 @@ The following list briefly describes the limitations and unsupported features of
 - Memory Pool functions are not implemented and will always return with error.
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
-
-
-\section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
-
-The <b>ARM::CMSIS-FreeRTOS</b> Pack contains the following:
-
-File/Directory             |Content                                                                           
-:--------------------------|:---------------------------------------------------------------------------------
-\b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
-\b license.txt             | FreeRTOS license agreement.
-\b CMSIS                   | CMSIS-RTOS2 compliant implementation of FreeRTOS.
-\b Config                  | FreeRTOS configuration header file.
-\b Demo                    | FreeRTOS demo projects.
-\b Documentation           | This documentation.
-\b Source                  | FreeRTOS source code.
-\b Utilities               | Utilities to build the pack.
-*/
-
-/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
-/**
-\page cm_revisionHistory Revision History 
-
-<table class="cmtable" summary="Revision History">
-    <tr>
-      <td>1.0.0</td>
-      <td>Initial release</td>
-    </tr>
-</table>
 */

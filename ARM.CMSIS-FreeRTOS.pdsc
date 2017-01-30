@@ -4,7 +4,7 @@
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M</description>
-  <url>http://www.freertos.org/</url>
+  <url>http://www.keil.com/pack/</url>
   <license>license.txt</license>
     
   <releases>
