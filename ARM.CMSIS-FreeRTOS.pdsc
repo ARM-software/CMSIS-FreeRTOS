@@ -8,21 +8,18 @@
   <license>license.txt</license>
     
   <releases>
-    <release version="9.0.0-RC1">
+    <release version="9.0.0-RC2">
       Initial release
     </release>
   </releases>
 
-  <apis>
-    <!-- CMSIS-RTOS2 API -->
-    <api Cclass="CMSIS" Cgroup="RTOS2" Capiversion="2.1.0" exclusive="1">
-      <description>CMSIS-RTOS API for Cortex-M, SC000, and SC300</description>
-      <files>
-      </files>
-    </api>
-  </apis>
+  <requirements>
+    <packages>
+      <package vendor="ARM" name="CMSIS" version="5.0.1-0"/>
+    </packages>
+  </requirements>
   
-  <conditions> 
+  <conditions>
     <condition id="ARMCC">
       <require Tcompiler="ARMCC"/>
     </condition>
@@ -144,6 +141,7 @@
       <require condition="CM4"/>
       <require Tcompiler="GCC"/>
     </condition>
+
     <condition id="CM4_FP_GCC">
       <description>Cortex-M4 processor based device using Floating Point Unit for the GCC Compiler</description>
       <require condition="CM4_FP"/>
@@ -155,11 +153,13 @@
       <require condition="CM7"/>
       <require Tcompiler="GCC"/>
     </condition>
+
     <condition id="CM7_SP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the GCC Compiler</description>
       <require condition="CM7_SP"/>
       <require Tcompiler="GCC"/>
     </condition>
+
     <condition id="CM7_DP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the GCC Compiler</description>
       <require condition="CM7_DP"/>
@@ -172,23 +172,23 @@
 
     <condition id="FreeRTOS">
       <require condition="ARMCC GCC"/>
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Config"/>
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
     <condition id="FreeRTOS Core">
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
     </condition>
 
     <condition id="FreeRTOS RTOS2 Core">
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Core"/>
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Event Groups"/>
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Timers"/>
-      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Config" Cvariant="CMSIS RTOS2"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
     </condition>
-        
-  </conditions>  
-   
+
+  </conditions>
+
   <components>
     <!-- CMSIS-RTOS2 FreeRTOS component -->
     <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.0" condition="FreeRTOS RTOS2 Core">
@@ -198,175 +198,171 @@
         #define RTE_CMSIS_RTOS2_FreeRTOS            /* CMSIS-RTOS2 FreeRTOS */
       </RTE_Components_h>
       <files>
+        <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
-        
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
       </files>
     </component>
 
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Core" Cversion="9.0.0" condition="FreeRTOS">
-      <description>Core components API (Kernel, Tasks, Semaphores, Mutexes, Queues)</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_CORE            /* RTOS FreeRTOS Core */
-      </RTE_Components_h>
-      <files>
-        <file category="include" name="Source/include/"/>
-
-        <file category="header"  name="Source/include/FreeRTOS.h"/>
-        <file category="header"  name="Source/include/queue.h"/>
-        <file category="header"  name="Source/include/semphr.h"/>
-        <file category="header"  name="Source/include/task.h"/>
-
-        <file category="source"  name="Source/list.c"/>
-        <file category="source"  name="Source/queue.c"/>
-        <file category="source"  name="Source/tasks.c"/>
-
-        <file category="include" condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/"/>
-        <file category="source"  condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/port.c"/>
-        <file category="include" condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-        <file category="source"  condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-        <file category="include" condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-        <file category="source"  condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-        <file category="include" condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/"/>
-        <file category="source"  condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/port.c"/>
-        <file category="include" condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-        <file category="source"  condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-        <file category="include" condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-        <file category="source"  condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
-        <file category="include" condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-        <file category="source"  condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
-
-        <file category="include" condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/"/>
-        <file category="source"  condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/port.c"/>
-        <file category="include" condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-        <file category="source"  condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-        <file category="include" condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-        <file category="source"  condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-        <file category="include" condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/"/>
-        <file category="source"  condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/port.c"/>
-        <file category="include" condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-        <file category="source"  condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-        <file category="include" condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
-        <file category="source"  condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
-        <file category="include" condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
-        <file category="source"  condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Config" Cvariant="CMSIS RTOS2" Cversion="9.0.0" condition="CMSIS RTOS2 FreeRTOS">
-      <description>FreeRTOS CMSIS-RTOS2 API configuration file</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2    /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
-      </RTE_Components_h>
-      <files>
-        <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="9.0.0"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Config" Cvariant="FreeRTOS" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>FreeRTOS API configuration file</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_CONFIG          /* RTOS FreeRTOS Config for FreeRTOS API */
-      </RTE_Components_h>
-      <files>
-        <file category="header" attr="config" name="Config/FreeRTOSConfig.h" version="9.0.0"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Coroutines" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Co-routine API</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_COROUTINE       /* RTOS FreeRTOS Co-routines */
-      </RTE_Components_h>
-      <files>
-        <file category="header" name="Source/include/croutine.h"/>
-        <file category="source" name="Source/croutine.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Event Groups" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Event Group API</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_EVENTGROUPS     /* RTOS FreeRTOS Event Groups */
-      </RTE_Components_h>
-      <files>
-        <file category="header" name="Source/include/event_groups.h"/>
-        <file category="source" name="Source/event_groups.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Timers" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Timer API</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_TIMERS          /* RTOS FreeRTOS Timers */
-      </RTE_Components_h>
-      <files>
-        <file category="header" name="Source/include/timers.h"/>
-        <file category="source" name="Source/timers.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap" Cvariant="Heap_1" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Heap management scheme 1</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_HEAP_1          /* RTOS FreeRTOS Heap 1 */
-      </RTE_Components_h>
-      <files>
-        <file category="source" name="Source/portable/MemMang/heap_1.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap" Cvariant="Heap_2" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Heap management scheme 2</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_HEAP_2          /* RTOS FreeRTOS Heap 2 */
-      </RTE_Components_h>
-      <files>
-        <file category="source" name="Source/portable/MemMang/heap_2.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap" Cvariant="Heap_3" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Heap management scheme 3</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_HEAP_3          /* RTOS FreeRTOS Heap 3 */
-      </RTE_Components_h>
-      <files>
-        <file category="source" name="Source/portable/MemMang/heap_3.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Heap management scheme 4</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_HEAP_4          /* RTOS FreeRTOS Heap 4 */
-      </RTE_Components_h>
-      <files>
-        <file category="source" name="Source/portable/MemMang/heap_4.c"/>
-      </files>
-    </component>
-
-    <component Cclass="RTOS" Cgroup="FreeRTOS" Csub="Heap" Cvariant="Heap_5" Cversion="9.0.0" condition="FreeRTOS Core">
-      <description>Heap management scheme 5</description>
-      <RTE_Components_h>
-        #define RTE_RTOS_FreeRTOS_HEAP_5          /* RTOS FreeRTOS Heap 5 */
-      </RTE_Components_h>
-      <files>
-        <file category="source" name="Source/portable/MemMang/heap_5.c"/>
-      </files>
-    </component>
-    
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="9.0.0">
+      <description>FreeRTOS Real Time Kernel</description>
+      <doc>http://www.freertos.org/Documentation/FreeRTOS_Reference_Manual_V9.0.0.pdf</doc>
+      <component Cgroup="Core" Cversion="9.0.0" condition="FreeRTOS">
+        <description>Core components API (Kernel, Tasks, Semaphores, Mutexes, Queues)</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_CORE            /* RTOS FreeRTOS Core */
+        </RTE_Components_h>
+        <files>
+          <file category="include" name="Source/include/"/>
+  
+          <file category="header"  name="Source/include/FreeRTOS.h"/>
+          <file category="header"  name="Source/include/queue.h"/>
+          <file category="header"  name="Source/include/semphr.h"/>
+          <file category="header"  name="Source/include/task.h"/>
+  
+          <file category="source"  name="Source/list.c"/>
+          <file category="source"  name="Source/queue.c"/>
+          <file category="source"  name="Source/tasks.c"/>
+  
+          <file category="include" condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/"/>
+          <file category="source"  condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/port.c"/>
+          <file category="include" condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"  condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include" condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"  condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include" condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/"/>
+          <file category="source"  condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/port.c"/>
+          <file category="include" condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"  condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include" condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
+          <file category="source"  condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
+          <file category="include" condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
+          <file category="source"  condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
+  
+          <file category="include" condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"  condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="include" condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"  condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include" condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"  condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include" condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/"/>
+          <file category="source"  condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/port.c"/>
+          <file category="include" condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"  condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include" condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"  condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include" condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"  condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+        </files>
+      </component>
+  
+      <component Cgroup="Config" Cvariant="CMSIS RTOS2" Cversion="9.0.0" condition="CMSIS RTOS2 FreeRTOS">
+        <description>FreeRTOS CMSIS-RTOS2 API configuration file</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2    /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
+        </RTE_Components_h>
+        <files>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="9.0.0"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Config" Cvariant="FreeRTOS" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>FreeRTOS API configuration file</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_CONFIG          /* RTOS FreeRTOS Config for FreeRTOS API */
+        </RTE_Components_h>
+        <files>
+          <file category="header" attr="config" name="Config/FreeRTOSConfig.h" version="9.0.0"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Coroutines" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Co-routine API</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_COROUTINE       /* RTOS FreeRTOS Co-routines */
+        </RTE_Components_h>
+        <files>
+          <file category="header" name="Source/include/croutine.h"/>
+          <file category="source" name="Source/croutine.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Event Groups" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Event Group API</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_EVENTGROUPS     /* RTOS FreeRTOS Event Groups */
+        </RTE_Components_h>
+        <files>
+          <file category="header" name="Source/include/event_groups.h"/>
+          <file category="source" name="Source/event_groups.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Timers" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Timer API</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_TIMERS          /* RTOS FreeRTOS Timers */
+        </RTE_Components_h>
+        <files>
+          <file category="header" name="Source/include/timers.h"/>
+          <file category="source" name="Source/timers.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Heap" Cvariant="Heap_1" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Heap management scheme 1</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_HEAP_1          /* RTOS FreeRTOS Heap 1 */
+        </RTE_Components_h>
+        <files>
+          <file category="source" name="Source/portable/MemMang/heap_1.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Heap" Cvariant="Heap_2" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Heap management scheme 2</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_HEAP_2          /* RTOS FreeRTOS Heap 2 */
+        </RTE_Components_h>
+        <files>
+          <file category="source" name="Source/portable/MemMang/heap_2.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Heap" Cvariant="Heap_3" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Heap management scheme 3</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_HEAP_3          /* RTOS FreeRTOS Heap 3 */
+        </RTE_Components_h>
+        <files>
+          <file category="source" name="Source/portable/MemMang/heap_3.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Heap management scheme 4</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_HEAP_4          /* RTOS FreeRTOS Heap 4 */
+        </RTE_Components_h>
+        <files>
+          <file category="source" name="Source/portable/MemMang/heap_4.c"/>
+        </files>
+      </component>
+     
+      <component Cgroup="Heap" Cvariant="Heap_5" Cversion="9.0.0" condition="FreeRTOS Core">
+        <description>Heap management scheme 5</description>
+        <RTE_Components_h>
+          #define RTE_RTOS_FreeRTOS_HEAP_5          /* RTOS FreeRTOS Heap 5 */
+        </RTE_Components_h>
+        <files>
+          <file category="source" name="Source/portable/MemMang/heap_5.c"/>
+        </files>
+      </component>
+    </bundle>
   </components>
 
-  <boards>
-    <board name="uVision Simulator" vendor="Keil">
-      <description>uVision Simulator</description>
-      <mountedDevice deviceIndex="0" Dvendor="ARM:82" Dname="ARMCM3"/>
-   </board>
-  </boards>
-
   <examples>
-    <example name="CMSIS-RTOS2 Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky">
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky">
       <description>CMSIS-RTOS2 Blinky example using FreeRTOS</description>
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
