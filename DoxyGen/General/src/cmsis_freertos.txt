@@ -75,12 +75,13 @@ You can basically choose between two option when creating a FreeRTOS project:
 
 The steps to create a microcontroller application using FreeRTOS are:
 - Create a new project and select a microcontroller device.
-- In the Manage Run-Time Environment window, select <b>\::Device\:Startup</b> and <b>\::RTOS\:FreeRTOS\:CORE</b>. Also, add
-  the <b>\::RTOS\:FreeRTOS\:Config</b> component in the \b FreeRTOS variant and an applicable <b>\::RTOS\:FreeRTOS\:Heap</b>
-  scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
+- In the Manage Run-Time Environment window, select <b>\::Device:Startup</b>, <b>\::RTOS:CORE</b> and
+  <b>\::RTOS:Config</b> in the \b FreeRTOS variant and an applicable <b>\::RTOS:Heap</b> scheme (for more
+  information on the heap schemes, visit the FreeRTOS documentation):
   
   \image html manage_rte_freertos_native.png
-
+  
+  \n
 - If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
 - Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
   \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
@@ -110,13 +111,14 @@ Once the target application generates event information, it can be viewed in the
 
 The steps to create a microcontroller application using CMSIS-FreeRTOS are:
 - Create a new project and select a microcontroller device.
-- In the Manage Run-Time Environment window, select <b>\::Device\:Startup</b>, <b>\::CMSIS\::RTOS2 (API)\::FreeRTOS</b> and
-  <b>\::RTOS\:FreeRTOS\:CORE</b>. Also, add the <b>\::RTOS\:FreeRTOS\:Config</b> component in the \b CMSIS \b RTOS2 variant,
-  <b>\::RTOS\:FreeRTOS\:Timers</b>, <b>\::RTOS\:FreeRTOS\:Event Groups</b>, and an applicable <b>\::RTOS\:FreeRTOS\:Heap</b>,
+- In the Manage Run-Time Environment window, select <b>\::Device:Startup</b>, <b>\::CMSIS::RTOS2 (API)\::FreeRTOS</b>,
+  <b>\::RTOS:CORE</b> in the \b FreeRTOS variant, <b>\::RTOS:Config</b> in the \b CMSIS \b RTOS2 variant,
+  <b>\::RTOS:FreeRTOS:Timers</b>, <b>\::RTOS:FreeRTOS:Event Groups</b>, and an applicable <b>\::RTOS:Heap</b>
   scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
   
   \image html manage_rte_freertos_rtos2.png
 
+  \n
 - If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
 - Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
   \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
