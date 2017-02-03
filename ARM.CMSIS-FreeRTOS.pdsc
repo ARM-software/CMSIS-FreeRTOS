@@ -5,7 +5,7 @@
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M</description>
   <url>http://www.keil.com/pack/</url>
-  <license>license.txt</license>
+  <license>License/license.txt</license>
     
   <releases>
     <release version="9.0.0-RC2">
