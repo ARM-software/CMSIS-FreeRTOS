@@ -40,7 +40,7 @@ MKDIR %RELEASE_PATH%
 COPY .\..\ARM.CMSIS-FreeRTOS.pdsc %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc
 
 :: Copy LICENSE file
-COPY .\..\license.txt %RELEASE_PATH%\license.txt
+XCOPY /Q /S /Y .\..\License\*.* %RELEASE_PATH%\License\*.*
 
 :: Copy various root files
 COPY .\..\readme.txt %RELEASE_PATH%\readme.txt
@@ -103,7 +103,8 @@ POPD
 
 
 :: Checking 
-Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364
+:: Silencing warnings that are irrelevant in the context (M324, M382, M363)
+Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364 -x M324 -x M382 -x M363
 
 :: --Check if PackChk.exe has completed successfully
 IF %errorlevel% neq 0 GOTO ErrPackChk
@@ -132,7 +133,8 @@ PUSHD %RELEASE_PATH%
 FOR %%A IN (CMSIS Config Demo Source) DO IF EXIST %%A (RMDIR /S /Q %%A)
 DEL links_to_doc_pages_for_the_demo_projects.url
 DEL readme.txt
-DEL license.txt
+DEL License\license.txt
+RMDIR /Q License
 DEL zip.log
 POPD
 
