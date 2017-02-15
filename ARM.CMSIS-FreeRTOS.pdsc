@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.0-RC3" date="2017-02-15">
+      Added native example and condition to Device:Startup
+    </release>
     <release version="9.0.0-RC2">
       Initial release
     </release>
@@ -178,6 +181,7 @@
 
     <condition id="FreeRTOS Core">
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="Device" Cgroup="Startup"/>
     </condition>
 
     <condition id="FreeRTOS RTOS2 Core">
@@ -310,7 +314,7 @@
       </component>
      
       <component Cgroup="Heap" Cvariant="Heap_1" Cversion="9.0.0" condition="FreeRTOS Core">
-        <description>Heap management scheme 1</description>
+        <description>Very simple, does not permit memory to be freed.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_1          /* RTOS FreeRTOS Heap 1 */
         </RTE_Components_h>
@@ -320,7 +324,7 @@
       </component>
      
       <component Cgroup="Heap" Cvariant="Heap_2" Cversion="9.0.0" condition="FreeRTOS Core">
-        <description>Heap management scheme 2</description>
+        <description>Permits memory to be freed, but not does coalescence adjacent free memory blocks.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_2          /* RTOS FreeRTOS Heap 2 */
         </RTE_Components_h>
@@ -330,7 +334,7 @@
       </component>
      
       <component Cgroup="Heap" Cvariant="Heap_3" Cversion="9.0.0" condition="FreeRTOS Core">
-        <description>Heap management scheme 3</description>
+        <description>Wraps the standard malloc() and free() for thread safety.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_3          /* RTOS FreeRTOS Heap 3 */
         </RTE_Components_h>
@@ -340,7 +344,7 @@
       </component>
      
       <component Cgroup="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core">
-        <description>Heap management scheme 4</description>
+        <description>Coalescences adjacent free memory blocks to avoid fragmentation. Includes absolute address placement option.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_4          /* RTOS FreeRTOS Heap 4 */
         </RTE_Components_h>
@@ -350,7 +354,7 @@
       </component>
      
       <component Cgroup="Heap" Cvariant="Heap_5" Cversion="9.0.0" condition="FreeRTOS Core">
-        <description>Heap management scheme 5</description>
+        <description>Same as Heap_4, with the ability to span the heap across multiple non-adjacent memory areas.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_5          /* RTOS FreeRTOS Heap 5 */
         </RTE_Components_h>
@@ -364,6 +368,19 @@
   <examples>
     <example name="CMSIS-RTOS2 FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky">
       <description>CMSIS-RTOS2 Blinky example using FreeRTOS</description>
+      <board name="uVision Simulator" vendor="Keil"/>
+      <project>
+        <environment name="uv" load="Blinky.uvprojx"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="CMSIS" Cgroup="RTOS2"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
+      <description>Blinky example using FreeRTOS natively</description>
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
         <environment name="uv" load="Blinky.uvprojx"/>

@@ -35,16 +35,17 @@ The CMSIS-FreeRTOS implementation is provided free of charge by ARM under the <a
 
 \section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
 
-The <b>ARM::CMSIS-FreeRTOS</b> Pack contains the following:
+The <b>ARM::CMSIS-FreeRTOS</b> pack contains the following:
 
 File/Directory             |Content                                                                           
 :--------------------------|:---------------------------------------------------------------------------------
 \b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
-\b license.txt             | FreeRTOS license agreement.
+\b License                 | FreeRTOS license agreement.
 \b CMSIS                   | CMSIS-RTOS2 compliant implementation of FreeRTOS.
 \b Config                  | FreeRTOS configuration header file.
 \b Demo                    | FreeRTOS demo projects.
 \b Documentation           | This documentation.
+\b DoxyGen                 | Source of the documentation. 
 \b Source                  | FreeRTOS source code.
 \b Utilities               | Utilities to build the pack.
 */
@@ -186,4 +187,131 @@ The following list briefly describes the limitations and unsupported features of
 - Memory Pool functions are not implemented and will always return with error.
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
+*/
+
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page functionOverview Function Overview
+
+
+\section rtos_api2 CMSIS-RTOS2 API
+
+Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS. 
+
+Kernel Information and Control
+------------------------------
+   - \b osKernelGetInfo: supported
+   - \b osKernelGetState: supported
+   - \b osKernelGetSysTimerCount: supported
+   - \b osKernelGetSysTimerFreq: supported
+   - \b osKernelInitialize: supported
+   - \b osKernelLock: supported
+   - \b osKernelUnlock: supported
+   - \b osKernelRestoreLock: supported
+   - \b osKernelResume: \token{not supported}
+   - \b osKernelStart: supported
+   - \b osKernelSuspend: \token{not supported} 
+   - \b osKernelGetTickCount: limited to 32-bit return value.
+   - \b osKernelGetTickFreq: supported
+
+Thread Management
+-----------------
+   - \b osThreadDetach: \token{not supported}
+   - \b osThreadEnumerate: supported
+   - \b osThreadExit: supported
+   - \b osThreadGetCount: supported
+   - \b osThreadGetId: supported
+   - \b osThreadGetName: supported
+   - \b osThreadGetPriority: supported
+   - \b osThreadGetStackSize: \token{not supported}
+   - \b osThreadGetStackSpace: supported
+   - \b osThreadGetState: supported
+   - \b osThreadJoin: \token{not supported}
+   - \b osThreadNew: supported
+   - \b osThreadResume: supported
+   - \b osThreadSetPriority: supported
+   - \b osThreadSuspend: supported
+   - \b osThreadTerminate: supported
+   - \b osThreadYield: supported
+
+Thread Flags
+------------
+   - \b osThreadFlagsSet: supported
+   - \b osThreadFlagsClear: supported
+   - \b osThreadFlagsGet: supported
+   - \b osThreadFlagsWait: supported
+
+Event Flags
+-----------
+All event flags are limited to 24 bits.
+   - \b osEventFlagsGetName: \token{not supported}
+   - \b osEventFlagsNew: supported
+   - \b osEventFlagsDelete: supported
+   - \b osEventFlagsSet: supported
+   - \b osEventFlagsClear: supported
+   - \b osEventFlagsGet: supported
+   - \b osEventFlagsWait: cannot be called from an ISR.
+
+Generic Wait Functions
+----------------------
+   - \b osDelay: supported
+   - \b osDelayUntil: supported
+
+Timer Management
+----------------
+   - \b osTimerDelete: supported
+   - \b osTimerGetName: supported
+   - \b osTimerIsRunning: supported
+   - \b osTimerNew: supported
+   - \b osTimerStart: supported
+   - \b osTimerStop: supported
+
+Mutex Management
+----------------
+Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
+and ignores osMutexPrioInherit attribute when specified).\n
+Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).
+   - \b osMutexAcquire: supported
+   - \b osMutexDelete: supported
+   - \b osMutexGetName: \token{not supported}
+   - \b osMutexGetOwner: supported
+   - \b osMutexNew: supported
+   - \b osMutexRelease: supported
+
+Semaphores
+----------
+   - \b osSemaphoreAcquire: supported
+   - \b osSemaphoreDelete: supported
+   - \b osSemaphoreGetCount: supported
+   - \b osSemaphoreGetName: \token{not supported}
+   - \b osSemaphoreNew: supported
+   - \b osSemaphoreRelease: supported
+
+Memory Pool
+-----------
+Memory Pool functions are not implemented and will always return with error.
+   - \b osMemoryPoolAlloc: \token{not supported}
+   - \b osMemoryPoolDelete: \token{not supported}
+   - \b osMemoryPoolFree: \token{not supported}
+   - \b osMemoryPoolGetBlockSize: \token{not supported}
+   - \b osMemoryPoolGetCapacity: \token{not supported}
+   - \b osMemoryPoolGetCount: \token{not supported}
+   - \b osMemoryPoolGetName: \token{not supported}
+   - \b osMemoryPoolGetSpace: \token{not supported}
+   - \b osMemoryPoolNew: \token{not supported}
+
+Message Queue
+-------------
+   - \b osMessageQueueDelete: supported
+   - \b osMessageQueueGet: ignores message priority.
+   - \b osMessageQueueGetCapacity: supported
+   - \b osMessageQueueGetCount: supported
+   - \b osMessageQueueGetMsgSize: supported
+   - \b osMessageQueueGetName: \token{not supported}
+   - \b osMessageQueueGetSpace: supported
+   - \b osMessageQueueNew: supported
+   - \b osMessageQueuePut: ignores message priority.
+   - \b osMessageQueueReset: supported   
 */
