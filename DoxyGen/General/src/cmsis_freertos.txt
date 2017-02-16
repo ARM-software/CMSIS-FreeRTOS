@@ -150,8 +150,38 @@ Once the target application generates event information, it can be viewed in the
 /**
 \page examples Example projects
 
-\todo Add info on examples here.
+This pack contains two example projects:
+ - \ref examples_native
+ - \ref examples_cmsis
+ 
+The first example shows how to use FreeRTOS standalone, whereas the second example shows how to use the CMSIS-RTOS2 API with
+an underlying FreeRTOS.
 
+The examples simulate a step-motor driver. Four phase variables are simulating the activation of the four output driver
+stages. The state changes are shown in the Watch window variable \c g_phases. All four phases are displayed in the Logic
+Analyzer:
+
+\image html blinky_example_simu.png
+
+
+\section examples_native Blinky example using FreeRTOS natively
+
+This example shows how to use FreeRTOS natively in a µVision project. This makes your code portable and you can
+choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
+
+To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
+<b>Native FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
+where you want to copy the project to and press OK. µVision opens.
+
+
+\section examples_cmsis Blinky example using CMSIS-FreeRTOS
+
+This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS. This makes your code portable and you can
+choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
+
+To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
+<b>CMSIS-RTOS2 FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
+where you want to copy the project to and press OK. µVision opens.
 */
 
 
@@ -190,7 +220,6 @@ The following list briefly describes the limitations and unsupported features of
 */
 
 
-
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
 /**
 \page functionOverview Function Overview
@@ -200,7 +229,7 @@ The following list briefly describes the limitations and unsupported features of
 
 Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS. 
 
-Kernel Information and Control
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">Kernel Information and Control</a>
 ------------------------------
    - \b osKernelGetInfo: supported
    - \b osKernelGetState: supported
@@ -210,25 +239,25 @@ Kernel Information and Control
    - \b osKernelLock: supported
    - \b osKernelUnlock: supported
    - \b osKernelRestoreLock: supported
-   - \b osKernelResume: \token{not supported}
+   - \b osKernelResume: \token{not implemented}
    - \b osKernelStart: supported
-   - \b osKernelSuspend: \token{not supported} 
+   - \b osKernelSuspend: \token{not implemented} 
    - \b osKernelGetTickCount: limited to 32-bit return value.
    - \b osKernelGetTickFreq: supported
 
-Thread Management
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>
 -----------------
-   - \b osThreadDetach: \token{not supported}
+   - \b osThreadDetach: \token{not implemented}
    - \b osThreadEnumerate: supported
    - \b osThreadExit: supported
    - \b osThreadGetCount: supported
    - \b osThreadGetId: supported
    - \b osThreadGetName: supported
    - \b osThreadGetPriority: supported
-   - \b osThreadGetStackSize: \token{not supported}
+   - \b osThreadGetStackSize: \token{not implemented}
    - \b osThreadGetStackSpace: supported
    - \b osThreadGetState: supported
-   - \b osThreadJoin: \token{not supported}
+   - \b osThreadJoin: \token{not implemented}
    - \b osThreadNew: supported
    - \b osThreadResume: supported
    - \b osThreadSetPriority: supported
@@ -236,17 +265,17 @@ Thread Management
    - \b osThreadTerminate: supported
    - \b osThreadYield: supported
 
-Thread Flags
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">Thread Flags</a>
 ------------
    - \b osThreadFlagsSet: supported
    - \b osThreadFlagsClear: supported
    - \b osThreadFlagsGet: supported
    - \b osThreadFlagsWait: supported
 
-Event Flags
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">Event Flags</a>
 -----------
 All event flags are limited to 24 bits.
-   - \b osEventFlagsGetName: \token{not supported}
+   - \b osEventFlagsGetName: \token{not implemented}
    - \b osEventFlagsNew: supported
    - \b osEventFlagsDelete: supported
    - \b osEventFlagsSet: supported
@@ -254,12 +283,12 @@ All event flags are limited to 24 bits.
    - \b osEventFlagsGet: supported
    - \b osEventFlagsWait: cannot be called from an ISR.
 
-Generic Wait Functions
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">Generic Wait Functions</a>
 ----------------------
    - \b osDelay: supported
    - \b osDelayUntil: supported
 
-Timer Management
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">Timer Management</a>
 ----------------
    - \b osTimerDelete: supported
    - \b osTimerGetName: supported
@@ -268,48 +297,48 @@ Timer Management
    - \b osTimerStart: supported
    - \b osTimerStop: supported
 
-Mutex Management
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">Mutex Management</a>
 ----------------
 Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
 and ignores osMutexPrioInherit attribute when specified).\n
 Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).
    - \b osMutexAcquire: supported
    - \b osMutexDelete: supported
-   - \b osMutexGetName: \token{not supported}
+   - \b osMutexGetName: \token{not implemented}
    - \b osMutexGetOwner: supported
    - \b osMutexNew: supported
    - \b osMutexRelease: supported
 
-Semaphores
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">Semaphores</a>
 ----------
    - \b osSemaphoreAcquire: supported
    - \b osSemaphoreDelete: supported
    - \b osSemaphoreGetCount: supported
-   - \b osSemaphoreGetName: \token{not supported}
+   - \b osSemaphoreGetName: \token{not implemented}
    - \b osSemaphoreNew: supported
    - \b osSemaphoreRelease: supported
 
-Memory Pool
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">Memory Pool</a>
 -----------
 Memory Pool functions are not implemented and will always return with error.
-   - \b osMemoryPoolAlloc: \token{not supported}
-   - \b osMemoryPoolDelete: \token{not supported}
-   - \b osMemoryPoolFree: \token{not supported}
-   - \b osMemoryPoolGetBlockSize: \token{not supported}
-   - \b osMemoryPoolGetCapacity: \token{not supported}
-   - \b osMemoryPoolGetCount: \token{not supported}
-   - \b osMemoryPoolGetName: \token{not supported}
-   - \b osMemoryPoolGetSpace: \token{not supported}
-   - \b osMemoryPoolNew: \token{not supported}
+   - \b osMemoryPoolAlloc: \token{not implemented}
+   - \b osMemoryPoolDelete: \token{not implemented}
+   - \b osMemoryPoolFree: \token{not implemented}
+   - \b osMemoryPoolGetBlockSize: \token{not implemented}
+   - \b osMemoryPoolGetCapacity: \token{not implemented}
+   - \b osMemoryPoolGetCount: \token{not implemented}
+   - \b osMemoryPoolGetName: \token{not implemented}
+   - \b osMemoryPoolGetSpace: \token{not implemented}
+   - \b osMemoryPoolNew: \token{not implemented}
 
-Message Queue
+<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">Message Queue</a>
 -------------
    - \b osMessageQueueDelete: supported
    - \b osMessageQueueGet: ignores message priority.
    - \b osMessageQueueGetCapacity: supported
    - \b osMessageQueueGetCount: supported
    - \b osMessageQueueGetMsgSize: supported
-   - \b osMessageQueueGetName: \token{not supported}
+   - \b osMessageQueueGetName: \token{not implemented}
    - \b osMessageQueueGetSpace: supported
    - \b osMessageQueueNew: supported
    - \b osMessageQueuePut: ignores message priority.
