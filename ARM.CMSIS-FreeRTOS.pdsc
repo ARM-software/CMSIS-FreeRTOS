@@ -86,6 +86,11 @@
       <require Dcore="Cortex-M7" Dfpu="DP_FPU"/>
     </condition>
 
+    <condition id="CA9">
+      <description>Cortex-A9 processor based device</description>
+      <require Dcore="Cortex-A9"/>
+    </condition>
+
     <!-- ARMCC compiler -->
     <condition id="CM0_ARMCC">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler</description>
@@ -123,6 +128,12 @@
     <condition id="CM7_DP_ARMCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler</description>
       <require condition="CM7_DP"/>
+      <require Tcompiler="ARMCC"/>
+    </condition>
+
+    <condition id="CA9_ARMCC">
+      <description>Cortex-A9 processor based device for the ARM Compiler</description>
+      <require condition="CA9"/>
       <require Tcompiler="ARMCC"/>
     </condition>
 
@@ -169,19 +180,25 @@
       <require Tcompiler="GCC"/>
     </condition>
 
+    <condition id="CA9_GCC">
+      <description>Cortex-A9 processor based device for the GCC Compiler</description>
+      <require condition="CA9"/>
+      <require Tcompiler="GCC"/>
+    </condition>
+
     <condition id="CMSIS RTOS2 FreeRTOS">
       <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>  
     </condition>
 
     <condition id="FreeRTOS">
       <require condition="ARMCC GCC"/>
+      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
     <condition id="FreeRTOS Core">
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
-      <require Cclass="Device" Cgroup="Startup"/>
     </condition>
 
     <condition id="FreeRTOS RTOS2 Core">
@@ -228,35 +245,43 @@
           <file category="source"  name="Source/queue.c"/>
           <file category="source"  name="Source/tasks.c"/>
   
-          <file category="include" condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/"/>
-          <file category="source"  condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/port.c"/>
-          <file category="include" condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"  condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include" condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"  condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include" condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/"/>
-          <file category="source"  condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/port.c"/>
-          <file category="include" condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"  condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include" condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-          <file category="source"  condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
-          <file category="include" condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-          <file category="source"  condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/"/>
+          <file category="source"    condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/port.c"/>
+          <file category="include"   condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"    condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"    condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/"/>
+          <file category="source"    condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/port.c"/>
+          <file category="include"   condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
+          <file category="source"    condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/"/>
+          <file category="source"    condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
   
-          <file category="include" condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/"/>
-          <file category="source"  condition="CM0_GCC"      name="Source/portable/GCC/ARM_CM0/port.c"/>
-          <file category="include" condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-          <file category="source"  condition="CM3_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-          <file category="include" condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-          <file category="source"  condition="CM4_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-          <file category="include" condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/"/>
-          <file category="source"  condition="CM4_FP_GCC"   name="Source/portable/GCC/ARM_CM4F/port.c"/>
-          <file category="include" condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/"/>
-          <file category="source"  condition="CM7_GCC"      name="Source/portable/GCC/ARM_CM3/port.c"/>
-          <file category="include" condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
-          <file category="source"  condition="CM7_DP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
-          <file category="include" condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/"/>
-          <file category="source"  condition="CM7_SP_GCC"   name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM4_GCC"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_FP_GCC" name="Source/portable/GCC/ARM_CM4F/"/>
+          <file category="source"    condition="CM4_FP_GCC" name="Source/portable/GCC/ARM_CM4F/port.c"/>
+          <file category="include"   condition="CM7_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM7_GCC"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM7_DP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_DP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/"/>
+          <file category="source"    condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+
+          <file category="other" name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
         </files>
       </component>
   
@@ -343,7 +368,7 @@
         </files>
       </component>
      
-      <component Cgroup="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core">
+      <component Cgroup="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core" isDefaultVariant="true">
         <description>Coalescences adjacent free memory blocks to avoid fragmentation. Includes absolute address placement option.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_4          /* RTOS FreeRTOS Heap 4 */

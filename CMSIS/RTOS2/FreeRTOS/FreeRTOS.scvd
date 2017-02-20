@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
+  <component name="FreeRTOS" version="9.0.0"/>
+
+  <typedefs>
+    <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
+      <!-- Excluded integrity check value -->
+      <member name="xItemValue"  type="uint32_t"    offset="0"/>
+      <member name="pxNext"      type="*ListItem_t" offset="4"/>
+      <member name="pxPrevious"  type="*ListItem_t" offset="8"/>
+      <member name="pvOwner"     type="uint32_t"    offset="12"/>
+      <member name="pvContainer" type="uint32_t"    offset="16"/>
+      <!-- Excluded integrity check value -->
+    </typedef>
+
+    <typedef name="List_t" size="20" info="List definition (list.h)">
+      <!-- Excluded integrity check value -->
+      <member name="uxNumberOfItems" type="uint32_t"    offset="0"/>
+      <member name="pxIndex"         type="*ListItem_t" offset="4"/>
+      <!-- Inlined "MiniListItem_t" structure -->
+      <member name="xListEnd_xItemValue" type="*ListItem_t" offset="8+0"/>
+      <member name="xListEnd_pxNext"     type="*ListItem_t" offset="8+4"/>
+      <member name="xListEnd_pxPrevious" type="*ListItem_t" offset="8+8"/>
+      <!-- Excluded integrity check value -->
+    </typedef>
+
+    <typedef name="Queue_t" size="20" info="Queue definition (queue.c)">
+      <member name="pcHead"    type="uint32_t"    offset="0" info="(type is *int32_t)"/>
+      <member name="pcTail"    type="uint32_t"    offset="4" info="(type is *int32_t)"/>
+      <member name="pcWriteTo" type="uint32_t"    offset="8" info="(type is *int32_t)"/>
+      <!-- Union "u" -->
+      <member name="u_pcReadFrom"           type="uint32_t"  offset="12" info="(type is *int32_t)"/>
+      <member name="u_uxRecursiveCallCount" type="uint32_t"  offset="12"/>
+      <!-- Inlined "List_t" structure -->
+      <member name="xTasksWaitingToSend_uxNumberOfItems"     type="uint32_t"    offset="16+0"/>
+      <member name="xTasksWaitingToSend_pxIndex"             type="*ListItem_t" offset="16+4"/>
+      <member name="xTasksWaitingToSend_xListEnd_xItemValue" type="*ListItem_t" offset="16+8"/>
+      <member name="xTasksWaitingToSend_xListEnd_pxNext"     type="*ListItem_t" offset="16+12"/>
+      <member name="xTasksWaitingToSend_xListEnd_pxPrevious" type="*ListItem_t" offset="16+16"/>
+      <!-- Inlined "List_t" structure -->
+      <member name="xTasksWaitingToReceive_uxNumberOfItems"     type="uint32_t"    offset="32+0"/>
+      <member name="xTasksWaitingToReceive_pxIndex"             type="*ListItem_t" offset="32+4"/>
+      <member name="xTasksWaitingToReceive_xListEnd_xItemValue" type="*ListItem_t" offset="32+8"/>
+      <member name="xTasksWaitingToReceive_xListEnd_pxNext"     type="*ListItem_t" offset="32+12"/>
+      <member name="xTasksWaitingToReceive_xListEnd_pxPrevious" type="*ListItem_t" offset="32+16"/>
+
+      <member name="uxMessagesWaiting" type="uint32_t" offset="52"/>
+      <member name="uxLength"          type="uint32_t" offset="56"/>
+      <member name="uxItemSize"        type="uint32_t" offset="60"/>
+      <member name="cRxLock"           type="int32_t"  offset="64"/>
+      <member name="cTxLock"           type="int32_t"  offset="68"/>
+
+      <!-- #if((configSUPPORT_STATIC_ALLOCATION == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) -->
+      <!-- <member name="ucStaticallyAllocated" type="uint8_t"  offset="72"/> -->
+      <!-- #endif -->
+      <!-- #if (configUSE_QUEUE_SETS == 1) -->
+      <!-- <member name="pxQueueSetContainer"   type="uint32_t" offset="76"/> -->
+      <!-- #endif -->
+      <!-- #if (configUSE_TRACE_FACILITY == 1) -->
+      <!-- <member name="uxQueueNumber" type="uint32_t" offset="80"/> -->
+      <!-- <member name="uxQueueType"   type="uint8_t"  offset="84"/> -->
+      <!-- #endif -->
+    </typedef>
+
+    <typedef name="QueueRegistryItem_t" size="8">
+      <member name="pcQueueName" type="uint32_t" offset="0" info="(type is const char *)"/>
+      <member name="xHandle"     type="uint32_t" offset="4" info="(type is QueueHandle_t)"/>
+    </typedef>
+
+
+    <typedef name="TCB_t" size="128" info="Task Control Block definition (tasks.c)">
+      <member name="pxTopOfStack" type="uint32_t" offset="0" info="Location of the last item placed on the tasks stack (type is StackType_t *)"/>
+      <!-- Inlined "ListItem_t" structure -->
+      <member name="xStateListItem_xItemValue"  type="uint32_t"    offset="4+0"  info=""/>
+      <member name="xStateListItem_pxNext"      type="*ListItem_t" offset="4+4"  info=""/>
+      <member name="xStateListItem_pxPrevious"  type="*ListItem_t" offset="4+8"  info=""/>
+      <member name="xStateListItem_pvOwner"     type="uint32_t"    offset="4+12" info=""/>
+      <member name="xStateListItem_pvContainer" type="uint32_t"    offset="4+16" info=""/>
+      <!-- Inlined "ListItem_t" structure -->
+      <member name="xEventListItem_xItemValue"  type="uint32_t"    offset="24+0"  info=""/>
+      <member name="xEventListItem_pxNext"      type="*ListItem_t" offset="24+4"  info=""/>
+      <member name="xEventListItem_pxPrevious"  type="*ListItem_t" offset="24+8"  info=""/>
+      <member name="xEventListItem_pvOwner"     type="uint32_t"    offset="24+12" info=""/>
+      <member name="xEventListItem_pvContainer" type="uint32_t"    offset="24+16" info=""/>
+
+      <member name="uxPriority" type="uint32_t"           offset="44" info=""/>
+      <member name="pxStack"    type="uint32_t"           offset="48" info=""/>
+      <member name="pcTaskName" type="uint8_t"  size="16" offset="52" info="Task name (size is defined by configMAX_TASK_NAME_LEN)"/>
+
+      <!-- #if(portCRITICAL_NESTING_IN_TCB == 1) -->
+      <!-- <member name="uxCriticalNesting" type="uint32_t" info=""/> -->
+      <!-- #endif -->
+
+      <!-- #if(configUSE_TRACE_FACILITY == 1) -->
+      <!-- <member name="uxTCBNumber"  type="uint32_t" offset="68" info=""/> -->
+      <!-- <member name="uxTaskNumber" type="uint32_t" offset="72" info=""/> -->
+      <!-- #endif -->
+
+      <!-- #if(configUSE_MUTEXES == 1) -->
+      <!-- <member name="uxBasePriority" type="uint32_t" offset="74" info=""/> -->
+      <!-- <member name="uxMutexesHeld"  type="uint32_t" offset="78" info=""/> -->
+      <!-- #endif -->
+
+      <!-- #if(configUSE_APPLICATION_TASK_TAG == 1) -->
+      <!-- <member name="pxTaskTag"  type="uint32_t" info="(type is TaskHookFunction_t)"/> -->
+      <!-- #endif -->
+
+      <!-- #if(configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0) -->
+      <!-- <member name="pvThreadLocalStoragePointers" type="uint32_t" size="10" info="(type is void *)"/> --> <!-- size="configNUM_THREAD_LOCAL_STORAGE_POINTERS" (size is defined by configNUM_THREAD_LOCAL_STORAGE_POINTERS) -->
+      <!-- #endif -->
+
+      <!-- #if(configGENERATE_RUN_TIME_STATS == 1) -->
+      <!-- <member name="ulRunTimeCounter" type="uint32_t" info=""/> -->
+      <!-- #endif -->
+
+      <!-- #if(configUSE_TASK_NOTIFICATIONS == 1) -->
+      <!-- <member name="ulNotifiedValue" type="uint32_t" offset="82" info=""/> -->
+      <!-- <member name="ucNotifyState"   type="uint8_t"  offset="86" info=""/> -->
+      <!-- #endif -->
+
+      <!-- #if(tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0) -->
+      <!-- <member name="ucStaticallyAllocated" type="uint8_t" offset="90" info=""/> -->
+      <!-- endif -->
+
+      <!-- #if(INCLUDE_xTaskAbortDelay == 1) -->
+      <!-- <member name="ucDelayAborted" type="uint32_t" info=""/> -->
+      <!-- #endif -->
+
+      <var name="StackAvailable" type="uint32_t" info="Available stack (unused): current (in bytes)"/>
+      <var name="StackOverflow"  type="uint32_t" info="Stack overflow flag"/>
+    </typedef>
+
+    <typedef name="Timer_t" size="45" info="Timer Control Block definition (timers.c)">
+      <member name="pcTimerName" type="uint32_t" offset="0" info="Timer name (type is const char *)."/>
+      <!-- Inlined "ListItem_t" structure -->
+      <member name="xTimerListItem_xItemValue"  type="uint32_t"    offset="4+0"  info=""/>
+      <member name="xTimerListItem_pxNext"      type="*ListItem_t" offset="4+4"  info=""/>
+      <member name="xTimerListItem_pxPrevious"  type="*ListItem_t" offset="4+8"  info=""/>
+      <member name="xTimerListItem_pvOwner"     type="uint32_t"    offset="4+12" info=""/>
+      <member name="xTimerListItem_pvContainer" type="uint32_t"    offset="4+16" info=""/>
+
+      <member name="xTimerPeriodInTicks" type="uint32_t" offset="24" info="How quickly and often the timer expires."/>
+      <member name="uxAutoReload"        type="uint32_t" offset="28" info="Set to pdTRUE if the timer should be automatically restarted once expired."/>
+      <member name="pvTimerID"           type="uint32_t" offset="32" info="An ID to identify the timer (type is void *)."/>
+      <member name="pxCallbackFunction"  type="uint32_t" offset="36" info="The function that will be called when the timer expires."/>
+
+      <!-- #if(configUSE_TRACE_FACILITY == 1) -->
+      <!-- <member name="uxTimerNumber" type="uint32_t" offset="40" info="An ID assigned by trace tools such as FreeRTOS+Trace."/> -->
+      <!-- #endif -->
+
+      <!-- #if((configSUPPORT_STATIC_ALLOCATION == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) -->
+      <!-- <member name="ucStaticallyAllocated" type="uint8_t" offset="44" info="Set to pdTRUE if the timer was created statically."/> -->
+      <!-- #endif -->
+
+      <var name="Name" type="uint8_t" info="Timer name string" size="64"/>
+    </typedef>
+
+  </typedefs>
+
+  <objects>
+    <object name="FreeRTOS Object">
+      <var name="i"  type="uint32_t" value="0"/>
+      <var name="j"  type="uint32_t" value="0"/>
+      <var name="sp" type="uint32_t" value="0"/>
+
+      <read name="xSchedulerRunning"      type="uint32_t" symbol="tasks.c/xSchedulerRunning"/>
+      <read name="xTickCount"             type="uint32_t" symbol="tasks.c/xTickCount"/>
+      <read name="xNumOfOverflows"        type="uint32_t" symbol="tasks.c/xNumOfOverflows"/>
+      <read name="uxPendedTicks"          type="uint32_t" symbol="tasks.c/uxPendedTicks"/>
+      <read name="pxCurrentTCB"           type="uint32_t" symbol="tasks.c/pxCurrentTCB"/>
+      <read name="uxCurrentNumberOfTasks" type="uint32_t" symbol="tasks.c/uxCurrentNumberOfTasks"/>
+
+      <read name="xIdleTaskHandle"        type="uint32_t" symbol="tasks.c/xIdleTaskHandle"/>
+      <read name="xTimerTaskHandle"       type="uint32_t" symbol="timers.c/xTimerTaskHandle"/>
+      <read name="xTimerQueue"            type="uint32_t" symbol="timers.c/xTimerQueue"/>
+
+      <!-- Running Task -->
+      <read name="Running_TCB" type="TCB_t" offset="pxCurrentTCB"/>
+
+      <calc>
+        sp = __GetRegVal ("PSP");
+
+        Running_TCB.StackAvailable = sp - Running_TCB.pxStack;
+        Running_TCB.StackOverflow  = (sp &lt;= Running_TCB.pxStack);
+      </calc>
+
+
+      <!-- Ready Tasks -->
+      <readlist name="pxReadyTasksLists" type="List_t" symbol="tasks.c/pxReadyTasksLists" count="__size_of(&quot;tasks.c/pxReadyTasksLists&quot;)" init="1"/>
+
+      <list name="i" start="0" limit="pxReadyTasksLists._count">
+        <readlist cond="pxReadyTasksLists[i].uxNumberOfItems" name="pxReadyTasks" type="ListItem_t" offset="pxReadyTasksLists[i].pxIndex" next="pxNext"/>
+      </list>
+
+      <list name="i" start="0" limit="pxReadyTasks._count">
+        <readlist cond="pxReadyTasks[i].pvOwner &amp;&amp; !(xSchedulerRunning==1 &amp;&amp; (pxReadyTasks[i].pvOwner == pxCurrentTCB))" name="Ready_TCB" type="TCB_t" offset="pxReadyTasks[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="Ready_TCB._count">
+        <calc>
+          sp = Ready_TCB[i].pxTopOfStack;
+
+          Ready_TCB[i].StackAvailable = sp - Ready_TCB[i].pxStack;
+          Ready_TCB[i].StackOverflow  = (sp &lt;= Ready_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Pending Ready Tasks -->
+      <read name="xPendingReadyList" type="List_t" symbol="tasks.c/xPendingReadyList"/>
+
+      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xPendingReadyList.uxNumberOfItems" name="pxPendingReadyTasks" type="ListItem_t" offset="xPendingReadyList.xListEnd_pxNext" next="pxNext"/>
+
+      <list name="i" start="0" limit="xPendingReadyList.uxNumberOfItems">
+        <readlist name="PendingReady_TCB" type="TCB_t" offset="pxPendingReadyTasks[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="PendingReady_TCB._count">
+        <calc>
+          sp = PendingReady_TCB[i].pxTopOfStack;
+
+          PendingReady_TCB[i].StackAvailable = sp - PendingReady_TCB[i].pxStack;
+          PendingReady_TCB[i].StackOverflow  = (sp &lt;= PendingReady_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Delayed Tasks -->
+      <read name="DelayListAddr" type="uint32_t" symbol="tasks.c/pxDelayedTaskList"/>
+
+      <read     cond="DelayListAddr" name="pxDelayedTaskList" type="List_t"     offset="DelayListAddr"/>
+      <readlist cond="DelayListAddr" name="pxDelayedTasks"    type="ListItem_t" offset="pxDelayedTaskList.xListEnd_pxNext" next="pxNext"/>
+
+      <list name="i" start="0" limit="pxDelayedTaskList.uxNumberOfItems" cond="DelayListAddr">
+        <readlist name="Delayed_TCB" type="TCB_t" offset="pxDelayedTasks[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="Delayed_TCB._count">
+        <calc>
+          sp = Delayed_TCB[i].pxTopOfStack;
+
+          Delayed_TCB[i].StackAvailable = sp - Delayed_TCB[i].pxStack;
+          Delayed_TCB[i].StackOverflow  = (sp &lt;= Delayed_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Overflow Delayed Tasks -->
+      <read name="OverflowDelayListAddr" type="uint32_t" symbol="tasks.c/pxOverflowDelayedTaskList"/>
+
+      <read     cond="OverflowDelayListAddr" name="pxOverflowDelayedTaskList" type="List_t"     offset="OverflowDelayListAddr"/>
+      <readlist cond="OverflowDelayListAddr" name="pxOverflowDelayedTasks"    type="ListItem_t" offset="pxOverflowDelayedTaskList.xListEnd_pxNext" next="pxNext"/>
+
+      <list name="i" start="0" limit="pxOverflowDelayedTaskList.uxNumberOfItems" cond="OverflowDelayListAddr" >
+        <readlist name="OverflowDelayed_TCB" type="TCB_t" offset="pxOverflowDelayedTasks[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="OverflowDelayed_TCB._count">
+        <calc>
+          sp = OverflowDelayed_TCB[i].pxTopOfStack;
+
+          OverflowDelayed_TCB[i].StackAvailable = sp - OverflowDelayed_TCB[i].pxStack;
+          OverflowDelayed_TCB[i].StackOverflow  = (sp &lt;= OverflowDelayed_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Suspended Tasks (Note: #if (INCLUDE_vTaskSuspend == 1)) -->
+      <read name="xSuspendedTaskList" type="List_t" symbol="tasks.c/xSuspendedTaskList"/>
+
+      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xSuspendedTaskList.uxNumberOfItems" name="pxSuspendedTasks" type="ListItem_t" offset="xSuspendedTaskList.xListEnd_pxNext" next="pxNext"/>
+
+      <list name="i" start="0" limit="xSuspendedTaskList.uxNumberOfItems">
+        <readlist name="Suspended_TCB" type="TCB_t" offset="pxSuspendedTasks[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="Suspended_TCB._count">
+        <calc>
+          sp = Suspended_TCB[i].pxTopOfStack;
+
+          Suspended_TCB[i].StackAvailable = sp - Suspended_TCB[i].pxStack;
+          Suspended_TCB[i].StackOverflow  = (sp &lt;= Suspended_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Tasks Waiting Termination (Note: #if(INCLUDE_vTaskDelete == 1)) -->
+      <read name="xTasksWaitingTermination" type="List_t" symbol="tasks.c/xTasksWaitingTermination"/>
+
+      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xTasksWaitingTermination.uxNumberOfItems" name="pxTasksWaitingTermination" type="ListItem_t" offset="xTasksWaitingTermination.xListEnd_pxNext" next="pxNext"/>
+
+      <list name="i" start="0" limit="xTasksWaitingTermination.uxNumberOfItems">
+        <readlist name="WaitTermination_TCB" type="TCB_t" offset="pxTasksWaitingTermination[i].pvOwner"/>
+      </list>
+
+      <!-- Process control blocks -->
+      <list name="i" start="0" limit="WaitTermination_TCB._count">
+        <calc>
+          sp = WaitTermination_TCB[i].pxTopOfStack;
+
+          WaitTermination_TCB[i].StackAvailable = sp - WaitTermination_TCB[i].pxStack;
+          WaitTermination_TCB[i].StackOverflow  = (sp &lt;= WaitTermination_TCB[i].pxStack);
+        </calc>
+      </list>
+
+      <!-- Timers -->
+      <read name="TimerListAddr"      type="uint32_t" symbol="timers.c/pxCurrentTimerList"/>
+      <read name="pxCurrentTimerList" type="List_t"   offset="TimerListAddr" />
+
+      <readlist cond="TimerListAddr &amp;&amp; pxCurrentTimerList.uxNumberOfItems" name="pxCurrentTimers" type="ListItem_t" offset="pxCurrentTimerList.pxIndex" next="pxNext"/>
+
+      <list name="i" start="0" limit="pxCurrentTimers._count">
+        <readlist cond="pxCurrentTimers[i].pvOwner" name="Timer_CB" type="Timer_t" offset="pxCurrentTimers[i].pvOwner"/>
+      </list>
+
+      <!-- Process Timer control blocks -->
+      <list name="i" start="0" limit="Timer_CB._count">
+        <!-- Read name string -->
+        <list cond="Timer_CB[i].pcTimerName" name="j" start="0" limit="64">
+          <read name="ch_0" type="uint8_t" offset="Timer_CB[i].pcTimerName + j"/>
+
+          <calc>
+            Timer_CB[i].Name[j] = ch_0;
+          </calc>
+
+          <calc cond="ch_0 == 0">
+            j = 64;
+          </calc>
+        </list>
+      </list>
+
+      <!-- Overflow Timers -->
+      <read name="OverflowTimerListAddr" type="uint32_t" symbol="timers.c/pxOverflowTimerList"/>
+      <read name="pxOverflowTimerList"   type="List_t"   offset="OverflowTimerListAddr" />
+
+      <readlist cond="OverflowTimerListAddr &amp;&amp; pxOverflowTimerList.uxNumberOfItems" name="pxOverflowTimers" type="ListItem_t" offset="pxOverflowTimerList.pxIndex" next="pxNext"/>
+
+      <list name="i" start="0" limit="pxOverflowTimers._count">
+        <readlist cond="pxOverflowTimers[i].pvOwner" name="OverflowTimer_CB" type="Timer_t" offset="pxOverflowTimers[i].pvOwner"/>
+      </list>
+
+      <!-- Process Timer control blocks -->
+      <list name="i" start="0" limit="OverflowTimer_CB._count">
+        <!-- Read name string -->
+        <list cond="OverflowTimer_CB[i].pcTimerName" name="j" start="0" limit="64">
+          <read name="ch_1" type="uint8_t" offset="OverflowTimer_CB[i].pcTimerName + j"/>
+
+          <calc>
+            OverflowTimer_CB[i].Name[j] = ch_1;
+          </calc>
+
+          <calc cond="ch_1 == 0">
+            j = 64;
+          </calc>
+        </list>
+      </list>
+
+
+      <out name="FreeRTOS RTOS">
+        <item property="Kernel" value="">
+          <item property="Scheduler State"      value="%t[xSchedulerRunning ? &quot;Running&quot; : &quot;Not running&quot;]"/>
+          <item property="Tick Pending"         value="%d[uxPendedTicks]" cond="uxPendedTicks"/>
+          <item property="Tick Count"           value="%d[xTickCount]"/>
+          <item property="Tick Count Overflows" value="%d[xNumOfOverflows]" cond="xNumOfOverflows"/>
+          <item property="Task Count"           value="%d[uxCurrentNumberOfTasks]"/>
+        </item>
+
+        <item property="Running Task" value="" cond="xSchedulerRunning">
+          <item property="h: %x[pxCurrentTCB] %t[Running_TCB.pcTaskName]" value="">
+            <item property="Priority"    value="%d[Running_TCB.uxPriority]" />
+            <item property="Stack Limit" value="%x[Running_TCB.pxStack]" />
+            <item property="Stack Top"   value="%x[Running_TCB.pxTopOfStack]" />
+            <item>
+              <print cond="Running_TCB.StackOverflow == 0" property="Stack Available" value="%d[Running_TCB.StackAvailable] bytes"/>
+              <print cond="Running_TCB.StackOverflow != 0" property="Stack Overflow"  value="%d[Running_TCB.StackAvailable] bytes" bold="1" alert="1"/>
+            </item>
+          </item>
+        </item>
+
+        <item property="Ready Tasks (%d[Ready_TCB._count])" value="">
+          <list name="i" start="0" limit="Ready_TCB._count">
+            <item property="h: %x[Ready_TCB[i]._addr] %t[Ready_TCB[i].pcTaskName]" value="">
+              <item property="Priority"    value="%d[Ready_TCB[i].uxPriority]" />
+              <item property="Stack Limit" value="%x[Ready_TCB[i].pxStack]" />
+              <item property="Stack Top"   value="%x[Ready_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="Ready_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[Ready_TCB[i].StackAvailable] bytes"/>
+                <print cond="Ready_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[Ready_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Pending Ready Tasks (%d[PendingReady_TCB._count])" value="" cond="PendingReady_TCB._count">
+          <list name="i" start="0" limit="PendingReady_TCB._count">
+            <item property="h: %x[PendingReady_TCB[i]._addr] %t[PendingReady_TCB[i].pcTaskName]" value="">
+              <item property="Priority"    value="%d[PendingReady_TCB[i].uxPriority]" />
+              <item property="Stack Limit" value="%x[PendingReady_TCB[i].pxStack]" />
+              <item property="Stack Top"   value="%x[PendingReady_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="PendingReady_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[PendingReady_TCB[i].StackAvailable] bytes"/>
+                <print cond="PendingReady_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[PendingReady_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Delayed Tasks (%d[Delayed_TCB._count])" value="">
+          <list name="i" start="0" limit="Delayed_TCB._count">
+            <item property="h: %x[Delayed_TCB[i]._addr] %t[Delayed_TCB[i].pcTaskName]" value="">
+              <item property="Wake time"   value="%d[Delayed_TCB[i].xStateListItem_xItemValue]" />
+              <item property="Priority"    value="%d[Delayed_TCB[i].uxPriority]" />
+              <item property="Stack Limit" value="%x[Delayed_TCB[i].pxStack]" />
+              <item property="Stack Top"   value="%x[Delayed_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="Delayed_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[Delayed_TCB[i].StackAvailable] bytes"/>
+                <print cond="Delayed_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[Delayed_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Overflow Delayed Tasks (%d[OverflowDelayed_TCB._count])" value="" cond="OverflowDelayed_TCB._count">
+          <list name="i" start="0" limit="OverflowDelayed_TCB._count">
+            <item property="h: %x[OverflowDelayed_TCB[i]._addr] %t[OverflowDelayed_TCB[i].pcTaskName]" value="">
+              <item property="Wake time"   value="%d[OverflowDelayed_TCB[i].xStateListItem_xItemValue]" />
+              <item property="Priority"    value="%d[OverflowDelayed_TCB[i].uxPriority]" />
+              <item property="Stack Limit" value="%x[OverflowDelayed_TCB[i].pxStack]" />
+              <item property="Stack Top"   value="%x[OverflowDelayed_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="OverflowDelayed_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[OverflowDelayed_TCB[i].StackAvailable] bytes"/>
+                <print cond="OverflowDelayed_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[OverflowDelayed_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Suspended Tasks (%d[Suspended_TCB._count])" value="">
+          <list name="i" start="0" limit="Suspended_TCB._count">
+            <item property="h: %x[Suspended_TCB[i]._addr] %t[Suspended_TCB[i].pcTaskName]" value="">
+              <item property="Priority"    value="%d[Suspended_TCB[i].uxPriority]" />
+              <item property="Stack Limit" value="%x[Suspended_TCB[i].pxStack]" />
+              <item property="Stack Top"   value="%x[Suspended_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="Suspended_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[Suspended_TCB[i].StackAvailable] bytes"/>
+                <print cond="Suspended_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[Suspended_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Waiting Termination Tasks (%d[WaitTermination_TCB._count])" value="" cond="WaitTermination_TCB._count">
+          <list name="i" start="0" limit="WaitTermination_TCB._count">
+            <item property="h: %x[WaitTermination_TCB[i]._addr] %t[WaitTermination_TCB[i].pcTaskName]" value="">
+              <item property="Priority"        value="%d[WaitTermination_TCB[i].uxPriority]" />
+              <item property="Stack Limit"     value="%x[WaitTermination_TCB[i].pxStack]" />
+              <item property="Stack Top"       value="%x[WaitTermination_TCB[i].pxTopOfStack]" />
+              <item>
+                <print cond="WaitTermination_TCB[i].StackOverflow == 0" property="Stack Available" value="%d[WaitTermination_TCB[i].StackAvailable] bytes"/>
+                <print cond="WaitTermination_TCB[i].StackOverflow != 0" property="Stack Overflow"  value="%d[WaitTermination_TCB[i].StackAvailable] bytes" bold="1" alert="1"/>
+              </item>
+            </item>
+          </list>
+        </item>
+
+        <item property="Timers (%d[Timer_CB._count])" value="">
+          <list name="i" start="0" limit="Timer_CB._count">
+            <item property="h: %x[Timer_CB[i]._addr] %t[Timer_CB[i].Name]" value="">
+              <item property="Wake Time"   value="%d[Timer_CB[i].xTimerListItem_xItemValue]" />
+              <item property="Period"      value="%d[Timer_CB[i].xTimerPeriodInTicks]" />
+              <item property="Auto Reload" value="%t[Timer_CB[i].uxAutoReload ? &quot;True&quot; : &quot;False&quot;]" />
+              <item property="ID"          value="%x[Timer_CB[i].pvTimerID]" />
+              <item property="Callback"    value="%S[Timer_CB[i].pxCallbackFunction]" />
+            </item>
+          </list>
+        </item>
+
+        <item property="Overflowed Timers (%d[OverflowTimer_CB._count])" value="" cond="OverflowTimer_CB._count">
+          <list name="i" start="0" limit="OverflowTimer_CB._count">
+            <item property="h: %x[OverflowTimer_CB[i]._addr] %t[OverflowTimer_CB[i].Name]" value="">
+              <item property="Wake Time"   value="%d[OverflowTimer_CB[i].xTimerListItem_xItemValue]" />
+              <item property="Period"      value="%d[OverflowTimer_CB[i].xTimerPeriodInTicks]" />
+              <item property="Auto Reload" value="%t[OverflowTimer_CB[i].uxAutoReload ? &quot;True&quot; : &quot;False&quot;]" />
+              <item property="ID"          value="%x[OverflowTimer_CB[i].pvTimerID]" />
+              <item property="Callback"    value="%S[OverflowTimer_CB[i].pxCallbackFunction]" />
+            </item>
+          </list>
+        </item>
+      </out>
+    </object>
+  </objects>
+
+  <events>
+  </events>
+
+</component_viewer>

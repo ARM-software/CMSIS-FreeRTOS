@@ -25,14 +25,14 @@
 #include "RTE_Components.h"             // Component selection
 #include CMSIS_device_header
 
-#include "cmsis_os2.h"                  // Keil::CMSIS:RTOS2:FreeRTOS
+#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "cmsis_compiler.h"
 
-#include "FreeRTOSConfig.h"             // Keil::CMSIS:RTOS2:FreeRTOS
-#include "FreeRTOS.h"
-#include "task.h"
-#include "event_groups.h"
-#include "semphr.h"
+#include "FreeRTOSConfig.h"             // ARM.FreeRTOS::RTOS:Config
+#include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
+#include "task.h"                       // ARM.FreeRTOS::RTOS:Core
+#include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
+#include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 
 /*---------------------------------------------------------------------------*/
 
@@ -71,6 +71,24 @@ typedef struct {
 /* Kernel initialization state */
 static osKernelState_t KernelState;
 
+/* Heap region definition used by heap_5 variant */
+#if defined(RTE_RTOS_FreeRTOS_HEAP_5)
+#if (configAPPLICATION_ALLOCATED_HEAP == 1)
+/*
+  The application writer has already defined the array used for the RTOS
+  heap - probably so it can be placed in a special segment or address.
+*/
+  extern uint8_t ucHeap[configTOTAL_HEAP_SIZE];
+#else
+  static uint8_t ucHeap[configTOTAL_HEAP_SIZE];
+#endif /* configAPPLICATION_ALLOCATED_HEAP */
+
+static HeapRegion_t xHeapRegions[] = {
+  { ucHeap, configTOTAL_HEAP_SIZE },
+  { NULL,   0                     }
+};
+#endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
+
 /*---------------------------------------------------------------------------*/
 
 /* FreeRTOS SysTick handler prototypes */
@@ -94,6 +112,9 @@ osStatus_t osKernelInitialize (void) {
     stat = osErrorISR;
   }
   else {
+    #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
+      vPortDefineHeapRegions (xHeapRegions);
+    #endif
     KernelState = osKernelReady;
     stat = osOK;
   }
