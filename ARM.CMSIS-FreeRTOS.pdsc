@@ -345,6 +345,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_1.c"/>
+          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
         </files>
       </component>
      
@@ -355,6 +356,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_2.c"/>
+          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
         </files>
       </component>
      
@@ -365,6 +367,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_3.c"/>
+          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
         </files>
       </component>
      
@@ -375,6 +378,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_4.c"/>
+          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
         </files>
       </component>
      
@@ -385,6 +389,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_5.c"/>
+          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
         </files>
       </component>
     </bundle>
