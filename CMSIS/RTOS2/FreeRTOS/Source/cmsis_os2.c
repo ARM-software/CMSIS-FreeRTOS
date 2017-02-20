@@ -276,14 +276,6 @@ int32_t osKernelRestoreLock (int32_t lock) {
   return (lock);
 }
 
-uint32_t osKernelSuspend (void) {
-  return (0U);
-}
-
-void osKernelResume (uint32_t sleep_ticks) {
-  (void)sleep_ticks;
-}
-
 uint64_t osKernelGetTickCount (void) {
   TickType_t ticks;
 
@@ -445,12 +437,6 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
   return (state);
 }
 
-uint32_t osThreadGetStackSize (osThreadId_t thread_id) {
-  (void)thread_id;
-
-  return (0U);
-}
-
 uint32_t osThreadGetStackSpace (osThreadId_t thread_id) {
   uint32_t sz;
 
@@ -539,27 +525,17 @@ osStatus_t osThreadResume (osThreadId_t thread_id) {
   return (stat);
 }
 
-osStatus_t osThreadDetach (osThreadId_t thread_id) {
-  (void)thread_id;
-
-  return (osError);
-}
-
-osStatus_t osThreadJoin (osThreadId_t thread_id) {
-  (void)thread_id;
-
-  return (osError);
-}
-
 __NO_RETURN void osThreadExit (void) {
-
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
   vTaskDelete (NULL);
+#endif
   for (;;);
 }
 
 osStatus_t osThreadTerminate (osThreadId_t thread_id) {
   osStatus_t stat;
 
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -570,6 +546,9 @@ osStatus_t osThreadTerminate (osThreadId_t thread_id) {
     stat = osOK;
     vTaskDelete ((TaskHandle_t)thread_id);
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
 }
@@ -916,8 +895,9 @@ uint32_t osTimerIsRunning (osTimerId_t timer_id) {
 }
 
 osStatus_t osTimerDelete (osTimerId_t timer_id) {
-  TimerCallback_t *callb;
   osStatus_t stat;
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+  TimerCallback_t *callb;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
@@ -935,6 +915,9 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
       stat = osErrorResource;
     }
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
 }
@@ -975,12 +958,6 @@ osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
   }
 
   return ((osEventFlagsId_t)h);
-}
-
-const char *osEventFlagsGetName (osEventFlagsId_t ef_id) {
-  (void)ef_id;
-
-  return (NULL);
 }
 
 uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
@@ -1092,6 +1069,7 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
 osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
   osStatus_t stat;
 
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -1102,6 +1080,9 @@ osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
     stat = osOK;
     vEventGroupDelete ((EventGroupHandle_t)ef_id);
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
 }
@@ -1171,12 +1152,6 @@ osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
   }
 
   return ((osMutexId_t)mutex);
-}
-
-const char *osMutexGetName (osMutexId_t mutex_id) {
-  (void)mutex_id;
-
-  return (NULL);
 }
 
 osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
@@ -1269,8 +1244,9 @@ osThreadId_t osMutexGetOwner (osMutexId_t mutex_id) {
 }
 
 osStatus_t osMutexDelete (osMutexId_t mutex_id) {
-  SemaphoreHandle_t mutex;
   osStatus_t stat;
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+  SemaphoreHandle_t mutex;
 
   mutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
 
@@ -1284,6 +1260,9 @@ osStatus_t osMutexDelete (osMutexId_t mutex_id) {
     stat = osOK;
     vSemaphoreDelete (mutex);
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
 }
@@ -1341,12 +1320,6 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
   }
 
   return (h);
-}
-
-const char *osSemaphoreGetName (osSemaphoreId_t semaphore_id) {
-  (void)semaphore_id;
-
-  return (NULL);
 }
 
 osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
@@ -1420,6 +1393,7 @@ uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id) {
 osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
   osStatus_t stat;
 
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -1430,60 +1404,11 @@ osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
     stat = osOK;
     vSemaphoreDelete ((SemaphoreHandle_t)semaphore_id);
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
-}
-
-/*---------------------------------------------------------------------------*/
-
-osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, const osMemoryPoolAttr_t *attr) {
-  (void)block_count;
-  (void)block_size;
-  (void)attr;
-
-  return (NULL);
-}
-const char *osMemoryPoolGetName (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (NULL);
-}
-void *osMemoryPoolAlloc (osMemoryPoolId_t mp_id, uint32_t timeout) {
-  (void)mp_id;
-  (void)timeout;
-
-  return (NULL);
-}
-osStatus_t osMemoryPoolFree (osMemoryPoolId_t mp_id, void *block) {
-  (void)mp_id;
-  (void)block;
-
-  return (osError);
-}
-uint32_t osMemoryPoolGetCapacity (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (0U);
-}
-uint32_t osMemoryPoolGetBlockSize (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (0U);
-}
-uint32_t osMemoryPoolGetCount (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (0U);
-}
-uint32_t osMemoryPoolGetSpace (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (0U);
-}
-osStatus_t osMemoryPoolDelete (osMemoryPoolId_t mp_id) {
-  (void)mp_id;
-
-  return (osError);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -1524,12 +1449,6 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
   }
 
   return ((osMessageQueueId_t)h);
-}
-
-const char *osMessageQueueGetName (osMessageQueueId_t mq_id) {
-  (void)mq_id;
-
-  return (NULL);
 }
 
 osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uint8_t msg_prio, uint32_t timeout) {
@@ -1689,6 +1608,7 @@ osStatus_t osMessageQueueReset (osMessageQueueId_t mq_id) {
 osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
   osStatus_t stat;
 
+#ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -1699,6 +1619,9 @@ osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
     stat = osOK;
     vQueueDelete ((QueueHandle_t)mq_id);
   }
+#else
+  stat = osError;
+#endif
 
   return (stat);
 }
