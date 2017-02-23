@@ -534,8 +534,9 @@ __NO_RETURN void osThreadExit (void) {
 
 osStatus_t osThreadTerminate (osThreadId_t thread_id) {
   osStatus_t stat;
-
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
+  eTaskState tstate;
+
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -543,8 +544,14 @@ osStatus_t osThreadTerminate (osThreadId_t thread_id) {
     stat = osErrorParameter;
   }
   else {
-    stat = osOK;
-    vTaskDelete ((TaskHandle_t)thread_id);
+    tstate = eTaskGetState ((TaskHandle_t)thread_id);
+
+    if (tstate != eDeleted) {
+      stat = osOK;
+      vTaskDelete ((TaskHandle_t)thread_id);
+    } else {
+      stat = osErrorResource;
+    }
   }
 #else
   stat = osError;
