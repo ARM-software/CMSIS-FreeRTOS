@@ -192,7 +192,7 @@ where you want to copy the project to and press OK. µVision opens.
 This lists the technical data of CMSIS-FreeRTOS.
 
 
-\section Limitations
+\section td_limitations Limitations
 
 The following list briefly describes the limitations and unsupported features of the CMSIS-RTOS2 wrapper for FreeRTOS:
 - Static memory allocation will only work if \a all memory (from attributes structure) is provided statically. In order to
@@ -217,6 +217,36 @@ The following list briefly describes the limitations and unsupported features of
 - Memory Pool functions are not implemented and will always return with error.
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
+
+\section td_validation CMSIS-RTOS validation suite results
+
+CMSIS provides a
+<a target="_blank" href="http://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html">validation suite</a> that can
+be used to test a real-time operating system for compliance to the standard. The test suite has been run successfully on the
+CMSIS-FreeRTOS implementation with the following exceptions:
+
+\b TC_ThreadParam:
+- Reason: unsupported feature
+- Test attempts to test \c osThreadJoin and \c osThreadDetach functions for invalid parameter input. These two functions are
+  not implemented.
+ 
+\b TC_ThreadInterrupts:
+- Reason: unsupported feature
+- Test attempts to call \c osThreadJoin and \c osThreadDetach from the ISR. These two functions are not implemented.
+ 
+\b TC_EventFlagsInterrupts:
+- Reason: unsupported feature
+- Test attempts to call \c osEventFlagsWait from the ISR. Wrapper implementation does not allow function \c osEventFlagsWait
+  to be called from interrupts. 
+ 
+\b TC_MutexRobust:
+- Reason: unsupported feature
+- Test attempts to create robust mutex. FreeRTOS implementation does not support robust mutexes.
+ 
+\b TC_MutexOwnership:
+- Reason: unsupported feature
+- Test attempts to release a mutex from a thread which is not the mutex owner. Test fails, because FreeRTOS implementation
+  does not verify ownership on mutex release.
 */
 
 
