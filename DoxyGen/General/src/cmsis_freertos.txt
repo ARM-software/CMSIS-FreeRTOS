@@ -374,3 +374,15 @@ Memory Pool functions are not implemented and will always return with error.
    - \b osMessageQueuePut: ignores message priority.
    - \b osMessageQueueReset: supported   
 */
+
+/* ======================================================================================================================== */
+// Group creation for Reference 
+/** 
+\addtogroup freertos_specific CMSIS-FreeRTOS Specifics
+\brief This section describes CMSIS-FreeRTOS specifics.
+\details
+CMSIS-FreeRTOS interfaces to the
+<a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a> 
+to provide event information which helps you to understand and analyze the operation. Refer to \ref freertos_evr for more
+information.
+*/
