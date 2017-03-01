@@ -211,12 +211,25 @@
   </conditions>
 
   <components>
+    <!-- CMSIS-RTOS FreeRTOS component -->
+    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
+      <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
+      <RTE_Components_h>
+        #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
+        #define RTE_CMSIS_RTOS_FreeRTOS         /* CMSIS-RTOS FreeRTOS */
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include1/cmsis_os.h"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os1.c"/>
+      </files>
+    </component>
+
     <!-- CMSIS-RTOS2 FreeRTOS component -->
     <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.0" condition="FreeRTOS RTOS2 Core">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
-        #define RTE_CMSIS_RTOS2                     /* CMSIS-RTOS2 */
-        #define RTE_CMSIS_RTOS2_FreeRTOS            /* CMSIS-RTOS2 FreeRTOS */
+        #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
+        #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
       </RTE_Components_h>
       <files>
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
@@ -231,7 +244,7 @@
       <component Cgroup="Core" Cversion="9.0.0" condition="FreeRTOS">
         <description>Core components API (Kernel, Tasks, Semaphores, Mutexes, Queues)</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_CORE            /* RTOS FreeRTOS Core */
+          #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
         </RTE_Components_h>
         <files>
           <file category="include" name="Source/include/"/>
@@ -281,14 +294,16 @@
           <file category="source"    condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/port.c"/>
           <file category="sourceAsm" condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/portASM.S"/>
 
-          <file category="other" name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
+          <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_evr.h"/>
+          <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
+          <file category="other"  name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
         </files>
       </component>
   
       <component Cgroup="Config" Cvariant="CMSIS RTOS2" Cversion="9.0.0" condition="CMSIS RTOS2 FreeRTOS">
         <description>FreeRTOS CMSIS-RTOS2 API configuration file</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2    /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
+          #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="9.0.0"/>
@@ -298,7 +313,7 @@
       <component Cgroup="Config" Cvariant="FreeRTOS" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>FreeRTOS API configuration file</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_CONFIG          /* RTOS FreeRTOS Config for FreeRTOS API */
+          #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
           <file category="header" attr="config" name="Config/FreeRTOSConfig.h" version="9.0.0"/>
@@ -308,7 +323,7 @@
       <component Cgroup="Coroutines" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Co-routine API</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_COROUTINE       /* RTOS FreeRTOS Co-routines */
+          #define RTE_RTOS_FreeRTOS_COROUTINE     /* RTOS FreeRTOS Co-routines */
         </RTE_Components_h>
         <files>
           <file category="header" name="Source/include/croutine.h"/>
@@ -319,7 +334,7 @@
       <component Cgroup="Event Groups" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Event Group API</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_EVENTGROUPS     /* RTOS FreeRTOS Event Groups */
+          #define RTE_RTOS_FreeRTOS_EVENTGROUPS   /* RTOS FreeRTOS Event Groups */
         </RTE_Components_h>
         <files>
           <file category="header" name="Source/include/event_groups.h"/>
@@ -330,7 +345,7 @@
       <component Cgroup="Timers" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Timer API</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_TIMERS          /* RTOS FreeRTOS Timers */
+          #define RTE_RTOS_FreeRTOS_TIMERS        /* RTOS FreeRTOS Timers */
         </RTE_Components_h>
         <files>
           <file category="header" name="Source/include/timers.h"/>
@@ -341,7 +356,7 @@
       <component Cgroup="Heap" Cvariant="Heap_1" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Very simple, does not permit memory to be freed.</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_HEAP_1          /* RTOS FreeRTOS Heap 1 */
+          #define RTE_RTOS_FreeRTOS_HEAP_1        /* RTOS FreeRTOS Heap 1 */
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_1.c"/>
@@ -352,7 +367,7 @@
       <component Cgroup="Heap" Cvariant="Heap_2" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Permits memory to be freed, but not does coalescence adjacent free memory blocks.</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_HEAP_2          /* RTOS FreeRTOS Heap 2 */
+          #define RTE_RTOS_FreeRTOS_HEAP_2        /* RTOS FreeRTOS Heap 2 */
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_2.c"/>
@@ -363,7 +378,7 @@
       <component Cgroup="Heap" Cvariant="Heap_3" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Wraps the standard malloc() and free() for thread safety.</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_HEAP_3          /* RTOS FreeRTOS Heap 3 */
+          #define RTE_RTOS_FreeRTOS_HEAP_3        /* RTOS FreeRTOS Heap 3 */
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_3.c"/>
@@ -374,7 +389,7 @@
       <component Cgroup="Heap" Cvariant="Heap_4" Cversion="9.0.0" condition="FreeRTOS Core" isDefaultVariant="true">
         <description>Coalescences adjacent free memory blocks to avoid fragmentation. Includes absolute address placement option.</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_HEAP_4          /* RTOS FreeRTOS Heap 4 */
+          #define RTE_RTOS_FreeRTOS_HEAP_4        /* RTOS FreeRTOS Heap 4 */
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_4.c"/>
@@ -385,7 +400,7 @@
       <component Cgroup="Heap" Cvariant="Heap_5" Cversion="9.0.0" condition="FreeRTOS Core">
         <description>Same as Heap_4, with the ability to span the heap across multiple non-adjacent memory areas.</description>
         <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_HEAP_5          /* RTOS FreeRTOS Heap 5 */
+          #define RTE_RTOS_FreeRTOS_HEAP_5        /* RTOS FreeRTOS Heap 5 */
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_5.c"/>

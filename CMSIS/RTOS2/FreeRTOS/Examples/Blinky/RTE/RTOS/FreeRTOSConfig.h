@@ -199,4 +199,7 @@ extern uint32_t SystemCoreClock;
 #define xPortPendSVHandler                    PendSV_Handler
 #define vPortSVCHandler                       SVC_Handler
 
+/* Include debug event definitions */
+#include "freertos_evr.h"
+
 #endif /* FREERTOS_CONFIG_H */

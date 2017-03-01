@@ -28,7 +28,6 @@
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "cmsis_compiler.h"
 
-#include "FreeRTOSConfig.h"             // ARM.FreeRTOS::RTOS:Config
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
