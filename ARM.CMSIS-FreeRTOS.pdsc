@@ -3,11 +3,14 @@
 <package schemaVersion="1.4" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
-  <description>Bundle of FreeRTOS for Cortex-M</description>
+  <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
   <url>http://www.keil.com/pack/</url>
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.0-RC4">
+      Added example for Cortex-A9 FVP
+    </release>
     <release version="9.0.0-RC3" date="2017-02-15">
       Added native example and condition to Device:Startup
     </release>
@@ -86,9 +89,9 @@
       <require Dcore="Cortex-M7" Dfpu="DP_FPU"/>
     </condition>
 
-    <condition id="CA9">
-      <description>Cortex-A9 processor based device</description>
-      <require Dcore="Cortex-A9"/>
+    <condition id="CA9_DP">
+      <description>Cortex-A9 processor based device using Floating Point Unit (DP)</description>
+      <require Dcore="Cortex-A9" Dfpu="DP_FPU"/>
     </condition>
 
     <!-- ARMCC compiler -->
@@ -131,9 +134,9 @@
       <require Tcompiler="ARMCC"/>
     </condition>
 
-    <condition id="CA9_ARMCC">
+    <condition id="CA9_DP_ARMCC">
       <description>Cortex-A9 processor based device for the ARM Compiler</description>
-      <require condition="CA9"/>
+      <require condition="CA9_DP"/>
       <require Tcompiler="ARMCC"/>
     </condition>
 
@@ -180,9 +183,9 @@
       <require Tcompiler="GCC"/>
     </condition>
 
-    <condition id="CA9_GCC">
+    <condition id="CA9_DP_GCC">
       <description>Cortex-A9 processor based device for the GCC Compiler</description>
-      <require condition="CA9"/>
+      <require condition="CA9_DP"/>
       <require Tcompiler="GCC"/>
     </condition>
 
@@ -272,9 +275,9 @@
           <file category="source"    condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
           <file category="include"   condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
-          <file category="include"   condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/"/>
-          <file category="source"    condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="CA9_ARMCC"    name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
+          <file category="include"   condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
   
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
@@ -290,9 +293,9 @@
           <file category="source"    condition="CM7_DP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
           <file category="include"   condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
-          <file category="include"   condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/"/>
-          <file category="source"    condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="CA9_GCC"    name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+          <file category="include"   condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
 
           <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_evr.h"/>
           <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -429,6 +432,20 @@
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
         <environment name="uv" load="Blinky.uvprojx"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="CMSIS" Cgroup="RTOS2"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 FVP" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9</description>
+      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+      <project>
+        <environment name="ds5" load=".project"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>

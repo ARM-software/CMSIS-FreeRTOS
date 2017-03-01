@@ -43,9 +43,12 @@
 #define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #endif
 
+#if    (__ARM_ARCH_7A__      == 1U)
+#define IS_IRQ() (__get_mode() == 0x12U)
+#else
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
-
 #define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
+#endif
 
 /* Limits */
 #define MAX_BITS_TASK_NOTIFY      31U
@@ -90,6 +93,7 @@ static HeapRegion_t xHeapRegions[] = {
 
 /*---------------------------------------------------------------------------*/
 
+#if (__ARM_ARCH_7A__ == 0U)
 /* FreeRTOS SysTick handler prototypes */
 extern void SysTick_Handler     (void);
 extern void xPortSysTickHandler (void);
@@ -101,6 +105,7 @@ void SysTick_Handler (void) {
   /* Call tick handler */
   xPortSysTickHandler();
 }
+#endif
 
 /*---------------------------------------------------------------------------*/
 
@@ -307,6 +312,13 @@ uint32_t osKernelGetSysTimerCount (void) {
 
   ticks = xTaskGetTickCount();
 
+#if (__ARM_ARCH_7A__ == 1U)
+#if (__CORTEX_A == 9U)
+  /* Cortex-A9 uses Private Timer */
+  val = PTIM_GetLoadValue() - PTIM_GetCurrentValue();
+  val += ticks * (PTIM_GetLoadValue() + 1U);
+#endif
+#else
   val = SysTick->LOAD - SysTick->VAL;
 
   if ((SysTick->CTRL >> 16) & 1U) {
@@ -315,6 +327,7 @@ uint32_t osKernelGetSysTimerCount (void) {
     ticks++;
   }
   val += ticks * (SysTick->LOAD + 1U);
+#endif
 
   portENABLE_INTERRUPTS();
 
