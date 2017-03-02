@@ -119,17 +119,17 @@ extern void EvrFreeRTOSTasks_TaskSwitchedOut (TCB_t pxCurrentTCB);
   \param[in]  pxCurrentTCB      handle to the task about to enter the running state.
   \param[in]  uxTopPriority     pxCurrentTCB task priority.
 */
-extern void EvrFreeRTOSTasks_TaskSwitchedIn  (TCB_t pxCurrentTCB, /*UBaseType_t*/uint32_t uxTopPriority);
+extern void EvrFreeRTOSTasks_TaskSwitchedIn  (TCB_t pxCurrentTCB, uint32_t uxTopPriority);
 
 /**
-  \brief  Event on task priority inherance (Op)
+  \brief  Event on task priority inheritance (Op)
   \param[in]  pxTCBOfMutexHolder  pointer to task handle.
   \param[in]  uxInheritedPriority new (inherited) task priority.
 */
 extern void EvrFreeRTOSTasks_TaskPriorityInherit (TCB_t pxTCBOfMutexHolder, uint32_t uxInheritedPriority);
 
 /**
-  \brief  Event on task priority disinherance (Op)
+  \brief  Event on task priority disinheritance (Op)
   \param[in]  pxTCBOfMutexHolder  pointer to task handle.
   \param[in]  uxOriginalPriority  old (original) task priority.
 */

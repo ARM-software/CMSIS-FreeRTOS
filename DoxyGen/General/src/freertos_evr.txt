@@ -134,7 +134,7 @@ The event \b TaskSwitchedOut is generated before a new task is selected to run.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskSwitchedIn  (TCB_t pxCurrentTCB, /*UBaseType_t*/uint32_t uxTopPriority)
+\fn void EvrFreeRTOSTasks_TaskSwitchedIn  (TCB_t pxCurrentTCB, uint32_t uxTopPriority)
 \details
 The event \b TaskSwitchedIn is generated after a task has been selected to run.
 
