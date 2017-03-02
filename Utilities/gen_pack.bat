@@ -63,6 +63,8 @@ XCOPY /Q /S /Y .\..\Demo\*.* %RELEASE_PATH%\Demo\*.*
 :: Copy Source folder
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
 
+:: Remove generated doxygen files
+RMDIR /S /Q ..\CMSIS\Documentation
 
 :: Checking 
 :: Silencing warnings that are irrelevant in the context (M324, M382, M363)
