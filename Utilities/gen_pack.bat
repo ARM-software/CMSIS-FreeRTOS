@@ -32,39 +32,9 @@ IF EXIST %RELEASE_PATH% (
   RMDIR /Q /S  %RELEASE_PATH%
 )
 
-
 :: Generate Documentation 
-:: -- Generate doxygen files 
 PUSHD ..\DoxyGen
-
-:: -- Delete previous generated HTML files
-ECHO.
-ECHO Delete previous generated HTML files
-
-IF EXIST ..\Documentation (
-  ECHO Documenation folder already exists
-  PUSHD ..\Documentation
-  FOR %%A IN (General) DO IF EXIST %%A (RMDIR /S /Q %%A)
-  POPD
-) ELSE (
-  ECHO create Documentation folder
-  MKDIR ..\Documentation
-)
-
-:: -- Generate HTML Files
-ECHO.
-ECHO Generate HTML Files
-
-pushd General
-doxygen general.dxy
-popd
-
-:: -- Copy search style sheet
-ECHO.
-ECHO Copy search style sheets
-XCOPY /Q /S /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\ 
-  
-ECHO.
+CALL genDoc.bat
 POPD
 
 
@@ -92,12 +62,6 @@ XCOPY /Q /S /Y .\..\Demo\*.* %RELEASE_PATH%\Demo\*.*
 
 :: Copy Source folder
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
-
-:: -- Copy generated doxygen files 
-XCOPY /Q /S /Y ..\Documentation\*.* %RELEASE_PATH%\CMSIS\Documentation\*.*
-
-:: -- Remove generated doxygen files
-RMDIR /S /Q ..\Documentation
 
 
 :: Checking 

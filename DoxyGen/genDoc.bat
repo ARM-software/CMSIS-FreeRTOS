@@ -20,24 +20,28 @@ REM -- Delete previous generated HTML files ---------------------
   ECHO.
   ECHO Delete previous generated HTML files
 
-REM -- Remove generated doxygen files ---------------------
-PUSHD ..\Documentation
-RMDIR /S /Q General
-REM FOR %%A IN (Core, DAP, Driver, DSP, General, Pack, RTOS, RTOS2, SVD) DO IF EXIST %%A (RMDIR /S /Q %%A)
-POPD
+IF EXIST ..\CMSIS\Documentation (
+  ECHO -- Documenation folder already exists
+  PUSHD ..\CMSIS\Documentation
+  FOR %%A IN (General) DO IF EXIST %%A (RMDIR /S /Q %%A)
+  POPD
+) ELSE (
+  ECHO -- Create Documentation folder
+  MKDIR ..\CMSIS\Documentation
+)
 
 REM -- Generate New HTML Files ---------------------
   ECHO.
   ECHO Generate New HTML Files
 
-pushd General
+PUSHD General
 CALL doxygen_general.bat
-popd
+POPD
 
 REM -- Copy search style sheet ---------------------
   ECHO.
   ECHO Copy search style sheets
-copy /Y Doxygen_Templates\search.css ..\Documentation\General\html\search\. 
+COPY /Y Doxygen_Templates\search.css ..\CMSIS\Documentation\General\html\search\. 
   
 :END
   ECHO.

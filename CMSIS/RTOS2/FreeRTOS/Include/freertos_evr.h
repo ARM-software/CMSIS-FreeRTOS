@@ -35,11 +35,18 @@
   #endif
 #endif
 
+/* Temporarily define FreeRTOS object types */
+#define TCB_t            void*
+#define Queue_t          void*
+#define Timer_t          void*
+#define PendedFunction_t void*
+#define EventGroup_t     void*
+
 /**
   \brief  Event on successful task create (Op)
   \param[in]  pxNewTCB          pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_TaskCreate (/*TCB_t*/void *pxNewTCB);
+extern void EvrFreeRTOSTasks_TaskCreate (TCB_t pxNewTCB);
 
 /**
   \brief  Event on unsuccessful task create (Error)
@@ -50,7 +57,7 @@ extern void EvrFreeRTOSTasks_TaskCreateFailed (void);
   \brief  Event on task delete (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_TaskDelete (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_TaskDelete (TCB_t pxTCB);
 
 /**
   \brief  Event before current running task execution is delayed (Op)
@@ -69,25 +76,25 @@ extern void EvrFreeRTOSTasks_TaskDelay (uint32_t xTicksToDelay);
   \param[in]  pxTCB             pointer to task handle.
   \param[in]  uxNewPriority
 */
-extern void EvrFreeRTOSTasks_TaskPrioritySet (/*TCB_t*/void *pxTCB, uint32_t uxNewPriority);
+extern void EvrFreeRTOSTasks_TaskPrioritySet (TCB_t pxTCB, uint32_t uxNewPriority);
 
 /**
   \brief  Event on task suspend (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_TaskSuspend (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_TaskSuspend (TCB_t pxTCB);
 
 /**
   \brief  Event on task resume (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_TaskResume (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_TaskResume (TCB_t pxTCB);
 
 /**
   \brief  Event on task resume call from ISR (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_TaskResumeFromIsr (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_TaskResumeFromIsr (TCB_t pxTCB);
 
 /**
   \brief  Event on tick count increment (Op)
@@ -105,40 +112,40 @@ extern void EvrFreeRTOSTasks_IncreaseTickCount (uint32_t xTicksToJump);
   \brief  Event before a new task is selected to run (Op)
   \param[in]  pxCurrentTCB      handle to the task about to leave the running state.
 */
-extern void EvrFreeRTOSTasks_TaskSwitchedOut (/*TCB_t*/void *pxCurrentTCB);
+extern void EvrFreeRTOSTasks_TaskSwitchedOut (TCB_t pxCurrentTCB);
 
 /**
   \brief  Event after a task has been selected to run (Op)
   \param[in]  pxCurrentTCB      handle to the task about to enter the running state.
   \param[in]  uxTopPriority     pxCurrentTCB task priority.
 */
-extern void EvrFreeRTOSTasks_TaskSwitchedIn  (/*TCB_t*/void *pxCurrentTCB, /*UBaseType_t*/uint32_t uxTopPriority);
+extern void EvrFreeRTOSTasks_TaskSwitchedIn  (TCB_t pxCurrentTCB, /*UBaseType_t*/uint32_t uxTopPriority);
 
 /**
   \brief  Event on task priority inherance (Op)
   \param[in]  pxTCBOfMutexHolder  pointer to task handle.
-  \parma[in]  uxInheritedPriority new (inherited) task priority.
+  \param[in]  uxInheritedPriority new (inherited) task priority.
 */
-extern void EvrFreeRTOSTasks_TaskPriorityInherit (/*TCB_t*/void *pxTCBOfMutexHolder, uint32_t uxInheritedPriority);
+extern void EvrFreeRTOSTasks_TaskPriorityInherit (TCB_t pxTCBOfMutexHolder, uint32_t uxInheritedPriority);
 
 /**
   \brief  Event on task priority disinherance (Op)
   \param[in]  pxTCBOfMutexHolder  pointer to task handle.
-  \parma[in]  uxInheritedPriority old (original) task priority.
+  \param[in]  uxOriginalPriority  old (original) task priority.
 */
-extern void EvrFreeRTOSTasks_TaskPriorityDisinherit (/*TCB_t*/void *pxTCBOfMutexHolder, uint32_t uxOriginalPriority);
+extern void EvrFreeRTOSTasks_TaskPriorityDisinherit (TCB_t pxTCBOfMutexHolder, uint32_t uxOriginalPriority);
 
 /**
   \brief  Event sent before transition of a task into the Ready state (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_MovedTaskToReadyState (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_MovedTaskToReadyState (TCB_t pxTCB);
 
 /**
   \brief  Event sent after transition of a task into the Ready state (Op)
   \param[in]  pxTCB             pointer to task handle.
 */
-extern void EvrFreeRTOSTasks_PostMovedTaskToReadyState (/*TCB_t*/void *pxTCB);
+extern void EvrFreeRTOSTasks_PostMovedTaskToReadyState (TCB_t pxTCB);
 
 /**
   \brief  Event on enter to the low power mode (Op)
@@ -179,32 +186,32 @@ extern void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t ulNotifiedValue);
   \brief  Event on successful task notify (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
   \param[in]  ulValue           notify value.
-  \param[in]  eAction           \ref eNotifyAction "task notification action".
-  \param[in]  ulNNotifiedValue  current state of the notification value.
+  \param[in]  eAction           task notification action.
+  \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t ulValue, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotify (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful task notify from ISR (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
   \param[in]  ulValue           notify value.
-  \param[in]  eAction           \ref eNotifyAction "task notification action".
-  \param[in]  ulNNotifiedValue  current state of the notification value.
+  \param[in]  eAction           task notification action.
+  \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t ulValue, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful task notify give from ISR (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
-  \param[in]  ulNNotifiedValue  current state of the notification value.
+  \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (TCB_t xTaskToNotify, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful queue create (Op)
   \param[in]  pxQueue           pointer to mutex object handle.
 */
-extern void EvrFreeRTOSQueue_QueueCreate (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueCreate (Queue_t pxQueue);
 
 /**
   \brief  Event on unsuccessful queue create (Error)
@@ -216,7 +223,7 @@ extern void EvrFreeRTOSQueue_QueueCreateFailed (uint32_t ucQueueType);
   \brief  Event on successful mutex create (Op)
   \param[in]  pxNewQueue        pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_CreateMutex (/*Queue_t*/void *pxNewQueue);
+extern void EvrFreeRTOSQueue_CreateMutex (Queue_t pxNewQueue);
 
 /**
   \brief  Event on unsuccessful mutex create (Error)
@@ -227,31 +234,31 @@ extern void EvrFreeRTOSQueue_CreateMutexFailed (void);
   \brief  Event on successful recursive mutex give (Op)
   \param[in]  pxMutex           pointer to mutex object handle.
 */
-extern void EvrFreeRTOSQueue_GiveMutexRecursive (/*Queue_t*/void *pxMutex);
+extern void EvrFreeRTOSQueue_GiveMutexRecursive (Queue_t pxMutex);
 
 /**
   \brief  Event on unsuccessful recursive mutex give (Error)
   \param[in]  pxMutex           pointer to mutex object handle.
 */
-extern void EvrFreeRTOSQueue_GiveMutexRecursiveFailed (/*Queue_t*/void *pxMutex);
+extern void EvrFreeRTOSQueue_GiveMutexRecursiveFailed (Queue_t pxMutex);
 
 /**
   \brief  Event on successful recursive mutex take (Op)
   \param[in]  pxMutex           pointer to mutex object handle.
 */
-extern void EvrFreeRTOSQueue_TakeMutexRecursive (/*Queue_t*/void *pxMutex);
+extern void EvrFreeRTOSQueue_TakeMutexRecursive (Queue_t pxMutex);
 
 /**
   \brief  Event on unsuccessful recursive mutex take (Error)
   \param[in]  pxMutex           pointer to mutex object handle.
 */
-extern void EvrFreeRTOSQueue_TakeMutexRecursiveFailed (/*Queue_t*/void *pxMutex);
+extern void EvrFreeRTOSQueue_TakeMutexRecursiveFailed (Queue_t pxMutex);
 
 /**
   \brief  Event on successful counting semaphore create (Op)
   \param[in]  xHandle           pointer to semaphore object handle.
 */
-extern void EvrFreeRTOSQueue_CreateCountingSemaphore (/*Queue_t*/void *xHandle);
+extern void EvrFreeRTOSQueue_CreateCountingSemaphore (Queue_t xHandle);
 
 /**
   \brief  Event on unsuccessful counting semaphore create (Error)
@@ -262,98 +269,98 @@ extern void EvrFreeRTOSQueue_CreateCountingSemaphoreFailed (void);
   \brief  Event on queue write (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueSend (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueSend (Queue_t pxQueue);
 
 /**
   \brief  Event on write to the full queue (Error)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueSendFailed (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueSendFailed (Queue_t pxQueue);
 
 /**
   \brief  Event on queue read (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueReceive (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueReceive (Queue_t pxQueue);
 
 /**
   \brief  Event on queue peek (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueuePeek (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueuePeek (Queue_t pxQueue);
 
 /**
   \brief  Event on queue peek from ISR (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueuePeekFromIsr (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueuePeekFromIsr (Queue_t pxQueue);
 
 /**
   \brief  Event on read from the empty queue (Error)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueReceiveFailed (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueReceiveFailed (Queue_t pxQueue);
 
 /**
   \brief  Event on write to the queue from ISR (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueSendFromIsr (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueSendFromIsr (Queue_t pxQueue);
 
 /**
   \brief  Event on write to the full queue from ISR (Error)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueSendFromIsrFailed (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueSendFromIsrFailed (Queue_t pxQueue);
 
 /**
   \brief  Event on queue read from ISR (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueReceiveFromIsr (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueReceiveFromIsr (Queue_t pxQueue);
 
 /**
   \brief  Event on empty queue read from ISR (Error)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueReceiveFromIsrFailed (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueReceiveFromIsrFailed (Queue_t pxQueue);
 
 /**
   \brief  Event on empty queue peek from ISR (Error)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueuePeekFromIsrFailed (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueuePeekFromIsrFailed (Queue_t pxQueue);
 
 /**
   \brief  Event on queue delete (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_QueueDelete (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_QueueDelete (Queue_t pxQueue);
 
 /**
-  \brief  Event on assignment of a human readabla name to a queue (Op)
+  \brief  Event on assignment of a human readable name to a queue (Op)
   \param[in]  pxQueue           pointer to queue object handle.
   \param[in]  pcQueueName       pointer to queue object name.
 */
-extern void EvrFreeRTOSQueue_QueueRegistryAdd (/*Queue_t*/void *pxQueue, const char *pcQueueName);
+extern void EvrFreeRTOSQueue_QueueRegistryAdd (Queue_t pxQueue, const char *pcQueueName);
 
 /**
   \brief  Event indicating the current running task is about to block while reading from an empty queue (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_BlockingOnQueueReceive (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_BlockingOnQueueReceive (Queue_t pxQueue);
 
 /**
   \brief  Event indicating the current running task is about to block while writting to a full queue (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
-extern void EvrFreeRTOSQueue_BlockingOnQueueSend (/*Queue_t*/void *pxQueue);
+extern void EvrFreeRTOSQueue_BlockingOnQueueSend (Queue_t pxQueue);
 
 /**
   \brief  Event on successful timer object create (Op)
   \param[in]  pxNewTimer        pointer to timer object handle.
 */
-extern void EvrFreeRTOSTimers_TimerCreate (/*Timer_t*/void *pxNewTimer);
+extern void EvrFreeRTOSTimers_TimerCreate (Timer_t pxNewTimer);
 
 /**
   \brief  Event on unsuccessful timer object create (Error)
@@ -362,12 +369,12 @@ extern void EvrFreeRTOSTimers_TimerCreateFailed (void);
 
 /**
   \brief  Event on timer queue command send (Op)
-  \param[in]  xTimer            pointer to timer object handle.
+  \param[in]  pxTimer           pointer to timer object handle.
   \param[in]  xCommandID        timer command ID.
   \param[in]  xOptionalValue    optional command value.
   \param[in]  xReturn           return value.
 */
-extern void EvrFreeRTOSTimers_TimerCommandSend (/*Timer_t*/void *pxTimer, uint32_t xCommandID, uint32_t xOptionalValue, uint32_t xReturn);
+extern void EvrFreeRTOSTimers_TimerCommandSend (Timer_t pxTimer, uint32_t xCommandID, uint32_t xOptionalValue, uint32_t xReturn);
 
 /**
   \brief  Event on timer queue command receive (Op)
@@ -375,13 +382,13 @@ extern void EvrFreeRTOSTimers_TimerCommandSend (/*Timer_t*/void *pxTimer, uint32
   \param[in]  xCommandID        timer command ID.
   \param[in]  xOptionalValue    optional command value.
 */
-extern void EvrFreeRTOSTimers_TimerCommandReceived (/*Timer_t*/void *pxTimer, uint32_t xCommandID, uint32_t xOptionalValue);
+extern void EvrFreeRTOSTimers_TimerCommandReceived (Timer_t pxTimer, uint32_t xCommandID, uint32_t xOptionalValue);
 
 /**
   \brief  Event on timer expire (Op)
   \param[in]  pxTimer           pointer to timer object handle.
 */
-extern void EvrFreeRTOSTimers_TimerExpired (/*Timer_t*/void *pxTimer);
+extern void EvrFreeRTOSTimers_TimerExpired (Timer_t pxTimer);
 
 /**
   \brief  Event on pass of the function execution to the timer service task (Op)
@@ -390,7 +397,7 @@ extern void EvrFreeRTOSTimers_TimerExpired (/*Timer_t*/void *pxTimer);
   \param[in]  ulParameter2      function parameter 2.
   \param[in]  xReturn           return value.
 */
-extern void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
+extern void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
 
 /**
   \brief  Event on pass of the function execution to the timer service task from the ISR (Op)
@@ -399,13 +406,13 @@ extern void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunction
   \param[in]  ulParameter2      function parameter 2.
   \param[in]  xReturn           return value.
 */
-extern void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
+extern void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
 
 /**
   \brief  Event on successful event groups object create (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupCreate (/*EventGroup_t*/void *pxEventGroup);
+extern void EvrFreeRTOSEventGroups_EventGroupCreate (EventGroup_t pxEventGroup);
 
 /**
   \brief  Event on unsuccessful event groups object create (Error)
@@ -418,77 +425,77 @@ extern void EvrFreeRTOSEventGroups_EventGroupCreateFailed (void);
   \param[in]  uxBitsToSet       event bits that shall be set.
   \param[in]  uxBitsToWaitFor   event bits to wait for.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupSyncBlock (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor);
+extern void EvrFreeRTOSEventGroups_EventGroupSyncBlock (EventGroup_t pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor);
 
 /**
   \brief  Event on event groups sync completed (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToSet       event bits that shall be set.
   \param[in]  uxBitsToWaitFor   event bits to wait for.
-  \param[in]  xTimeoutOccured   timeout value.
+  \param[in]  xTimeoutOccurred  timeout value.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupSyncEnd (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred);
+extern void EvrFreeRTOSEventGroups_EventGroupSyncEnd (EventGroup_t pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred);
 
 /**
   \brief  Event on event groups bit wait start (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToWaitFor   event bits to wait for.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupWaitBitsBlock (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToWaitFor);
+extern void EvrFreeRTOSEventGroups_EventGroupWaitBitsBlock (EventGroup_t pxEventGroup, uint32_t uxBitsToWaitFor);
 
 /**
   \brief  Event on event groups bit wait completed (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToWaitFor   event bits to wait for.
-  \param[in]  xTimeoutOccured   timeout value.
+  \param[in]  xTimeoutOccurred  timeout value.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupWaitBitsEnd (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred);
+extern void EvrFreeRTOSEventGroups_EventGroupWaitBitsEnd (EventGroup_t pxEventGroup, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred);
 
 /**
   \brief  Event on event groups bit clear (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToClear     event bits that shall be cleared.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupClearBits (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToClear);
+extern void EvrFreeRTOSEventGroups_EventGroupClearBits (EventGroup_t pxEventGroup, uint32_t uxBitsToClear);
 
 /**
   \brief  Event on event groups bit clear call from ISR (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToClear     event bits that shall be cleared.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupClearBitsFromIsr (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToClear);
+extern void EvrFreeRTOSEventGroups_EventGroupClearBitsFromIsr (EventGroup_t pxEventGroup, uint32_t uxBitsToClear);
 
 /**
   \brief  Event on event groups bit set (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToSet       event bits that shall be set.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupSetBits (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet);
+extern void EvrFreeRTOSEventGroups_EventGroupSetBits (EventGroup_t pxEventGroup, uint32_t uxBitsToSet);
 
 /**
   \brief  Event on event groups bit set call from ISR (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
   \param[in]  uxBitsToSet       event bits that shall be set.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupSetBitsFromIsr (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet);
+extern void EvrFreeRTOSEventGroups_EventGroupSetBitsFromIsr (EventGroup_t pxEventGroup, uint32_t uxBitsToSet);
 
 /**
   \brief  Event on event groups object delete (Op)
   \param[in]  pxEventGroup      pointer to Event Groups object handle.
 */
-extern void EvrFreeRTOSEventGroups_EventGroupDelete (/*EventGroup_t*/void *pxEventGroup);
+extern void EvrFreeRTOSEventGroups_EventGroupDelete (EventGroup_t pxEventGroup);
 
 /**
   \brief  Event on heap memory block allocation (Op)
   \param[in]  pvAddress         pointer to memory block.
-  \param[in]  uiSize            memory block address.
+  \param[in]  uiSize            memory block size.
 */
 extern void EvrFreeRTOSHeap_Malloc (void *pvAddress, uint32_t uiSize);
 
 /**
   \brief  Event on heap memory block free (Op)
   \param[in]  pvAddress         pointer to memory block.
-  \param[in]  uiSize            memory block address.
+  \param[in]  uiSize            memory block size.
 */
 extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 
@@ -790,5 +797,13 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceFREE_DISABLE))
   #define traceFREE(pv,x)                             EvrFreeRTOSHeap_Free(pv,x)
 #endif
+
+
+/* Undefine FreeRTOS object types */
+#undef TCB_t
+#undef Queue_t
+#undef Timer_t
+#undef PendedFunction_t
+#undef EventGroup_t
 
 #endif /* FREERTOS_EVR_H_ */
