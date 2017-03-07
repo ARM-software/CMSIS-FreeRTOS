@@ -182,6 +182,36 @@ choose to use a different RTOS kernel anytime during development (even only for 
 To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
 <b>CMSIS-RTOS2 FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
 where you want to copy the project to and press OK. µVision opens.
+
+
+\section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on ARM Cortex-A9
+
+This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an ARM
+Cortex-A9 code. This example only works in <a href="http://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
+development environment from ARM. For information on setting up the target connection, please refer to
+<a href="http://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
+
+\note you need to have the i.MX6 device family pack installed to see the example in the \b Examples tab of Pack Installer.
+
+To open the example, open the Pack Installer perspective, select \b NXP in the \b Devices tab, and click on \b Copy next to
+the <b>CMSIS-RTOS2 FreeRTOS Blinky CA9 (MCIMX6SX-SABRE)</b> project on the \b Examples tab.
+
+\image html copy_a9_example.png
+
+Confirm the default location in the Eclipse Workspace by pressing Copy.
+
+\image html copy_a9_example_ws.png
+
+Right-click on the project and select \b Build \b Project. Then, right-click on the project and select \b Debug \b As and
+then \b Debug \b Configurations. The Debug Configurations dialog opens:
+
+\image html dbg_conf.png
+
+The project is already set up for running from the SDRAM of the i.MX6 SABRE board. Press \b Debug. DS-MDK will switch to the
+debug perspective. After a successful connection to the target, press \b F8 to run the application. In the \b App \b Console
+you will see the output of the phases:
+
+\image html dbg_output.png
 */
 
 
