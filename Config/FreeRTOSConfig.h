@@ -83,6 +83,7 @@
  *----------------------------------------------------------*/
 
 #include <stdint.h>
+
 extern uint32_t SystemCoreClock;
 
 #define configCPU_CLOCK_HZ                    (SystemCoreClock)
@@ -150,10 +151,9 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 header file. */
 #define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
 
-/* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
-standard names. */
-#define vPortSVCHandler                       SVC_Handler
+/* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
 #define xPortPendSVHandler                    PendSV_Handler
+#define vPortSVCHandler                       SVC_Handler
 #define xPortSysTickHandler                   SysTick_Handler
 
 /* Include debug event definitions */

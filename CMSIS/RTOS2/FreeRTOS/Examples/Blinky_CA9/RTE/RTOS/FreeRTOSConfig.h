@@ -67,7 +67,6 @@
     1 tab == 4 spaces!
 */
 
-
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
@@ -82,7 +81,6 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
-
 
 #include <stdint.h>
 
@@ -200,10 +198,10 @@ extern uint32_t SystemCoreClock;
 #define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x00000100UL
 #define configUNIQUE_INTERRUPT_PRIORITIES               16
 #define configMAX_API_CALL_INTERRUPT_PRIORITY           16
+
 extern void vSetupTickInterrupt(void);
 extern void vClearTickInterrupt(void);
 #define configSETUP_TICK_INTERRUPT()                    vSetupTickInterrupt()
 #define configCLEAR_TICK_INTERRUPT()                    vClearTickInterrupt()
-#define configMAX_TASK_NAME_LEN                         (10)
 
 #endif /* FREERTOS_CONFIG_H */

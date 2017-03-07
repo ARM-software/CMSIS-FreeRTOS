@@ -67,7 +67,6 @@
     1 tab == 4 spaces!
 */
 
-
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
@@ -82,7 +81,6 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
-
 
 #include <stdint.h>
 
@@ -195,7 +193,7 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_vTaskSuspend                    1
 #define INCLUDE_xTimerPendFunctionCall          1
 
-/* Defines that map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
+/* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
 #define xPortPendSVHandler                    PendSV_Handler
 #define vPortSVCHandler                       SVC_Handler
 
