@@ -84,37 +84,6 @@ void SystemInit (void)
   __FPU_Enable();
 }
 
-/*----------------------------------------------------------------------------
-  FreeRTOS Interrupt related functions
- *----------------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-
-/* FreeRTOS_Tick_Handler() is itself defined in the RTOS port layer.  An extern
-declaration is required to allow the following code to compile. */
-extern void FreeRTOS_Tick_Handler( void );
-
-void vSetupTickInterrupt( void )
-{
-  PTIM_SetLoadValue((SystemCoreClock/configTICK_RATE_HZ)-1U);
-  PTIM_SetControl(PTIM_GetControl()|7U);
-
-  /* Next assume Install_Interrupt() installs the function passed as its second
-  parameter as the handler for the peripheral passed as its first parameter. */
-  InterruptHandlerRegister(PrivTimer_IRQn, FreeRTOS_Tick_Handler);
-
-  // Determine number of implemented priority bits
-  GIC_SetPriority(PrivTimer_IRQn,0xFFU);
-  // Set lowest priority -1
-  GIC_SetPriority(PrivTimer_IRQn,GIC_GetPriority(PrivTimer_IRQn)-1);
-  // Enable IRQ
-  GIC_EnableIRQ(PrivTimer_IRQn);
-}
-
-void vClearTickInterrupt( void )
-{
-  PTIM_ClearEventFlag();
-}
-
 /* The function called by the RTOS port layer after it has managed interrupt
 entry. */
 void vApplicationIRQHandler( uint32_t ulICCIAR )

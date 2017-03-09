@@ -159,6 +159,28 @@ extern uint32_t SystemCoreClock;
 //  <i> Default: 0
 #define configUSE_MALLOC_FAILED_HOOK            0
 
+//  <q>Interrupt controller base address
+//  <i> Must be set to the base address of the ARM Generic Interrupt Controller (GIC).
+//  <i> Default: 0x2C000000
+#define configINTERRUPT_CONTROLLER_BASE_ADDRESS 0x2C000000UL
+
+//  <q>Interrupt controller CPU interface offset
+//  <i> Must be set to the offset from interrupt controller base address at which the CPU interface starts.
+//  <i> Default: 0x1000
+#define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x00000100UL
+
+//  <q>Interrupt controller unique priorities
+//  <i> The number of unique priorities that can be specified in the ARM Generic Interrupt Controller (GIC).
+//  <i> Default: 32
+#define configUNIQUE_INTERRUPT_PRIORITIES       32
+
+//  <q>Maximum API call interrupt priority
+//  <i> Interrupts assigned a priority at or below this priority can call interrupt safe FreeRTOS API function, and will nest.
+//  <i> Interrupts assigned a priority above this priority will not be effected by RTOS critical sections, and will nest,
+//  <i> but cannot call any FreeRTOS API functions.
+//  <i> Default: 32
+#define configMAX_API_CALL_INTERRUPT_PRIORITY   32
+
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
@@ -193,11 +215,11 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_vTaskSuspend                    1
 #define INCLUDE_xTimerPendFunctionCall          1
 
-/* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
-#define xPortPendSVHandler                    PendSV_Handler
-#define vPortSVCHandler                       SVC_Handler
+/* Include kernel tick timer definitions */
+#include "FreeRTOS_Tick_Config.h"
 
-/* Include debug event definitions */
-#include "freertos_evr.h"
+/* Map the FreeRTOS port timer configuration functions to their implementations */
+#define configSETUP_TICK_INTERRUPT()            vConfigureTickInterrupt()
+#define configCLEAR_TICK_INTERRUPT()            vClearTickInterrupt()
 
 #endif /* FREERTOS_CONFIG_H */

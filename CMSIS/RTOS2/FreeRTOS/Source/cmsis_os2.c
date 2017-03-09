@@ -44,7 +44,7 @@
 #endif
 
 #if    (__ARM_ARCH_7A__      == 1U)
-#define IS_IRQ() (__get_mode() == 0x12U)
+#define IS_IRQ()                  (__get_mode() == 0x12U)
 #else
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
 #define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
@@ -90,22 +90,6 @@ static HeapRegion_t xHeapRegions[] = {
   { NULL,   0                     }
 };
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
-
-/*---------------------------------------------------------------------------*/
-
-#if (__ARM_ARCH_7A__ == 0U)
-/* FreeRTOS SysTick handler prototypes */
-extern void SysTick_Handler     (void);
-extern void xPortSysTickHandler (void);
-
-void SysTick_Handler (void) {
-  /* Clear overflow flag */
-  SysTick->CTRL;
-
-  /* Call tick handler */
-  xPortSysTickHandler();
-}
-#endif
 
 /*---------------------------------------------------------------------------*/
 
@@ -312,22 +296,13 @@ uint32_t osKernelGetSysTimerCount (void) {
 
   ticks = xTaskGetTickCount();
 
-#if (__ARM_ARCH_7A__ == 1U)
-#if (__CORTEX_A == 9U)
-  /* Cortex-A9 uses Private Timer */
-  val = PTIM_GetLoadValue() - PTIM_GetCurrentValue();
-  val += ticks * (PTIM_GetLoadValue() + 1U);
-#endif
-#else
-  val = SysTick->LOAD - SysTick->VAL;
+  val = TickTimer_GetPeriod() - TickTimer_GetValue();
 
-  if ((SysTick->CTRL >> 16) & 1U) {
-    /* Overflow */
-    val = SysTick->LOAD - SysTick->VAL;
+  if (TickTimer_GetOverflow() != 0U) {
+    val = TickTimer_GetPeriod() - TickTimer_GetValue();
     ticks++;
   }
-  val += ticks * (SysTick->LOAD + 1U);
-#endif
+  val += ticks * (TickTimer_GetPeriod() + 1U);
 
   portENABLE_INTERRUPTS();
 

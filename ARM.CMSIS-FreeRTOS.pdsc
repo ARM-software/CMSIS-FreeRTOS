@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="9.0.0-RC4">
+    <release version="9.0.0-RC5">
       Added example for Cortex-A9 FVP
     </release>
     <release version="9.0.0-RC3" date="2017-02-15">
@@ -92,6 +92,21 @@
     <condition id="CA9_DP">
       <description>Cortex-A9 processor based device using Floating Point Unit (DP)</description>
       <require Dcore="Cortex-A9" Dfpu="DP_FPU"/>
+    </condition>
+
+    <condition id="CoreM">
+      <description>Cortex-M processor based device</description>
+      <accept condition="CM0"/>
+      <accept condition="CM3"/>
+      <accept condition="CM4"/>
+      <accept condition="CM4_FP"/>
+      <accept condition="CM7"/>
+      <accept condition="CM7_FP"/>
+    </condition>
+
+    <condition id="CoreA">
+      <description>Cortex-A processor based device</description>
+      <accept condition="CA9_DP"/>
     </condition>
 
     <!-- ARMCC compiler -->
@@ -309,7 +324,11 @@
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="9.0.0"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" cond="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" cond="CoreA"/>
+          
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.h" version="9.0.0"/>
+          <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.c" version="9.0.0"/>
         </files>
       </component>
      
@@ -319,7 +338,8 @@
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="Config/FreeRTOSConfig.h" version="9.0.0"/>
+          <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" cond="CoreM"/>
+          <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" cond="CoreA"/>
         </files>
       </component>
      
