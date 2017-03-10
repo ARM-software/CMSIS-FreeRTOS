@@ -19,11 +19,8 @@ multi-core systems, and has a binary compatible interface across ABI compliant c
 
 Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
 CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application
-code to be used with different RTOS kernels (for example <a class="el" href="http://www.keil.com/mdk5/cmsis/rtx">Keil RTX5</a>).
-
-\b Note: FreeRTOS does not support ARM Compiler v6, yet! Please refere to the
-<a target="_blank" href="http://www.freertos.org/FreeRTOS_Support_Forum_Archive/May_2016/freertos_Anyone_Working_on_a_Port_to_Keil_ARM_Compiler_6.4_ARMCLANG_9deb244ej.html">
-FreeRTOS Support Archive.</a>
+code to be used with different RTOS kernels (for example
+<a class="el" href="http://www.keil.com/mdk5/cmsis/rtx">Keil RTX5</a>).
 
 This documentation shows you:
 - how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
@@ -271,7 +268,6 @@ This lists the technical data of CMSIS-FreeRTOS.
 \section td_limitations Limitations
 
 The following list briefly describes the limitations and unsupported features of the CMSIS-RTOS2 wrapper for FreeRTOS:
-- ARM Compiler v6 is not supported by FreeRTOS, yet.
 - Static memory allocation will only work if \a all memory (from attributes structure) is provided statically. In order to
   allocate object memory statically, you need to:
   - provide the memory for control blocks and stack in the \c osThreadAttr_t structure for threads.

@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.1-dev4">
+      Added support for ARM Compiler 6
+    </release>
     <release version="9.0.1-dev3">
       Updated Cortex-A example to use IRQ Controller component
       Corrected stack size allocation in RTOS2 osThreadNew function
@@ -35,8 +38,12 @@
   </requirements>
   
   <conditions>
+    <condition id="ARMCC6">
+	  <accept Tcompiler="ARMCC" Toptions="AC6"/>
+	  <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
+    </condition>
     <condition id="ARMCC">
-      <require Tcompiler="ARMCC"/>
+      <require Tcompiler="ARMCC" Toptions="AC5"/>
     </condition>
     <condition id="GCC">
       <require Tcompiler="GCC"/>
@@ -120,97 +127,143 @@
 
     <!-- ARMCC compiler -->
     <condition id="CM0_ARMCC">
-      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler</description>
+      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 5</description>
       <require condition="CM0"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM3_ARMCC">
-      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler</description>
+      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 5</description>
       <require condition="CM3"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM4_ARMCC">
-      <description>Cortex-M4 processor based device for the ARM Compiler</description>
+      <description>Cortex-M4 processor based device for the ARM Compiler 5</description>
       <require condition="CM4"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM4_FP_ARMCC">
-      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler</description>
+      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler 5</description>
       <require condition="CM4_FP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM7_ARMCC">
-      <description>Cortex-M7 processor based device for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device for the ARM Compiler 5</description>
       <require condition="CM7"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM7_SP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler 5</description>
       <require condition="CM7_SP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM7_DP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler 5</description>
       <require condition="CM7_DP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CA9_DP_ARMCC">
-      <description>Cortex-A9 processor based device for the ARM Compiler</description>
+      <description>Cortex-A9 processor based device for the ARM Compiler 5</description>
       <require condition="CA9_DP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
+	<!-- ARMCC6 compiler -->
+    <condition id="CM0_ARMCC6">
+      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
+      <require condition="CM0"/>
+      <require condition="ARMCC6"/>
+    </condition>
+	
+    <condition id="CM3_ARMCC6">
+      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 6</description>
+      <require condition="CM3"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CM4_ARMCC6">
+      <description>Cortex-M4 processor based device for the ARM Compiler 6</description>
+      <require condition="CM4"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM4_FP_ARMCC6">
+      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler 6</description>
+      <require condition="CM4_FP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CM7_ARMCC6">
+      <description>Cortex-M7 processor based device for the ARM Compiler 6</description>
+      <require condition="CM7"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM7_SP_ARMCC6">
+      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler 6</description>
+      <require condition="CM7_SP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM7_DP_ARMCC6">
+      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler 6</description>
+      <require condition="CM7_DP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CA9_DP_ARMCC6">
+      <description>Cortex-A9 processor based device for the ARM Compiler 6</description>
+      <require condition="CA9_DP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+	
     <!-- GCC compiler -->
     <condition id="CM0_GCC">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the GCC Compiler</description>
       <require condition="CM0"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM3_GCC">
       <description>Cortex-M3 or SC300 processor based device for the GCC Compiler</description>
       <require condition="CM3"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM4_GCC">
       <description>Cortex-M4 processor based device for the GCC Compiler</description>
       <require condition="CM4"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM4_FP_GCC">
       <description>Cortex-M4 processor based device using Floating Point Unit for the GCC Compiler</description>
       <require condition="CM4_FP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_GCC">
       <description>Cortex-M7 processor based device for the GCC Compiler</description>
       <require condition="CM7"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_SP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the GCC Compiler</description>
       <require condition="CM7_SP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_DP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the GCC Compiler</description>
       <require condition="CM7_DP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CA9_DP_GCC">
       <description>Cortex-A9 processor based device for the GCC Compiler</description>
       <require condition="CA9_DP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CMSIS RTOS2 FreeRTOS">
@@ -336,6 +389,25 @@
           <file category="source"    condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/port.c"/>
           <file category="sourceAsm" condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
   
+          <!-- Cortex-M0 Port of latest FreeRTOS 9.0.0 is broken for ARM Compiler 6 -->
+          <!-- file category="include"   condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/port.c"/ -->
+          <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4F/"/>
+          <file category="source"    condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4F/port.c"/>
+          <file category="include"   condition="CM7_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM7_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM7_DP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_DP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+		  
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
           <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
