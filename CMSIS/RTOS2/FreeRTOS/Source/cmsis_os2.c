@@ -100,11 +100,15 @@ osStatus_t osKernelInitialize (void) {
     stat = osErrorISR;
   }
   else {
-    #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
-      vPortDefineHeapRegions (xHeapRegions);
-    #endif
-    KernelState = osKernelReady;
-    stat = osOK;
+    if (KernelState == osKernelInactive) {
+      #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
+        vPortDefineHeapRegions (xHeapRegions);
+      #endif
+      KernelState = osKernelReady;
+      stat = osOK;
+    } else {
+      stat = osError;
+    }
   }
 
   return (stat);
@@ -170,9 +174,13 @@ osStatus_t osKernelStart (void) {
     stat = osErrorISR;
   }
   else {
-    KernelState = osKernelRunning;
-    vTaskStartScheduler();
-    stat = osOK;
+    if (KernelState == osKernelReady) {
+      KernelState = osKernelRunning;
+      vTaskStartScheduler();
+      stat = osOK;
+    } else {
+      stat = osError;
+    }
   }
 
   return (stat);
@@ -214,10 +222,12 @@ int32_t osKernelUnlock (void) {
   else {
     switch (xTaskGetSchedulerState()) {
       case taskSCHEDULER_SUSPENDED:
-        if (xTaskResumeAll() == pdTRUE) {
-          lock = 1;
-        } else {
-          lock = (int32_t)osError;
+        lock = 1;
+
+        if (xTaskResumeAll() != pdTRUE) {
+          if (xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED) {
+            lock = (int32_t)osError;
+          }
         }
         break;
 
@@ -248,8 +258,13 @@ int32_t osKernelRestoreLock (int32_t lock) {
           vTaskSuspendAll();
         }
         else {
-          if ((lock != 0) || (xTaskResumeAll() != pdTRUE)) {
+          if (lock != 0) {
             lock = (int32_t)osError;
+          }
+          else if (xTaskResumeAll() != pdTRUE) {
+            if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
+              lock = (int32_t)osError;
+            }
           }
         }
         break;
