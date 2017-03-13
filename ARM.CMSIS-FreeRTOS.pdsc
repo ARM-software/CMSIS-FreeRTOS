@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.1-dev0">
+      Debug event TaskIncrementTick level set to Detail
+    </release>
     <release version="9.0.0" date="2017-03-13">
       Initial release version:
       - native FreeRTOS component (RTOS: Variant=FreeRTOS)

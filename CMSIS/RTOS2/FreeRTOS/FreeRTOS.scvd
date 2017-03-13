@@ -500,32 +500,32 @@
       <component name="Heap Events"        brief="FreeRTOS Heap"        no="0xF4" prefix="EvrFreeRTOSHeap_"        info="FreeRTOS Heap Events"/>
     </group>
 
-    <event id="0xF000 + 0x00" level="Op"    property="TaskCreate"                value="pxNewTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x01" level="Error" property="TaskCreateFailed"          value="" info=""/>
-    <event id="0xF000 + 0x02" level="Op"    property="TaskDelete"                value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x03" level="Op"    property="TaskDelayUntil"            value="xTimeToWake=%d[val1]" info=""/>
-    <event id="0xF000 + 0x04" level="Op"    property="TaskDelay"                 value="xTicksToDelay=%d[val1]" info=""/>
-    <event id="0xF000 + 0x05" level="Op"    property="TaskPrioritySet"           value="pxTCB=%x[val1], uxNewPriority=%d[val2]" info=""/>
-    <event id="0xF000 + 0x06" level="Op"    property="TaskSuspend"               value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x07" level="Op"    property="TaskResume"                value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x08" level="Op"    property="TaskResumeFromIsr"         value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x09" level="Op"    property="TaskIncrementTick"         value="xTickCount=%d[val1]" info=""/>
-    <event id="0xF000 + 0x0A" level="Op"    property="IncreaseTickCount"         value="xTicksToJump=%d[val1]" info=""/>
-    <event id="0xF000 + 0x0B" level="Op"    property="TaskSwitchedOut"           value="pxCurrentTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x0C" level="Op"    property="TaskSwitchedIn"            value="pxCurrentTCB=%x[val1], priority=%d[val2]" info=""/>
-    <event id="0xF000 + 0x0D" level="Op"    property="TaskPriorityInherit"       value="pxTCBOfMutexHolder=%x[val1], uxInheritedPriority=%d[val2]" info=""/>
-    <event id="0xF000 + 0x0E" level="Op"    property="TaskPriorityDisinherit"    value="pxTCBOfMutexHolder=%x[val1], uxOriginalPriority=%d[val2]" info=""/>
-    <event id="0xF000 + 0x0F" level="Op"    property="MovedTaskToReadyState"     value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x10" level="Op"    property="PostMovedTaskToReadyState" value="pxTCB=%x[val1]" info=""/>
-    <event id="0xF000 + 0x11" level="Op"    property="LowPowerIdleBegin"         value="xExpectedIdleTime=%d[val1]" info=""/>
-    <event id="0xF000 + 0x12" level="Op"    property="LowPowerIdleEnd"           value="" info=""/>
-    <event id="0xF000 + 0x13" level="Op"    property="TaskNotifyTakeBlock"       value="xTicksToWait=%d[val1]" info=""/>
-    <event id="0xF000 + 0x14" level="Op"    property="TaskNotifyTake"            value="ulNotifiedValue=%x[val1]" info=""/>
-    <event id="0xF000 + 0x15" level="Op"    property="TaskNotifyWaitBlock"       value="xTicksToWait=%d[val1]" info=""/>
-    <event id="0xF000 + 0x16" level="Op"    property="TaskNotifyWait"            value="ulNotifiedValue=%x[val1]" info=""/>
-    <event id="0xF000 + 0x17" level="Op"    property="TaskNotify"                value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
-    <event id="0xF000 + 0x18" level="Op"    property="TaskNotifyFromIsr"         value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
-    <event id="0xF000 + 0x19" level="Op"    property="TaskNotifyGiveFromIsr"     value="xTaskToNotify=%x[val1], ulNotifiedValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0x00" level="Op"     property="TaskCreate"                value="pxNewTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x01" level="Error"  property="TaskCreateFailed"          value="" info=""/>
+    <event id="0xF000 + 0x02" level="Op"     property="TaskDelete"                value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x03" level="Op"     property="TaskDelayUntil"            value="xTimeToWake=%d[val1]" info=""/>
+    <event id="0xF000 + 0x04" level="Op"     property="TaskDelay"                 value="xTicksToDelay=%d[val1]" info=""/>
+    <event id="0xF000 + 0x05" level="Op"     property="TaskPrioritySet"           value="pxTCB=%x[val1], uxNewPriority=%d[val2]" info=""/>
+    <event id="0xF000 + 0x06" level="Op"     property="TaskSuspend"               value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x07" level="Op"     property="TaskResume"                value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x08" level="Op"     property="TaskResumeFromIsr"         value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x09" level="Detail" property="TaskIncrementTick"         value="xTickCount=%d[val1]" info=""/>
+    <event id="0xF000 + 0x0A" level="Op"     property="IncreaseTickCount"         value="xTicksToJump=%d[val1]" info=""/>
+    <event id="0xF000 + 0x0B" level="Op"     property="TaskSwitchedOut"           value="pxCurrentTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x0C" level="Op"     property="TaskSwitchedIn"            value="pxCurrentTCB=%x[val1], priority=%d[val2]" info=""/>
+    <event id="0xF000 + 0x0D" level="Op"     property="TaskPriorityInherit"       value="pxTCBOfMutexHolder=%x[val1], uxInheritedPriority=%d[val2]" info=""/>
+    <event id="0xF000 + 0x0E" level="Op"     property="TaskPriorityDisinherit"    value="pxTCBOfMutexHolder=%x[val1], uxOriginalPriority=%d[val2]" info=""/>
+    <event id="0xF000 + 0x0F" level="Op"     property="MovedTaskToReadyState"     value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x10" level="Op"     property="PostMovedTaskToReadyState" value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x11" level="Op"     property="LowPowerIdleBegin"         value="xExpectedIdleTime=%d[val1]" info=""/>
+    <event id="0xF000 + 0x12" level="Op"     property="LowPowerIdleEnd"           value="" info=""/>
+    <event id="0xF000 + 0x13" level="Op"     property="TaskNotifyTakeBlock"       value="xTicksToWait=%d[val1]" info=""/>
+    <event id="0xF000 + 0x14" level="Op"     property="TaskNotifyTake"            value="ulNotifiedValue=%x[val1]" info=""/>
+    <event id="0xF000 + 0x15" level="Op"     property="TaskNotifyWaitBlock"       value="xTicksToWait=%d[val1]" info=""/>
+    <event id="0xF000 + 0x16" level="Op"     property="TaskNotifyWait"            value="ulNotifiedValue=%x[val1]" info=""/>
+    <event id="0xF000 + 0x17" level="Op"     property="TaskNotify"                value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
+    <event id="0xF000 + 0x18" level="Op"     property="TaskNotifyFromIsr"         value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
+    <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"     value="xTaskToNotify=%x[val1], ulNotifiedValue=%x[val2]" info=""/>
 
     <event id="0xF100 + 0x00" level="Op"    property="QueueCreate"                   value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x01" level="Error" property="QueueCreateFailed"             value="ucQueueType=%x[val1]" info=""/>
