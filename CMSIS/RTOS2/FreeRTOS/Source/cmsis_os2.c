@@ -23,7 +23,6 @@
 #include <string.h>
 
 #include "RTE_Components.h"             // Component selection
-#include CMSIS_device_header
 
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "cmsis_compiler.h"
@@ -34,13 +33,30 @@
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 
 /*---------------------------------------------------------------------------*/
+#ifndef __ARM_ARCH_6M__
+  #define __ARM_ARCH_6M__         0
+#endif
+#ifndef __ARM_ARCH_7M__
+  #define __ARM_ARCH_7M__         0
+#endif
+#ifndef __ARM_ARCH_7EM__
+  #define __ARM_ARCH_7EM__        0
+#endif
+#ifndef __ARM_ARCH_8M_MAIN__
+  #define __ARM_ARCH_8M_MAIN__    0
+#endif
+#ifndef __ARM_ARCH_7A__
+  #define __ARM_ARCH_7A__         0
+#endif
 
 #if   ((__ARM_ARCH_7M__      == 1U) || \
        (__ARM_ARCH_7EM__     == 1U) || \
        (__ARM_ARCH_8M_MAIN__ == 1U))
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
+#elif  (__ARM_ARCH_6M__      == 1U)
+#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
 #else
-#define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
+#define IS_IRQ_MASKED()            (__get_PRIMASK() != 0U)
 #endif
 
 #if    (__ARM_ARCH_7A__      == 1U)
@@ -261,9 +277,11 @@ int32_t osKernelRestoreLock (int32_t lock) {
           if (lock != 0) {
             lock = (int32_t)osError;
           }
-          else if (xTaskResumeAll() != pdTRUE) {
-            if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
-              lock = (int32_t)osError;
+          else {
+            if (xTaskResumeAll() != pdTRUE) {
+              if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
+                lock = (int32_t)osError;
+              }
             }
           }
         }
@@ -283,7 +301,7 @@ uint64_t osKernelGetTickCount (void) {
   TickType_t ticks;
 
   if (IS_IRQ()) {
-    ticks = xTaskGetTickCountFromISR();
+    ticks = 0U;
   } else {
     ticks = xTaskGetTickCount();
   }
@@ -384,7 +402,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     }
     else {
       if (mem == 0) {
-        if (xTaskCreate ((TaskFunction_t)func, name, stack, argument, prio, &h) != pdPASS) {
+        if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &h) != pdPASS) {
           h = NULL;
         }
       }
@@ -897,7 +915,7 @@ uint32_t osTimerIsRunning (osTimerId_t timer_id) {
   if (IS_IRQ() || (timer_id == NULL)) {
     running = 0U;
   } else {
-    running = xTimerIsTimerActive ((TimerHandle_t)timer_id);
+    running = (uint32_t)xTimerIsTimerActive ((TimerHandle_t)timer_id);
   }
 
   return (running);
