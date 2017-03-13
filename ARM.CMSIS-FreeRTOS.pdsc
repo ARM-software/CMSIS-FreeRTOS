@@ -8,14 +8,10 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="9.0.0-RC5">
-      Added example for Cortex-A9 FVP
-    </release>
-    <release version="9.0.0-RC3" date="2017-02-15">
-      Added native example and condition to Device:Startup
-    </release>
-    <release version="9.0.0-RC2">
-      Initial release
+    <release version="9.0.0" date="2017-03-13">
+      Initial release version:
+      - native FreeRTOS component (RTOS: Variant=FreeRTOS)
+      - CMSIS-RTOS FreeRTOS for Cortex-M and Cortex-A9 (CMSIS:RTOS:FreeRTOS, CMSIS:RTOS2:FreeRTOS)
     </release>
   </releases>
 
@@ -324,8 +320,8 @@
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" cond="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" cond="CoreA"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
           
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.h" version="9.0.0"/>
           <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.c" version="9.0.0"/>
@@ -338,8 +334,8 @@
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" cond="CoreM"/>
-          <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" cond="CoreA"/>
+          <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
+          <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
         </files>
       </component>
      
