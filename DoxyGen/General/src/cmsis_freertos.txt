@@ -91,21 +91,25 @@ The steps to create a microcontroller application using FreeRTOS are:
   \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
 
   \image html project_window_freertos_native.png
-  
-\todo Do we add user code templates for the native FreeRTOS implementation?
 
-  - You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting
-  <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side
-  you will see all available template files for CMSIS-RTOS RTX:
   
-  
-\todo Do we offer an SCVD file for the native FreeRTOS implementation?
-
 \subsection native_freertos_er Add Event Recorder Visibility
-- To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.
-- Select the \b Source variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.
-- Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in \c main()).
-- Build the application code and download it to the debug hardware.
+- To use the Event Recorder together with FreeRTOS, add the software components <b>\::Compiler:Event Recorder</b> and
+  <b>\::RTOS:Event Groups</b> to your project.
+- Add this include: \c \#include \c "EventRecorder.h"
+- Call <b>EventRecorderInitialize(EventRecordAll, 1);</b> in your application code (ideally in \c main()).
+- If you are using simulation mode, add an initialization file with the following content:
+  \code
+  MAP 0xE0001000, 0xE0001007 READ WRITE 
+  signal void DWT_CYCCNT (void) {
+  while (1) {
+    rwatch(0xE0001004);
+    _WWORD(0xE0001004, states);
+    }
+  }
+  DWT_CYCCNT()
+  \endcode
+- Build the application code and download it to the debug hardware or run it in simulation.
   
 Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
  \b Recorder.
@@ -117,7 +121,7 @@ The steps to create a microcontroller application using CMSIS-FreeRTOS are:
 - Create a new project and select a microcontroller device.
 - In the Manage Run-Time Environment window, select <b>\::Device:Startup</b>, <b>\::CMSIS::RTOS2 (API)\::FreeRTOS</b>,
   <b>\::RTOS:CORE</b> in the \b FreeRTOS variant, <b>\::RTOS:Config</b> in the \b CMSIS \b RTOS2 variant,
-  <b>\::RTOS:FreeRTOS:Timers</b>, <b>\::RTOS:FreeRTOS:Event Groups</b>, and an applicable <b>\::RTOS:Heap</b>
+  <b>\::RTOS:Timers</b>, <b>\::RTOS:Event Groups</b>, and an applicable <b>\::RTOS:Heap</b>
   scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
   
   \image html manage_rte_freertos_rtos2.png
@@ -129,20 +133,24 @@ The steps to create a microcontroller application using CMSIS-FreeRTOS are:
 
   \image html project_window_freertos_rtos2.png
   
-\todo Do we add user code templates for the RTOS2 FreeRTOS implementation?\
-
-- You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting
-  <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side
-  you will see all available template files for CMSIS-RTOS RTX:
-  
-  
-\todo Do we offer an SCVD file for the RTOS2 FreeRTOS implementation?
 
 \subsection cmsis_freertos_er Add Event Recorder Visibility
-- To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.
-- Select the \b Source variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.
-- Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in \c main()).
-- Build the application code and download it to the debug hardware.
+- To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your
+  project.
+- Add this include: \c \#include \c "EventRecorder.h"
+- Call <b>EventRecorderInitialize(EventRecordAll, 1);</b> in your application code (ideally in \c main()).
+- If you are using simulation mode, add an initialization file with the following content:
+  \code
+  MAP 0xE0001000, 0xE0001007 READ WRITE 
+  signal void DWT_CYCCNT (void) {
+  while (1) {
+    rwatch(0xE0001004);
+    _WWORD(0xE0001004, states);
+    }
+  }
+  DWT_CYCCNT()
+  \endcode
+- Build the application code and download it to the debug hardware or run it in simulation.
   
 Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
  \b Recorder.
