@@ -25,6 +25,10 @@
 #include "RTE_Components.h"             // Component selection
 #include CMSIS_device_header
 
+#ifdef RTE_Compiler_EventRecorder
+#include "EventRecorder.h"
+#endif
+
 #include "FreeRTOS.h"                   // Keil::RTOS:FreeRTOS:Core
 #include "task.h"                       // Keil::RTOS:FreeRTOS:Core
 
@@ -131,6 +135,11 @@ void app_main (void *argument) {
 
 int main (void) {
   SystemCoreClockUpdate();
+
+#ifdef RTE_Compiler_EventRecorder
+  // Initialize and start Event Recorder
+  EventRecorderInitialize(EventRecordAll, 1U);
+#endif
 
   xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
 
