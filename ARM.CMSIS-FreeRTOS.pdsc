@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.1-dev1">
+      Added documentation for configuration options (native/CMSIS-RTOS2)
+    </release>
     <release version="9.0.1-dev0">
       Debug event TaskIncrementTick level set to Detail
     </release>
@@ -323,6 +326,7 @@
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
+          <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
           
@@ -337,6 +341,7 @@
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
+          <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#native_freertos_config"/>
           <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
           <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
         </files>
