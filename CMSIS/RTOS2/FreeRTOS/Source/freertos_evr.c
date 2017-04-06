@@ -66,6 +66,8 @@
 #define EvtFreeRTOSTasks_TaskNotify                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x17U)
 #define EvtFreeRTOSTasks_TaskNotifyFromIsr                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x18U)
 #define EvtFreeRTOSTasks_TaskNotifyGiveFromIsr            EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x19U)
+#define EvtFreeRTOSTasks_TaskNew                          EventID(EventLevelAPI,    EvtFreeRTOSTasksNo, 0x30U)
+#define EvtFreeRTOSTasks_TaskNew_Detail                   EventID(EventLevelDetail, EvtFreeRTOSTasksNo, 0x31U)
 
 /* Event IDs for "FreeRTOS Queue" */
 #define EvtFreeRTOSQueue_QueueCreate                      EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x00U)
@@ -93,6 +95,8 @@
 #define EvtFreeRTOSQueue_QueueRegistryAdd                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x16U)
 #define EvtFreeRTOSQueue_BlockingOnQueueReceive           EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x17U)
 #define EvtFreeRTOSQueue_BlockingOnQueueSend              EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x18U)
+#define EvtFreeRTOSQueue_QueueNew                         EventID(EventLevelAPI,    EvtFreeRTOSQueueNo, 0x30U)
+#define EvtFreeRTOSQueue_QueueNew_Detail                  EventID(EventLevelDetail, EvtFreeRTOSQueueNo, 0x31U)
 
 /* Event IDs for "FreeRTOS Timers" */
 #define EvtFreeRTOSTimers_TimerCreate                     EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x00U)
@@ -102,6 +106,8 @@
 #define EvtFreeRTOSTimers_TimerExpired                    EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x04U)
 #define EvtFreeRTOSTimers_PendFuncCall                    EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x05U)
 #define EvtFreeRTOSTimers_PendFuncCallFromIsr             EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x06U)
+#define EvtFreeRTOSTimers_TimerNew                        EventID(EventLevelAPI,    EvtFreeRTOSTimersNo, 0x30U)
+#define EvtFreeRTOSTimers_TimerNew_Detail                 EventID(EventLevelDetail, EvtFreeRTOSTimersNo, 0x31U)
 
 /* Event IDs for "FreeRTOS EventGroups" */
 #define EvtFreeRTOSEventGroups_EventGroupCreate           EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x00U)
@@ -115,6 +121,8 @@
 #define EvtFreeRTOSEventGroups_EventGroupSetBits          EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x08U)
 #define EvtFreeRTOSEventGroups_EventGroupSetBitsFromIsr   EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x09U)
 #define EvtFreeRTOSEventGroups_EventGroupDelete           EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x0AU)
+#define EvtFreeRTOSEventGroups_EventGroupNew              EventID(EventLevelAPI,    EvtFreeRTOSEventGroupsNo, 0x30U)
+#define EvtFreeRTOSEventGroups_EventGroupNew_Detail       EventID(EventLevelDetail, EvtFreeRTOSEventGroupsNo, 0x31U)
 
 /* Event IDs for "FreeRTOS Heap" */
 #define EvtFreeRTOSHeap_Malloc                            EventID(EventLevelOp,     EvtFreeRTOSHeapNo, 0x00U)
@@ -124,6 +132,21 @@
 
 
 /* Tasks */
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NEW_DISABLE))
+void EvrFreeRTOSTasks_TaskNew (osThreadFunc_t func, void *argument, const osThreadAttr_t *attr) {
+#if defined(RTE_Compiler_EventRecorder)
+	EventRecord4(EvtFreeRTOSTasks_TaskNew, (uint32_t)func, (uint32_t)argument, (uint32_t)attr, 0U);
+	if (attr != NULL) {
+		EventRecordData(EvtFreeRTOSTasks_TaskNew_Detail, attr, sizeof(osThreadAttr_t));
+	}
+#else
+	(void)func;
+	(void)argument;
+	(void)attr;
+#endif
+}
+#endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_CREATE_DISABLE))
 void EvrFreeRTOSTasks_TaskCreate (/*TCB_t*/void *pxNewTCB) {
@@ -395,6 +418,21 @@ void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint3
 
 /* Queue */
 
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_NEW_DISABLE))
+void EvrFreeRTOSQueue_QueueNew (uint32_t msg_count, uint32_t msg_size, const osMessageQueueAttr_t *attr) {
+#if defined(RTE_Compiler_EventRecorder)
+	EventRecord4(EvtFreeRTOSQueue_QueueNew, msg_count, msg_size, (uint32_t)attr, 0U);
+	if (attr != NULL) {
+		EventRecordData(EvtFreeRTOSQueue_QueueNew_Detail, attr, sizeof(osMemoryPoolAttr_t));
+	}
+#else
+	(void)msg_count;
+	(void)msg_size;
+	(void)attr;
+#endif
+}
+#endif
+
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_CREATE_DISABLE))
 void EvrFreeRTOSQueue_QueueCreate (/*Queue_t*/void *pxQueue) {
 #if defined(RTE_Compiler_EventRecorder)
@@ -645,6 +683,22 @@ void EvrFreeRTOSQueue_BlockingOnQueueSend (/*Queue_t*/void *pxQueue) {
 
 /* Timers */
 
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_NEW_DISABLE))
+void EvrFreeRTOSTimers_TimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, const osTimerAttr_t *attr) {
+#if defined(RTE_Compiler_EventRecorder)
+	EventRecord4(EvtFreeRTOSTimers_TimerNew, (uint32_t)func, (uint32_t)type, (uint32_t)argument, (uint32_t)attr);
+	if (attr != NULL) {
+		EventRecordData(EvtFreeRTOSTimers_TimerNew_Detail, attr, sizeof(osTimerAttr_t));
+	}
+#else
+	(void)func;
+	(void)type;
+	(void)argument;
+	(void)attr;
+#endif
+}
+#endif
+
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_CREATE_DISABLE))
 void EvrFreeRTOSTimers_TimerCreate (/*Timer_t*/void *pxNewTimer) {
 #if defined(RTE_Compiler_EventRecorder)
@@ -726,6 +780,19 @@ void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *pxFunction
 
 
 /* Event Groups */
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CREATE_DISABLE))
+void EvrFreeRTOSEventGroups_EventGroupNew (const osEventFlagsAttr_t *attr) {
+#if defined(RTE_Compiler_EventRecorder)
+	EventRecord2(EvtFreeRTOSEventGroups_EventGroupNew, (uint32_t)attr, 0U);
+	if (attr != NULL) {
+		EventRecordData(EvtFreeRTOSEventGroups_EventGroupNew_Detail, attr, sizeof(osEventFlagsAttr_t));
+	}
+#else
+	(void)attr;
+#endif
+}
+#endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CREATE_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupCreate (/*EventGroup_t*/void *pxEventGroup) {

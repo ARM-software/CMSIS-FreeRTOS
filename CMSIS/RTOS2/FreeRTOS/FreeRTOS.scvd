@@ -155,6 +155,43 @@
       <var name="Name" type="uint8_t" info="Timer name string" size="64"/>
     </typedef>
 
+    <typedef name="osThreadAttr_t" info="" size="36">
+      <member name="name"       type="uint32_t" offset="0"  info="name of the thread (type is const char *)"/>
+      <member name="attr_bits"  type="uint32_t" offset="4"  info="attribute bits"/>
+      <member name="cb_mem"     type="uint32_t" offset="8"  info="memory for control block (type is void *)"/>
+      <member name="cb_size"    type="uint32_t" offset="12" info="size of provided memory for control block"/>
+      <member name="stack_mem"  type="uint32_t" offset="16" info="memory for stack (type is void *)"/>
+      <member name="stack_size" type="uint32_t" offset="20" info="size of stack"/>
+      <member name="priority"   type="uint32_t" offset="24" info="initial thread priority (type is osPriority_t)"/>
+      <member name="tz_module"  type="uint32_t" offset="28" info="TrustZone module identifier (type is TZ_ModuleId_t)"/>
+      <member name="reserved"   type="uint32_t" offset="32" info="reserved (must be 0)"/>
+    </typedef>
+
+    <!-- Attributes structure for timer -->
+    <typedef name="osTimerAttr_t" info="" size="16">
+      <member name="name"      type="uint32_t" offset="0"  info="name of the timer (type is const char *)"/>
+      <member name="attr_bits" type="uint32_t" offset="4"  info="attribute bits"/>
+      <member name="cb_mem"    type="uint32_t" offset="8"  info="memory for control block (type is void *)"/>
+      <member name="cb_size"   type="uint32_t" offset="12" info="size of provided memory for control block"/>
+    </typedef>
+
+    <!-- Attributes structure for event flags -->
+    <typedef name="osEventFlagsAttr_t" info="" size="16">
+      <member name="name"      type="uint32_t" offset="0"  info="name of the event flags (type is const char *)"/>
+      <member name="attr_bits" type="uint32_t" offset="4"  info="attribute bits"/>
+      <member name="cb_mem"    type="uint32_t" offset="8"  info="memory for control block (type is void *)"/>
+      <member name="cb_size"   type="uint32_t" offset="12" info="size of provided memory for control block"/>
+    </typedef>
+    
+    <!-- Attributes structure for message queue -->
+    <typedef name="osMessageQueueAttr_t" info="" size="24">
+      <member name="name"      type="uint32_t" offset="0"  info="name of the semaphore (type is const char *)"/>
+      <member name="attr_bits" type="uint32_t" offset="4"  info="attribute bits"/>
+      <member name="cb_mem"    type="uint32_t" offset="8"  info="memory for control block (type is void *)"/>
+      <member name="cb_size"   type="uint32_t" offset="12" info="size of provided memory for control block"/>
+      <member name="mq_mem"    type="uint32_t" offset="16" info="memory for data storage (type is void *)"/>
+      <member name="mq_size"   type="uint32_t" offset="20" info="size of provided memory for data storage"/>
+    </typedef>
   </typedefs>
 
   <objects>
@@ -526,6 +563,8 @@
     <event id="0xF000 + 0x17" level="Op"     property="TaskNotify"                value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
     <event id="0xF000 + 0x18" level="Op"     property="TaskNotifyFromIsr"         value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
     <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"     value="xTaskToNotify=%x[val1], ulNotifiedValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0x30" level="API"    property="TaskNew"                   value="func=%S[val1], argument=%x[val2], attr=%x[val3]" info=""/>
+    <event id="0xF000 + 0x31" level="Detail" property="TaskNew"                   value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size], stack_mem=%x[val1.stack_mem], stack_size=%d[val1.stack_size], priority=%E[val7, rtx_th_priority:id]" val1="osThreadAttr_t" info=""/>
 
     <event id="0xF100 + 0x00" level="Op"    property="QueueCreate"                   value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x01" level="Error" property="QueueCreateFailed"             value="ucQueueType=%x[val1]" info=""/>
@@ -552,6 +591,8 @@
     <event id="0xF100 + 0x16" level="Op"    property="QueueRegistryAdd"              value="pxQueue=%x[val1], pcQueueName=%x[val2]" info=""/>
     <event id="0xF100 + 0x17" level="Op"    property="BlockingOnQueueReceive"        value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x18" level="Op"    property="BlockingOnQueueSend"           value="pxQueue=%x[val1]" info=""/>
+    <event id="0xF100 + 0x30" level="API"   property="QueueNew"                      value="msg_count=%d[val1], msg_size=%d[val2], attr=%x[val3]" info=""/>
+    <event id="0xF100 + 0x31" level="Detail" property="QueueNew"                     value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size], mq_mem=%x[val1.mq_mem], mq_size=%d[val1.mq_size]" val1="osMessageQueueAttr_t" info=""/>
 
     <event id="0xF200 + 0x00" level="Op"    property="TimerCreate"          value="pxNewTimer=%x[val1]" info=""/>
     <event id="0xF200 + 0x01" level="Error" property="TimerCreateFailed"    value="" info=""/>
@@ -560,6 +601,8 @@
     <event id="0xF200 + 0x04" level="Op"    property="TimerExpired"         value="pxTimer=%x[val1]" info=""/>
     <event id="0xF200 + 0x05" level="Op"    property="PendFuncCall"         value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
     <event id="0xF200 + 0x06" level="Op"    property="PendFuncCallFromIsr"  value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
+    <event id="0xF200 + 0x30" level="API"   property="TimerNew"             value="func=%S[val1], type=%E[val2, osRtxTimer_t:type], argument=%x[val3], attr=%x[val4]" info=""/>
+    <event id="0xF200 + 0x31" level="Detail" property="TimerNew"            value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size]" val1="osTimerAttr_t" info=""/>
 
     <event id="0xF300 + 0x00" level="Op"    property="EventGroupCreate"           value="pxEventGroup=%x[val1]" info=""/>
     <event id="0xF300 + 0x01" level="Error" property="EventGroupCreateFailed"     value="" info=""/>
@@ -572,6 +615,8 @@
     <event id="0xF300 + 0x08" level="Op"    property="EventGroupSetBits"          value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
     <event id="0xF300 + 0x09" level="Op"    property="EventGroupSetBitsFromIsr"   value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
     <event id="0xF300 + 0x0A" level="Op"    property="EventGroupDelete"           value="pxEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x30" level="API"   property="EventGroupNew"              value="attr=%x[val1]" info=""/>
+    <event id="0xF300 + 0x31" level="Detail" property="EventGroupNew"             value="name=%x[val1.name], attr_bits=%x[val1.attr_bits], cb_mem=%x[val1.cb_mem], cb_size=%d[val1.cb_size]" val1="osEventFlagsAttr_t" info=""/>
 
     <event id="0xF400 + 0x00" level="Op"    property="Malloc" value="pvAddress=%x[val1], uiSize=%d[val2]" info=""/>
     <event id="0xF400 + 0x01" level="Op"    property="Free"   value="pvAddress=%x[val1], uiSize=%d[val2]" info=""/>

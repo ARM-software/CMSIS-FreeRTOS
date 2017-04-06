@@ -27,6 +27,7 @@
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "cmsis_compiler.h"
 
+#include "freertos_evr.h"
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
@@ -357,6 +358,8 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
   int32_t mem;
 
   h = NULL;
+
+  EvrFreeRTOSTasks_TaskNew(func, argument, attr);
 
   if (!IS_IRQ() && (func != NULL)) {
     stack = configMINIMAL_STACK_SIZE;
@@ -803,6 +806,8 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
 
   h = NULL;
 
+  EvrFreeRTOSTimers_TimerNew(func, type, argument, attr);
+
   if (!IS_IRQ() && (func != NULL)) {
     /* Allocate memory to store callback function and argument */
     callb = pvPortMalloc (sizeof(TimerCallback_t));
@@ -956,6 +961,8 @@ osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
   int32_t mem;
 
   h = NULL;
+
+  EvrFreeRTOSEventGroups_EventGroupNew(attr);
 
   if (!IS_IRQ()) {
     mem = -1;
@@ -1445,6 +1452,8 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
   int32_t mem;
 
   h = NULL;
+
+  EvrFreeRTOSQueue_QueueNew(msg_count, msg_size, attr);
 
   if (!IS_IRQ() && (msg_count > 0U) && (msg_size > 0U)) {
     mem = -1;

@@ -42,6 +42,19 @@
 #define PendedFunction_t void*
 #define EventGroup_t     void*
 
+/* Temporarily define CMSIS-OS2 object types */
+#define osThreadFunc_t       void*
+#define osThreadAttr_t       void*
+#define osMessageQueueAttr_t void*
+#define osTimerFunc_t        void*
+#define osTimerType_t        void*
+#define osTimerAttr_t        void*
+#define osEventFlagsAttr_t   void*
+
+/**
+*/
+extern void EvrFreeRTOSTasks_TaskNew(osThreadFunc_t func, void *argument, const osThreadAttr_t *attr);
+
 /**
   \brief  Event on successful task create (Op)
   \param[in]  pxNewTCB          pointer to task handle.
@@ -208,6 +221,10 @@ extern void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t ul
 extern void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (TCB_t xTaskToNotify, uint32_t ulNotifiedValue);
 
 /**
+*/
+extern void EvrFreeRTOSQueue_QueueNew (uint32_t msg_count, uint32_t msg_size, const osMessageQueueAttr_t *attr);
+
+/**
   \brief  Event on successful queue create (Op)
   \param[in]  pxQueue           pointer to mutex object handle.
 */
@@ -357,6 +374,10 @@ extern void EvrFreeRTOSQueue_BlockingOnQueueReceive (Queue_t pxQueue);
 extern void EvrFreeRTOSQueue_BlockingOnQueueSend (Queue_t pxQueue);
 
 /**
+*/
+extern void EvrFreeRTOSTimers_TimerNew(osTimerFunc_t func, osTimerType_t type, void *argument, const osTimerAttr_t *attr);
+
+/**
   \brief  Event on successful timer object create (Op)
   \param[in]  pxNewTimer        pointer to timer object handle.
 */
@@ -407,6 +428,10 @@ extern void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t pxFunctionToPend, v
   \param[in]  xReturn           return value.
 */
 extern void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
+
+/**
+*/
+extern void EvrFreeRTOSEventGroups_EventGroupNew(const osEventFlagsAttr_t *attr);
 
 /**
   \brief  Event on successful event groups object create (Op)
