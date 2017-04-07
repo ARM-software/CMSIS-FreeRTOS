@@ -423,7 +423,7 @@ void EvrFreeRTOSQueue_QueueNew (uint32_t msg_count, uint32_t msg_size, const osM
 #if defined(RTE_Compiler_EventRecorder)
 	EventRecord4(EvtFreeRTOSQueue_QueueNew, msg_count, msg_size, (uint32_t)attr, 0U);
 	if (attr != NULL) {
-		EventRecordData(EvtFreeRTOSQueue_QueueNew_Detail, attr, sizeof(osMemoryPoolAttr_t));
+		EventRecordData(EvtFreeRTOSQueue_QueueNew_Detail, attr, sizeof(osMessageQueueAttr_t));
 	}
 #else
 	(void)msg_count;

@@ -27,6 +27,7 @@
 #include <stdint.h>
 
 #include "RTE_Components.h"
+#include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 
 #if !defined(RTE_Compiler_EventRecorder)
   /* Disable debug events if Event Recorder is not used */
@@ -41,15 +42,6 @@
 #define Timer_t          void*
 #define PendedFunction_t void*
 #define EventGroup_t     void*
-
-/* Temporarily define CMSIS-OS2 object types */
-#define osThreadFunc_t       void*
-#define osThreadAttr_t       void*
-#define osMessageQueueAttr_t void*
-#define osTimerFunc_t        void*
-#define osTimerType_t        void*
-#define osTimerAttr_t        void*
-#define osEventFlagsAttr_t   void*
 
 /**
 */
