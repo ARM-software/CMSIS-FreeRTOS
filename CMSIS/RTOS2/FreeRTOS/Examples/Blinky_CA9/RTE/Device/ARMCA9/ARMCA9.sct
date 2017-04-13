@@ -33,9 +33,17 @@ SDRAM __ROM_BASE __ROM_SIZE       ; load region size_region
                  +__ZI_DATA_SIZE)    EMPTY __HEAP_SIZE        ; Heap region growing up
     { }
     
+  ARM_LIB_STACK (__RAM_BASE
+                +__RAM_SIZE       
+                -__FIQ_STACK_SIZE
+                -__IRQ_STACK_SIZE
+                -__SVC_STACK_SIZE
+                -__ABT_STACK_SIZE
+                -__UND_STACK_SIZE) EMPTY -__STACK_SIZE      ; Stack region growing down
+  { }              
+                
     UND_STACK     (__RAM_BASE
                   +__RAM_SIZE
-                  -__STACK_SIZE
                   -__FIQ_STACK_SIZE
                   -__IRQ_STACK_SIZE
                   -__SVC_STACK_SIZE
@@ -44,7 +52,6 @@ SDRAM __ROM_BASE __ROM_SIZE       ; load region size_region
 	
     ABT_STACK     (__RAM_BASE
                   +__RAM_SIZE
-                  -__STACK_SIZE
                   -__FIQ_STACK_SIZE
                   -__IRQ_STACK_SIZE
                   -__SVC_STACK_SIZE) EMPTY -__ABT_STACK_SIZE  ; ABT mode stack
@@ -52,24 +59,17 @@ SDRAM __ROM_BASE __ROM_SIZE       ; load region size_region
 	
     SVC_STACK     (__RAM_BASE
                   +__RAM_SIZE
-                  -__STACK_SIZE
                   -__FIQ_STACK_SIZE
                   -__IRQ_STACK_SIZE) EMPTY -__SVC_STACK_SIZE  ; SVC mode stack
 	{ }  
 	
     IRQ_STACK     (__RAM_BASE
                   +__RAM_SIZE
-                  -__STACK_SIZE
                   -__FIQ_STACK_SIZE) EMPTY -__IRQ_STACK_SIZE  ; IRQ mode stack
 	{ }  
 	
     FIQ_STACK     (__RAM_BASE
-                  +__RAM_SIZE
-                  -__STACK_SIZE)     EMPTY -__FIQ_STACK_SIZE  ; FIQ mode stack
-	{ }                            
-
-    ARM_LIB_STACK (__RAM_BASE
-                  +__RAM_SIZE)       EMPTY -__STACK_SIZE      ; Stack region growing down
+                +__RAM_SIZE)       EMPTY -__FIQ_STACK_SIZE  ; FIQ mode stack
     { }
 
     TTB            __TTB_BASE        EMPTY __TTB_SIZE         ; Level-1 Translation Table for MMU

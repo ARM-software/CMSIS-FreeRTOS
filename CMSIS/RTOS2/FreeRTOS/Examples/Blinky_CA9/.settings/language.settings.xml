@@ -5,7 +5,7 @@
 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>
 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
-			<provider class="com.arm.eclipse.builder.armcc.discovery.ArmCompiler5LanguageSettingsProvider" console="false" env-hash="44079340829853607" id="com.arm.eclipse.builder.armcc.v5.langprovider" keep-relative-paths="false" name="ARM Compiler 5 Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} --list-macros &quot;${INPUTS}&quot;" prefer-non-shared="true">
+			<provider class="com.arm.eclipse.builder.armcc.discovery.ArmCompiler5LanguageSettingsProvider" console="false" env-hash="279965456756538654" id="com.arm.eclipse.builder.armcc.v5.langprovider" keep-relative-paths="false" name="ARM Compiler 5 Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} --list-macros &quot;${INPUTS}&quot;" prefer-non-shared="true">
 				<language-scope id="com.arm.eclipse.builder.armcc.lang.c"/>
 				<language-scope id="com.arm.eclipse.builder.armcc.lang.cpp"/>
 			</provider>
@@ -16,7 +16,7 @@
 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>
 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
-			<provider class="com.arm.eclipse.builder.armcc.discovery.ArmCompiler5LanguageSettingsProvider" console="false" env-hash="107508122017063" id="com.arm.eclipse.builder.armcc.v5.langprovider" keep-relative-paths="false" name="ARM Compiler 5 Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} --list-macros &quot;${INPUTS}&quot;" prefer-non-shared="true">
+			<provider class="com.arm.eclipse.builder.armcc.discovery.ArmCompiler5LanguageSettingsProvider" console="false" env-hash="280096652641492382" id="com.arm.eclipse.builder.armcc.v5.langprovider" keep-relative-paths="false" name="ARM Compiler 5 Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} --list-macros &quot;${INPUTS}&quot;" prefer-non-shared="true">
 				<language-scope id="com.arm.eclipse.builder.armcc.lang.c"/>
 				<language-scope id="com.arm.eclipse.builder.armcc.lang.cpp"/>
 			</provider>
