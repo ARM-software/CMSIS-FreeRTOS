@@ -84,7 +84,11 @@
 
 #include <stdint.h>
 
-extern uint32_t SystemCoreClock;
+#include "RTE_Components.h"
+#include CMSIS_device_header
+
+#include "os_tick.h"
+
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
@@ -215,11 +219,12 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_vTaskSuspend                    1
 #define INCLUDE_xTimerPendFunctionCall          1
 
-/* Include kernel tick timer definitions */
-#include "FreeRTOS_Tick_Config.h"
-
 /* Map the FreeRTOS port timer configuration functions to their implementations */
-#define configSETUP_TICK_INTERRUPT()            vConfigureTickInterrupt()
-#define configCLEAR_TICK_INTERRUPT()            vClearTickInterrupt()
+#define configSETUP_TICK_INTERRUPT()                         \
+  OS_Tick_Setup (configTICK_RATE_HZ, FreeRTOS_Tick_Handler); \
+  OS_Tick_Enable();
+
+#define configCLEAR_TICK_INTERRUPT()                         \
+    OS_Tick_AcknowledgeIRQ()
 
 #endif /* FREERTOS_CONFIG_H */

@@ -107,6 +107,22 @@ static HeapRegion_t xHeapRegions[] = {
 };
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
 
+#if defined(SysTick)
+/* FreeRTOS tick timer interrupt handler prototype */
+extern void xPortSysTickHandler (void);
+
+/*
+  SysTick handler implementation that also clears overflow flag.
+*/
+void SysTick_Handler (void) {
+  /* Clear overflow flag */
+  SysTick->CTRL;
+
+  /* Call tick handler */
+  xPortSysTickHandler();
+}
+#endif /* SysTick */
+
 /*---------------------------------------------------------------------------*/
 
 osStatus_t osKernelInitialize (void) {
@@ -297,28 +313,20 @@ int32_t osKernelRestoreLock (int32_t lock) {
   return (lock);
 }
 
-uint64_t osKernelGetTickCount (void) {
+uint32_t osKernelGetTickCount (void) {
   TickType_t ticks;
 
   if (IS_IRQ()) {
-    ticks = 0U;
+    ticks = xTaskGetTickCountFromISR();
   } else {
     ticks = xTaskGetTickCount();
   }
 
-  return ((uint64_t)ticks);
+  return (ticks);
 }
 
 uint32_t osKernelGetTickFreq (void) {
-  uint32_t freq;
-
-  if (IS_IRQ()) {
-    freq = 0U;
-  } else {
-    freq = configTICK_RATE_HZ;
-  }
-
-  return (freq);
+  return (configTICK_RATE_HZ);
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
@@ -328,14 +336,13 @@ uint32_t osKernelGetSysTimerCount (void) {
   portDISABLE_INTERRUPTS();
 
   ticks = xTaskGetTickCount();
+  val   = OS_Tick_GetCount();
 
-  val = TickTimer_GetPeriod() - TickTimer_GetValue();
-
-  if (TickTimer_GetOverflow() != 0U) {
-    val = TickTimer_GetPeriod() - TickTimer_GetValue();
+  if (OS_Tick_GetOverflow() != 0U) {
+    val = OS_Tick_GetCount();
     ticks++;
   }
-  val += ticks * (TickTimer_GetPeriod() + 1U);
+  val += ticks * OS_Tick_GetInterval();
 
   portENABLE_INTERRUPTS();
 
@@ -765,7 +772,7 @@ osStatus_t osDelay (uint32_t ticks) {
   return (stat);
 }
 
-osStatus_t osDelayUntil (uint64_t ticks) {
+osStatus_t osDelayUntil (uint32_t ticks) {
   TickType_t tcnt;
   osStatus_t stat;
 

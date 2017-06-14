@@ -208,7 +208,7 @@ void MMU_CreateTranslationTable(void)
     // Define private address space entry.
     MMU_TTPage4k (&Image$$TTB$$ZI$$Base, __get_CBAR()            ,  2,  Page_L1_4k, (uint32_t *)PRIVATE_TABLE_L2_BASE_4k, Page_4k_Device_RW);
     // Define L2CC entry.  Uncomment if PL310 is present
-    //    MMU_TTPage4k (&Image$$TTB$$ZI$$Base, VE_A7_MP_PL310_BASE     ,  1,  Page_L1_4k, (uint32_t *)PRIVATE_TABLE_L2_BASE_4k, Page_4k_Device_RW);
+    //    MMU_TTPage4k (&Image$$TTB$$ZI$$Base, VE_A9_MP_PL310_BASE     ,  1,  Page_L1_4k, (uint32_t *)PRIVATE_TABLE_L2_BASE_4k, Page_4k_Device_RW);
 
     // Create (256 * 4k)=1MB faulting entries to synchronization space (Useful if some non-cacheable DMA agent is present in the SoC)
     MMU_TTPage4k (&Image$$TTB$$ZI$$Base, F_SYNC_BASE , 256, Page_L1_4k, (uint32_t *)SYNC_FLAGS_TABLE_L2_BASE_4k, DESCRIPTOR_FAULT);

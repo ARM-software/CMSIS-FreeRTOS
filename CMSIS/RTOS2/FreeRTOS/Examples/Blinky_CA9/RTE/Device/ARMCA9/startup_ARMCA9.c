@@ -1,5 +1,5 @@
 /******************************************************************************
- * @file     system_ARMCA9.c
+ * @file     startup_ARMCA9.c
  * @brief    CMSIS Device System Source File for ARM Cortex-A9 Device Series
  * @version  V1.00
  * @date     22 Feb 2017
@@ -83,35 +83,35 @@ __ASM void Vectors(void) {
 __ASM void Reset_Handler(void) {
   
   // Mask interrupts
-  CPSID   if                           
+  CPSID  if                           
 
   // Put any cores other than 0 to sleep
-  MRC     p15, 0, R0, c0, c0, 5       // Read MPIDR
-  ANDS    R0, R0, #3
+  MRC    p15, 0, R0, c0, c0, 5       // Read MPIDR
+  ANDS   R0, R0, #3
 goToSleep
   WFINE
-  BNE     goToSleep
+  BNE    goToSleep
 
   // Reset SCTLR Settings
-  MRC     p15, 0, R0, c1, c0, 0       // Read CP15 System Control register
-  BIC     R0, R0, #(0x1 << 12)        // Clear I bit 12 to disable I Cache
-  BIC     R0, R0, #(0x1 <<  2)        // Clear C bit  2 to disable D Cache
-  BIC     R0, R0, #0x1                // Clear M bit  0 to disable MMU
-  BIC     R0, R0, #(0x1 << 11)        // Clear Z bit 11 to disable branch prediction
-  BIC     R0, R0, #(0x1 << 13)        // Clear V bit 13 to disable hivecs
-  MCR     p15, 0, R0, c1, c0, 0       // Write value back to CP15 System Control register
+  MRC    p15, 0, R0, c1, c0, 0       // Read CP15 System Control register
+  BIC    R0, R0, #(0x1 << 12)        // Clear I bit 12 to disable I Cache
+  BIC    R0, R0, #(0x1 <<  2)        // Clear C bit  2 to disable D Cache
+  BIC    R0, R0, #0x1                // Clear M bit  0 to disable MMU
+  BIC    R0, R0, #(0x1 << 11)        // Clear Z bit 11 to disable branch prediction
+  BIC    R0, R0, #(0x1 << 13)        // Clear V bit 13 to disable hivecs
+  MCR    p15, 0, R0, c1, c0, 0       // Write value back to CP15 System Control register
   ISB
 
   // Configure ACTLR
-  MRC     p15, 0, r0, c1, c0, 1       // Read CP15 Auxiliary Control Register
-  ORR     r0, r0, #(1 <<  1)          // Enable L2 prefetch hint (UNK/WI since r4p1)
-  MCR     p15, 0, r0, c1, c0, 1       // Write CP15 Auxiliary Control Register
-
+  MRC    p15, 0, r0, c1, c0, 1       // Read CP15 Auxiliary Control Register
+  ORR    r0, r0, #(1 <<  1)          // Enable L2 prefetch hint (UNK/WI since r4p1)
+  MCR    p15, 0, r0, c1, c0, 1       // Write CP15 Auxiliary Control Register
+       
   // Set Vector Base Address Register (VBAR) to point to this application's vector table
-  LDR    R0, =Vectors
-  MCR    p15, 0, R0, c12, c0, 0
+    LDR    R0, =Vectors
+    MCR    p15, 0, R0, c12, c0, 0
 
-	// Setup Stack for each exceptional mode
+    // Setup Stack for each exceptional mode
   IMPORT |Image$$FIQ_STACK$$ZI$$Limit|
   IMPORT |Image$$IRQ_STACK$$ZI$$Limit|
   IMPORT |Image$$SVC_STACK$$ZI$$Limit|
@@ -147,5 +147,5 @@ goToSleep
   Default Handler for Exceptions / Interrupts
  *----------------------------------------------------------------------------*/
 void Default_Handler(void) {
-	while(1);
+    while(1);
 }

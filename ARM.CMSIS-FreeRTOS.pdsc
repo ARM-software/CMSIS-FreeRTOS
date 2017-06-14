@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.1-dev2">
+      Added support for OS Tick component
+    </release>
     <release version="9.0.1-dev1">
       Added documentation for configuration options (native/CMSIS-RTOS2)
     </release>
@@ -228,6 +231,23 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
     </condition>
 
+    <condition id="FreeRTOS RTOS2 CortexM">
+      <require condition="CoreM"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+    </condition>
+
+    <condition id="FreeRTOS RTOS2 CortexA">
+      <require condition="CoreA"/>
+      <require Cclass="Device" Cgroup="OS Tick"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+    </condition>
+
   </conditions>
 
   <components>
@@ -245,8 +265,24 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.0" condition="FreeRTOS RTOS2 Core">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
+      <RTE_Components_h>
+        #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
+        #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
+      </RTE_Components_h>
+      <files>
+        <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
+
+        <!-- OS Tick (SysTick) -->
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
+      </files>
+    </component>
+
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
+      <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
         #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
@@ -327,11 +363,8 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
-          
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.h" version="9.0.0"/>
-          <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.c" version="9.0.0"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.1" condition="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.1" condition="CoreA"/>
         </files>
       </component>
      
@@ -451,11 +484,12 @@
         <category>Getting Started</category>
       </attributes>
     </example>
-    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
-      <description>Blinky example using FreeRTOS natively</description>
-      <board name="uVision Simulator" vendor="Keil"/>
+
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9</description>
+      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
       <project>
-        <environment name="uv" load="Blinky.uvprojx"/>
+        <environment name="ds5" load=".project"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
@@ -465,11 +499,11 @@
       </attributes>
     </example>
 
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 FVP" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9</description>
-      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
+      <description>Blinky example using FreeRTOS natively</description>
+      <board name="uVision Simulator" vendor="Keil"/>
       <project>
-        <environment name="ds5" load=".project"/>
+        <environment name="uv" load="Blinky.uvprojx"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>

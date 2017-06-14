@@ -84,7 +84,10 @@
 
 #include <stdint.h>
 
-extern uint32_t SystemCoreClock;
+#include "RTE_Components.h"
+#include CMSIS_device_header
+
+#include "os_tick.h"
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
@@ -196,9 +199,6 @@ extern uint32_t SystemCoreClock;
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
 #define xPortPendSVHandler                    PendSV_Handler
 #define vPortSVCHandler                       SVC_Handler
-
-/* Include kernel tick timer definitions */
-#include "FreeRTOS_Tick_Config.h"
 
 /* Include debug event definitions */
 #include "freertos_evr.h"

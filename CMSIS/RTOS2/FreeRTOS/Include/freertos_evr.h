@@ -97,7 +97,7 @@ extern void EvrFreeRTOSTasks_TaskResume (TCB_t pxTCB);
 extern void EvrFreeRTOSTasks_TaskResumeFromIsr (TCB_t pxTCB);
 
 /**
-  \brief  Event on tick count increment (Op)
+  \brief  Event on tick count increment (Detail)
   \param[in]  xTickCount        tick count before increment.
 */
 extern void EvrFreeRTOSTasks_TaskIncrementTick (uint32_t xTickCount);
