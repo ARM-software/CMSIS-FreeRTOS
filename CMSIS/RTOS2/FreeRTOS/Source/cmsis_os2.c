@@ -386,7 +386,9 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
       }
 
       if (attr->stack_size > 0U) {
-        stack = attr->stack_size;
+        stack = attr->stack_size / sizeof(StackType_t);
+        // in freeRTOS Stack is not in Bytes, but in sizeof(StackType_t) which is 4 in this case.
+        // look here http://www.freertos.org/a00125.html at parameter usStackDepth in xTaskCreate
       }
 
       if ((attr->cb_mem    != NULL) && (attr->cb_size    >= sizeof(StaticTask_t)) &&
