@@ -26,6 +26,7 @@
  */
 
 #include <ARMCA9.h>
+#include "irq_ctrl.h"
 
 #define  SYSTEM_CLOCK  12000000U
 
@@ -125,7 +126,8 @@ void SystemInit (void)
 entry. */
 void vApplicationIRQHandler( uint32_t ulICCIAR )
 {
-uint32_t ulInterruptID;
+  uint32_t ulInterruptID;
+  IRQHandler_t h;
 
   /* Re-enable interrupts. */
   __enable_irq();
@@ -135,5 +137,8 @@ uint32_t ulInterruptID;
   ulInterruptID = ulICCIAR & 0x3FFUL;
 
   /* Call the function installed in the array of installed handler functions. */
-  IRQTable[ ulInterruptID ]( 0 );
+  h = IRQ_GetHandler (ulInterruptID);
+
+  /* Call handler function */
+  h();
 }

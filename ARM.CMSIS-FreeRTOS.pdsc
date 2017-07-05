@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.0.1-dev3">
+      Updated Cortex-A example to use IRQ Controller component
+      Corrected stack size allocation in RTOS2 osThreadNew function
+    </release>
     <release version="9.0.1-dev2">
       Added support for OS Tick component
     </release>

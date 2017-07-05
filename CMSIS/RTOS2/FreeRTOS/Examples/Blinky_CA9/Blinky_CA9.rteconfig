@@ -18,9 +18,13 @@
 <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
 <file category="source" condition="ARMCC" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c"/>
 </component>
+<component Capiversion="1.0.0" Cclass="Device" Cgroup="IRQ Controller" Csub="GIC" Cvendor="ARM" Cversion="1.0.0" deviceDependent="1">
+<package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
+<file category="sourceC" deviceDependent="1" name="CMSIS/Core_A/Source/irq_ctrl_gic.c"/>
+</component>
 <component Capiversion="1.0.0" Cclass="Device" Cgroup="OS Tick" Csub="Private Timer" Cvendor="ARM" Cversion="1.0.0" deviceDependent="1">
 <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
-<file category="sourceC" deviceDependent="1" name="CMSIS/RTOS2/Source/os_tick_ptim.c" version="1.0.0"/>
+<file category="sourceC" deviceDependent="1" name="CMSIS/RTOS2/Source/os_tick_ptim.c"/>
 </component>
 <component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.0.0" deviceDependent="1">
 <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
@@ -76,6 +80,10 @@
 <api Capiversion="1.0.0" Cclass="Device" Cgroup="OS Tick" Cvendor="ARM" Cversion="1.0.0" exclusive="1">
 <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
 <file category="header" name="CMSIS/RTOS2/Include/os_tick.h"/>
+</api>
+<api Capiversion="1.0.0" Cclass="Device" Cgroup="IRQ Controller" Cvendor="ARM" Cversion="1.0.0" exclusive="1">
+<package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
+<file category="header" name="CMSIS/Core_A/Include/irq_ctrl.h"/>
 </api>
 <api Capiversion="2.1.1" Cclass="CMSIS" Cgroup="RTOS2" Cvendor="ARM" Cversion="2.1.1" exclusive="1">
 <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.2-dev4"/>
