@@ -9,7 +9,7 @@
     
   <releases>
     <release version="9.0.1">
-	  Maintenance release for CMSIS 5.1.0:
+      Maintenance release for CMSIS 5.1.0:
       - Added support for ARM Compiler 6
       - Updated Cortex-A example to use IRQ Controller component
       - Corrected stack size allocation in RTOS2 osThreadNew function
@@ -32,8 +32,8 @@
   
   <conditions>
     <condition id="ARMCC6">
-	  <accept Tcompiler="ARMCC" Toptions="AC6"/>
-	  <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
+      <accept Tcompiler="ARMCC" Toptions="AC6"/>
+      <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
     </condition>
     <condition id="ARMCC">
       <require Tcompiler="ARMCC" Toptions="AC5"/>
@@ -164,13 +164,13 @@
       <require condition="ARMCC"/>
     </condition>
 
-	<!-- ARMCC6 compiler -->
+    <!-- ARMCC6 compiler -->
     <condition id="CM0_ARMCC6">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
       <require condition="CM0"/>
       <require condition="ARMCC6"/>
     </condition>
-	
+
     <condition id="CM3_ARMCC6">
       <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 6</description>
       <require condition="CM3"/>
@@ -209,7 +209,7 @@
       <require condition="CA9_DP"/>
       <require condition="ARMCC6"/>
     </condition>
-	
+
     <!-- GCC compiler -->
     <condition id="CM0_GCC">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the GCC Compiler</description>
@@ -400,7 +400,7 @@
           <file category="include"   condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/"/>
           <file category="source"    condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/port.c"/>
           <file category="sourceAsm" condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
-		  
+  
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
           <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
@@ -556,7 +556,7 @@
 
     <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC5)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
       <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 5)</description>
-      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+      <board name="Fixed Virtual Platform" vendor="ARM"/>
       <project>
         <environment name="ds5" load=".project"/>
       </project>
@@ -570,7 +570,7 @@
 
     <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC6)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9_AC6">
       <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 6)</description>
-      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+      <board name="Fixed Virtual Platform" vendor="ARM"/>
       <project>
         <environment name="ds5" load=".project"/>
       </project>
