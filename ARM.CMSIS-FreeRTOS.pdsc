@@ -8,21 +8,14 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="9.0.1-dev4">
-      Added support for ARM Compiler 6
-    </release>
-    <release version="9.0.1-dev3">
-      Updated Cortex-A example to use IRQ Controller component
-      Corrected stack size allocation in RTOS2 osThreadNew function
-    </release>
-    <release version="9.0.1-dev2">
-      Added support for OS Tick component
-    </release>
-    <release version="9.0.1-dev1">
-      Added documentation for configuration options (native/CMSIS-RTOS2)
-    </release>
-    <release version="9.0.1-dev0">
-      Debug event TaskIncrementTick level set to Detail
+    <release version="9.0.1">
+	  Maintenance release for CMSIS 5.1.0:
+      - Added support for ARM Compiler 6
+      - Updated Cortex-A example to use IRQ Controller component
+      - Corrected stack size allocation in RTOS2 osThreadNew function
+      - Added support for OS Tick component
+      - Added documentation for configuration options (native/CMSIS-RTOS2)
+      - Debug event TaskIncrementTick level set to Detail
     </release>
     <release version="9.0.0" date="2017-03-13">
       Initial release version:
@@ -33,7 +26,7 @@
 
   <requirements>
     <packages>
-      <package vendor="ARM" name="CMSIS" version="5.0.1-0"/>
+      <package vendor="ARM" name="CMSIS" version="5.1.0-0"/>
     </packages>
   </requirements>
   
@@ -309,7 +302,7 @@
 
   <components>
     <!-- CMSIS-RTOS FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
+    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
       <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
@@ -322,7 +315,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -338,7 +331,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -561,8 +554,22 @@
       </attributes>
     </example>
 
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9</description>
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC5)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 5)</description>
+      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+      <project>
+        <environment name="ds5" load=".project"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="CMSIS" Cgroup="RTOS2"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC6)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9_AC6">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 6)</description>
       <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
       <project>
         <environment name="ds5" load=".project"/>

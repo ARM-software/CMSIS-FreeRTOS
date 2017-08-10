@@ -79,7 +79,7 @@ void SystemInit (void)
   L1C_EnableBTAC();
 
 #if (__L2C_PRESENT == 1) 
-  // Enable L2C
+  // Enable GIC
   L2C_Enable();
 #endif
 
