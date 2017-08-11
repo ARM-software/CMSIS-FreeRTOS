@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="9.1.0">
+    <release version="9.1.0" date="2017-08-11">
       FreeRTOS 9.0.0
       Maintenance release for CMSIS 5.1.0:
       - Added support for ARM Compiler 6
