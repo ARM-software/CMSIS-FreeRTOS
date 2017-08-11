@@ -8,9 +8,11 @@ var NAVTREE =
     [ "Revision History", "cm_revisionHistory.html", null ],
     [ "Create a FreeRTOS project", "cre_freertos_proj.html", [
       [ "Create a native FreeRTOS project", "cre_freertos_proj.html#native_freertos", [
+        [ "Configure FreeRTOS", "cre_freertos_proj.html#native_freertos_config", null ],
         [ "Add Event Recorder Visibility", "cre_freertos_proj.html#native_freertos_er", null ]
       ] ],
       [ "Create a CMSIS-FreeRTOS project", "cre_freertos_proj.html#cmsis_freertos", [
+        [ "Configure CMSIS-FreeRTOS", "cre_freertos_proj.html#cmsis_freertos_config", null ],
         [ "Add Event Recorder Visibility", "cre_freertos_proj.html#cmsis_freertos_er", null ]
       ] ]
     ] ],
@@ -26,7 +28,6 @@ var NAVTREE =
     [ "Function Overview", "functionOverview.html", [
       [ "CMSIS-RTOS2 API", "functionOverview.html#rtos_api2", null ]
     ] ],
-    [ "Todo List", "todo.html", null ],
     [ "Reference", "modules.html", "modules" ]
   ] ]
 ];

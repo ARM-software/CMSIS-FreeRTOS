@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 9.0.0</span>
+   &#160;<span id="projectnumber">Version 9.1.0</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -116,7 +116,6 @@ $(document).ready(function(){initNavTree('tech_data.html','');});
 Limitations</h1>
 <p>The following list briefly describes the limitations and unsupported features of the CMSIS-RTOS2 wrapper for FreeRTOS:</p>
 <ul>
-<li>ARM Compiler v6 is not supported by FreeRTOS, yet.</li>
 <li>Static memory allocation will only work if <em>all</em> memory (from attributes structure) is provided statically. In order to allocate object memory statically, you need to:<ul>
 <li>provide the memory for control blocks and stack in the <code>osThreadAttr_t</code> structure for threads.</li>
 <li>provide the memory for control blocks and message data in the <code>osMessageQueueAttr_t</code> structure for memory queues.</li>
@@ -172,7 +171,7 @@ CMSIS-RTOS validation suite results</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 13 2017 09:48:26 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Fri Aug 11 2017 17:16:34 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

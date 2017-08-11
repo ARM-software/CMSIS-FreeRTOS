@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 9.0.0</span>
+   &#160;<span id="projectnumber">Version 9.1.0</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -135,18 +135,28 @@ Create a native FreeRTOS project</h1>
 </div>
 </li>
 </ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Do we add user code templates for the native FreeRTOS implementation?</dd></dl>
-<ul>
-<li>You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side you will see all available template files for CMSIS-RTOS RTX:</li>
-</ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Do we offer an SCVD file for the native FreeRTOS implementation?</dd></dl>
+<h2><a class="anchor" id="native_freertos_config"></a>
+Configure FreeRTOS</h2>
+<p>When you have created the native FreeRTOS project, you can configure the real-time operating system using the <b>FreeRTOSConfig.h</b> file. Please refer to the <a href="http://www.freertos.org/a00110.html" target="_blank">FreeRTOS documentation</a> for more information on the specific settings.</p>
+<div class="image">
+<img src="freertos_config_h_native.png" alt="freertos_config_h_native.png"/>
+</div>
 <h2><a class="anchor" id="native_freertos_er"></a>
 Add Event Recorder Visibility</h2>
 <ul>
-<li>To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.</li>
-<li>Select the <b>Source</b> variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.</li>
-<li>Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in <code>main()</code>).</li>
-<li>Build the application code and download it to the debug hardware.</li>
+<li>To use the Event Recorder together with FreeRTOS, add the software components <b>::Compiler:Event Recorder</b> and <b>::RTOS:Event Groups</b> to your project.</li>
+<li>Add this include: <code>#include</code> <code>"EventRecorder.h"</code> </li>
+<li>Call <b>EventRecorderInitialize(EventRecordAll, 1);</b> in your application code (ideally in <code>main()</code>).</li>
+<li>If you are using simulation mode, add an initialization file with the following content: <div class="fragment"><div class="line">MAP 0xE0001000, 0xE0001007 READ WRITE </div>
+<div class="line">signal <span class="keywordtype">void</span> DWT_CYCCNT (<span class="keywordtype">void</span>) {</div>
+<div class="line"><span class="keywordflow">while</span> (1) {</div>
+<div class="line">  rwatch(0xE0001004);</div>
+<div class="line">  _WWORD(0xE0001004, states);</div>
+<div class="line">  }</div>
+<div class="line">}</div>
+<div class="line">DWT_CYCCNT()</div>
+</div><!-- fragment --></li>
+<li>Build the application code and download it to the debug hardware or run it in simulation.</li>
 </ul>
 <p>Once the target application generates event information, it can be viewed in the ÂµVision debugger using the <b>Event</b> <b>Recorder</b>.</p>
 <h1><a class="anchor" id="cmsis_freertos"></a>
@@ -154,7 +164,7 @@ Create a CMSIS-FreeRTOS project</h1>
 <p>The steps to create a microcontroller application using CMSIS-FreeRTOS are:</p>
 <ul>
 <li>Create a new project and select a microcontroller device.</li>
-<li><p class="startli">In the Manage Run-Time Environment window, select <b>::Device:Startup</b>, <b>::CMSIS::RTOS2 (API)::FreeRTOS</b>, <b>::RTOS:CORE</b> in the <b>FreeRTOS</b> variant, <b>::RTOS:Config</b> in the <b>CMSIS</b> <b>RTOS2</b> variant, <b>::RTOS:FreeRTOS:Timers</b>, <b>::RTOS:FreeRTOS:Event Groups</b>, and an applicable <b>::RTOS:Heap</b> scheme (for more information on the heap schemes, visit the FreeRTOS documentation):</p>
+<li><p class="startli">In the Manage Run-Time Environment window, select <b>::Device:Startup</b>, <b>::CMSIS::RTOS2 (API)::FreeRTOS</b>, <b>::RTOS:CORE</b> in the <b>FreeRTOS</b> variant, <b>::RTOS:Config</b> in the <b>CMSIS</b> <b>RTOS2</b> variant, <b>::RTOS:Timers</b>, <b>::RTOS:Event Groups</b>, and an applicable <b>::RTOS:Heap</b> scheme (for more information on the heap schemes, visit the FreeRTOS documentation):</p>
 <div class="image">
 <img src="manage_rte_freertos_rtos2.png" alt="manage_rte_freertos_rtos2.png"/>
 </div>
@@ -168,18 +178,59 @@ Create a CMSIS-FreeRTOS project</h1>
 </div>
 </li>
 </ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Do we add user code templates for the RTOS2 FreeRTOS implementation?\</dd></dl>
-<ul>
-<li>You can add template files to the project by right-clicking on <b>Source Group 1</b> and selecting <b>Add New Item to 'Source Group 1'</b>. In the new window, click on <b>User Code Template</b>. On the right-hand side you will see all available template files for CMSIS-RTOS RTX:</li>
-</ul>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Do we offer an SCVD file for the RTOS2 FreeRTOS implementation?</dd></dl>
+<h2><a class="anchor" id="cmsis_freertos_config"></a>
+Configure CMSIS-FreeRTOS</h2>
+<p>When you have created the CMSIS-FreeRTOS project, you can configure the real-time operating system using the <b>FreeRTOSConfig.h</b> file. It can be opened using the Configuration Wizard view:</p>
+<div class="image">
+<img src="freertos_config_h_cmsis_rtos.png" alt="freertos_config_h_cmsis_rtos.png"/>
+</div>
+<p>The following settings are available:</p>
+<table class="doxtable">
+<tr>
+<th>Name </th><th>#define </th><th>Description  </th></tr>
+<tr>
+<td>Minimal stack size [words] </td><td>configMINIMAL_STACK_SIZE </td><td>Stack for idle task and default task stack in words. </td></tr>
+<tr>
+<td>Total heap size [bytes] </td><td>configTOTAL_HEAP_SIZE </td><td>Heap memory size in bytes. </td></tr>
+<tr>
+<td>Kernel tick frequency [Hz] </td><td>configTICK_RATE_HZ </td><td>Kernel tick rate in Hz. </td></tr>
+<tr>
+<td>Timer task stack depth [words] </td><td>configTIMER_TASK_STACK_DEPTH </td><td>Stack for timer task in words. </td></tr>
+<tr>
+<td>Timer task priority </td><td>configTIMER_TASK_PRIORITY </td><td>Timer task priority. </td></tr>
+<tr>
+<td>Timer queue length </td><td>configTIMER_QUEUE_LENGTH </td><td>Timer command queue length. </td></tr>
+<tr>
+<td>Use time slicing </td><td>configUSE_TIME_SLICING </td><td>Enable setting to use time slicing. </td></tr>
+<tr>
+<td>Idle should yield </td><td>configIDLE_SHOULD_YIELD </td><td>Control Yield behavior of the idle task. </td></tr>
+<tr>
+<td>Check for stack overflow </td><td>configCHECK_FOR_STACK_OVERFLOW </td><td>Enable or disable stack overflow checking. </td></tr>
+<tr>
+<td>Use idle hook </td><td>configUSE_IDLE_HOOK </td><td>Enable callback function call on each idle task iteration. </td></tr>
+<tr>
+<td>Use tick hook </td><td>configUSE_TICK_HOOK </td><td>Enable callback function call during each tick interrupt. </td></tr>
+<tr>
+<td>Use daemon task startup hook </td><td>configUSE_DAEMON_TASK_STARTUP_HOOK </td><td>Enable callback function call when timer service starts. </td></tr>
+<tr>
+<td>Use malloc failed hook </td><td>configUSE_MALLOC_FAILED_HOOK </td><td>Enable callback function call when out of dynamic memory. </td></tr>
+</table>
 <h2><a class="anchor" id="cmsis_freertos_er"></a>
 Add Event Recorder Visibility</h2>
 <ul>
-<li>To use the Event Recorder together with RTX5, select the software component <b>Compiler:Event Recorder</b>.</li>
-<li>Select the <b>Source</b> variant of the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.</li>
-<li>Call the function <b>EventRecorderInitialize()</b> in your application code (ideally in <code>main()</code>).</li>
-<li>Build the application code and download it to the debug hardware.</li>
+<li>To use the Event Recorder together with FreeRTOS, add the software component <b>::Compiler:Event Recorder</b> to your project.</li>
+<li>Add this include: <code>#include</code> <code>"EventRecorder.h"</code> </li>
+<li>Call <b>EventRecorderInitialize(EventRecordAll, 1);</b> in your application code (ideally in <code>main()</code>).</li>
+<li>If you are using simulation mode, add an initialization file with the following content: <div class="fragment"><div class="line">MAP 0xE0001000, 0xE0001007 READ WRITE </div>
+<div class="line">signal <span class="keywordtype">void</span> DWT_CYCCNT (<span class="keywordtype">void</span>) {</div>
+<div class="line"><span class="keywordflow">while</span> (1) {</div>
+<div class="line">  rwatch(0xE0001004);</div>
+<div class="line">  _WWORD(0xE0001004, states);</div>
+<div class="line">  }</div>
+<div class="line">}</div>
+<div class="line">DWT_CYCCNT()</div>
+</div><!-- fragment --></li>
+<li>Build the application code and download it to the debug hardware or run it in simulation.</li>
 </ul>
 <p>Once the target application generates event information, it can be viewed in the ÂµVision debugger using the <b>Event</b> <b>Recorder</b>. </p>
 </div></div><!-- contents -->
@@ -187,7 +238,7 @@ Add Event Recorder Visibility</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Mar 13 2017 09:48:26 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Fri Aug 11 2017 17:16:34 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 
