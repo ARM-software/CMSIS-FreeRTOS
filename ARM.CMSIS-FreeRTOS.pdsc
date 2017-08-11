@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.1.1-dev0">
+      Active development...
+    </release>
     <release version="9.1.0" date="2017-08-11">
       FreeRTOS 9.0.0
       Maintenance release for CMSIS 5.1.0:
