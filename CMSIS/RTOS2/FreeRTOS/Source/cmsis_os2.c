@@ -639,22 +639,25 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 
 uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
   TaskHandle_t thread = (TaskHandle_t)thread_id;
+  uint32_t rflags;
 
   if ((thread == NULL) || ((flags & THREAD_FLAGS_INVALID_BITS) != 0U)) {
-    flags = (uint32_t)osErrorParameter;
+    rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) {
-      flags = (uint32_t)osError;
+    if ((xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) || 
+        (xTaskNotifyAndQueryFromISR (thread, 0, eNoAction, &rflags, NULL) != pdPASS)) {
+      rflags = (uint32_t)osError;
     }
   }
   else {
-    if (xTaskNotify (thread, flags, eSetBits) != pdPASS) {
-      flags = (uint32_t)osError;
+    if ((xTaskNotify (thread, flags, eSetBits) != pdPASS) || 
+        (xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags) != pdPASS)) {
+      rflags = (uint32_t)osError;
     }
   }
   /* Return flags after setting */
-  return (flags);
+  return (rflags);
 }
 
 uint32_t osThreadFlagsClear (uint32_t flags) {
