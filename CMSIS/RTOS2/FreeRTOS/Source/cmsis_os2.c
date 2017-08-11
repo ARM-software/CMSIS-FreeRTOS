@@ -56,16 +56,23 @@
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
 #elif  (__ARM_ARCH_6M__      == 1U)
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
+#elif (__ARM_ARCH_7A__       == 1)
+#define IS_IRQ_MASKED()           (0U)
 #else
-#define IS_IRQ_MASKED()            (__get_PRIMASK() != 0U)
+#define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #endif
 
 #if    (__ARM_ARCH_7A__      == 1U)
-#define IS_IRQ()                  (__get_mode() == 0x12U)
+/* CPSR mode bitmasks */
+#define CPSR_MODE_USER          0x10U
+#define CPSR_MODE_SYSTEM        0x1FU
+
+#define IS_IRQ_MODE()             ((__get_mode() != CPSR_MODE_USER) && (__get_mode() != CPSR_MODE_SYSTEM))
 #else
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
-#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
 #endif
+
+#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
 
 /* Limits */
 #define MAX_BITS_TASK_NOTIFY      31U

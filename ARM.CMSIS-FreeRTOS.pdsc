@@ -8,7 +8,8 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="9.0.1">
+    <release version="9.1.0">
+      FreeRTOS 9.0.0
       Maintenance release for CMSIS 5.1.0:
       - Added support for ARM Compiler 6
       - Updated Cortex-A example to use IRQ Controller component
@@ -291,7 +292,8 @@
 
     <condition id="FreeRTOS RTOS2 CortexA">
       <require condition="CoreA"/>
-      <require Cclass="Device" Cgroup="OS Tick"/>
+      <require Cclass="Device" Cgroup="IRQ Controller"/>
+	  <require Cclass="Device" Cgroup="OS Tick"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
@@ -302,7 +304,7 @@
 
   <components>
     <!-- CMSIS-RTOS FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
+    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
       <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
@@ -315,7 +317,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -325,13 +327,14 @@
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
 
         <!-- OS Tick (SysTick) -->
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.1" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -341,6 +344,9 @@
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
+        
+		<file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
       </files>
     </component>
 
@@ -432,8 +438,8 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.1" condition="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.1" condition="CoreA"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.1.0" condition="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.1.0" condition="CoreA"/>
         </files>
       </component>
      
