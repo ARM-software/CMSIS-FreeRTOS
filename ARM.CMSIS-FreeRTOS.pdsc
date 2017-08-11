@@ -293,7 +293,7 @@
     <condition id="FreeRTOS RTOS2 CortexA">
       <require condition="CoreA"/>
       <require Cclass="Device" Cgroup="IRQ Controller"/>
-	  <require Cclass="Device" Cgroup="OS Tick"/>
+      <require Cclass="Device" Cgroup="OS Tick"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
@@ -346,7 +346,7 @@
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
         
-		<file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
+        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
       </files>
     </component>
 

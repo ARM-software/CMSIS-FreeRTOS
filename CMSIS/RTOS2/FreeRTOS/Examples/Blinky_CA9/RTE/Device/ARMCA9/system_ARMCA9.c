@@ -91,24 +91,3 @@ void SystemInit (void)
   // IRQ Initialize
   IRQ_Initialize();
 }
-
-/* The function called by the RTOS port layer after it has managed interrupt
-entry. */
-void vApplicationIRQHandler( uint32_t ulICCIAR )
-{
-  uint32_t ulInterruptID;
-  IRQHandler_t h;
-
-  /* Re-enable interrupts. */
-  __enable_irq();
-
-  /* The ID of the interrupt can be obtained by bitwise anding the ICCIAR value
-  with 0x3FF. */
-  ulInterruptID = ulICCIAR & 0x3FFUL;
-
-  /* Call the function installed in the array of installed handler functions. */
-  h = IRQ_GetHandler (ulInterruptID);
-
-  /* Call handler function */
-  h();
-}
