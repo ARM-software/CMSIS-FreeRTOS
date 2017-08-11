@@ -49,7 +49,7 @@
 #define EvtFreeRTOSTasks_TaskSuspend                      EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x06U)
 #define EvtFreeRTOSTasks_TaskResume                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x07U)
 #define EvtFreeRTOSTasks_TaskResumeFromIsr                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x08U)
-#define EvtFreeRTOSTasks_TaskIncrementTick                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x09U)
+#define EvtFreeRTOSTasks_TaskIncrementTick                EventID(EventLevelDetail, EvtFreeRTOSTasksNo, 0x09U)
 #define EvtFreeRTOSTasks_IncreaseTickCount                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0AU)
 #define EvtFreeRTOSTasks_TaskSwitchedOut                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0BU)
 #define EvtFreeRTOSTasks_TaskSwitchedIn                   EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0CU)

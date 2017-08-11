@@ -26,6 +26,7 @@
 
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
 #include "cmsis_compiler.h"
+#include "os_tick.h"
 
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
@@ -55,16 +56,23 @@
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
 #elif  (__ARM_ARCH_6M__      == 1U)
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
+#elif (__ARM_ARCH_7A__       == 1)
+#define IS_IRQ_MASKED()           (0U)
 #else
-#define IS_IRQ_MASKED()            (__get_PRIMASK() != 0U)
+#define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #endif
 
 #if    (__ARM_ARCH_7A__      == 1U)
-#define IS_IRQ()                  (__get_mode() == 0x12U)
+/* CPSR mode bitmasks */
+#define CPSR_MODE_USER          0x10U
+#define CPSR_MODE_SYSTEM        0x1FU
+
+#define IS_IRQ_MODE()             ((__get_mode() != CPSR_MODE_USER) && (__get_mode() != CPSR_MODE_SYSTEM))
 #else
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
-#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
 #endif
+
+#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
 
 /* Limits */
 #define MAX_BITS_TASK_NOTIFY      31U
@@ -106,6 +114,22 @@ static HeapRegion_t xHeapRegions[] = {
   { NULL,   0                     }
 };
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
+
+#if defined(SysTick)
+/* FreeRTOS tick timer interrupt handler prototype */
+extern void xPortSysTickHandler (void);
+
+/*
+  SysTick handler implementation that also clears overflow flag.
+*/
+void SysTick_Handler (void) {
+  /* Clear overflow flag */
+  SysTick->CTRL;
+
+  /* Call tick handler */
+  xPortSysTickHandler();
+}
+#endif /* SysTick */
 
 /*---------------------------------------------------------------------------*/
 
@@ -297,28 +321,20 @@ int32_t osKernelRestoreLock (int32_t lock) {
   return (lock);
 }
 
-uint64_t osKernelGetTickCount (void) {
+uint32_t osKernelGetTickCount (void) {
   TickType_t ticks;
 
   if (IS_IRQ()) {
-    ticks = 0U;
+    ticks = xTaskGetTickCountFromISR();
   } else {
     ticks = xTaskGetTickCount();
   }
 
-  return ((uint64_t)ticks);
+  return (ticks);
 }
 
 uint32_t osKernelGetTickFreq (void) {
-  uint32_t freq;
-
-  if (IS_IRQ()) {
-    freq = 0U;
-  } else {
-    freq = configTICK_RATE_HZ;
-  }
-
-  return (freq);
+  return (configTICK_RATE_HZ);
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
@@ -328,14 +344,13 @@ uint32_t osKernelGetSysTimerCount (void) {
   portDISABLE_INTERRUPTS();
 
   ticks = xTaskGetTickCount();
+  val   = OS_Tick_GetCount();
 
-  val = TickTimer_GetPeriod() - TickTimer_GetValue();
-
-  if (TickTimer_GetOverflow() != 0U) {
-    val = TickTimer_GetPeriod() - TickTimer_GetValue();
+  if (OS_Tick_GetOverflow() != 0U) {
+    val = OS_Tick_GetCount();
     ticks++;
   }
-  val += ticks * (TickTimer_GetPeriod() + 1U);
+  val += ticks * OS_Tick_GetInterval();
 
   portENABLE_INTERRUPTS();
 
@@ -379,7 +394,9 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
       }
 
       if (attr->stack_size > 0U) {
-        stack = attr->stack_size;
+        /* In FreeRTOS stack is not in bytes, but in sizeof(StackType_t) which is 4 on ARM ports.       */
+        /* Stack size should be therefore 4 byte aligned in order to avoid division caused side effects */
+        stack = attr->stack_size / sizeof(StackType_t);
       }
 
       if ((attr->cb_mem    != NULL) && (attr->cb_size    >= sizeof(StaticTask_t)) &&
@@ -622,22 +639,25 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 
 uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
   TaskHandle_t thread = (TaskHandle_t)thread_id;
+  uint32_t rflags;
 
   if ((thread == NULL) || ((flags & THREAD_FLAGS_INVALID_BITS) != 0U)) {
-    flags = (uint32_t)osErrorParameter;
+    rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) {
-      flags = (uint32_t)osError;
+    if ((xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) || 
+        (xTaskNotifyAndQueryFromISR (thread, 0, eNoAction, &rflags, NULL) != pdPASS)) {
+      rflags = (uint32_t)osError;
     }
   }
   else {
-    if (xTaskNotify (thread, flags, eSetBits) != pdPASS) {
-      flags = (uint32_t)osError;
+    if ((xTaskNotify (thread, flags, eSetBits) != pdPASS) || 
+        (xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags) != pdPASS)) {
+      rflags = (uint32_t)osError;
     }
   }
   /* Return flags after setting */
-  return (flags);
+  return (rflags);
 }
 
 uint32_t osThreadFlagsClear (uint32_t flags) {
@@ -765,7 +785,7 @@ osStatus_t osDelay (uint32_t ticks) {
   return (stat);
 }
 
-osStatus_t osDelayUntil (uint64_t ticks) {
+osStatus_t osDelayUntil (uint32_t ticks) {
   TickType_t tcnt;
   osStatus_t stat;
 

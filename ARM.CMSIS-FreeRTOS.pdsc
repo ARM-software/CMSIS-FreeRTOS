@@ -8,6 +8,16 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.1.0" date="2017-08-11">
+      FreeRTOS 9.0.0
+      Maintenance release for CMSIS 5.1.0:
+      - Added support for ARM Compiler 6
+      - Updated Cortex-A example to use IRQ Controller component
+      - Corrected stack size allocation in RTOS2 osThreadNew function
+      - Added support for OS Tick component
+      - Added documentation for configuration options (native/CMSIS-RTOS2)
+      - Debug event TaskIncrementTick level set to Detail
+    </release>
     <release version="9.0.0" date="2017-03-13">
       Initial release version:
       - native FreeRTOS component (RTOS: Variant=FreeRTOS)
@@ -17,13 +27,17 @@
 
   <requirements>
     <packages>
-      <package vendor="ARM" name="CMSIS" version="5.0.1-0"/>
+      <package vendor="ARM" name="CMSIS" version="5.1.0-0"/>
     </packages>
   </requirements>
   
   <conditions>
+    <condition id="ARMCC6">
+      <accept Tcompiler="ARMCC" Toptions="AC6"/>
+      <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
+    </condition>
     <condition id="ARMCC">
-      <require Tcompiler="ARMCC"/>
+      <require Tcompiler="ARMCC" Toptions="AC5"/>
     </condition>
     <condition id="GCC">
       <require Tcompiler="GCC"/>
@@ -107,97 +121,143 @@
 
     <!-- ARMCC compiler -->
     <condition id="CM0_ARMCC">
-      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler</description>
+      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 5</description>
       <require condition="CM0"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM3_ARMCC">
-      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler</description>
+      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 5</description>
       <require condition="CM3"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM4_ARMCC">
-      <description>Cortex-M4 processor based device for the ARM Compiler</description>
+      <description>Cortex-M4 processor based device for the ARM Compiler 5</description>
       <require condition="CM4"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM4_FP_ARMCC">
-      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler</description>
+      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler 5</description>
       <require condition="CM4_FP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CM7_ARMCC">
-      <description>Cortex-M7 processor based device for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device for the ARM Compiler 5</description>
       <require condition="CM7"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM7_SP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler 5</description>
       <require condition="CM7_SP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
     <condition id="CM7_DP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler</description>
+      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler 5</description>
       <require condition="CM7_DP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
     </condition>
 
     <condition id="CA9_DP_ARMCC">
-      <description>Cortex-A9 processor based device for the ARM Compiler</description>
+      <description>Cortex-A9 processor based device for the ARM Compiler 5</description>
       <require condition="CA9_DP"/>
-      <require Tcompiler="ARMCC"/>
+      <require condition="ARMCC"/>
+    </condition>
+
+    <!-- ARMCC6 compiler -->
+    <condition id="CM0_ARMCC6">
+      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
+      <require condition="CM0"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CM3_ARMCC6">
+      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 6</description>
+      <require condition="CM3"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CM4_ARMCC6">
+      <description>Cortex-M4 processor based device for the ARM Compiler 6</description>
+      <require condition="CM4"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM4_FP_ARMCC6">
+      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler 6</description>
+      <require condition="CM4_FP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CM7_ARMCC6">
+      <description>Cortex-M7 processor based device for the ARM Compiler 6</description>
+      <require condition="CM7"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM7_SP_ARMCC6">
+      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler 6</description>
+      <require condition="CM7_SP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM7_DP_ARMCC6">
+      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler 6</description>
+      <require condition="CM7_DP"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CA9_DP_ARMCC6">
+      <description>Cortex-A9 processor based device for the ARM Compiler 6</description>
+      <require condition="CA9_DP"/>
+      <require condition="ARMCC6"/>
     </condition>
 
     <!-- GCC compiler -->
     <condition id="CM0_GCC">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the GCC Compiler</description>
       <require condition="CM0"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM3_GCC">
       <description>Cortex-M3 or SC300 processor based device for the GCC Compiler</description>
       <require condition="CM3"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM4_GCC">
       <description>Cortex-M4 processor based device for the GCC Compiler</description>
       <require condition="CM4"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM4_FP_GCC">
       <description>Cortex-M4 processor based device using Floating Point Unit for the GCC Compiler</description>
       <require condition="CM4_FP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_GCC">
       <description>Cortex-M7 processor based device for the GCC Compiler</description>
       <require condition="CM7"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_SP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the GCC Compiler</description>
       <require condition="CM7_SP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CM7_DP_GCC">
       <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the GCC Compiler</description>
       <require condition="CM7_DP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CA9_DP_GCC">
       <description>Cortex-A9 processor based device for the GCC Compiler</description>
       <require condition="CA9_DP"/>
-      <require Tcompiler="GCC"/>
+      <require condition="GCC"/>
     </condition>
 
     <condition id="CMSIS RTOS2 FreeRTOS">
@@ -222,6 +282,24 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
     </condition>
 
+    <condition id="FreeRTOS RTOS2 CortexM">
+      <require condition="CoreM"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+    </condition>
+
+    <condition id="FreeRTOS RTOS2 CortexA">
+      <require condition="CoreA"/>
+      <require Cclass="Device" Cgroup="IRQ Controller"/>
+      <require Cclass="Device" Cgroup="OS Tick"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+    </condition>
+
   </conditions>
 
   <components>
@@ -239,7 +317,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.0.0" Capiversion="2.1.0" condition="FreeRTOS RTOS2 Core">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -249,6 +327,26 @@
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
+
+        <!-- OS Tick (SysTick) -->
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
+      </files>
+    </component>
+
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
+      <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
+      <RTE_Components_h>
+        #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
+        #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
+      </RTE_Components_h>
+      <files>
+        <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
+        
+        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
       </files>
     </component>
 
@@ -290,6 +388,25 @@
           <file category="source"    condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/port.c"/>
           <file category="sourceAsm" condition="CA9_DP_ARMCC" name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
   
+          <!-- Cortex-M0 Port of latest FreeRTOS 9.0.0 is broken for ARM Compiler 6 -->
+          <!-- file category="include"   condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/port.c"/ -->
+          <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4F/"/>
+          <file category="source"    condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4F/port.c"/>
+          <file category="include"   condition="CM7_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
+          <file category="source"    condition="CM7_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM7_DP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_DP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_ARMCC6" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+  
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
           <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
@@ -320,11 +437,9 @@
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
-          
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.h" version="9.0.0"/>
-          <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOS_Tick_Config.c" version="9.0.0"/>
+          <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.0.0" condition="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="10.0.0" condition="CoreA"/>
         </files>
       </component>
      
@@ -334,6 +449,7 @@
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
+          <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#native_freertos_config"/>
           <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="9.0.0" condition="CoreM"/>
           <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="9.0.0" condition="CoreA"/>
         </files>
@@ -443,11 +559,12 @@
         <category>Getting Started</category>
       </attributes>
     </example>
-    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
-      <description>Blinky example using FreeRTOS natively</description>
-      <board name="uVision Simulator" vendor="Keil"/>
+
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC5)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 5)</description>
+      <board name="Fixed Virtual Platform" vendor="ARM"/>
       <project>
-        <environment name="uv" load="Blinky.uvprojx"/>
+        <environment name="ds5" load=".project"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
@@ -457,11 +574,25 @@
       </attributes>
     </example>
 
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 FVP" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9</description>
-      <board name="ARM Fixed Virtual Platform" vendor="ARM"/>
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC6)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9_AC6">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 6)</description>
+      <board name="Fixed Virtual Platform" vendor="ARM"/>
       <project>
         <environment name="ds5" load=".project"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="CMSIS" Cgroup="RTOS2"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+
+    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
+      <description>Blinky example using FreeRTOS natively</description>
+      <board name="uVision Simulator" vendor="Keil"/>
+      <project>
+        <environment name="uv" load="Blinky.uvprojx"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>

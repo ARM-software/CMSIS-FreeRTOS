@@ -38,14 +38,17 @@
 #define UND_MODE 0x1B            // Undefined Instruction mode
 #define SYS_MODE 0x1F            // System mode
 
-#define SVC_Handler FreeRTOS_SWI_Handler
-#define IRQ_Handler FreeRTOS_IRQ_Handler
-
 /*----------------------------------------------------------------------------
   Internal References
  *----------------------------------------------------------------------------*/
-void Vectors       (void) __attribute__ ((section("RESET")));
-void Reset_Handler (void);
+
+/** \brief Exception and Interrupt Handler Jumptable.
+*/
+void Vectors       (void) __attribute__ ((naked, section("RESET")));
+
+/** \brief Reset Handler
+*/
+void Reset_Handler (void) __attribute__ ((naked));
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler
@@ -60,87 +63,77 @@ void FIQ_Handler   (void) __attribute__ ((weak, alias("Default_Handler")));
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector Table
  *----------------------------------------------------------------------------*/
-__ASM void Vectors(void) {
-  IMPORT Undef_Handler
-  IMPORT SVC_Handler
-  IMPORT PAbt_Handler
-  IMPORT DAbt_Handler
-  IMPORT IRQ_Handler
-  IMPORT FIQ_Handler
-  LDR    PC, =Reset_Handler
-  LDR    PC, =Undef_Handler
-  LDR    PC, =SVC_Handler
-  LDR    PC, =PAbt_Handler
-  LDR    PC, =DAbt_Handler
-  NOP
-  LDR    PC, =IRQ_Handler
-  LDR    PC, =FIQ_Handler
+void Vectors(void) {
+  __ASM volatile(
+  "LDR    PC, =Reset_Handler                        \n"
+  "LDR    PC, =Undef_Handler                        \n"
+  "LDR    PC, =FreeRTOS_SWI_Handler                 \n"
+  "LDR    PC, =PAbt_Handler                         \n"
+  "LDR    PC, =DAbt_Handler                         \n"
+  "NOP                                              \n"
+  "LDR    PC, =FreeRTOS_IRQ_Handler                 \n"
+  "LDR    PC, =FIQ_Handler                          \n"
+  );
 }
 
 /*----------------------------------------------------------------------------
   Reset Handler called on controller reset
  *----------------------------------------------------------------------------*/
-__ASM void Reset_Handler(void) {
+void Reset_Handler(void) {
+  __ASM volatile(
 
   // Mask interrupts
-  CPSID  if                           
+  "CPSID   if                                      \n"
 
   // Put any cores other than 0 to sleep
-  MRC    p15, 0, R0, c0, c0, 5       // Read MPIDR
-  ANDS   R0, R0, #3
-goToSleep
-  WFINE
-  BNE    goToSleep
+  "MRC     p15, 0, R0, c0, c0, 5                   \n"  // Read MPIDR
+  "ANDS    R0, R0, #3                              \n"
+  "goToSleep:                                      \n"
+  "WFINE                                           \n"
+  "BNE     goToSleep                               \n"
 
   // Reset SCTLR Settings
-  MRC    p15, 0, R0, c1, c0, 0       // Read CP15 System Control register
-  BIC    R0, R0, #(0x1 << 12)        // Clear I bit 12 to disable I Cache
-  BIC    R0, R0, #(0x1 <<  2)        // Clear C bit  2 to disable D Cache
-  BIC    R0, R0, #0x1                // Clear M bit  0 to disable MMU
-  BIC    R0, R0, #(0x1 << 11)        // Clear Z bit 11 to disable branch prediction
-  BIC    R0, R0, #(0x1 << 13)        // Clear V bit 13 to disable hivecs
-  MCR    p15, 0, R0, c1, c0, 0       // Write value back to CP15 System Control register
-  ISB
+  "MRC     p15, 0, R0, c1, c0, 0                   \n"  // Read CP15 System Control register
+  "BIC     R0, R0, #(0x1 << 12)                    \n"  // Clear I bit 12 to disable I Cache
+  "BIC     R0, R0, #(0x1 <<  2)                    \n"  // Clear C bit  2 to disable D Cache
+  "BIC     R0, R0, #0x1                            \n"  // Clear M bit  0 to disable MMU
+  "BIC     R0, R0, #(0x1 << 11)                    \n"  // Clear Z bit 11 to disable branch prediction
+  "BIC     R0, R0, #(0x1 << 13)                    \n"  // Clear V bit 13 to disable hivecs
+  "MCR     p15, 0, R0, c1, c0, 0                   \n"  // Write value back to CP15 System Control register
+  "ISB                                             \n"
 
   // Configure ACTLR
-  MRC    p15, 0, r0, c1, c0, 1       // Read CP15 Auxiliary Control Register
-  ORR    r0, r0, #(1 <<  1)          // Enable L2 prefetch hint (UNK/WI since r4p1)
-  MCR    p15, 0, r0, c1, c0, 1       // Write CP15 Auxiliary Control Register
+  "MRC     p15, 0, r0, c1, c0, 1                   \n"  // Read CP15 Auxiliary Control Register
+  "ORR     r0, r0, #(1 <<  1)                      \n"  // Enable L2 prefetch hint (UNK/WI since r4p1)
+  "MCR     p15, 0, r0, c1, c0, 1                   \n"  // Write CP15 Auxiliary Control Register
 
   // Set Vector Base Address Register (VBAR) to point to this application's vector table
-  LDR    R0, =Vectors
-  MCR    p15, 0, R0, c12, c0, 0
+  "LDR    R0, =Vectors                             \n"
+  "MCR    p15, 0, R0, c12, c0, 0                   \n"
 
   // Setup Stack for each exceptional mode
-  IMPORT |Image$$FIQ_STACK$$ZI$$Limit|
-  IMPORT |Image$$IRQ_STACK$$ZI$$Limit|
-  IMPORT |Image$$SVC_STACK$$ZI$$Limit|
-  IMPORT |Image$$ABT_STACK$$ZI$$Limit|
-  IMPORT |Image$$UND_STACK$$ZI$$Limit|
-  IMPORT |Image$$ARM_LIB_STACK$$ZI$$Limit|
-  CPS    #0x11
-  LDR    SP, =|Image$$FIQ_STACK$$ZI$$Limit|
-  CPS    #0x12
-  LDR    SP, =|Image$$IRQ_STACK$$ZI$$Limit|
-  CPS    #0x13
-  LDR    SP, =|Image$$SVC_STACK$$ZI$$Limit|
-  CPS    #0x17
-  LDR    SP, =|Image$$ABT_STACK$$ZI$$Limit|
-  CPS    #0x1B
-  LDR    SP, =|Image$$UND_STACK$$ZI$$Limit|
-  CPS    #0x1F
-  LDR    SP, =|Image$$ARM_LIB_STACK$$ZI$$Limit|
+  "CPS    #0x11                                    \n"
+  "LDR    SP, =Image$$FIQ_STACK$$ZI$$Limit         \n"
+  "CPS    #0x12                                    \n"
+  "LDR    SP, =Image$$IRQ_STACK$$ZI$$Limit         \n"
+  "CPS    #0x13                                    \n"
+  "LDR    SP, =Image$$SVC_STACK$$ZI$$Limit         \n"
+  "CPS    #0x17                                    \n"
+  "LDR    SP, =Image$$ABT_STACK$$ZI$$Limit         \n"
+  "CPS    #0x1B                                    \n"
+  "LDR    SP, =Image$$UND_STACK$$ZI$$Limit         \n"
+  "CPS    #0x1F                                    \n"
+  "LDR    SP, =Image$$ARM_LIB_STACK$$ZI$$Limit     \n"
 
   // Call SystemInit
-  IMPORT SystemInit
-  BL     SystemInit
+  "BL     SystemInit                               \n"
 
   // Unmask interrupts
-  CPSIE  if
+  "CPSIE  if                                       \n"
 
   // Call __main
-  IMPORT __main
-  BL     __main
+  "BL     __main                                   \n"
+  );
 }
 
 /*----------------------------------------------------------------------------
