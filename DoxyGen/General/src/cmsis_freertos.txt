@@ -57,9 +57,10 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
-      <td>9.0.1</td>
+      <td>9.1.0</td>
       <td>
-	    Maintenance release for CMSIS 5.1.0:
+	    <p><b>FreeRTOS 9.0.0</b></p>
+	    <p>Maintenance release for CMSIS 5.1.0:
 	    <ul>
 	      <li>
 		    Added support for ARM Compiler 6
@@ -70,7 +71,7 @@ File/Directory             |Content
           <li>Added support for OS Tick component</li>
           <li>Added documentation for configuration options (native/CMSIS-RTOS2)</li>
           <li>Debug event TaskIncrementTick level set to Detail</li>
-	    </ul>
+	    </ul></p>
 	  </td>
     </tr>
     <tr>
