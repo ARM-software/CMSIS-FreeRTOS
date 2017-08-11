@@ -628,7 +628,7 @@
         <package name="LPC1800_DFP" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="Keil" version="2.6.0"/>
         <targetInfos/>
       </file>
-      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="9.1.0">
+      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="10.0.0">
         <instance index="0">RTE\RTOS\FreeRTOSConfig.h</instance>
         <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="9.0.0" condition="CMSIS RTOS2 FreeRTOS"/>
         <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="9.1.0"/>

@@ -438,8 +438,8 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="9.1.0" condition="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="9.1.0" condition="CoreA"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.0.0" condition="CoreM"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="10.0.0" condition="CoreA"/>
         </files>
       </component>
      

@@ -202,7 +202,7 @@
 		<files>
 			<file name="RTE/Device/ARMCA9/ARMCA9.sct" version="1.0.0"/>
 			<file name="RTE/Device/ARMCA9/startup_ARMCA9.c" version="1.0.0"/>
-			<file name="RTE/RTOS/FreeRTOSConfig.h" version="9.1.0"/>
+			<file name="RTE/RTOS/FreeRTOSConfig.h" version="10.0.0"/>
 			<file name="RTE/Device/ARMCA9/system_ARMCA9.c" version="1.0.0"/>
 			<file name="RTE/Device/ARMCA9/mem_ARMCA9.h" version="1.0.0"/>
 			<file name="RTE/CMSIS/handlers.c" version="9.1.0"/>
