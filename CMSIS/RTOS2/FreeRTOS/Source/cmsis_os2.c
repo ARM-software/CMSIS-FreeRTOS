@@ -155,55 +155,44 @@ osStatus_t osKernelInitialize (void) {
 }
 
 osStatus_t osKernelGetInfo (osVersion_t *version, char *id_buf, uint32_t id_size) {
-  osStatus_t stat;
 
-  if (IS_IRQ()) {
-    stat = osErrorISR;
-  }
-  else {
-    if (version != NULL) {
-      version->api    = KERNEL_VERSION;
-      version->kernel = KERNEL_VERSION;
-    }
-
-    if ((id_buf != NULL) && (id_size != 0U)) {
-      if (id_size > sizeof(KERNEL_ID)) {
-        id_size = sizeof(KERNEL_ID);
-      }
-      memcpy(id_buf, KERNEL_ID, id_size);
-    }
-    stat = osOK;
+  if (version != NULL) {
+    version->api    = KERNEL_VERSION;
+    version->kernel = KERNEL_VERSION;
   }
 
-  return (stat);
+  if ((id_buf != NULL) && (id_size != 0U)) {
+    if (id_size > sizeof(KERNEL_ID)) {
+      id_size = sizeof(KERNEL_ID);
+    }
+    memcpy(id_buf, KERNEL_ID, id_size);
+  }
+
+  return (osOK);
 }
 
 osKernelState_t osKernelGetState (void) {
   osKernelState_t state;
 
-  if (IS_IRQ()) {
-    state = osKernelError;
-  }
-  else {
-    switch (xTaskGetSchedulerState()) {
-      case taskSCHEDULER_RUNNING:
-        state = osKernelRunning;
-        break;
+  switch (xTaskGetSchedulerState()) {
+    case taskSCHEDULER_RUNNING:
+      state = osKernelRunning;
+      break;
 
-      case taskSCHEDULER_SUSPENDED:
-        state = osKernelLocked;
-        break;
+    case taskSCHEDULER_SUSPENDED:
+      state = osKernelLocked;
+      break;
 
-      case taskSCHEDULER_NOT_STARTED:
-      default:
-        if (KernelState == osKernelReady) {
-          state = osKernelReady;
-        } else {
-          state = osKernelInactive;
-        }
-        break;
-    }
+    case taskSCHEDULER_NOT_STARTED:
+    default:
+      if (KernelState == osKernelReady) {
+        state = osKernelReady;
+      } else {
+        state = osKernelInactive;
+      }
+      break;
   }
+
   return (state);
 }
 

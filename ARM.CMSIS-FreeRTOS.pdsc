@@ -10,6 +10,7 @@
   <releases>
     <release version="9.1.1-dev0">
       Active development...
+      Updated to CMSIS RTOS2 API 2.1.2
     </release>
     <release version="9.1.0" date="2017-08-11">
       FreeRTOS 9.0.0
@@ -30,7 +31,7 @@
 
   <requirements>
     <packages>
-      <package vendor="ARM" name="CMSIS" version="5.1.0-0"/>
+      <package vendor="ARM" name="CMSIS" version="5.1.2-0"/>
     </packages>
   </requirements>
   
@@ -320,7 +321,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.1" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -337,7 +338,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.0" Capiversion="2.1.1" condition="FreeRTOS RTOS2 CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="9.1.1" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */

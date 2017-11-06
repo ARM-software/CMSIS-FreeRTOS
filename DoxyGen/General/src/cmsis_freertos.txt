@@ -57,22 +57,28 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>9.1.1</td>
+      <td>
+        Updated to CMSIS RTOS2 API 2.1.2
+      </td>
+    </tr>
+    <tr>
       <td>9.1.0</td>
       <td>
-	    <p><b>FreeRTOS 9.0.0</b></p>
-	    <p>Maintenance release for CMSIS 5.1.0:
-	    <ul>
-	      <li>
-		    Added support for ARM Compiler 6
-			(Limitations: Not available for Cortex-M0!)
-		  </li>
+        <p><b>FreeRTOS 9.0.0</b></p>
+        <p>Maintenance release for CMSIS 5.1.0:
+        <ul>
+          <li>
+            Added support for ARM Compiler 6
+            (Limitations: Not available for Cortex-M0!)
+          </li>
           <li>Updated Cortex-A example to use IRQ Controller component</li>
           <li>Corrected stack size allocation in RTOS2 osThreadNew function</li>
           <li>Added support for OS Tick component</li>
           <li>Added documentation for configuration options (native/CMSIS-RTOS2)</li>
           <li>Debug event TaskIncrementTick level set to Detail</li>
-	    </ul></p>
-	  </td>
+        </ul></p>
+      </td>
     </tr>
     <tr>
       <td>9.0.0</td>
