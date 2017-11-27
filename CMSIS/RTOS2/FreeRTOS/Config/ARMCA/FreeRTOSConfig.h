@@ -122,6 +122,11 @@
 //  <i> Default: 5
 #define configTIMER_QUEUE_LENGTH                5
 
+//  <o>Preemption interrupt priority
+//  <i> Maximum priority of interrupts that are safe to call FreeRTOS API.
+//  <i> Default: 16
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
+
 //  <q>Use time slicing
 //  <i> Enable setting to use timeslicing.
 //  <i> Default: 1
@@ -201,7 +206,6 @@
 #define configUSE_16_BIT_TICKS                  0
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configMAX_PRIORITIES                    56
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
 #define configKERNEL_INTERRUPT_PRIORITY         255
 
 /* Defines that include FreeRTOS functions which implement CMSIS RTOS2 API. Do not change! */

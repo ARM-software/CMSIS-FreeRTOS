@@ -629,20 +629,25 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
   TaskHandle_t thread = (TaskHandle_t)thread_id;
   uint32_t rflags;
+  BaseType_t yield;
 
   if ((thread == NULL) || ((flags & THREAD_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
-  else if (IS_IRQ()) {
-    if ((xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) || 
-        (xTaskNotifyAndQueryFromISR (thread, 0, eNoAction, &rflags, NULL) != pdPASS)) {
-      rflags = (uint32_t)osError;
-    }
-  }
   else {
-    if ((xTaskNotify (thread, flags, eSetBits) != pdPASS) || 
-        (xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags) != pdPASS)) {
-      rflags = (uint32_t)osError;
+    rflags = (uint32_t)osError;
+
+    if (IS_IRQ()) {
+      yield = pdFALSE;
+
+      (void)xTaskNotifyFromISR (thread, flags, eSetBits, &yield);
+      (void)xTaskNotifyAndQueryFromISR (thread, 0, eNoAction, &rflags, NULL);
+
+      portYIELD_FROM_ISR (yield);
+    }
+    else {
+      (void)xTaskNotify (thread, flags, eSetBits);
+      (void)xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags);
     }
   }
   /* Return flags after setting */
@@ -700,7 +705,8 @@ uint32_t osThreadFlagsGet (void) {
 uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) {
   uint32_t rflags, nval;
   uint32_t clear;
-  TickType_t t0;
+  TickType_t t0, td, tout;
+  BaseType_t rval;
 
   if (IS_IRQ()) {
     rflags = (uint32_t)osErrorISR;
@@ -716,10 +722,14 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
     }
 
     rflags = 0U;
+    tout   = timeout;
 
     t0 = xTaskGetTickCount();
     do {
-      if (xTaskNotifyWait (0, clear, &nval, timeout) == pdPASS) {
+      rval = xTaskNotifyWait (0, clear, &nval, tout);
+
+      if (rval == pdPASS) {
+        rflags &= flags;
         rflags |= nval;
 
         if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
@@ -728,6 +738,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
           } else {
             if (timeout == 0U) {
               rflags = (uint32_t)osErrorResource;
+              break;
             }
           }
         }
@@ -737,8 +748,18 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
           } else {
             if (timeout == 0U) {
               rflags = (uint32_t)osErrorResource;
+              break;
             }
           }
+        }
+
+        /* Update timeout */
+        td = xTaskGetTickCount() - t0;
+
+        if (td > tout) {
+          tout  = 0;
+        } else {
+          tout -= td;
         }
       }
       else {
@@ -747,10 +768,9 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
         } else {
           rflags = (uint32_t)osErrorTimeout;
         }
-        break;
       }
     }
-    while ((xTaskGetTickCount() - t0) < timeout);
+    while (rval != pdFAIL);
   }
 
   /* Return flags before clearing */
@@ -998,15 +1018,19 @@ osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
 
 uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
   uint32_t rflags;
+  BaseType_t yield;
 
   if ((ef_id == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xEventGroupSetBitsFromISR ((EventGroupHandle_t)ef_id, (EventBits_t)flags, NULL) == pdPASS) {
-      rflags = flags;
-    } else {
+    yield = pdFALSE;
+
+    if (xEventGroupSetBitsFromISR ((EventGroupHandle_t)ef_id, (EventBits_t)flags, &yield) != pdFAIL) {
       rflags = (uint32_t)osErrorResource;
+    } else {
+      rflags = flags;
+      portYIELD_FROM_ISR (yield);
     }
   }
   else {
@@ -1360,6 +1384,7 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
 
 osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
   osStatus_t stat;
+  BaseType_t yield;
 
   stat = osOK;
 
@@ -1371,8 +1396,12 @@ osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
       stat = osErrorParameter;
     }
     else {
-      if (xSemaphoreTakeFromISR ((SemaphoreHandle_t)semaphore_id, NULL) != pdPASS) {
+      yield = pdFALSE;
+
+      if (xSemaphoreTakeFromISR ((SemaphoreHandle_t)semaphore_id, &yield) != pdPASS) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
@@ -1391,6 +1420,7 @@ osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
 
 osStatus_t osSemaphoreRelease (osSemaphoreId_t semaphore_id) {
   osStatus_t stat;
+  BaseType_t yield;
 
   stat = osOK;
 
@@ -1398,8 +1428,12 @@ osStatus_t osSemaphoreRelease (osSemaphoreId_t semaphore_id) {
     stat = osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xSemaphoreGiveFromISR ((SemaphoreHandle_t)semaphore_id, NULL) != pdTRUE) {
+    yield = pdFALSE;
+
+    if (xSemaphoreGiveFromISR ((SemaphoreHandle_t)semaphore_id, &yield) != pdTRUE) {
       stat = osErrorResource;
+    } else {
+      portYIELD_FROM_ISR (yield);
     }
   }
   else {
@@ -1489,6 +1523,7 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
 
 osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uint8_t msg_prio, uint32_t timeout) {
   osStatus_t stat;
+  BaseType_t yield;
 
   (void)msg_prio; /* Message priority is ignored */
 
@@ -1499,8 +1534,12 @@ osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uin
       stat = osErrorParameter;
     }
     else {
-      if (xQueueSendToBackFromISR ((QueueHandle_t)mq_id, msg_ptr, NULL) != pdTRUE) {
+      yield = pdFALSE;
+
+      if (xQueueSendToBackFromISR ((QueueHandle_t)mq_id, msg_ptr, &yield) != pdTRUE) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
@@ -1524,6 +1563,7 @@ osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uin
 
 osStatus_t osMessageQueueGet (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout) {
   osStatus_t stat;
+  BaseType_t yield;
 
   (void)msg_prio; /* Message priority is ignored */
 
@@ -1534,8 +1574,12 @@ osStatus_t osMessageQueueGet (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *
       stat = osErrorParameter;
     }
     else {
-      if (xQueueReceiveFromISR ((QueueHandle_t)mq_id, msg_ptr, NULL) != pdPASS) {
+      yield = pdFALSE;
+
+      if (xQueueReceiveFromISR ((QueueHandle_t)mq_id, msg_ptr, &yield) != pdPASS) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
