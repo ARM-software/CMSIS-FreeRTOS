@@ -10,7 +10,7 @@
   <releases>
     <release version="9.1.1-dev0">
       Active development...
-      Updated to CMSIS RTOS2 API 2.1.2
+      Updated to CMSIS RTOS2 API 2.1.2 and OS Tick API 1.0.1
       Fixed context switch response latency for API calls from ISR
     </release>
     <release version="9.1.0" date="2017-08-11">
