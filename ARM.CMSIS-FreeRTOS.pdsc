@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="9.1.1-dev1">
+      Added queue registry support to CMSIS:RTOS2:FreeRTOS component
+      Updated CMSIS-FreeRTOS component view to display queue, mutex and semaphore objects
+    </release>
     <release version="9.1.1-dev0">
       Active development...
       Updated to CMSIS RTOS2 API 2.1.2 and OS Tick API 1.0.1

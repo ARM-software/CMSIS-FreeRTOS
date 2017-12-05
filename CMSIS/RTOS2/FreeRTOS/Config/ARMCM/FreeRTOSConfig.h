@@ -167,6 +167,12 @@
 //  <i> Default: 0
 #define configUSE_MALLOC_FAILED_HOOK            0
 
+//  <o>Queue registry size
+//  <i> Define maximum number of queue objects registered for debug purposes.
+//  <i> The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
+//  <i> Default: 0
+#define configQUEUE_REGISTRY_SIZE               0
+
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
