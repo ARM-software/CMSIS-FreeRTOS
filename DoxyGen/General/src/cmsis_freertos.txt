@@ -14,7 +14,7 @@ risk.
 
 <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
 operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
-components that can work across multiple RTOS systems. It supports the ARMv8-M architecture, dynamic object creation, for
+components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for
 multi-core systems, and has a binary compatible interface across ABI compliant compilers.
 
 Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
@@ -30,7 +30,7 @@ This documentation shows you:
 
 \section License License
 
-The CMSIS-FreeRTOS implementation is provided free of charge by ARM under the <a href="license.txt">FreeRTOS license</a>.
+The CMSIS-FreeRTOS implementation is provided free of charge by Arm under the <a href="license.txt">FreeRTOS license</a>.
 
 
 \section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
@@ -251,11 +251,11 @@ To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, 
 where you want to copy the project to and press OK. µVision opens.
 
 
-\section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on ARM Cortex-A9
+\section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9
 
-This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an ARM
+This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an Arm
 Cortex-A9 code. This example only works in <a href="http://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
-development environment from ARM. For information on setting up the target connection, please refer to
+development environment from Arm. For information on setting up the target connection, please refer to
 <a href="http://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
 
 \note you need to have the i.MX6 device family pack installed to see the example in the \b Examples tab of Pack Installer.
