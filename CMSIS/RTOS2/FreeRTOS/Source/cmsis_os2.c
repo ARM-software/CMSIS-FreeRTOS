@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -86,7 +86,7 @@
                                    ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
-#define KERNEL_ID                 "FreeRTOS V9.0.0"
+#define KERNEL_ID                 "FreeRTOS V10.0.1"
 
 /* Timer callback information structure definition */
 typedef struct {

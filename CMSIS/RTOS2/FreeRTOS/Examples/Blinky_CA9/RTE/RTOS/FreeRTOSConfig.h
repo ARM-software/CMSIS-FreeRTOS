@@ -1,71 +1,30 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
 
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
@@ -88,7 +47,6 @@
 #include CMSIS_device_header
 
 #include "os_tick.h"
-
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
@@ -121,6 +79,11 @@
 //  <i> Timer command queue length.
 //  <i> Default: 5
 #define configTIMER_QUEUE_LENGTH                5
+
+//  <o>Preemption interrupt priority
+//  <i> Maximum priority of interrupts that are safe to call FreeRTOS API.
+//  <i> Default: 16
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
 
 //  <q>Use time slicing
 //  <i> Enable setting to use timeslicing.
@@ -163,22 +126,28 @@
 //  <i> Default: 0
 #define configUSE_MALLOC_FAILED_HOOK            0
 
-//  <q>Interrupt controller base address
+//  <o>Queue registry size
+//  <i> Define maximum number of queue objects registered for debug purposes.
+//  <i> The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
+//  <i> Default: 0
+#define configQUEUE_REGISTRY_SIZE               0
+
+//  <o>Interrupt controller base address
 //  <i> Must be set to the base address of the ARM Generic Interrupt Controller (GIC).
 //  <i> Default: 0x2C000000
 #define configINTERRUPT_CONTROLLER_BASE_ADDRESS 0x2C000000UL
 
-//  <q>Interrupt controller CPU interface offset
+//  <o>Interrupt controller CPU interface offset
 //  <i> Must be set to the offset from interrupt controller base address at which the CPU interface starts.
 //  <i> Default: 0x1000
 #define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x00000100UL
 
-//  <q>Interrupt controller unique priorities
+//  <o>Interrupt controller unique priorities
 //  <i> The number of unique priorities that can be specified in the ARM Generic Interrupt Controller (GIC).
 //  <i> Default: 32
 #define configUNIQUE_INTERRUPT_PRIORITIES       16
 
-//  <q>Maximum API call interrupt priority
+//  <o>Maximum API call interrupt priority
 //  <i> Interrupts assigned a priority at or below this priority can call interrupt safe FreeRTOS API function, and will nest.
 //  <i> Interrupts assigned a priority above this priority will not be effected by RTOS critical sections, and will nest,
 //  <i> but cannot call any FreeRTOS API functions.
@@ -201,7 +170,6 @@
 #define configUSE_16_BIT_TICKS                  0
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configMAX_PRIORITIES                    56
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
 #define configKERNEL_INTERRUPT_PRIORITY         255
 
 /* Defines that include FreeRTOS functions which implement CMSIS RTOS2 API. Do not change! */
@@ -225,6 +193,6 @@
   OS_Tick_Enable();
 
 #define configCLEAR_TICK_INTERRUPT()                         \
-    OS_Tick_AcknowledgeIRQ()
+  OS_Tick_AcknowledgeIRQ()
 
 #endif /* FREERTOS_CONFIG_H */

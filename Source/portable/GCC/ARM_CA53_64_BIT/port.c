@@ -1,71 +1,29 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /* Standard includes. */
 #include <stdlib.h>
@@ -136,12 +94,18 @@ context. */
 #define portNO_FLOATING_POINT_CONTEXT	( ( StackType_t ) 0 )
 
 /* Constants required to setup the initial task context. */
-#define portEL3							( ( StackType_t ) 0x0c )
 #define portSP_ELx						( ( StackType_t ) 0x01 )
 #define portSP_EL0						( ( StackType_t ) 0x00 )
 
-/* At the time of writing, the BSP only supports EL3. */
-#define portINITIAL_PSTATE				( portEL3 | portSP_EL0 )
+#if defined( GUEST )
+	#define portEL1						( ( StackType_t ) 0x04 )
+	#define portINITIAL_PSTATE				( portEL1 | portSP_EL0 )
+#else
+	#define portEL3						( ( StackType_t ) 0x0c )
+	/* At the time of writing, the BSP only supports EL3. */
+	#define portINITIAL_PSTATE			( portEL3 | portSP_EL0 )
+#endif
+
 
 /* Used by portASSERT_IF_INTERRUPT_PRIORITY_INVALID() when ensuring the binary
 point is zero. */
@@ -329,7 +293,9 @@ uint32_t ulAPSR;
 
 		/* Sanity check configUNIQUE_INTERRUPT_PRIORITIES matches the read
 		value. */
-		configASSERT( ucMaxPriorityValue == portLOWEST_INTERRUPT_PRIORITY );
+
+		configASSERT( ucMaxPriorityValue >= portLOWEST_INTERRUPT_PRIORITY );
+
 
 		/* Restore the clobbered interrupt priority register to its original
 		value. */
@@ -341,9 +307,15 @@ uint32_t ulAPSR;
 	/* At the time of writing, the BSP only supports EL3. */
 	__asm volatile ( "MRS %0, CurrentEL" : "=r" ( ulAPSR ) );
 	ulAPSR &= portAPSR_MODE_BITS_MASK;
-	configASSERT( ulAPSR == portEL3 );
 
+#if defined( GUEST )
+	#warning Building for execution as a guest under XEN. THIS IS NOT A FULLY TESTED PATH.
+	configASSERT( ulAPSR == portEL1 );
+	if( ulAPSR == portEL1 )
+#else
+	configASSERT( ulAPSR == portEL3 );
 	if( ulAPSR == portEL3 )
+#endif
 	{
 		/* Only continue if the binary point value is set to its lowest possible
 		setting.  See the comments in vPortValidateInterruptPriority() below for
@@ -423,14 +395,18 @@ void vPortExitCritical( void )
 void FreeRTOS_Tick_Handler( void )
 {
 	/* Must be the lowest possible priority. */
-	configASSERT( portICCRPR_RUNNING_PRIORITY_REGISTER == ( uint32_t ) ( portLOWEST_USABLE_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) );
+	#if !defined( QEMU )
+	{
+		configASSERT( portICCRPR_RUNNING_PRIORITY_REGISTER == ( uint32_t ) ( portLOWEST_USABLE_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) );
+	}
+	#endif
 
 	/* Interrupts should not be enabled before this point. */
 	#if( configASSERT_DEFINED == 1 )
 	{
 		uint32_t ulMaskBits;
 
-		__asm volatile( "mrs %0, daif" : "=r"( ulMaskBits ) );
+		__asm volatile( "mrs %0, daif" : "=r"( ulMaskBits ) :: "memory" );
 		configASSERT( ( ulMaskBits & portDAIF_I ) != 0 );
 	}
 	#endif /* configASSERT_DEFINED */
@@ -442,7 +418,7 @@ void FreeRTOS_Tick_Handler( void )
 	updated. */
 	portICCPMR_PRIORITY_MASK_REGISTER = ( uint32_t ) ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT );
 	__asm volatile (	"dsb sy		\n"
-						"isb sy		\n" );
+						"isb sy		\n" ::: "memory" );
 
 	/* Ok to enable interrupts after the interrupt source has been cleared. */
 	configCLEAR_TICK_INTERRUPT();
@@ -496,7 +472,7 @@ uint32_t ulReturn;
 		ulReturn = pdFALSE;
 		portICCPMR_PRIORITY_MASK_REGISTER = ( uint32_t ) ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT );
 		__asm volatile (	"dsb sy		\n"
-							"isb sy		\n" );
+							"isb sy		\n" ::: "memory" );
 	}
 	portENABLE_INTERRUPTS();
 

@@ -1,71 +1,29 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /******************************************************************************
  * This project provides two demo applications.  A simple blinky style project,
@@ -86,8 +44,7 @@
  * port for further information:
  * http://www.freertos.org/FreeRTOS-Windows-Simulator-Emulator-for-Visual-Studio-and-Eclipse-MingW.html
  *
- * This demo was created using Windows XP on a dual core laptop, and has since
- * been maintained using Windows 7 on a quad core laptop.
+
  *
  *******************************************************************************
  */
@@ -111,16 +68,16 @@ The blinky demo is implemented and described in main_blinky.c.
 If mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is not 1 then the comprehensive test and
 demo application will be built.  The comprehensive test and demo application is
 implemented and described in main_full.c. */
-#define mainCREATE_SIMPLE_BLINKY_DEMO_ONLY	1
+#define mainCREATE_SIMPLE_BLINKY_DEMO_ONLY	0
 
 /* This demo uses heap_5.c, and these constants define the sizes of the regions
 that make up the total heap.  heap_5 is only used for test and example purposes
 as this demo could easily create one large heap region instead of multiple
 smaller heap regions - in which case heap_4.c would be the more appropriate
 choice.  See http://www.freertos.org/a00111.html for an explanation. */
-#define mainREGION_1_SIZE	7001
-#define mainREGION_2_SIZE	18105
-#define mainREGION_3_SIZE	2807
+#define mainREGION_1_SIZE	7201
+#define mainREGION_2_SIZE	29905
+#define mainREGION_3_SIZE	6407
 
 /*-----------------------------------------------------------*/
 
@@ -172,12 +129,8 @@ declared here, as a global, so it can be checked by a test that is implemented
 in a different file. */
 StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 
-/* The user trace event posted to the trace recording on each tick interrupt.
-Note:  This project runs under Windows, and Windows will not be executing the
-RTOS threads continuously.  Therefore tick events will not appear with a regular
-interval within the trace recording. */
-traceLabel xTickTraceUserEvent;
-static portBASE_TYPE xTraceRunning = pdTRUE;
+/* Notes if the trace is running or not. */
+static BaseType_t xTraceRunning = pdTRUE;
 
 /*-----------------------------------------------------------*/
 
@@ -188,12 +141,9 @@ int main( void )
 	http://www.freertos.org/a00111.html for an explanation. */
 	prvInitialiseHeap();
 
-	/* Initialise the trace recorder and create the label used to post user
-	events to the trace recording on each tick interrupt.  Use of the trace
-	recorder is optional.  See http://www.FreeRTOS.org/trace for more
-	information. */
-	vTraceInitTraceData();
-	xTickTraceUserEvent = xTraceOpenLabel( "tick" );
+	/* Initialise the trace recorder.  Use of the trace recorder is optional.
+	See http://www.FreeRTOS.org/trace for more information. */
+	vTraceEnable( TRC_START );
 
 	/* The mainCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
 	of this file. */
@@ -299,12 +249,6 @@ void vApplicationTickHook( void )
 		vFullDemoTickHookFunction();
 	}
 	#endif /* mainCREATE_SIMPLE_BLINKY_DEMO_ONLY */
-
-	/* Write a user event to the trace log.  Note:  This project runs under
-	Windows, and Windows will not be executing the RTOS threads continuously.
-	Therefore tick events will not appear with a regular interval within the the
-	trace recording. */
-	vTraceUserEvent( xTickTraceUserEvent );
 }
 /*-----------------------------------------------------------*/
 
@@ -319,7 +263,7 @@ void vApplicationDaemonTaskStartupHook( void )
 
 void vAssertCalled( unsigned long ulLine, const char * const pcFileName )
 {
-static portBASE_TYPE xPrinted = pdFALSE;
+static BaseType_t xPrinted = pdFALSE;
 volatile uint32_t ulSetToNonZeroInDebuggerToContinue = 0;
 
 	/* Called if an assertion passed to configASSERT() fails.  See
@@ -329,7 +273,7 @@ volatile uint32_t ulSetToNonZeroInDebuggerToContinue = 0;
 	( void ) ulLine;
 	( void ) pcFileName;
 
-	printf( "ASSERT! Line %d, file %s, GetLastError() %d\r\n", ulLine, pcFileName, GetLastError() );
+	printf( "ASSERT! Line %ld, file %s, GetLastError() %ld\r\n", ulLine, pcFileName, GetLastError() );
 
  	taskENTER_CRITICAL();
 	{

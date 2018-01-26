@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -41,6 +41,7 @@
 #define Timer_t          void*
 #define PendedFunction_t void*
 #define EventGroup_t     void*
+#define StreamBuffer_t   void*
 
 /**
   \brief  Event on successful task create (Op)
@@ -290,6 +291,12 @@ extern void EvrFreeRTOSQueue_QueueReceive (Queue_t pxQueue);
 extern void EvrFreeRTOSQueue_QueuePeek (Queue_t pxQueue);
 
 /**
+  \brief  Event on queue peek when queue is empty and no block time was specified (Error)
+  \param[in]  pxQueue           pointer to queue object handle.
+*/
+extern void EvrFreeRTOSQueue_QueuePeekFailed (Queue_t pxQueue);
+
+/**
   \brief  Event on queue peek from ISR (Op)
   \param[in]  pxQueue           pointer to queue object handle.
 */
@@ -486,6 +493,90 @@ extern void EvrFreeRTOSEventGroups_EventGroupSetBitsFromIsr (EventGroup_t pxEven
 extern void EvrFreeRTOSEventGroups_EventGroupDelete (EventGroup_t pxEventGroup);
 
 /**
+  \brief  Event on unsuccessful stream buffer object create (Error)
+  \param[in]  uxIsMessageBuffer buffer type designator (0:stream, 1:message).
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer);
+
+/**
+  \brief  Event on unsuccessful stream buffer object create (Error)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  uxIsMessageBuffer buffer type designator (0:stream, 1:message).
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed (StreamBuffer_t pxStreamBuffer, uint32_t uxIsMessageBuffer);
+
+/**
+  \brief  Event on successful stream buffer object create (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  uxIsMessageBuffer buffer type designator (0:stream, 1:message).
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferCreate (StreamBuffer_t pxStreamBuffer, uint32_t uxIsMessageBuffer);
+
+/**
+  \brief  Event on stream buffer object delete (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferDelete (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer object reset (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferReset (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer send when buffer is full and sending task is blocked (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer send when data is successfully copied into the buffer (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  xBytesSent        number of bytes copied into the buffer
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferSend (StreamBuffer_t pxStreamBuffer, uint32_t xBytesSent);
+
+/**
+  \brief  Event on stream buffer send when data is not copied into the buffer (Error)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferSendFailed (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer send from ISR when data is successfully copied into the buffer (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  xBytesSent        number of bytes copied into the buffer
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferSendFromIsr (StreamBuffer_t pxStreamBuffer, uint32_t xBytesSent);
+
+/**
+  \brief  Event on stream buffer receive when buffer is empty and receiving task is blocked (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer receive when data is successfully copied from the buffer (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  xReceivedLength   number of bytes copied from the buffer
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferReceive (StreamBuffer_t pxStreamBuffer, uint32_t xReceivedLength);
+
+/**
+  \brief  Event on stream buffer receive when data is not copied from the buffer (Error)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferReceiveFailed (StreamBuffer_t pxStreamBuffer);
+
+/**
+  \brief  Event on stream buffer receive from ISR when data is successfully copied from the buffer (Op)
+  \param[in]  pxStreamBuffer    pointer to Stream Buffer object handle.
+  \param[in]  xReceivedLength   number of bytes copied from the buffer
+*/
+extern void EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr (StreamBuffer_t pxStreamBuffer, uint32_t xReceivedLength);
+
+/**
   \brief  Event on heap memory block allocation (Op)
   \param[in]  pvAddress         pointer to memory block.
   \param[in]  uiSize            memory block size.
@@ -665,6 +756,10 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
   #define traceQUEUE_PEEK(px)                         EvrFreeRTOSQueue_QueuePeek(px)
 #endif
 
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_DISABLE))
+  #define traceQUEUE_PEEK_FAILED(px)                  EvrFreeRTOSQueue_QueuePeekFailed(px)
+#endif
+
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FROM_ISR_DISABLE))
   #define traceQUEUE_PEEK_FROM_ISR(px)                EvrFreeRTOSQueue_QueuePeekFromIsr(px)
 #endif
@@ -788,6 +883,61 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 
+/* Stream Buffer */
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_FAILED_DISABLE))
+  #define traceSTREAM_BUFFER_CREATE_FAILED(ux)        EvrFreeRTOSStreamBuf_StreamBufferCreateFailed(ux)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_STATIC_FAILED_DISABLE))
+  #define traceSTREAM_BUFFER_CREATE_STATIC_FAILED(x,ux)  EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed(x,ux)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_DISABLE))
+  #define traceSTREAM_BUFFER_CREATE(px,x)             EvrFreeRTOSStreamBuf_StreamBufferCreate(px,x)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_DELETE_DISABLE))
+  #define traceSTREAM_BUFFER_DELETE(px)               EvrFreeRTOSStreamBuf_StreamBufferDelete(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RESET_DISABLE))
+  #define traceSTREAM_BUFFER_RESET(px)                EvrFreeRTOSStreamBuf_StreamBufferReset(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_SEND_DISABLE))
+  #define traceBLOCKING_ON_STREAM_BUFFER_SEND(px)     EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_DISABLE))
+  #define traceSTREAM_BUFFER_SEND(px,x)               EvrFreeRTOSStreamBuf_StreamBufferSend(px,x)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FAILED_DISABLE))
+  #define traceSTREAM_BUFFER_SEND_FAILED(px)          EvrFreeRTOSStreamBuf_StreamBufferSendFailed(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FROM_ISR_DISABLE))
+  #define traceSTREAM_BUFFER_SEND_FROM_ISR(px,x)      EvrFreeRTOSStreamBuf_StreamBufferSendFromIsr(px,x)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_RECEIVE_DISABLE))
+  #define traceBLOCKING_ON_STREAM_BUFFER_RECEIVE(px)  EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_DISABLE))
+  #define traceSTREAM_BUFFER_RECEIVE(px,x)            EvrFreeRTOSStreamBuf_StreamBufferReceive(px,x)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FAILED_DISABLE))
+  #define traceSTREAM_BUFFER_RECEIVE_FAILED(px)       EvrFreeRTOSStreamBuf_StreamBufferReceiveFailed(px)
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FROM_ISR_DISABLE))
+  #define traceSTREAM_BUFFER_RECEIVE_FROM_ISR(px,x)   EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr(px,x)
+#endif
+
+
 /* Heap */
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceMALLOC_DISABLE))
@@ -805,5 +955,6 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #undef Timer_t
 #undef PendedFunction_t
 #undef EventGroup_t
+#undef StreamBuffer_t
 
 #endif /* FREERTOS_EVR_H_ */
