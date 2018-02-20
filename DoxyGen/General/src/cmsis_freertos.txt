@@ -59,13 +59,14 @@ File/Directory             |Content
     <tr>
       <td>10.0.1</td>
       <td>
-        Updated to FreeRTOS V10.0.1
-      </td>
-    </tr>
-    <tr>
-      <td>9.1.1</td>
-      <td>
-        Updated to CMSIS RTOS2 API 2.1.2
+        <p><b>FreeRTOS V10.0.0</b></p>
+        <p>Maintenance release for CMSIS 5.3.0:
+        <ul>
+          <li>RTOS2 API 2.1.2</li>
+          <li>OS Tick API 1.0.1</li>
+          <li>Enhanced context switch response latency for API calls from ISR.</li>
+          <li>Enhanced debug awareness in SCVD.</li>
+        </ul>
       </td>
     </tr>
     <tr>
