@@ -19,7 +19,7 @@ var NAVTREE =
     [ "Example projects", "examples.html", [
       [ "Blinky example using FreeRTOS natively", "examples.html#examples_native", null ],
       [ "Blinky example using CMSIS-FreeRTOS", "examples.html#examples_cmsis", null ],
-      [ "Blinky example using CMSIS-FreeRTOS running on ARM Cortex-A9", "examples.html#examples_cmsis_a9", null ]
+      [ "Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9", "examples.html#examples_cmsis_a9", null ]
     ] ],
     [ "Technical data and limitations", "tech_data.html", [
       [ "Limitations", "tech_data.html#td_limitations", null ],
