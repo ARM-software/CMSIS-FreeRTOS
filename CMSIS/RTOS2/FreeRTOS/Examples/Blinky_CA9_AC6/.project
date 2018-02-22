@@ -28,67 +28,67 @@
 		<link>
 			<name>RTE/CMSIS/clib_arm.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/CMSIS/cmsis_os2.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/event_groups.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/event_groups.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/event_groups.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/freertos_evr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/heap_4.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/portable/MemMang/heap_4.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/MemMang/heap_4.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/list.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/list.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/list.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/port.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/portable/GCC/ARM_CA9/port.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9/port.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/portASM.S</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/portable/GCC/ARM_CA9/portASM.S</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9/portASM.S</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/queue.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/queue.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/queue.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/tasks.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/tasks.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/tasks.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/RTOS/timers.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/9.1.0/Source/timers.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS-FreeRTOS/10.0.1/Source/timers.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ARMCA9/irq_ctrl_gic.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS/5.1.0/CMSIS/Core_A/Source/irq_ctrl_gic.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS/5.2.0/CMSIS/Core_A/Source/irq_ctrl_gic.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ARMCA9/os_tick_ptim.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS/5.1.0/CMSIS/RTOS2/Source/os_tick_ptim.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Source/os_tick_ptim.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

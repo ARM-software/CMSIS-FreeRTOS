@@ -1,71 +1,29 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /*-----------------------------------------------------------
  * Implementation of functions defined in portable.h for the ARM CM3 port.
@@ -78,9 +36,7 @@ task.h is included from an application file. */
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"
-#include "queue.h"
-#include "event_groups.h"
-#include "mpu_prototypes.h"
+#include "task.h"
 
 #ifndef __TARGET_FPU_VFP
 	#error This port can only be used when the project options are configured to enable hardware floating point support.
@@ -91,6 +47,7 @@ task.h is included from an application file. */
 /* Constants required to access and manipulate the NVIC. */
 #define portNVIC_SYSTICK_CTRL_REG				( * ( ( volatile uint32_t * ) 0xe000e010 ) )
 #define portNVIC_SYSTICK_LOAD_REG				( * ( ( volatile uint32_t * ) 0xe000e014 ) )
+#define portNVIC_SYSTICK_CURRENT_VALUE_REG		( * ( ( volatile uint32_t * ) 0xe000e018 ) )
 #define portNVIC_SYSPRI2_REG					( *	( ( volatile uint32_t * ) 0xe000ed20 ) )
 #define portNVIC_SYSPRI1_REG					( * ( ( volatile uint32_t * ) 0xe000ed1c ) )
 #define portNVIC_SYS_CTRL_STATE_REG				( * ( ( volatile uint32_t * ) 0xe000ed24 ) )
@@ -124,7 +81,7 @@ task.h is included from an application file. */
 
 /* Constants required to set up the initial stack. */
 #define portINITIAL_XPSR						( 0x01000000UL )
-#define portINITIAL_EXEC_RETURN					( 0xfffffffdUL )
+#define portINITIAL_EXC_RETURN					( 0xfffffffdUL )
 #define portINITIAL_CONTROL_IF_UNPRIVILEGED		( 0x03 )
 #define portINITIAL_CONTROL_IF_PRIVILEGED		( 0x02 )
 
@@ -206,7 +163,7 @@ static void vPortEnableVFP( void );
  * Utility function.
  */
 static uint32_t prvPortGetIPSR( void );
-	
+
 /*
  * Used by the portASSERT_IF_INTERRUPT_PRIORITY_INVALID() macro to ensure
  * FreeRTOS API functions are not called from interrupts that have been assigned
@@ -239,7 +196,7 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 	/* A save method is being used that requires each task to maintain its
 	own exec return value. */
 	pxTopOfStack--;
-	*pxTopOfStack = portINITIAL_EXEC_RETURN;
+	*pxTopOfStack = portINITIAL_EXC_RETURN;
 
 	pxTopOfStack -= 9;	/* R11, R10, R9, R8, R7, R6, R5 and R4. */
 
@@ -297,7 +254,7 @@ uint32_t ulReg;
 __asm void vPortSVCHandler( void )
 {
 	extern prvSVCHandler
-		
+
 	PRESERVE8
 
 	/* Assumes psp was in use. */
@@ -380,6 +337,24 @@ BaseType_t xPortStartScheduler( void )
 			ucMaxPriorityValue <<= ( uint8_t ) 0x01;
 		}
 
+		#ifdef __NVIC_PRIO_BITS
+		{
+			/* Check the CMSIS configuration that defines the number of
+			priority bits matches the number of priority bits actually queried
+			from the hardware. */
+			configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == __NVIC_PRIO_BITS );
+		}
+		#endif
+
+		#ifdef configPRIO_BITS
+		{
+			/* Check the FreeRTOS configuration that defines the number of
+			priority bits matches the number of priority bits actually queried
+			from the hardware. */
+			configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == configPRIO_BITS );
+		}
+		#endif
+
 		/* Shift the priority group value back to its position within the AIRCR
 		register. */
 		ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
@@ -424,12 +399,21 @@ BaseType_t xPortStartScheduler( void )
 __asm void prvStartFirstTask( void )
 {
 	PRESERVE8
-	
-	ldr r0, =0xE000ED08	/* Use the NVIC offset register to locate the stack. */
+
+	/* Use the NVIC offset register to locate the stack. */
+	ldr r0, =0xE000ED08
 	ldr r0, [r0]
 	ldr r0, [r0]
-	msr msp, r0			/* Set the msp back to the start of the stack. */
-	cpsie i				/* Globally enable interrupts. */
+	/* Set the msp back to the start of the stack. */
+	msr msp, r0
+	/* Clear the bit that indicates the FPU is in use in case the FPU was used
+	before the scheduler was started - which would otherwise result in the
+	unnecessary leaving of space in the SVC stack for lazy saving of FPU
+	registers. */
+	mov r0, #0
+	msr control, r0
+	/* Globally enable interrupts. */
+	cpsie i
 	cpsie f
 	dsb
 	isb
@@ -481,8 +465,8 @@ __asm void xPortPendSVHandler( void )
 
 	mrs r0, psp
 
-	ldr	r3, =pxCurrentTCB			/* Get the location of the current TCB. */
-	ldr	r2, [r3]
+	ldr r3, =pxCurrentTCB			/* Get the location of the current TCB. */
+	ldr r2, [r3]
 
 	tst r14, #0x10					/* Is the task using the FPU context?  If so, push high vfp registers. */
 	it eq
@@ -492,7 +476,7 @@ __asm void xPortPendSVHandler( void )
 	stmdb r0!, {r1, r4-r11, r14}	/* Save the remaining registers. */
 	str r0, [r2]					/* Save the new top of stack into the first member of the TCB. */
 
-	stmdb sp!, {r3}
+	stmdb sp!, {r0, r3}
 	mov r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY
 	msr basepri, r0
 	dsb
@@ -500,7 +484,7 @@ __asm void xPortPendSVHandler( void )
 	bl vTaskSwitchContext
 	mov r0, #0
 	msr basepri, r0
-	ldmia sp!, {r3}
+	ldmia sp!, {r0, r3}
 									/* Restore the context. */
 	ldr r1, [r3]
 	ldr r0, [r1]					/* The first item in the TCB is the task top of stack. */
@@ -544,6 +528,10 @@ uint32_t ulDummy;
  */
 static void prvSetupTimerInterrupt( void )
 {
+	/* Reset the SysTick. */
+	portNVIC_SYSTICK_CTRL_REG = 0UL;
+	portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+
 	/* Configure SysTick to interrupt at the requested rate. */
 	portNVIC_SYSTICK_LOAD_REG = ( configCPU_CLOCK_HZ / configTICK_RATE_HZ ) - 1UL;
 	portNVIC_SYSTICK_CTRL_REG = portNVIC_SYSTICK_CLK | portNVIC_SYSTICK_INT | portNVIC_SYSTICK_ENABLE;
@@ -553,18 +541,18 @@ static void prvSetupTimerInterrupt( void )
 __asm void vPortSwitchToUserMode( void )
 {
 	PRESERVE8
-	
+
 	mrs r0, control
 	orr r0, #1
 	msr control, r0
 	bx r14
 }
 /*-----------------------------------------------------------*/
-	
+
 __asm void vPortEnableVFP( void )
 {
 	PRESERVE8
-	
+
 	ldr.w r0, =0xE000ED88		/* The FPU enable bits are in the CPACR. */
 	ldr r1, [r0]
 
@@ -682,7 +670,7 @@ extern uint32_t __SRAM_segment_end__;
 extern uint32_t __privileged_data_start__;
 extern uint32_t __privileged_data_end__;
 
-	
+
 int32_t lIndex;
 uint32_t ul;
 

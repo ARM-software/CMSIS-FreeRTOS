@@ -42,7 +42,7 @@
 <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="9.0.0">
 <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="9.1.0" versionMatchMode="latest"/>
 <file category="doc" name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
-<file attr="config" category="header" condition="CoreA" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="10.0.0"/>
+<file attr="config" category="header" condition="CoreA" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="10.0.1"/>
 </component>
 <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Core" Cvendor="ARM" Cversion="9.0.0">
 <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="9.1.0" versionMatchMode="latest"/>

@@ -1,0 +1,15 @@
+pdsc: ARM.CMSIS-FreeRTOS.pdsc
+preproc:
+ - clean: CMSIS/Documentation
+ - os.makedirs("CMSIS/Documentation", exist_ok=True)
+ - doxygen: DoxyGen/General/general.dxy
+glob:
+ - License/license.txt
+ - readme.txt
+ - links_to_doc_pages_for_the_demo_projects.url
+ - CMSIS/**/*
+ - CMSIS/**/Examples/**/.*
+ - CMSIS/**/Examples/**/.**/*
+ - Config/**/*
+ - Demo/**/*
+ - Source/**/*

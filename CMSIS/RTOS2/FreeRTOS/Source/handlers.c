@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 /*
- * Copyright (c) 2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2017 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -50,6 +50,6 @@ void vApplicationIRQHandler( uint32_t ulICCIAR )
 
   /* Call handler function */
   if (h != NULL) {
-	h();
+    h();
   }
 }

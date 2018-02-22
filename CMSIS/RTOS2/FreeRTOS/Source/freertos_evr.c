@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -27,6 +27,8 @@
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
+#include "stream_buffer.h"              // ARM.FreeRTOS::RTOS:Stream Buffer
+
 
 #ifdef RTE_Compiler_EventRecorder
 
@@ -38,87 +40,104 @@
 #define EvtFreeRTOSTimersNo             (0xF2U)
 #define EvtFreeRTOSEventGroupsNo        (0xF3U)
 #define EvtFreeRTOSHeapNo               (0xF4U)
+#define EvtFreeRTOSStreamBufNo          (0xF5U)
 
 /* Event IDs for "FreeRTOS Tasks" */
-#define EvtFreeRTOSTasks_TaskCreate                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x00U)
-#define EvtFreeRTOSTasks_TaskCreateFailed                 EventID(EventLevelError,  EvtFreeRTOSTasksNo, 0x01U)
-#define EvtFreeRTOSTasks_TaskDelete                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x02U)
-#define EvtFreeRTOSTasks_TaskDelayUntil                   EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x03U)
-#define EvtFreeRTOSTasks_TaskDelay                        EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x04U)
-#define EvtFreeRTOSTasks_TaskPrioritySet                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x05U)
-#define EvtFreeRTOSTasks_TaskSuspend                      EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x06U)
-#define EvtFreeRTOSTasks_TaskResume                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x07U)
-#define EvtFreeRTOSTasks_TaskResumeFromIsr                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x08U)
-#define EvtFreeRTOSTasks_TaskIncrementTick                EventID(EventLevelDetail, EvtFreeRTOSTasksNo, 0x09U)
-#define EvtFreeRTOSTasks_IncreaseTickCount                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0AU)
-#define EvtFreeRTOSTasks_TaskSwitchedOut                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0BU)
-#define EvtFreeRTOSTasks_TaskSwitchedIn                   EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0CU)
-#define EvtFreeRTOSTasks_TaskPriorityInherit              EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0DU)
-#define EvtFreeRTOSTasks_TaskPriorityDisinherit           EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0EU)
-#define EvtFreeRTOSTasks_MovedTaskToReadyState            EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0FU)
-#define EvtFreeRTOSTasks_PostMovedTaskToReadyState        EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x10U)
-#define EvtFreeRTOSTasks_LowPowerIdleBegin                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x11U)
-#define EvtFreeRTOSTasks_LowPowerIdleEnd                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x12U)
-#define EvtFreeRTOSTasks_TaskNotifyTakeBlock              EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x13U)
-#define EvtFreeRTOSTasks_TaskNotifyTake                   EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x14U)
-#define EvtFreeRTOSTasks_TaskNotifyWaitBlock              EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x15U)
-#define EvtFreeRTOSTasks_TaskNotifyWait                   EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x16U)
-#define EvtFreeRTOSTasks_TaskNotify                       EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x17U)
-#define EvtFreeRTOSTasks_TaskNotifyFromIsr                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x18U)
-#define EvtFreeRTOSTasks_TaskNotifyGiveFromIsr            EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x19U)
+#define EvtFreeRTOSTasks_TaskCreate                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x00U)
+#define EvtFreeRTOSTasks_TaskCreateFailed                   EventID(EventLevelError,  EvtFreeRTOSTasksNo, 0x01U)
+#define EvtFreeRTOSTasks_TaskDelete                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x02U)
+#define EvtFreeRTOSTasks_TaskDelayUntil                     EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x03U)
+#define EvtFreeRTOSTasks_TaskDelay                          EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x04U)
+#define EvtFreeRTOSTasks_TaskPrioritySet                    EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x05U)
+#define EvtFreeRTOSTasks_TaskSuspend                        EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x06U)
+#define EvtFreeRTOSTasks_TaskResume                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x07U)
+#define EvtFreeRTOSTasks_TaskResumeFromIsr                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x08U)
+#define EvtFreeRTOSTasks_TaskIncrementTick                  EventID(EventLevelDetail, EvtFreeRTOSTasksNo, 0x09U)
+#define EvtFreeRTOSTasks_IncreaseTickCount                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0AU)
+#define EvtFreeRTOSTasks_TaskSwitchedOut                    EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0BU)
+#define EvtFreeRTOSTasks_TaskSwitchedIn                     EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0CU)
+#define EvtFreeRTOSTasks_TaskPriorityInherit                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0DU)
+#define EvtFreeRTOSTasks_TaskPriorityDisinherit             EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0EU)
+#define EvtFreeRTOSTasks_MovedTaskToReadyState              EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x0FU)
+#define EvtFreeRTOSTasks_PostMovedTaskToReadyState          EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x10U)
+#define EvtFreeRTOSTasks_LowPowerIdleBegin                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x11U)
+#define EvtFreeRTOSTasks_LowPowerIdleEnd                    EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x12U)
+#define EvtFreeRTOSTasks_TaskNotifyTakeBlock                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x13U)
+#define EvtFreeRTOSTasks_TaskNotifyTake                     EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x14U)
+#define EvtFreeRTOSTasks_TaskNotifyWaitBlock                EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x15U)
+#define EvtFreeRTOSTasks_TaskNotifyWait                     EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x16U)
+#define EvtFreeRTOSTasks_TaskNotify                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x17U)
+#define EvtFreeRTOSTasks_TaskNotifyFromIsr                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x18U)
+#define EvtFreeRTOSTasks_TaskNotifyGiveFromIsr              EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x19U)
 
 /* Event IDs for "FreeRTOS Queue" */
-#define EvtFreeRTOSQueue_QueueCreate                      EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x00U)
-#define EvtFreeRTOSQueue_QueueCreateFailed                EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x01U)
-#define EvtFreeRTOSQueue_CreateMutex                      EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x02U)
-#define EvtFreeRTOSQueue_CreateMutexFailed                EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x03U)
-#define EvtFreeRTOSQueue_GiveMutexRecursive               EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x04U)
-#define EvtFreeRTOSQueue_GiveMutexRecursiveFailed         EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x05U)
-#define EvtFreeRTOSQueue_TakeMutexRecursive               EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x06U)
-#define EvtFreeRTOSQueue_TakeMutexRecursiveFailed         EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x07U)
-#define EvtFreeRTOSQueue_CreateCountingSemaphore          EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x08U)
-#define EvtFreeRTOSQueue_CreateCountingSemaphoreFailed    EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x09U)
-#define EvtFreeRTOSQueue_QueueSend                        EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0AU)
-#define EvtFreeRTOSQueue_QueueSendFailed                  EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x0BU)
-#define EvtFreeRTOSQueue_QueueReceive                     EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0CU)
-#define EvtFreeRTOSQueue_QueuePeek                        EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0DU)
-#define EvtFreeRTOSQueue_QueuePeekFromIsr                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0EU)
-#define EvtFreeRTOSQueue_QueueReceiveFailed               EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x0FU)
-#define EvtFreeRTOSQueue_QueueSendFromIsr                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x10U)
-#define EvtFreeRTOSQueue_QueueSendFromIsrFailed           EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x11U)
-#define EvtFreeRTOSQueue_QueueReceiveFromIsr              EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x12U)
-#define EvtFreeRTOSQueue_QueueReceiveFromIsrFailed        EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x13U)
-#define EvtFreeRTOSQueue_QueuePeekFromIsrFailed           EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x14U)
-#define EvtFreeRTOSQueue_QueueDelete                      EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x15U)
-#define EvtFreeRTOSQueue_QueueRegistryAdd                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x16U)
-#define EvtFreeRTOSQueue_BlockingOnQueueReceive           EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x17U)
-#define EvtFreeRTOSQueue_BlockingOnQueueSend              EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x18U)
+#define EvtFreeRTOSQueue_QueueCreate                        EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x00U)
+#define EvtFreeRTOSQueue_QueueCreateFailed                  EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x01U)
+#define EvtFreeRTOSQueue_CreateMutex                        EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x02U)
+#define EvtFreeRTOSQueue_CreateMutexFailed                  EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x03U)
+#define EvtFreeRTOSQueue_GiveMutexRecursive                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x04U)
+#define EvtFreeRTOSQueue_GiveMutexRecursiveFailed           EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x05U)
+#define EvtFreeRTOSQueue_TakeMutexRecursive                 EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x06U)
+#define EvtFreeRTOSQueue_TakeMutexRecursiveFailed           EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x07U)
+#define EvtFreeRTOSQueue_CreateCountingSemaphore            EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x08U)
+#define EvtFreeRTOSQueue_CreateCountingSemaphoreFailed      EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x09U)
+#define EvtFreeRTOSQueue_QueueSend                          EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0AU)
+#define EvtFreeRTOSQueue_QueueSendFailed                    EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x0BU)
+#define EvtFreeRTOSQueue_QueueReceive                       EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0CU)
+#define EvtFreeRTOSQueue_QueuePeek                          EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0DU)
+#define EvtFreeRTOSQueue_QueuePeekFromIsr                   EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x0EU)
+#define EvtFreeRTOSQueue_QueueReceiveFailed                 EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x0FU)
+#define EvtFreeRTOSQueue_QueueSendFromIsr                   EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x10U)
+#define EvtFreeRTOSQueue_QueueSendFromIsrFailed             EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x11U)
+#define EvtFreeRTOSQueue_QueueReceiveFromIsr                EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x12U)
+#define EvtFreeRTOSQueue_QueueReceiveFromIsrFailed          EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x13U)
+#define EvtFreeRTOSQueue_QueuePeekFromIsrFailed             EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x14U)
+#define EvtFreeRTOSQueue_QueueDelete                        EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x15U)
+#define EvtFreeRTOSQueue_QueueRegistryAdd                   EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x16U)
+#define EvtFreeRTOSQueue_BlockingOnQueueReceive             EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x17U)
+#define EvtFreeRTOSQueue_BlockingOnQueueSend                EventID(EventLevelOp,     EvtFreeRTOSQueueNo, 0x18U)
+#define EvtFreeRTOSQueue_QueuePeekFailed                    EventID(EventLevelError,  EvtFreeRTOSQueueNo, 0x19U)
 
 /* Event IDs for "FreeRTOS Timers" */
-#define EvtFreeRTOSTimers_TimerCreate                     EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x00U)
-#define EvtFreeRTOSTimers_TimerCreateFailed               EventID(EventLevelError,  EvtFreeRTOSTimersNo, 0x01U)
-#define EvtFreeRTOSTimers_TimerCommandSend                EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x02U)
-#define EvtFreeRTOSTimers_TimerCommandReceived            EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x03U)
-#define EvtFreeRTOSTimers_TimerExpired                    EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x04U)
-#define EvtFreeRTOSTimers_PendFuncCall                    EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x05U)
-#define EvtFreeRTOSTimers_PendFuncCallFromIsr             EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x06U)
+#define EvtFreeRTOSTimers_TimerCreate                       EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x00U)
+#define EvtFreeRTOSTimers_TimerCreateFailed                 EventID(EventLevelError,  EvtFreeRTOSTimersNo, 0x01U)
+#define EvtFreeRTOSTimers_TimerCommandSend                  EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x02U)
+#define EvtFreeRTOSTimers_TimerCommandReceived              EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x03U)
+#define EvtFreeRTOSTimers_TimerExpired                      EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x04U)
+#define EvtFreeRTOSTimers_PendFuncCall                      EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x05U)
+#define EvtFreeRTOSTimers_PendFuncCallFromIsr               EventID(EventLevelOp,     EvtFreeRTOSTimersNo, 0x06U)
 
 /* Event IDs for "FreeRTOS EventGroups" */
-#define EvtFreeRTOSEventGroups_EventGroupCreate           EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x00U)
-#define EvtFreeRTOSEventGroups_EventGroupCreateFailed     EventID(EventLevelError,  EvtFreeRTOSEventGroupsNo, 0x01U)
-#define EvtFreeRTOSEventGroups_EventGroupSyncBlock        EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x02U)
-#define EvtFreeRTOSEventGroups_EventGroupSyncEnd          EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x03U)
-#define EvtFreeRTOSEventGroups_EventGroupWaitBitsBlock    EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x04U)
-#define EvtFreeRTOSEventGroups_EventGroupWaitBitsEnd      EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x05U)
-#define EvtFreeRTOSEventGroups_EventGroupClearBits        EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x06U)
-#define EvtFreeRTOSEventGroups_EventGroupClearBitsFromIsr EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x07U)
-#define EvtFreeRTOSEventGroups_EventGroupSetBits          EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x08U)
-#define EvtFreeRTOSEventGroups_EventGroupSetBitsFromIsr   EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x09U)
-#define EvtFreeRTOSEventGroups_EventGroupDelete           EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x0AU)
+#define EvtFreeRTOSEventGroups_EventGroupCreate             EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x00U)
+#define EvtFreeRTOSEventGroups_EventGroupCreateFailed       EventID(EventLevelError,  EvtFreeRTOSEventGroupsNo, 0x01U)
+#define EvtFreeRTOSEventGroups_EventGroupSyncBlock          EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x02U)
+#define EvtFreeRTOSEventGroups_EventGroupSyncEnd            EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x03U)
+#define EvtFreeRTOSEventGroups_EventGroupWaitBitsBlock      EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x04U)
+#define EvtFreeRTOSEventGroups_EventGroupWaitBitsEnd        EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x05U)
+#define EvtFreeRTOSEventGroups_EventGroupClearBits          EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x06U)
+#define EvtFreeRTOSEventGroups_EventGroupClearBitsFromIsr   EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x07U)
+#define EvtFreeRTOSEventGroups_EventGroupSetBits            EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x08U)
+#define EvtFreeRTOSEventGroups_EventGroupSetBitsFromIsr     EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x09U)
+#define EvtFreeRTOSEventGroups_EventGroupDelete             EventID(EventLevelOp,     EvtFreeRTOSEventGroupsNo, 0x0AU)
 
 /* Event IDs for "FreeRTOS Heap" */
-#define EvtFreeRTOSHeap_Malloc                            EventID(EventLevelOp,     EvtFreeRTOSHeapNo, 0x00U)
-#define EvtFreeRTOSHeap_Free                              EventID(EventLevelOp,     EvtFreeRTOSHeapNo, 0x01U)
+#define EvtFreeRTOSHeap_Malloc                              EventID(EventLevelOp,     EvtFreeRTOSHeapNo, 0x00U)
+#define EvtFreeRTOSHeap_Free                                EventID(EventLevelOp,     EvtFreeRTOSHeapNo, 0x01U)
+
+/* Event IDs for "FreeRTOS Stream Buffer" */
+#define EvtFreeRTOSStreamBuf_StreamBufferCreateFailed       EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x00U)
+#define EvtFreeRTOSStreamBuf_StreamBufferCreateStaticFailed EventID(EventLevelError,  EvtFreeRTOSStreamBufNo, 0x01U)
+#define EvtFreeRTOSStreamBuf_StreamBufferCreate             EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x02U)
+#define EvtFreeRTOSStreamBuf_StreamBufferDelete             EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x03U)
+#define EvtFreeRTOSStreamBuf_StreamBufferReset              EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x04U)
+#define EvtFreeRTOSStreamBuf_StreamBufferBlockingOnSend     EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x05U)
+#define EvtFreeRTOSStreamBuf_StreamBufferSend               EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x06U)
+#define EvtFreeRTOSStreamBuf_StreamBufferSendFailed         EventID(EventLevelError,  EvtFreeRTOSStreamBufNo, 0x07U)
+#define EvtFreeRTOSStreamBuf_StreamBufferSendFromIsr        EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x08U)
+#define EvtFreeRTOSStreamBuf_StreamBufferBlockingOnReceive  EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x09U)
+#define EvtFreeRTOSStreamBuf_StreamBufferReceive            EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x0AU)
+#define EvtFreeRTOSStreamBuf_StreamBufferReceiveFailed      EventID(EventLevelError,  EvtFreeRTOSStreamBufNo, 0x0BU)
+#define EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr     EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x0CU)
 
 #endif /* RTE_Compiler_EventRecorder */
 
@@ -531,6 +550,16 @@ void EvrFreeRTOSQueue_QueuePeek (/*Queue_t*/void *pxQueue) {
 }
 #endif
 
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FAILED_DISABLE))
+void EvrFreeRTOSQueue_QueuePeekFailed (/*Queue_t*/void *pxQueue) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSQueue_QueuePeekFailed, (uint32_t)pxQueue, 0U);
+#else
+  (void)pxQueue;
+#endif
+}
+#endif
+
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FROM_ISR_DISABLE))
 void EvrFreeRTOSQueue_QueuePeekFromIsr (/*Queue_t*/void *pxQueue) {
 #if defined(RTE_Compiler_EventRecorder)
@@ -843,6 +872,143 @@ void EvrFreeRTOSEventGroups_EventGroupDelete (/*EventGroup_t*/void *pxEventGroup
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupDelete, (uint32_t)pxEventGroup, 0U);
 #else
   (void)pxEventGroup;
+#endif
+}
+#endif
+
+
+/* Stream Buffer */
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_FAILED_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateFailed, (uint32_t)uxIsMessageBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_STATIC_FAILED_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t uxIsMessageBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateStaticFailed, (uint32_t)pxStreamBuffer, uxIsMessageBuffer);
+#else
+  (void)pxStreamBuffer;
+  (void)uxIsMessageBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferCreate (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t uxIsMessageBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreate, (uint32_t)pxStreamBuffer, uxIsMessageBuffer);
+#else
+  (void)pxStreamBuffer;
+  (void)uxIsMessageBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_DELETE_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferDelete (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferDelete, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RESET_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferReset (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReset, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_SEND_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferBlockingOnSend, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferSend (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xBytesSent) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSend, (uint32_t)pxStreamBuffer, xBytesSent);
+#else
+  (void)pxStreamBuffer;
+  (void)xBytesSent;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FAILED_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferSendFailed (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSendFailed, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FROM_ISR_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferSendFromIsr (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xBytesSent) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSendFromIsr, (uint32_t)pxStreamBuffer, xBytesSent);
+#else
+  (void)pxStreamBuffer;
+  (void)xBytesSent;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_RECEIVE_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferBlockingOnReceive, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferReceive (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xReceivedLength) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceive, (uint32_t)pxStreamBuffer, xReceivedLength);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FAILED_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferReceiveFailed (/*StreamBuffer_t*/void *pxStreamBuffer) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceiveFailed, (uint32_t)pxStreamBuffer, 0U);
+#else
+  (void)pxStreamBuffer;
+#endif
+}
+#endif
+
+#if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FROM_ISR_DISABLE))
+void EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xReceivedLength) {
+#if defined(RTE_Compiler_EventRecorder)
+  EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr, (uint32_t)pxStreamBuffer, xReceivedLength);
+#else
+  (void)pxStreamBuffer;
 #endif
 }
 #endif

@@ -1,74 +1,32 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /*
- * This demo file demonstrates how to send data between an ISR and a 
+ * This demo file demonstrates how to send data between an ISR and a
  * co-routine.  A tick hook function is used to periodically pass data between
  * the RTOS tick and a set of 'hook' co-routines.
  *
@@ -76,17 +34,17 @@
  * to wait for a character to be received on a queue from the tick ISR, checks
  * to ensure the character received was that expected, then sends the number
  * back to the tick ISR on a different queue.
- * 
- * The tick ISR checks the numbers received back from the 'hook' co-routines 
+ *
+ * The tick ISR checks the numbers received back from the 'hook' co-routines
  * matches the number previously sent.
  *
  * If at any time a queue function returns unexpectedly, or an incorrect value
- * is received either by the tick hook or a co-routine then an error is 
+ * is received either by the tick hook or a co-routine then an error is
  * latched.
  *
- * This demo relies on each 'hook' co-routine to execute between each 
- * hookTICK_CALLS_BEFORE_POST tick interrupts.  This and the heavy use of 
- * queues from within an interrupt may result in an error being detected on 
+ * This demo relies on each 'hook' co-routine to execute between each
+ * hookTICK_CALLS_BEFORE_POST tick interrupts.  This and the heavy use of
+ * queues from within an interrupt may result in an error being detected on
  * slower targets simply due to timing.
  */
 
@@ -101,7 +59,7 @@
 /* The number of 'hook' co-routines that are to be created. */
 #define hookNUM_HOOK_CO_ROUTINES        ( 4 )
 
-/* The number of times the tick hook should be called before a character is 
+/* The number of times the tick hook should be called before a character is
 posted to the 'hook' co-routines. */
 #define hookTICK_CALLS_BEFORE_POST      ( 500 )
 
@@ -124,7 +82,7 @@ static void prvHookCoRoutine( CoRoutineHandle_t xHandle, UBaseType_t uxIndex );
 
 /*
  * The tick hook function.  This receives a number from each 'hook' co-routine
- * then sends a number to each co-routine.  An error is flagged if a send or 
+ * then sends a number to each co-routine.  An error is flagged if a send or
  * receive fails, or an unexpected number is received.
  */
 void vApplicationTickHook( void );
@@ -152,12 +110,12 @@ UBaseType_t uxIndex, uxValueToPost = 0;
 
 	for( uxIndex = 0; uxIndex < hookNUM_HOOK_CO_ROUTINES; uxIndex++ )
 	{
-		/* Create a queue to transmit to and receive from each 'hook' 
+		/* Create a queue to transmit to and receive from each 'hook'
 		co-routine. */
 		xHookRxQueues[ uxIndex ] = xQueueCreate( hookHOOK_QUEUE_LENGTH, sizeof( UBaseType_t ) );
 		xHookTxQueues[ uxIndex ] = xQueueCreate( hookHOOK_QUEUE_LENGTH, sizeof( UBaseType_t ) );
 
-		/* To start things off the tick hook function expects the queue it 
+		/* To start things off the tick hook function expects the queue it
 		uses to receive data to contain a value.  */
 		xQueueSend( xHookRxQueues[ uxIndex ], &uxValueToPost, hookNO_BLOCK_TIME );
 
@@ -184,13 +142,13 @@ BaseType_t xIndex, xCoRoutineWoken;
 			xCoRoutineWoken = pdFALSE;
 			if( crQUEUE_RECEIVE_FROM_ISR( xHookRxQueues[ xIndex ], &uxReceivedNumber, &xCoRoutineWoken ) != pdPASS )
 			{
-				/* There is no reason why we would not expect the queue to 
+				/* There is no reason why we would not expect the queue to
 				contain a value. */
 				xCoRoutineErrorDetected = pdTRUE;
 			}
 			else
 			{
-				/* Each queue used to receive data from the 'hook' co-routines 
+				/* Each queue used to receive data from the 'hook' co-routines
 				should contain the number we last posted to the same co-routine. */
 				if( uxReceivedNumber != uxNumberToPost )
 				{
@@ -212,7 +170,7 @@ BaseType_t xIndex, xCoRoutineWoken;
 		{
 			if( crQUEUE_SEND_FROM_ISR( xHookTxQueues[ xIndex ], &uxNumberToPost, pdFALSE ) != pdTRUE )
 			{
-				/* Posting to the queue should have woken the co-routine that 
+				/* Posting to the queue should have woken the co-routine that
 				was blocked on the queue. */
 				xCoRoutineErrorDetected = pdTRUE;
 			}
@@ -247,7 +205,7 @@ BaseType_t xResult;
 		crQUEUE_SEND( xHandle, xHookRxQueues[ uxIndex ], &( uxReceivedValue[ uxIndex ] ), hookNO_BLOCK_TIME, &xResult );
 		if( xResult != pdPASS )
 		{
-			/* There is no reason why we should not have been able to post to 
+			/* There is no reason why we should not have been able to post to
 			the queue. */
 			xCoRoutineErrorDetected = pdTRUE;
 		}

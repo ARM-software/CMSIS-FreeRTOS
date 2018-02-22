@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="FreeRTOS" version="9.0.0"/>
+  <component name="CMSIS-FreeRTOS" version="10.0.1"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -24,9 +24,9 @@
       <!-- Excluded integrity check value -->
     </typedef>
 
-    <typedef name="Queue_t" size="20" info="Queue definition (queue.c)">
-      <member name="pcHead"    type="uint32_t"    offset="0" info="(type is *int32_t)"/>
-      <member name="pcTail"    type="uint32_t"    offset="4" info="(type is *int32_t)"/>
+    <typedef name="Queue_t" size="76" info="Queue definition (queue.c)">
+      <member name="pcHead"    type="uint32_t"    offset="0" info="(type is *int32_t), also uxQueueType"/>
+      <member name="pcTail"    type="uint32_t"    offset="4" info="(type is *int32_t), also pxMutexHolder"/>
       <member name="pcWriteTo" type="uint32_t"    offset="8" info="(type is *int32_t)"/>
       <!-- Union "u" -->
       <member name="u_pcReadFrom"           type="uint32_t"  offset="12" info="(type is *int32_t)"/>
@@ -38,28 +38,31 @@
       <member name="xTasksWaitingToSend_xListEnd_pxNext"     type="*ListItem_t" offset="16+12"/>
       <member name="xTasksWaitingToSend_xListEnd_pxPrevious" type="*ListItem_t" offset="16+16"/>
       <!-- Inlined "List_t" structure -->
-      <member name="xTasksWaitingToReceive_uxNumberOfItems"     type="uint32_t"    offset="32+0"/>
-      <member name="xTasksWaitingToReceive_pxIndex"             type="*ListItem_t" offset="32+4"/>
-      <member name="xTasksWaitingToReceive_xListEnd_xItemValue" type="*ListItem_t" offset="32+8"/>
-      <member name="xTasksWaitingToReceive_xListEnd_pxNext"     type="*ListItem_t" offset="32+12"/>
-      <member name="xTasksWaitingToReceive_xListEnd_pxPrevious" type="*ListItem_t" offset="32+16"/>
+      <member name="xTasksWaitingToReceive_uxNumberOfItems"     type="uint32_t"    offset="36+0"/>
+      <member name="xTasksWaitingToReceive_pxIndex"             type="*ListItem_t" offset="36+4"/>
+      <member name="xTasksWaitingToReceive_xListEnd_xItemValue" type="*ListItem_t" offset="36+8"/>
+      <member name="xTasksWaitingToReceive_xListEnd_pxNext"     type="*ListItem_t" offset="36+12"/>
+      <member name="xTasksWaitingToReceive_xListEnd_pxPrevious" type="*ListItem_t" offset="36+16"/>
 
-      <member name="uxMessagesWaiting" type="uint32_t" offset="52"/>
-      <member name="uxLength"          type="uint32_t" offset="56"/>
-      <member name="uxItemSize"        type="uint32_t" offset="60"/>
-      <member name="cRxLock"           type="int32_t"  offset="64"/>
-      <member name="cTxLock"           type="int32_t"  offset="68"/>
+      <member name="uxMessagesWaiting" type="uint32_t" offset="56"/>
+      <member name="uxLength"          type="uint32_t" offset="60"/>
+      <member name="uxItemSize"        type="uint32_t" offset="64"/>
+      <member name="cRxLock"           type="int32_t"  offset="68"/>
+      <member name="cTxLock"           type="int32_t"  offset="72"/>
 
       <!-- #if((configSUPPORT_STATIC_ALLOCATION == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) -->
-      <!-- <member name="ucStaticallyAllocated" type="uint8_t"  offset="72"/> -->
+      <!-- <member name="ucStaticallyAllocated" type="uint8_t"  offset="76"/> -->
       <!-- #endif -->
       <!-- #if (configUSE_QUEUE_SETS == 1) -->
-      <!-- <member name="pxQueueSetContainer"   type="uint32_t" offset="76"/> -->
+      <!-- <member name="pxQueueSetContainer"   type="uint32_t" offset="80"/> -->
       <!-- #endif -->
       <!-- #if (configUSE_TRACE_FACILITY == 1) -->
-      <!-- <member name="uxQueueNumber" type="uint32_t" offset="80"/> -->
-      <!-- <member name="uxQueueType"   type="uint8_t"  offset="84"/> -->
+      <!-- <member name="uxQueueNumber" type="uint32_t" offset="84"/> -->
+      <!-- <member name="uxQueueType"   type="uint8_t"  offset="88"/> -->
       <!-- #endif -->
+      
+      <var name="Name"  type="uint8_t" size="64" info="Queue name (ASCII)"/>
+      <var name="Type"  type="uint32_t" info="Queue type (Queue:0, Mutex:1, Semaphore:2)"/>
     </typedef>
 
     <typedef name="QueueRegistryItem_t" size="8">
@@ -128,6 +131,8 @@
 
       <var name="StackAvailable" type="uint32_t" info="Available stack (unused): current (in bytes)"/>
       <var name="StackOverflow"  type="uint32_t" info="Stack overflow flag"/>
+      <var name="WaitType"       type="uint32_t" info="Waiting object type  (Queue:0, Mutex:1, Semaphore:2, EventGroup:3)"/>
+      <var name="WaitValue"      type="uint32_t" info="Waiting object value (Index in Queue_CB or event group flags)"/>
     </typedef>
 
     <typedef name="Timer_t" size="45" info="Timer Control Block definition (timers.c)">
@@ -161,7 +166,13 @@
     <object name="FreeRTOS Object">
       <var name="i"  type="uint32_t" value="0"/>
       <var name="j"  type="uint32_t" value="0"/>
+      <var name="n"  type="uint32_t" value="0"/>
       <var name="sp" type="uint32_t" value="0"/>
+
+      <var name="Queue_REG_Size"       type="uint32_t" value="0"/>
+      <var name="Queue_REG_Queues"     type="uint32_t" value="0"/>
+      <var name="Queue_REG_Mutexes"    type="uint32_t" value="0"/>
+      <var name="Queue_REG_Semaphores" type="uint32_t" value="0"/>
 
       <read name="xSchedulerRunning"      type="uint32_t" symbol="tasks.c/xSchedulerRunning"/>
       <read name="xTickCount"             type="uint32_t" symbol="tasks.c/xTickCount"/>
@@ -354,7 +365,91 @@
           </calc>
         </list>
       </list>
+      
+      <!-- Read Queue Registry (Queues, Semaphores, Mutexes) -->
+      <calc cond="__Symbol_exists (&quot;queue.c/xQueueRegistry&quot;)">
+        Queue_REG_Size = __size_of (&quot;queue.c/xQueueRegistry&quot;);
+      </calc>
+      
+      <readlist cond="Queue_REG_Size != 0" name="Queue_REG" type="QueueRegistryItem_t" count="Queue_REG_Size" symbol="queue.c/xQueueRegistry"/>
+      
+      <!-- Read registered objects -->
+      <list cond="Queue_REG_Size" name="i" start="0" limit="Queue_REG._count">
+        <readlist cond="Queue_REG[i].xHandle != 0" name="Queue_CB" type="Queue_t" offset="Queue_REG[i].xHandle"/>
 
+        <!-- Read name string -->
+        <list name="n" start="0" limit="64" cond="(Queue_REG[i].xHandle != 0) &amp;&amp; (Queue_REG[i].pcQueueName != 0)">
+          <read name="ch_2" type="uint8_t" offset="Queue_REG[i].pcQueueName + n"/>
+
+          <calc>
+            Queue_CB[Queue_CB._count-1].Name[n] = ch_2;
+          </calc>
+
+          <calc cond="ch_2 == 0">
+            n = 64;
+          </calc>
+        </list>
+
+      </list>
+
+      <list cond="Queue_REG_Size" name="i" start="0" limit="Queue_CB._count">
+        <!-- Queue -->
+        <calc>
+          Queue_CB[i].Type = 0;
+        </calc>
+        <!-- Mutex -->
+        <calc cond="Queue_CB[i].pcHead == 0">
+          Queue_CB[i].Type = 1;
+          Queue_REG_Mutexes++;
+        </calc>
+        <!-- Semaphore -->
+        <calc cond="Queue_CB[i].pcHead == Queue_CB[i]._addr">
+          Queue_CB[i].Type = 2;
+          Queue_REG_Semaphores++;
+        </calc>
+
+        <calc>
+          Queue_REG_Queues = Queue_CB._count - Queue_REG_Mutexes - Queue_REG_Semaphores;
+        </calc>
+      </list>
+      
+      <!-- Check if enqueued objects exist on task list -->
+      <list cond="Queue_REG_Size" name="i" start="0" limit="Queue_CB._count">
+        <!-- Get address of Queue_t member xTasksWaitingToReceive -->
+        <calc>
+          n  = Queue_CB[i]._addr;
+          n += 36;
+        </calc>        
+        
+        <!-- Loop over delayed tasks -->
+        <list name="j" start="0" limit="Delayed_TCB._count">
+          <!-- Check if TCB waits for Event Group -->
+          <calc cond="(Delayed_TCB[j].xEventListItem_xItemValue &amp; 0x80000000)">
+            Delayed_TCB[j].WaitType  = 3;
+            Delayed_TCB[j].WaitValue = Delayed_TCB[j].xEventListItem_xItemValue &amp; 0x00FFFFFF;
+          </calc>
+          <!-- Check if TCB exist on Queue_t list -->
+          <calc cond="Delayed_TCB[j].xEventListItem_pvContainer == n">
+            Delayed_TCB[j].WaitType  = Queue_CB[i].Type;
+            Delayed_TCB[j].WaitValue = i;
+          </calc>
+        </list>
+
+        <!-- Loop over overflow delayed tasks -->
+        <list name="j" start="0" limit="OverflowDelayed_TCB._count">
+          <!-- Check if TCB waits for Event Group -->
+          <calc cond="(OverflowDelayed_TCB[j].xEventListItem_xItemValue &amp; 0x80000000)">
+            OverflowDelayed_TCB[j].WaitType  = 3;
+            OverflowDelayed_TCB[j].WaitValue = OverflowDelayed_TCB[j].xEventListItem_xItemValue &amp; 0x00FFFFFF;
+          </calc>
+          <!-- Check if TCB exist on Queue_t list -->
+          <calc cond="OverflowDelayed_TCB[j].xEventListItem_pvContainer == n">
+            OverflowDelayed_TCB[j].WaitType  = Queue_CB[i].Type;
+            OverflowDelayed_TCB[j].WaitValue = i;
+          </calc>
+        </list>
+
+      </list>
 
       <out name="FreeRTOS RTOS">
         <item property="Kernel" value="">
@@ -408,6 +503,14 @@
         <item property="Delayed Tasks (%d[Delayed_TCB._count])" value="">
           <list name="i" start="0" limit="Delayed_TCB._count">
             <item property="h: %x[Delayed_TCB[i]._addr] %t[Delayed_TCB[i].pcTaskName]" value="">
+
+              <item cond="Queue_REG_Size">
+                <print cond="Delayed_TCB[i].WaitType == 0" property="Waiting Queue"      value="h: %x[Queue_CB[Delayed_TCB[i].WaitValue]._addr] %t[Queue_CB[Delayed_TCB[i].WaitValue].Name]"/>
+                <print cond="Delayed_TCB[i].WaitType == 1" property="Waiting Mutex"      value="h: %x[Queue_CB[Delayed_TCB[i].WaitValue]._addr] %t[Queue_CB[Delayed_TCB[i].WaitValue].Name]"/>
+                <print cond="Delayed_TCB[i].WaitType == 2" property="Waiting Semaphore"  value="h: %x[Queue_CB[Delayed_TCB[i].WaitValue]._addr] %t[Queue_CB[Delayed_TCB[i].WaitValue].Name]"/>
+                <print cond="Delayed_TCB[i].WaitType == 3" property="Waiting EventGroup" value="Flags: %x[Delayed_TCB[i].WaitValue]"/>
+              </item>
+
               <item property="Wake time"   value="%d[Delayed_TCB[i].xStateListItem_xItemValue]" />
               <item property="Priority"    value="%d[Delayed_TCB[i].uxPriority]" />
               <item property="Stack Limit" value="%x[Delayed_TCB[i].pxStack]" />
@@ -423,6 +526,14 @@
         <item property="Overflow Delayed Tasks (%d[OverflowDelayed_TCB._count])" value="" cond="OverflowDelayed_TCB._count">
           <list name="i" start="0" limit="OverflowDelayed_TCB._count">
             <item property="h: %x[OverflowDelayed_TCB[i]._addr] %t[OverflowDelayed_TCB[i].pcTaskName]" value="">
+
+              <item cond="Queue_REG_Size">
+                <print cond="OverflowDelayed_TCB[i].WaitType == 0" property="Waiting Queue"      value="h: %x[Queue_CB[OverflowDelayed_TCB[i].WaitValue]._addr] %t[Queue_CB[OverflowDelayed_TCB[i].WaitValue].Name]"/>
+                <print cond="OverflowDelayed_TCB[i].WaitType == 1" property="Waiting Mutex"      value="h: %x[Queue_CB[OverflowDelayed_TCB[i].WaitValue]._addr] %t[Queue_CB[OverflowDelayed_TCB[i].WaitValue].Name]"/>
+                <print cond="OverflowDelayed_TCB[i].WaitType == 2" property="Waiting Semaphore"  value="h: %x[Queue_CB[OverflowDelayed_TCB[i].WaitValue]._addr] %t[Queue_CB[OverflowDelayed_TCB[i].WaitValue].Name]"/>
+                <print cond="OverflowDelayed_TCB[i].WaitType == 3" property="Waiting EventGroup" value="Flags=%x[OverflowDelayed_TCB[i].WaitValue]"/>
+              </item>
+
               <item property="Wake time"   value="%d[OverflowDelayed_TCB[i].xStateListItem_xItemValue]" />
               <item property="Priority"    value="%d[OverflowDelayed_TCB[i].uxPriority]" />
               <item property="Stack Limit" value="%x[OverflowDelayed_TCB[i].pxStack]" />
@@ -486,6 +597,44 @@
             </item>
           </list>
         </item>
+
+        <item property="Mutexes (%d[Queue_REG_Mutexes])" value="" cond="Queue_REG_Size">
+          <list name="i" start="0" limit="Queue_CB._count">          
+            <item property="h: %x[Queue_CB[i]._addr] %t[Queue_CB[i].Name]" value="" cond="Queue_CB[i].Type == 1">
+              <item property="State" value="%t[Queue_CB[i].uxMessagesWaiting == 0 ? &quot;Locked&quot; : &quot;Released&quot;]" />
+              <item property="Recursive counter" value="%d[Queue_CB[i].u_uxRecursiveCallCount]" cond="Queue_CB[i].u_uxRecursiveCallCount"/>
+              <item property="Owner thread" value="h: %x[Queue_CB[i].pcTail]" cond="Queue_CB[i].pcTail != 0"/>
+            </item>
+          </list>
+        </item>
+
+        <item property="Semaphores (%d[Queue_REG_Semaphores])" value="" cond="Queue_REG_Size">
+          <list name="i" start="0" limit="Queue_CB._count">
+            <item property="h: %x[Queue_CB[i]._addr] %t[Queue_CB[i].Name]" value="" cond="Queue_CB[i].Type == 2">
+              <item property="Tokens"     value="%d[Queue_CB[i].uxMessagesWaiting]" />
+              <item property="Max Tokens" value="%d[Queue_CB[i].uxLength]" />
+            </item>
+          </list>
+        </item>
+
+        <item property="Queues (%d[Queue_REG_Queues])" value="" cond="Queue_REG_Size">
+          <list name="i" start="0" limit="Queue_CB._count">
+            <item property="h: %x[Queue_CB[i]._addr] %t[Queue_CB[i].Name]" value="" cond="Queue_CB[i].Type == 0">
+              <item property="Objects"     value="%d[Queue_CB[i].uxMessagesWaiting]" />
+              <item property="Max Objects" value="%d[Queue_CB[i].uxLength]"/>
+              <item property="Object size" value="%d[Queue_CB[i].uxItemSize]"/>
+
+              <!-- Queued messages -->
+              <item cond="Queue_CB[i].uxMessagesWaiting" property="Queue (%d[Queue_CB[i].uxMessagesWaiting])" value="">
+                <list name="j" start="0" limit="Queue_CB[i].uxMessagesWaiting">
+                  <item property="Queue[%d[j]]" value="Address: %x[Queue_CB[i].pcHead + (j * Queue_CB[i].uxItemSize)]" />
+                </list>
+              </item>
+
+            </item>
+          </list>
+        </item>
+
       </out>
     </object>
   </objects>

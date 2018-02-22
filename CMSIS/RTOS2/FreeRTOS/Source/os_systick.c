@@ -1,11 +1,11 @@
 /**************************************************************************//**
  * @file     os_systick.c
  * @brief    CMSIS OS Tick SysTick implementation
- * @version  V1.0.0
- * @date     05. June 2017
+ * @version  V1.0.1
+ * @date     29. November 2017
  ******************************************************************************/
 /*
- * Copyright (c) 2017-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2017-2017 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -36,7 +36,7 @@
 static uint8_t PendST;
 
 // Setup OS Tick.
-__WEAK int32_t  OS_Tick_Setup (uint32_t freq, IRQHandler_t handler) {
+__WEAK int32_t OS_Tick_Setup (uint32_t freq, IRQHandler_t handler) {
   uint32_t load;
   (void)handler;
 
@@ -61,7 +61,7 @@ __WEAK int32_t  OS_Tick_Setup (uint32_t freq, IRQHandler_t handler) {
 }
 
 /// Enable OS Tick.
-__WEAK int32_t  OS_Tick_Enable (void) {
+__WEAK void OS_Tick_Enable (void) {
 
   if (PendST != 0U) {
     PendST = 0U;
@@ -69,12 +69,10 @@ __WEAK int32_t  OS_Tick_Enable (void) {
   }
 
   SysTick->CTRL |=  SysTick_CTRL_ENABLE_Msk;
-
-  return (0);
 }
 
 /// Disable OS Tick.
-__WEAK int32_t  OS_Tick_Disable (void) {
+__WEAK void OS_Tick_Disable (void) {
 
   SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
 
@@ -82,19 +80,16 @@ __WEAK int32_t  OS_Tick_Disable (void) {
     SCB->ICSR = SCB_ICSR_PENDSTCLR_Msk;
     PendST = 1U;
   }
-
-  return (0);
 }
 
 // Acknowledge OS Tick IRQ.
-__WEAK int32_t  OS_Tick_AcknowledgeIRQ (void) {
+__WEAK void OS_Tick_AcknowledgeIRQ (void) {
   (void)SysTick->CTRL;
-  return (0);
 }
 
 // Get OS Tick IRQ number.
 __WEAK int32_t  OS_Tick_GetIRQn (void) {
-  return (SysTick_IRQn);
+  return ((int32_t)SysTick_IRQn);
 }
 
 // Get OS Tick clock.

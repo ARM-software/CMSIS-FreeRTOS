@@ -1,5 +1,5 @@
 # CMSIS-FreeRTOS
-The branch *master* of this GitHub repository contains the CMSIS-RTOS adoption of FreeRTOS Version 9.0.0 as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html) is available under https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html.
+The branch *master* of this GitHub repository contains the CMSIS-RTOS adoption of FreeRTOS Version 10.0.0 as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html) is available under https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html.
 
 Use *Issues* to provide feedback and report problems for CMSIS FreeRTOS implementation.
 

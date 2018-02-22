@@ -1,71 +1,29 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 /* Standard includes. */
 #include <stdio.h>
@@ -83,21 +41,12 @@
 #define portMAX_INTERRUPTS				( ( uint32_t ) sizeof( uint32_t ) * 8UL ) /* The number of bits in an uint32_t. */
 #define portNO_CRITICAL_NESTING 		( ( uint32_t ) 0 )
 
-/* The priorities at which the various components of the simulation execute.
-Priorities are higher when a soak test is performed to lessen the effect of
-Windows interfering with the timing. */
-#define portSOAK_TEST
-#ifndef portSOAK_TEST
-	#define portDELETE_SELF_THREAD_PRIORITY			 THREAD_PRIORITY_HIGHEST /* Must be highest. */
-	#define portSIMULATED_INTERRUPTS_THREAD_PRIORITY THREAD_PRIORITY_NORMAL
-	#define portSIMULATED_TIMER_THREAD_PRIORITY		 THREAD_PRIORITY_BELOW_NORMAL
-	#define portTASK_THREAD_PRIORITY				 THREAD_PRIORITY_IDLE
-#else
-	#define portDELETE_SELF_THREAD_PRIORITY			 THREAD_PRIORITY_TIME_CRITICAL /* Must be highest. */
-	#define portSIMULATED_INTERRUPTS_THREAD_PRIORITY THREAD_PRIORITY_HIGHEST
-	#define portSIMULATED_TIMER_THREAD_PRIORITY		 THREAD_PRIORITY_ABOVE_NORMAL
-	#define portTASK_THREAD_PRIORITY				 THREAD_PRIORITY_NORMAL
-#endif
+/* The priorities at which the various components of the simulation execute. */
+#define portDELETE_SELF_THREAD_PRIORITY			 THREAD_PRIORITY_TIME_CRITICAL /* Must be highest. */
+#define portSIMULATED_INTERRUPTS_THREAD_PRIORITY THREAD_PRIORITY_TIME_CRITICAL
+#define portSIMULATED_TIMER_THREAD_PRIORITY		 THREAD_PRIORITY_HIGHEST
+#define portTASK_THREAD_PRIORITY				 THREAD_PRIORITY_ABOVE_NORMAL
+
 /*
  * Created as a high priority thread, this function uses a timer to simulate
  * a tick interrupt being generated on an embedded target.  In this Windows
@@ -254,7 +203,7 @@ TIMECAPS xTimeCaps;
 		timeEndPeriod( xTimeCaps.wPeriodMin );
 	}
 
-	return pdPASS;
+	return pdFALSE;
 }
 /*-----------------------------------------------------------*/
 
@@ -263,16 +212,6 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 xThreadState *pxThreadState = NULL;
 int8_t *pcTopOfStack = ( int8_t * ) pxTopOfStack;
 const SIZE_T xStackSize = 1024; /* Set the size to a small number which will get rounded up to the minimum possible. */
-
-	#ifdef portSOAK_TEST
-	{
-		/* Ensure highest priority class is inherited. */
-		if( !SetPriorityClass( GetCurrentProcess(), REALTIME_PRIORITY_CLASS ) )
-		{
-			printf( "SetPriorityClass() failed\r\n" );
-		}
-	}
-	#endif
 
 	/* In this simulated case a stack is not initialised, but instead a thread
 	is created that will execute the task being created.  The thread handles
@@ -295,31 +234,53 @@ const SIZE_T xStackSize = 1024; /* Set the size to a small number which will get
 
 BaseType_t xPortStartScheduler( void )
 {
-void *pvHandle;
-int32_t lSuccess = pdPASS;
-xThreadState *pxThreadState;
+void *pvHandle = NULL;
+int32_t lSuccess;
+xThreadState *pxThreadState = NULL;
+SYSTEM_INFO xSystemInfo;
 
-	/* Install the interrupt handlers used by the scheduler itself. */
-	vPortSetInterruptHandler( portINTERRUPT_YIELD, prvProcessYieldInterrupt );
-	vPortSetInterruptHandler( portINTERRUPT_TICK, prvProcessTickInterrupt );
-
-	/* Create the events and mutexes that are used to synchronise all the
-	threads. */
-	pvInterruptEventMutex = CreateMutex( NULL, FALSE, NULL );
-	pvInterruptEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
-
-	if( ( pvInterruptEventMutex == NULL ) || ( pvInterruptEvent == NULL ) )
+	/* This port runs windows threads with extremely high priority.  All the
+	threads execute on the same core - to prevent locking up the host only start
+	if the host has multiple cores. */
+	GetSystemInfo( &xSystemInfo );
+	if( xSystemInfo.dwNumberOfProcessors <= 1 )
 	{
+		printf( "This version of the FreeRTOS Windows port can only be used on multi-core hosts.\r\n" );
 		lSuccess = pdFAIL;
 	}
-
-	/* Set the priority of this thread such that it is above the priority of
-	the threads that run tasks.  This higher priority is required to ensure
-	simulated interrupts take priority over tasks. */
-	pvHandle = GetCurrentThread();
-	if( pvHandle == NULL )
+	else
 	{
-		lSuccess = pdFAIL;
+		lSuccess = pdPASS;
+
+		/* The highest priority class is used to [try to] prevent other Windows
+		activity interfering with FreeRTOS timing too much. */
+		if( SetPriorityClass( GetCurrentProcess(), REALTIME_PRIORITY_CLASS ) == 0 )
+		{
+			printf( "SetPriorityClass() failed\r\n" );
+		}
+
+		/* Install the interrupt handlers used by the scheduler itself. */
+		vPortSetInterruptHandler( portINTERRUPT_YIELD, prvProcessYieldInterrupt );
+		vPortSetInterruptHandler( portINTERRUPT_TICK, prvProcessTickInterrupt );
+
+		/* Create the events and mutexes that are used to synchronise all the
+		threads. */
+		pvInterruptEventMutex = CreateMutex( NULL, FALSE, NULL );
+		pvInterruptEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
+
+		if( ( pvInterruptEventMutex == NULL ) || ( pvInterruptEvent == NULL ) )
+		{
+			lSuccess = pdFAIL;
+		}
+
+		/* Set the priority of this thread such that it is above the priority of
+		the threads that run tasks.  This higher priority is required to ensure
+		simulated interrupts take priority over tasks. */
+		pvHandle = GetCurrentThread();
+		if( pvHandle == NULL )
+		{
+			lSuccess = pdFAIL;
+		}
 	}
 
 	if( lSuccess == pdPASS )

@@ -1,71 +1,29 @@
 /*
-    FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
-    All rights reserved
-
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
-
-    This file is part of the FreeRTOS distribution.
-
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
-
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
-
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
-
-    ***************************************************************************
-     *                                                                       *
-     *    FreeRTOS provides completely free yet professionally developed,    *
-     *    robust, strictly quality controlled, supported, and cross          *
-     *    platform software that is more than just the market leader, it     *
-     *    is the industry's de facto standard.                               *
-     *                                                                       *
-     *    Help yourself get started quickly while simultaneously helping     *
-     *    to support the FreeRTOS project by purchasing a FreeRTOS           *
-     *    tutorial book, reference manual, or both:                          *
-     *    http://www.FreeRTOS.org/Documentation                              *
-     *                                                                       *
-    ***************************************************************************
-
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
-
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
-
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
-
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
-
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
-
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
-
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
-
-    1 tab == 4 spaces!
-*/
+ * FreeRTOS Kernel V10.0.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://www.FreeRTOS.org
+ * http://aws.amazon.com/freertos
+ *
+ * 1 tab == 4 spaces!
+ */
 
 	.text
 
@@ -111,10 +69,14 @@
 	STP 	X30, XZR, [SP, #-0x10]!
 
 	/* Save the SPSR. */
+#if defined( GUEST )
+	MRS		X3, SPSR_EL1
+	MRS		X2, ELR_EL1
+#else
 	MRS		X3, SPSR_EL3
-
 	/* Save the ELR. */
 	MRS		X2, ELR_EL3
+#endif
 
 	STP 	X2, X3, [SP, #-0x10]!
 
@@ -217,11 +179,17 @@
 1:
 	LDP 	X2, X3, [SP], #0x10  /* SPSR and ELR. */
 
+#if defined( GUEST )
+	/* Restore the SPSR. */
+	MSR		SPSR_EL1, X3
+	/* Restore the ELR. */
+	MSR		ELR_EL1, X2
+#else
 	/* Restore the SPSR. */
 	MSR		SPSR_EL3, X3 /*_RB_ Assumes started in EL3. */
-
 	/* Restore the ELR. */
 	MSR		ELR_EL3, X2
+#endif
 
 	LDP 	X30, XZR, [SP], #0x10
 	LDP 	X28, X29, [SP], #0x10
@@ -256,10 +224,19 @@
 FreeRTOS_SWI_Handler:
 	/* Save the context of the current task and select a new task to run. */
 	portSAVE_CONTEXT
-
+#if defined( GUEST )
+	MRS		X0, ESR_EL1
+#else
 	MRS		X0, ESR_EL3
+#endif
+
 	LSR		X1, X0, #26
-	CMP		X1, #0x17 /* 0x17 = SMC instruction. */
+
+#if defined( GUEST )
+	CMP		X1, #0x15 	/* 0x15 = SVC instruction. */
+#else
+	CMP		X1, #0x17 	/* 0x17 = SMC instruction. */
+#endif
 	B.NE	FreeRTOS_Abort
 	BL 		vTaskSwitchContext
 
@@ -279,7 +256,11 @@ vPortRestoreTaskContext:
 
 	/* Install the FreeRTOS interrupt handlers. */
 	LDR		X1, =freertos_vector_base
+#if defined( GUEST )
+	MSR		VBAR_EL1, X1
+#else
 	MSR		VBAR_EL3, X1
+#endif
 	DSB		SY
 	ISB		SY
 
@@ -307,8 +288,13 @@ FreeRTOS_IRQ_Handler:
 	STP		X29, X30, [SP, #-0x10]!
 
 	/* Save the SPSR and ELR. */
+#if defined( GUEST )
+	MRS		X3, SPSR_EL1
+	MRS		X2, ELR_EL1
+#else
 	MRS		X3, SPSR_EL3
 	MRS		X2, ELR_EL3
+#endif
 	STP 	X2, X3, [SP, #-0x10]!
 
 	/* Increment the interrupt nesting counter. */
@@ -365,8 +351,13 @@ FreeRTOS_IRQ_Handler:
 
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
+#if defined( GUEST )
+	MSR		SPSR_EL1, X5
+	MSR		ELR_EL1, X4
+#else
 	MSR		SPSR_EL3, X5 /*_RB_ Assumes started in EL3. */
 	MSR		ELR_EL3, X4
+#endif
 	DSB		SY
 	ISB		SY
 
@@ -390,8 +381,13 @@ FreeRTOS_IRQ_Handler:
 Exit_IRQ_No_Context_Switch:
 	/* Restore volatile registers. */
 	LDP 	X4, X5, [SP], #0x10  /* SPSR and ELR. */
+#if defined( GUEST )
+	MSR		SPSR_EL1, X5
+	MSR		ELR_EL1, X4
+#else
 	MSR		SPSR_EL3, X5 /*_RB_ Assumes started in EL3. */
 	MSR		ELR_EL3, X4
+#endif
 	DSB		SY
 	ISB		SY
 

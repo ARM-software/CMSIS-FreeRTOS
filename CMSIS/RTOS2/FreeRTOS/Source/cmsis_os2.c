@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -64,8 +64,8 @@
 
 #if    (__ARM_ARCH_7A__      == 1U)
 /* CPSR mode bitmasks */
-#define CPSR_MODE_USER          0x10U
-#define CPSR_MODE_SYSTEM        0x1FU
+#define CPSR_MODE_USER            0x10U
+#define CPSR_MODE_SYSTEM          0x1FU
 
 #define IS_IRQ_MODE()             ((__get_mode() != CPSR_MODE_USER) && (__get_mode() != CPSR_MODE_SYSTEM))
 #else
@@ -86,7 +86,7 @@
                                    ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
-#define KERNEL_ID                 "FreeRTOS V9.0.0"
+#define KERNEL_ID                 "FreeRTOS V10.0.1"
 
 /* Timer callback information structure definition */
 typedef struct {
@@ -155,55 +155,44 @@ osStatus_t osKernelInitialize (void) {
 }
 
 osStatus_t osKernelGetInfo (osVersion_t *version, char *id_buf, uint32_t id_size) {
-  osStatus_t stat;
 
-  if (IS_IRQ()) {
-    stat = osErrorISR;
-  }
-  else {
-    if (version != NULL) {
-      version->api    = KERNEL_VERSION;
-      version->kernel = KERNEL_VERSION;
-    }
-
-    if ((id_buf != NULL) && (id_size != 0U)) {
-      if (id_size > sizeof(KERNEL_ID)) {
-        id_size = sizeof(KERNEL_ID);
-      }
-      memcpy(id_buf, KERNEL_ID, id_size);
-    }
-    stat = osOK;
+  if (version != NULL) {
+    version->api    = KERNEL_VERSION;
+    version->kernel = KERNEL_VERSION;
   }
 
-  return (stat);
+  if ((id_buf != NULL) && (id_size != 0U)) {
+    if (id_size > sizeof(KERNEL_ID)) {
+      id_size = sizeof(KERNEL_ID);
+    }
+    memcpy(id_buf, KERNEL_ID, id_size);
+  }
+
+  return (osOK);
 }
 
 osKernelState_t osKernelGetState (void) {
   osKernelState_t state;
 
-  if (IS_IRQ()) {
-    state = osKernelError;
-  }
-  else {
-    switch (xTaskGetSchedulerState()) {
-      case taskSCHEDULER_RUNNING:
-        state = osKernelRunning;
-        break;
+  switch (xTaskGetSchedulerState()) {
+    case taskSCHEDULER_RUNNING:
+      state = osKernelRunning;
+      break;
 
-      case taskSCHEDULER_SUSPENDED:
-        state = osKernelLocked;
-        break;
+    case taskSCHEDULER_SUSPENDED:
+      state = osKernelLocked;
+      break;
 
-      case taskSCHEDULER_NOT_STARTED:
-      default:
-        if (KernelState == osKernelReady) {
-          state = osKernelReady;
-        } else {
-          state = osKernelInactive;
-        }
-        break;
-    }
+    case taskSCHEDULER_NOT_STARTED:
+    default:
+      if (KernelState == osKernelReady) {
+        state = osKernelReady;
+      } else {
+        state = osKernelInactive;
+      }
+      break;
   }
+
   return (state);
 }
 
@@ -367,11 +356,11 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
   char empty;
   const char *name;
   uint32_t stack;
-  TaskHandle_t h;
+  TaskHandle_t hTask;
   UBaseType_t prio;
   int32_t mem;
 
-  h = NULL;
+  hTask = NULL;
 
   if (!IS_IRQ() && (func != NULL)) {
     stack = configMINIMAL_STACK_SIZE;
@@ -414,28 +403,29 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     }
 
     if (mem == 1) {
-      h = xTaskCreateStatic ((TaskFunction_t)func, name, stack, argument, prio, (StackType_t  *)attr->stack_mem,
-                                                                                (StaticTask_t *)attr->cb_mem);
+      hTask = xTaskCreateStatic ((TaskFunction_t)func, name, stack, argument, prio, (StackType_t  *)attr->stack_mem,
+                                                                                    (StaticTask_t *)attr->cb_mem);
     }
     else {
       if (mem == 0) {
-        if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &h) != pdPASS) {
-          h = NULL;
+        if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &hTask) != pdPASS) {
+          hTask = NULL;
         }
       }
     }
   }
 
-  return ((osThreadId_t)h);
+  return ((osThreadId_t)hTask);
 }
 
 const char *osThreadGetName (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   const char *name;
 
-  if (IS_IRQ() || (thread_id == NULL)) {
+  if (IS_IRQ() || (hTask == NULL)) {
     name = NULL;
   } else {
-    name = pcTaskGetName ((TaskHandle_t)thread_id);
+    name = pcTaskGetName (hTask);
   }
 
   return (name);
@@ -454,13 +444,14 @@ osThreadId_t osThreadGetId (void) {
 }
 
 osThreadState_t osThreadGetState (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osThreadState_t state;
 
-  if (IS_IRQ() || (thread_id == NULL)) {
+  if (IS_IRQ() || (hTask == NULL)) {
     state = osThreadError;
   }
   else {
-    switch (eTaskGetState ((TaskHandle_t)thread_id)) {
+    switch (eTaskGetState (hTask)) {
       case eRunning:   state = osThreadRunning;    break;
       case eReady:     state = osThreadReady;      break;
       case eBlocked:
@@ -475,41 +466,44 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
 }
 
 uint32_t osThreadGetStackSpace (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   uint32_t sz;
 
-  if (IS_IRQ() || (thread_id == NULL)) {
+  if (IS_IRQ() || (hTask == NULL)) {
     sz = 0U;
   } else {
-    sz = (uint32_t)uxTaskGetStackHighWaterMark ((TaskHandle_t)thread_id);
+    sz = (uint32_t)uxTaskGetStackHighWaterMark (hTask);
   }
 
   return (sz);
 }
 
 osStatus_t osThreadSetPriority (osThreadId_t thread_id, osPriority_t priority) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if ((thread_id == NULL) || (priority < osPriorityIdle) || (priority > osPriorityISR)) {
+  else if ((hTask == NULL) || (priority < osPriorityIdle) || (priority > osPriorityISR)) {
     stat = osErrorParameter;
   }
   else {
     stat = osOK;
-    vTaskPrioritySet ((TaskHandle_t)thread_id, (UBaseType_t)priority);
+    vTaskPrioritySet (hTask, (UBaseType_t)priority);
   }
 
   return (stat);
 }
 
 osPriority_t osThreadGetPriority (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osPriority_t prio;
 
-  if (IS_IRQ() || (thread_id == NULL)) {
+  if (IS_IRQ() || (hTask == NULL)) {
     prio = osPriorityError;
   } else {
-    prio = (osPriority_t)uxTaskPriorityGet ((TaskHandle_t)thread_id);
+    prio = (osPriority_t)uxTaskPriorityGet (hTask);
   }
 
   return (prio);
@@ -529,34 +523,36 @@ osStatus_t osThreadYield (void) {
 }
 
 osStatus_t osThreadSuspend (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (thread_id == NULL) {
+  else if (hTask == NULL) {
     stat = osErrorParameter;
   }
   else {
     stat = osOK;
-    vTaskSuspend ((TaskHandle_t)thread_id);
+    vTaskSuspend (hTask);
   }
 
   return (stat);
 }
 
 osStatus_t osThreadResume (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (thread_id == NULL) {
+  else if (hTask == NULL) {
     stat = osErrorParameter;
   }
   else {
     stat = osOK;
-    vTaskResume ((TaskHandle_t)thread_id);
+    vTaskResume (hTask);
   }
 
   return (stat);
@@ -570,6 +566,7 @@ __NO_RETURN void osThreadExit (void) {
 }
 
 osStatus_t osThreadTerminate (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
   eTaskState tstate;
@@ -577,15 +574,15 @@ osStatus_t osThreadTerminate (osThreadId_t thread_id) {
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (thread_id == NULL) {
+  else if (hTask == NULL) {
     stat = osErrorParameter;
   }
   else {
-    tstate = eTaskGetState ((TaskHandle_t)thread_id);
+    tstate = eTaskGetState (hTask);
 
     if (tstate != eDeleted) {
       stat = osOK;
-      vTaskDelete ((TaskHandle_t)thread_id);
+      vTaskDelete (hTask);
     } else {
       stat = osErrorResource;
     }
@@ -638,22 +635,27 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 }
 
 uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
-  TaskHandle_t thread = (TaskHandle_t)thread_id;
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   uint32_t rflags;
+  BaseType_t yield;
 
-  if ((thread == NULL) || ((flags & THREAD_FLAGS_INVALID_BITS) != 0U)) {
+  if ((hTask == NULL) || ((flags & THREAD_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
-  else if (IS_IRQ()) {
-    if ((xTaskNotifyFromISR (thread, flags, eSetBits, NULL) != pdPASS) || 
-        (xTaskNotifyAndQueryFromISR (thread, 0, eNoAction, &rflags, NULL) != pdPASS)) {
-      rflags = (uint32_t)osError;
-    }
-  }
   else {
-    if ((xTaskNotify (thread, flags, eSetBits) != pdPASS) || 
-        (xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags) != pdPASS)) {
-      rflags = (uint32_t)osError;
+    rflags = (uint32_t)osError;
+
+    if (IS_IRQ()) {
+      yield = pdFALSE;
+
+      (void)xTaskNotifyFromISR (hTask, flags, eSetBits, &yield);
+      (void)xTaskNotifyAndQueryFromISR (hTask, 0, eNoAction, &rflags, NULL);
+
+      portYIELD_FROM_ISR (yield);
+    }
+    else {
+      (void)xTaskNotify (hTask, flags, eSetBits);
+      (void)xTaskNotifyAndQuery (hTask, 0, eNoAction, &rflags);
     }
   }
   /* Return flags after setting */
@@ -661,7 +663,7 @@ uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
 }
 
 uint32_t osThreadFlagsClear (uint32_t flags) {
-  TaskHandle_t thread;
+  TaskHandle_t hTask;
   uint32_t rflags, cflags;
 
   if (IS_IRQ()) {
@@ -671,13 +673,13 @@ uint32_t osThreadFlagsClear (uint32_t flags) {
     rflags = (uint32_t)osErrorParameter;
   }
   else {
-    thread = xTaskGetCurrentTaskHandle();
+    hTask = xTaskGetCurrentTaskHandle();
 
-    if (xTaskNotifyAndQuery (thread, 0, eNoAction, &cflags) == pdPASS) {
+    if (xTaskNotifyAndQuery (hTask, 0, eNoAction, &cflags) == pdPASS) {
       rflags = cflags;
       cflags &= ~flags;
 
-      if (xTaskNotify (thread, cflags, eSetValueWithOverwrite) != pdPASS) {
+      if (xTaskNotify (hTask, cflags, eSetValueWithOverwrite) != pdPASS) {
         rflags = (uint32_t)osError;
       }
     }
@@ -691,16 +693,16 @@ uint32_t osThreadFlagsClear (uint32_t flags) {
 }
 
 uint32_t osThreadFlagsGet (void) {
-  TaskHandle_t thread;
+  TaskHandle_t hTask;
   uint32_t rflags;
 
   if (IS_IRQ()) {
     rflags = (uint32_t)osErrorISR;
   }
   else {
-    thread = xTaskGetCurrentTaskHandle();
+    hTask = xTaskGetCurrentTaskHandle();
 
-    if (xTaskNotifyAndQuery (thread, 0, eNoAction, &rflags) != pdPASS) {
+    if (xTaskNotifyAndQuery (hTask, 0, eNoAction, &rflags) != pdPASS) {
       rflags = (uint32_t)osError;
     }
   }
@@ -711,7 +713,8 @@ uint32_t osThreadFlagsGet (void) {
 uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) {
   uint32_t rflags, nval;
   uint32_t clear;
-  TickType_t t0;
+  TickType_t t0, td, tout;
+  BaseType_t rval;
 
   if (IS_IRQ()) {
     rflags = (uint32_t)osErrorISR;
@@ -727,10 +730,14 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
     }
 
     rflags = 0U;
+    tout   = timeout;
 
     t0 = xTaskGetTickCount();
     do {
-      if (xTaskNotifyWait (0, clear, &nval, timeout) == pdPASS) {
+      rval = xTaskNotifyWait (0, clear, &nval, tout);
+
+      if (rval == pdPASS) {
+        rflags &= flags;
         rflags |= nval;
 
         if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
@@ -739,6 +746,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
           } else {
             if (timeout == 0U) {
               rflags = (uint32_t)osErrorResource;
+              break;
             }
           }
         }
@@ -748,8 +756,18 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
           } else {
             if (timeout == 0U) {
               rflags = (uint32_t)osErrorResource;
+              break;
             }
           }
+        }
+
+        /* Update timeout */
+        td = xTaskGetTickCount() - t0;
+
+        if (td > tout) {
+          tout  = 0;
+        } else {
+          tout -= td;
         }
       }
       else {
@@ -758,10 +776,9 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
         } else {
           rflags = (uint32_t)osErrorTimeout;
         }
-        break;
       }
     }
-    while ((xTaskGetTickCount() - t0) < timeout);
+    while (rval != pdFAIL);
   }
 
   /* Return flags before clearing */
@@ -816,12 +833,12 @@ static void TimerCallback (TimerHandle_t hTimer) {
 
 osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, const osTimerAttr_t *attr) {
   const char *name;
-  TimerHandle_t h;
+  TimerHandle_t hTimer;
   TimerCallback_t *callb;
   UBaseType_t reload;
   int32_t mem;
 
-  h = NULL;
+  hTimer = NULL;
 
   if (!IS_IRQ() && (func != NULL)) {
     /* Allocate memory to store callback function and argument */
@@ -859,42 +876,44 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       }
 
       if (mem == 1) {
-        h = xTimerCreateStatic (name, 1, reload, callb, TimerCallback, (StaticTimer_t *)attr->cb_mem);
+        hTimer = xTimerCreateStatic (name, 1, reload, callb, TimerCallback, (StaticTimer_t *)attr->cb_mem);
       }
       else {
         if (mem == 0) {
-          h = xTimerCreate (name, 1, reload, callb, TimerCallback);
+          hTimer = xTimerCreate (name, 1, reload, callb, TimerCallback);
         }
       }
     }
   }
 
-  return ((osTimerId_t)h);
+  return ((osTimerId_t)hTimer);
 }
 
 const char *osTimerGetName (osTimerId_t timer_id) {
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   const char *p;
 
-  if (IS_IRQ() || (timer_id == NULL)) {
+  if (IS_IRQ() || (hTimer == NULL)) {
     p = NULL;
   } else {
-    p = pcTimerGetName ((TimerHandle_t)timer_id);
+    p = pcTimerGetName (hTimer);
   }
 
   return (p);
 }
 
 osStatus_t osTimerStart (osTimerId_t timer_id, uint32_t ticks) {
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (timer_id == NULL) {
+  else if (hTimer == NULL) {
     stat = osErrorParameter;
   }
   else {
-    if (xTimerChangePeriod ((TimerHandle_t)timer_id, ticks, 0) == pdPASS) {
+    if (xTimerChangePeriod (hTimer, ticks, 0) == pdPASS) {
       stat = osOK;
     } else {
       stat = osErrorResource;
@@ -905,20 +924,21 @@ osStatus_t osTimerStart (osTimerId_t timer_id, uint32_t ticks) {
 }
 
 osStatus_t osTimerStop (osTimerId_t timer_id) {
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (timer_id == NULL) {
+  else if (hTimer == NULL) {
     stat = osErrorParameter;
   }
   else {
-    if (xTimerIsTimerActive ((TimerHandle_t)timer_id) == pdFALSE) {
+    if (xTimerIsTimerActive (hTimer) == pdFALSE) {
       stat = osErrorResource;
     }
     else {
-      if (xTimerStop ((TimerHandle_t)timer_id, 0) == pdPASS) {
+      if (xTimerStop (hTimer, 0) == pdPASS) {
         stat = osOK;
       } else {
         stat = osError;
@@ -930,18 +950,20 @@ osStatus_t osTimerStop (osTimerId_t timer_id) {
 }
 
 uint32_t osTimerIsRunning (osTimerId_t timer_id) {
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   uint32_t running;
 
-  if (IS_IRQ() || (timer_id == NULL)) {
+  if (IS_IRQ() || (hTimer == NULL)) {
     running = 0U;
   } else {
-    running = (uint32_t)xTimerIsTimerActive ((TimerHandle_t)timer_id);
+    running = (uint32_t)xTimerIsTimerActive (hTimer);
   }
 
   return (running);
 }
 
 osStatus_t osTimerDelete (osTimerId_t timer_id) {
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
   TimerCallback_t *callb;
@@ -949,13 +971,13 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (timer_id == NULL) {
+  else if (hTimer == NULL) {
     stat = osErrorParameter;
   }
   else {
-    callb = (TimerCallback_t *)pvTimerGetTimerID ((TimerHandle_t)timer_id);
+    callb = (TimerCallback_t *)pvTimerGetTimerID (hTimer);
 
-    if (xTimerDelete ((TimerHandle_t)timer_id, 0) == pdPASS) {
+    if (xTimerDelete (hTimer, 0) == pdPASS) {
       vPortFree (callb);
       stat = osOK;
     } else {
@@ -972,10 +994,10 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
 /*---------------------------------------------------------------------------*/
 
 osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
-  EventGroupHandle_t h;
+  EventGroupHandle_t hEventGroup;
   int32_t mem;
 
-  h = NULL;
+  hEventGroup = NULL;
 
   if (!IS_IRQ()) {
     mem = -1;
@@ -995,80 +1017,88 @@ osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
     }
 
     if (mem == 1) {
-      h = xEventGroupCreateStatic (attr->cb_mem);
+      hEventGroup = xEventGroupCreateStatic (attr->cb_mem);
     }
     else {
       if (mem == 0) {
-        h = xEventGroupCreate();
+        hEventGroup = xEventGroupCreate();
       }
     }
   }
 
-  return ((osEventFlagsId_t)h);
+  return ((osEventFlagsId_t)hEventGroup);
 }
 
 uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   uint32_t rflags;
+  BaseType_t yield;
 
-  if ((ef_id == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
+  if ((hEventGroup == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xEventGroupSetBitsFromISR ((EventGroupHandle_t)ef_id, (EventBits_t)flags, NULL) == pdPASS) {
-      rflags = flags;
-    } else {
+    yield = pdFALSE;
+
+    if (xEventGroupSetBitsFromISR (hEventGroup, (EventBits_t)flags, &yield) != pdFAIL) {
       rflags = (uint32_t)osErrorResource;
+    } else {
+      rflags = flags;
+      portYIELD_FROM_ISR (yield);
     }
   }
   else {
-    rflags = xEventGroupSetBits ((EventGroupHandle_t)ef_id, (EventBits_t)flags);
+    rflags = xEventGroupSetBits (hEventGroup, (EventBits_t)flags);
   }
 
   return (rflags);
 }
 
 uint32_t osEventFlagsClear (osEventFlagsId_t ef_id, uint32_t flags) {
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   uint32_t rflags;
 
-  if ((ef_id == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
+  if ((hEventGroup == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
-    rflags = xEventGroupGetBitsFromISR ((EventGroupHandle_t)ef_id);
+    rflags = xEventGroupGetBitsFromISR (hEventGroup);
 
-    if (xEventGroupClearBitsFromISR ((EventGroupHandle_t)ef_id, (EventBits_t)flags) == pdFAIL) {
+    if (xEventGroupClearBitsFromISR (hEventGroup, (EventBits_t)flags) == pdFAIL) {
       rflags = (uint32_t)osErrorResource;
     }
   }
   else {
-    rflags = xEventGroupClearBits ((EventGroupHandle_t)ef_id, (EventBits_t)flags);
+    rflags = xEventGroupClearBits (hEventGroup, (EventBits_t)flags);
   }
 
   return (rflags);
 }
 
 uint32_t osEventFlagsGet (osEventFlagsId_t ef_id) {
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   uint32_t rflags;
 
   if (ef_id == NULL) {
     rflags = 0U;
   }
   else if (IS_IRQ()) {
-    rflags = xEventGroupGetBitsFromISR ((EventGroupHandle_t)ef_id);
+    rflags = xEventGroupGetBitsFromISR (hEventGroup);
   }
   else {
-    rflags = xEventGroupGetBits ((EventGroupHandle_t)ef_id);
+    rflags = xEventGroupGetBits (hEventGroup);
   }
 
   return (rflags);
 }
 
 uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t options, uint32_t timeout) {
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   BaseType_t wait_all;
   BaseType_t exit_clr;
   uint32_t rflags;
 
-  if ((ef_id == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
+  if ((hEventGroup == NULL) || ((flags & EVENT_FLAGS_INVALID_BITS) != 0U)) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
@@ -1087,9 +1117,8 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
       exit_clr = pdTRUE;
     }
 
-    rflags = xEventGroupWaitBits ((EventGroupHandle_t)ef_id, (EventBits_t)flags, exit_clr,
-                                                                                 wait_all,
-                                                                                 (TickType_t)timeout);
+    rflags = xEventGroupWaitBits (hEventGroup, (EventBits_t)flags, exit_clr, wait_all, (TickType_t)timeout);
+
     if (options & osFlagsWaitAll) {
       if (flags != rflags) {
         if (timeout > 0U) {
@@ -1114,18 +1143,19 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
 }
 
 osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   osStatus_t stat;
 
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (ef_id == NULL) {
+  else if (hEventGroup == NULL) {
     stat = osErrorParameter;
   }
   else {
     stat = osOK;
-    vEventGroupDelete ((EventGroupHandle_t)ef_id);
+    vEventGroupDelete (hEventGroup);
   }
 #else
   stat = osError;
@@ -1137,12 +1167,15 @@ osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
 /*---------------------------------------------------------------------------*/
 
 osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
-  SemaphoreHandle_t mutex;
+  SemaphoreHandle_t hMutex;
   uint32_t type;
   uint32_t rmtx;
   int32_t  mem;
+  #if (configQUEUE_REGISTRY_SIZE > 0)
+  const char *name;
+  #endif
 
-  mutex = NULL;
+  hMutex = NULL;
 
   if (!IS_IRQ()) {
     if (attr != NULL) {
@@ -1176,37 +1209,48 @@ osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
 
       if (mem == 1) {
         if (rmtx != 0U) {
-          mutex = xSemaphoreCreateRecursiveMutexStatic (attr->cb_mem);
+          hMutex = xSemaphoreCreateRecursiveMutexStatic (attr->cb_mem);
         }
         else {
-          mutex = xSemaphoreCreateMutexStatic (attr->cb_mem);
+          hMutex = xSemaphoreCreateMutexStatic (attr->cb_mem);
         }
       }
       else {
         if (mem == 0) {
           if (rmtx != 0U) {
-            mutex = xSemaphoreCreateRecursiveMutex ();
+            hMutex = xSemaphoreCreateRecursiveMutex ();
           } else {
-            mutex = xSemaphoreCreateMutex ();
+            hMutex = xSemaphoreCreateMutex ();
           }
         }
       }
 
-      if ((mutex != NULL) && (rmtx != 0U)) {
-        mutex = (SemaphoreHandle_t)((uint32_t)mutex | 1U);
+      #if (configQUEUE_REGISTRY_SIZE > 0)
+      if (hMutex != NULL) {
+        if (attr != NULL) {
+          name = attr->name;
+        } else {
+          name = NULL;
+        }
+        vQueueAddToRegistry (hMutex, name);
+      }
+      #endif
+
+      if ((hMutex != NULL) && (rmtx != 0U)) {
+        hMutex = (SemaphoreHandle_t)((uint32_t)hMutex | 1U);
       }
     }
   }
 
-  return ((osMutexId_t)mutex);
+  return ((osMutexId_t)hMutex);
 }
 
 osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
-  SemaphoreHandle_t mutex;
+  SemaphoreHandle_t hMutex;
   osStatus_t stat;
   uint32_t rmtx;
 
-  mutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
+  hMutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
 
   rmtx = (uint32_t)mutex_id & 1U;
 
@@ -1215,12 +1259,12 @@ osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (mutex == NULL) {
+  else if (hMutex == NULL) {
     stat = osErrorParameter;
   }
   else {
     if (rmtx != 0U) {
-      if (xSemaphoreTakeRecursive (mutex, timeout) != pdPASS) {
+      if (xSemaphoreTakeRecursive (hMutex, timeout) != pdPASS) {
         if (timeout != 0U) {
           stat = osErrorTimeout;
         } else {
@@ -1229,7 +1273,7 @@ osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
       }
     }
     else {
-      if (xSemaphoreTake (mutex, timeout) != pdPASS) {
+      if (xSemaphoreTake (hMutex, timeout) != pdPASS) {
         if (timeout != 0U) {
           stat = osErrorTimeout;
         } else {
@@ -1243,11 +1287,11 @@ osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
 }
 
 osStatus_t osMutexRelease (osMutexId_t mutex_id) {
-  SemaphoreHandle_t mutex;
+  SemaphoreHandle_t hMutex;
   osStatus_t stat;
   uint32_t rmtx;
 
-  mutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
+  hMutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
 
   rmtx = (uint32_t)mutex_id & 1U;
 
@@ -1256,17 +1300,17 @@ osStatus_t osMutexRelease (osMutexId_t mutex_id) {
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (mutex == NULL) {
+  else if (hMutex == NULL) {
     stat = osErrorParameter;
   }
   else {
     if (rmtx != 0U) {
-      if (xSemaphoreGiveRecursive (mutex) != pdPASS) {
+      if (xSemaphoreGiveRecursive (hMutex) != pdPASS) {
         stat = osErrorResource;
       }
     }
     else {
-      if (xSemaphoreGive (mutex) != pdPASS) {
+      if (xSemaphoreGive (hMutex) != pdPASS) {
         stat = osErrorResource;
       }
     }
@@ -1276,15 +1320,15 @@ osStatus_t osMutexRelease (osMutexId_t mutex_id) {
 }
 
 osThreadId_t osMutexGetOwner (osMutexId_t mutex_id) {
-  SemaphoreHandle_t mutex;
+  SemaphoreHandle_t hMutex;
   osThreadId_t owner;
 
-  mutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
+  hMutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
 
-  if (IS_IRQ() || (mutex == NULL)) {
+  if (IS_IRQ() || (hMutex == NULL)) {
     owner = NULL;
   } else {
-    owner = (osThreadId_t)xSemaphoreGetMutexHolder (mutex);
+    owner = (osThreadId_t)xSemaphoreGetMutexHolder (hMutex);
   }
 
   return (owner);
@@ -1293,19 +1337,22 @@ osThreadId_t osMutexGetOwner (osMutexId_t mutex_id) {
 osStatus_t osMutexDelete (osMutexId_t mutex_id) {
   osStatus_t stat;
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
-  SemaphoreHandle_t mutex;
+  SemaphoreHandle_t hMutex;
 
-  mutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
+  hMutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (mutex == NULL) {
+  else if (hMutex == NULL) {
     stat = osErrorParameter;
   }
   else {
+    #if (configQUEUE_REGISTRY_SIZE > 0)
+    vQueueUnregisterQueue (hMutex);
+    #endif
     stat = osOK;
-    vSemaphoreDelete (mutex);
+    vSemaphoreDelete (hMutex);
   }
 #else
   stat = osError;
@@ -1317,10 +1364,13 @@ osStatus_t osMutexDelete (osMutexId_t mutex_id) {
 /*---------------------------------------------------------------------------*/
 
 osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, const osSemaphoreAttr_t *attr) {
-  SemaphoreHandle_t h;
+  SemaphoreHandle_t hSemaphore;
   int32_t mem;
+  #if (configQUEUE_REGISTRY_SIZE > 0)
+  const char *name;
+  #endif
 
-  h = NULL;
+  hSemaphore = NULL;
 
   if (!IS_IRQ() && (max_count > 0U) && (initial_count <= max_count)) {
     mem = -1;
@@ -1342,39 +1392,52 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
     if (mem != -1) {
       if (max_count == 1U) {
         if (mem == 1) {
-          h = xSemaphoreCreateBinaryStatic ((StaticSemaphore_t *)attr->cb_mem);
+          hSemaphore = xSemaphoreCreateBinaryStatic ((StaticSemaphore_t *)attr->cb_mem);
         }
         else {
-          h = xSemaphoreCreateBinary();
+          hSemaphore = xSemaphoreCreateBinary();
         }
 
-        if ((h != NULL) && (initial_count != 0U)) {
-          if (xSemaphoreGive (h) != pdPASS) {
-            vSemaphoreDelete (h);
-            h = NULL;
+        if ((hSemaphore != NULL) && (initial_count != 0U)) {
+          if (xSemaphoreGive (hSemaphore) != pdPASS) {
+            vSemaphoreDelete (hSemaphore);
+            hSemaphore = NULL;
           }
         }
       }
       else {
         if (mem == 1) {
-          h = xSemaphoreCreateCountingStatic (max_count, initial_count, (StaticSemaphore_t *)attr->cb_mem);
+          hSemaphore = xSemaphoreCreateCountingStatic (max_count, initial_count, (StaticSemaphore_t *)attr->cb_mem);
         }
         else {
-          h = xSemaphoreCreateCounting (max_count, initial_count);
+          hSemaphore = xSemaphoreCreateCounting (max_count, initial_count);
         }
       }
+      
+      #if (configQUEUE_REGISTRY_SIZE > 0)
+      if (hSemaphore != NULL) {
+        if (attr != NULL) {
+          name = attr->name;
+        } else {
+          name = NULL;
+        }
+        vQueueAddToRegistry (hSemaphore, name);
+      }
+      #endif
     }
   }
 
-  return (h);
+  return ((osSemaphoreId_t)hSemaphore);
 }
 
 osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
+  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   osStatus_t stat;
+  BaseType_t yield;
 
   stat = osOK;
 
-  if (semaphore_id == NULL) {
+  if (hSemaphore == NULL) {
     stat = osErrorParameter;
   }
   else if (IS_IRQ()) {
@@ -1382,13 +1445,17 @@ osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
       stat = osErrorParameter;
     }
     else {
-      if (xSemaphoreTakeFromISR ((SemaphoreHandle_t)semaphore_id, NULL) != pdPASS) {
+      yield = pdFALSE;
+
+      if (xSemaphoreTakeFromISR (hSemaphore, &yield) != pdPASS) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
   else {
-    if (xSemaphoreTake ((SemaphoreHandle_t)semaphore_id, (TickType_t)timeout) != pdPASS) {
+    if (xSemaphoreTake (hSemaphore, (TickType_t)timeout) != pdPASS) {
       if (timeout != 0U) {
         stat = osErrorTimeout;
       } else {
@@ -1401,20 +1468,26 @@ osStatus_t osSemaphoreAcquire (osSemaphoreId_t semaphore_id, uint32_t timeout) {
 }
 
 osStatus_t osSemaphoreRelease (osSemaphoreId_t semaphore_id) {
+  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   osStatus_t stat;
+  BaseType_t yield;
 
   stat = osOK;
 
-  if (semaphore_id == NULL) {
+  if (hSemaphore == NULL) {
     stat = osErrorParameter;
   }
   else if (IS_IRQ()) {
-    if (xSemaphoreGiveFromISR ((SemaphoreHandle_t)semaphore_id, NULL) != pdTRUE) {
+    yield = pdFALSE;
+
+    if (xSemaphoreGiveFromISR (hSemaphore, &yield) != pdTRUE) {
       stat = osErrorResource;
+    } else {
+      portYIELD_FROM_ISR (yield);
     }
   }
   else {
-    if (xSemaphoreGive ((SemaphoreHandle_t)semaphore_id) != pdPASS) {
+    if (xSemaphoreGive (hSemaphore) != pdPASS) {
       stat = osErrorResource;
     }
   }
@@ -1423,33 +1496,39 @@ osStatus_t osSemaphoreRelease (osSemaphoreId_t semaphore_id) {
 }
 
 uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id) {
+  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   uint32_t count;
 
-  if (semaphore_id == NULL) {
+  if (hSemaphore == NULL) {
     count = 0U;
   }
   else if (IS_IRQ()) {
-    count = uxQueueMessagesWaitingFromISR ((QueueHandle_t)semaphore_id);
+    count = uxQueueMessagesWaitingFromISR (hSemaphore);
   } else {
-    count = (uint32_t)uxSemaphoreGetCount ((SemaphoreHandle_t)semaphore_id);
+    count = (uint32_t)uxSemaphoreGetCount (hSemaphore);
   }
 
   return (count);
 }
 
 osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
+  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   osStatus_t stat;
 
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (semaphore_id == NULL) {
+  else if (hSemaphore == NULL) {
     stat = osErrorParameter;
   }
   else {
+    #if (configQUEUE_REGISTRY_SIZE > 0)
+    vQueueUnregisterQueue (hSemaphore);
+    #endif
+
     stat = osOK;
-    vSemaphoreDelete ((SemaphoreHandle_t)semaphore_id);
+    vSemaphoreDelete (hSemaphore);
   }
 #else
   stat = osError;
@@ -1461,10 +1540,13 @@ osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
 /*---------------------------------------------------------------------------*/
 
 osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, const osMessageQueueAttr_t *attr) {
-  QueueHandle_t h;
+  QueueHandle_t hQueue;
   int32_t mem;
+  #if (configQUEUE_REGISTRY_SIZE > 0)
+  const char *name;
+  #endif
 
-  h = NULL;
+  hQueue = NULL;
 
   if (!IS_IRQ() && (msg_count > 0U) && (msg_size > 0U)) {
     mem = -1;
@@ -1486,41 +1568,59 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
     }
 
     if (mem == 1) {
-      h = xQueueCreateStatic (msg_count, msg_size, attr->mq_mem, attr->cb_mem);
+      hQueue = xQueueCreateStatic (msg_count, msg_size, attr->mq_mem, attr->cb_mem);
     }
     else {
       if (mem == 0) {
-        h = xQueueCreate (msg_count, msg_size);
+        hQueue = xQueueCreate (msg_count, msg_size);
       }
     }
+
+    #if (configQUEUE_REGISTRY_SIZE > 0)
+    if (hQueue != NULL) {
+      if (attr != NULL) {
+        name = attr->name;
+      } else {
+        name = NULL;
+      }
+      vQueueAddToRegistry (hQueue, name);
+    }
+    #endif
+
   }
 
-  return ((osMessageQueueId_t)h);
+  return ((osMessageQueueId_t)hQueue);
 }
 
 osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uint8_t msg_prio, uint32_t timeout) {
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
+  BaseType_t yield;
 
   (void)msg_prio; /* Message priority is ignored */
 
   stat = osOK;
 
   if (IS_IRQ()) {
-    if ((mq_id == NULL) || (msg_ptr == NULL) || (timeout != 0U)) {
+    if ((hQueue == NULL) || (msg_ptr == NULL) || (timeout != 0U)) {
       stat = osErrorParameter;
     }
     else {
-      if (xQueueSendToBackFromISR ((QueueHandle_t)mq_id, msg_ptr, NULL) != pdTRUE) {
+      yield = pdFALSE;
+
+      if (xQueueSendToBackFromISR (hQueue, msg_ptr, &yield) != pdTRUE) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
   else {
-    if ((mq_id == NULL) || (msg_ptr == NULL)) {
+    if ((hQueue == NULL) || (msg_ptr == NULL)) {
       stat = osErrorParameter;
     }
     else {
-      if (xQueueSendToBack ((QueueHandle_t)mq_id, msg_ptr, (TickType_t)timeout) != pdPASS) {
+      if (xQueueSendToBack (hQueue, msg_ptr, (TickType_t)timeout) != pdPASS) {
         if (timeout != 0U) {
           stat = osErrorTimeout;
         } else {
@@ -1534,28 +1634,34 @@ osStatus_t osMessageQueuePut (osMessageQueueId_t mq_id, const void *msg_ptr, uin
 }
 
 osStatus_t osMessageQueueGet (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout) {
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
+  BaseType_t yield;
 
   (void)msg_prio; /* Message priority is ignored */
 
   stat = osOK;
 
   if (IS_IRQ()) {
-    if ((mq_id == NULL) || (msg_ptr == NULL) || (timeout != 0U)) {
+    if ((hQueue == NULL) || (msg_ptr == NULL) || (timeout != 0U)) {
       stat = osErrorParameter;
     }
     else {
-      if (xQueueReceiveFromISR ((QueueHandle_t)mq_id, msg_ptr, NULL) != pdPASS) {
+      yield = pdFALSE;
+
+      if (xQueueReceiveFromISR (hQueue, msg_ptr, &yield) != pdPASS) {
         stat = osErrorResource;
+      } else {
+        portYIELD_FROM_ISR (yield);
       }
     }
   }
   else {
-    if ((mq_id == NULL) || (msg_ptr == NULL)) {
+    if ((hQueue == NULL) || (msg_ptr == NULL)) {
       stat = osErrorParameter;
     }
     else {
-      if (xQueueReceive ((QueueHandle_t)mq_id, msg_ptr, (TickType_t)timeout) != pdPASS) {
+      if (xQueueReceive (hQueue, msg_ptr, (TickType_t)timeout) != pdPASS) {
         if (timeout != 0U) {
           stat = osErrorTimeout;
         } else {
@@ -1597,16 +1703,17 @@ uint32_t osMessageQueueGetMsgSize (osMessageQueueId_t mq_id) {
 }
 
 uint32_t osMessageQueueGetCount (osMessageQueueId_t mq_id) {
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   UBaseType_t count;
 
-  if (mq_id == NULL) {
+  if (hQueue == NULL) {
     count = 0U;
   }
   else if (IS_IRQ()) {
-    count = uxQueueMessagesWaitingFromISR ((QueueHandle_t)mq_id);
+    count = uxQueueMessagesWaitingFromISR (hQueue);
   }
   else {
-    count = uxQueueMessagesWaiting ((QueueHandle_t)mq_id);
+    count = uxQueueMessagesWaiting (hQueue);
   }
 
   return ((uint32_t)count);
@@ -1636,35 +1743,41 @@ uint32_t osMessageQueueGetSpace (osMessageQueueId_t mq_id) {
 }
 
 osStatus_t osMessageQueueReset (osMessageQueueId_t mq_id) {
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
 
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (mq_id == NULL) {
+  else if (hQueue == NULL) {
     stat = osErrorParameter;
   }
   else {
     stat = osOK;
-    (void)xQueueReset ((QueueHandle_t)mq_id);
+    (void)xQueueReset (hQueue);
   }
 
   return (stat);
 }
 
 osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
 
 #ifndef RTE_RTOS_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
-  else if (mq_id == NULL) {
+  else if (hQueue == NULL) {
     stat = osErrorParameter;
   }
   else {
+    #if (configQUEUE_REGISTRY_SIZE > 0)
+    vQueueUnregisterQueue (hQueue);
+    #endif
+
     stat = osOK;
-    vQueueDelete ((QueueHandle_t)mq_id);
+    vQueueDelete (hQueue);
   }
 #else
   stat = osError;
