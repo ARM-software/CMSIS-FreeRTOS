@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -813,7 +813,7 @@ osStatus_t osDelayUntil (uint32_t ticks) {
     stat = osOK;
     tcnt = xTaskGetTickCount();
 
-    vTaskDelayUntil (&tcnt, (TickType_t)ticks);
+    vTaskDelayUntil (&tcnt, (TickType_t)(ticks - tcnt));
   }
 
   return (stat);

@@ -8,7 +8,11 @@
   <license>License/license.txt</license>
     
   <releases>
-    <release version="10.0.1-rc0" date="2018-02-20">
+    <release version="10.0.2-dev0">
+      CMSIS:RTOS2:FreeRTOS update:
+      - Corrected osDelayUntil execution duration
+    </release>
+    <release version="10.0.1" date="2018-02-20">
       FreeRTOS 10.0.0
       Maintenance for CMSIS 5.3.0: 
        - Added queue registry support to CMSIS:RTOS2:FreeRTOS component.
@@ -325,7 +329,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.0.1" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.0.2" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -342,7 +346,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.0.1" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.0.2" Capiversion="2.1.2" condition="FreeRTOS RTOS2 CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
