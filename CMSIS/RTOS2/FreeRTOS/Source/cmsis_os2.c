@@ -434,11 +434,7 @@ const char *osThreadGetName (osThreadId_t thread_id) {
 osThreadId_t osThreadGetId (void) {
   osThreadId_t id;
 
-  if (IS_IRQ()) {
-    id = NULL;
-  } else {
-    id = (osThreadId_t)xTaskGetCurrentTaskHandle();
-  }
+  id = (osThreadId_t)xTaskGetCurrentTaskHandle();
 
   return (id);
 }
