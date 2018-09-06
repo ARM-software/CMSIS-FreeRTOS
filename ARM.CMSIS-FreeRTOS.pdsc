@@ -276,12 +276,61 @@
       <require condition="GCC"/>
     </condition>
 
+    <!-- IAR compiler -->
+    <condition id="CM0_IAR">
+      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the IAR Compiler</description>
+      <require condition="CM0"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM3_IAR">
+      <description>Cortex-M3 or SC300 processor based device for the IAR Compiler</description>
+      <require condition="CM3"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM4_IAR">
+      <description>Cortex-M4 processor based device for the IAR Compiler</description>
+      <require condition="CM4"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM4_FP_IAR">
+      <description>Cortex-M4 processor based device using Floating Point Unit for the IAR Compiler</description>
+      <require condition="CM4_FP"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM7_IAR">
+      <description>Cortex-M7 processor based device for the IAR Compiler</description>
+      <require condition="CM7"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM7_SP_IAR">
+      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the IAR Compiler</description>
+      <require condition="CM7_SP"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM7_DP_IAR">
+      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the IAR Compiler</description>
+      <require condition="CM7_DP"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CA9_DP_IAR">
+      <description>Cortex-A9 processor based device for the IAR Compiler</description>
+      <require condition="CA9_DP"/>
+      <require condition="IAR"/>
+    </condition>
+
     <condition id="CMSIS RTOS2 FreeRTOS">
       <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>  
     </condition>
 
     <condition id="FreeRTOS">
-      <require condition="ARMCC GCC"/>
+      <require condition="ARMCC GCC IAR"/>
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
@@ -439,6 +488,24 @@
           <file category="include"   condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/"/>
           <file category="source"    condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/port.c"/>
           <file category="sourceAsm" condition="CA9_DP_GCC" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+
+          <file category="include"   condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/"/>
+          <file category="source"    condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/port.c"/>
+          <file category="include"   condition="CM3_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
+          <file category="source"    condition="CM3_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
+          <file category="source"    condition="CM4_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F/"/>
+          <file category="source"    condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F/port.c"/>
+          <file category="include"   condition="CM7_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
+          <file category="source"    condition="CM7_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="include"   condition="CM7_DP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_DP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/"/>
+          <file category="source"    condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CA9_DP_IAR" name="Source/portable/IAR/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_IAR" name="Source/portable/IAR/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_IAR" name="Source/portable/IAR/ARM_CA9/portASM.s"/>
 
           <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_evr.h"/>
           <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
