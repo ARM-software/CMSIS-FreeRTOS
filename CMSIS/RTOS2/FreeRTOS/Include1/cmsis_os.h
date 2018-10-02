@@ -21,7 +21,7 @@
  * $Revision:    V2.1.0
  *
  * Project:      CMSIS-RTOS API
- * Title:        cmsis_os.h RTX header file
+ * Title:        cmsis_os.h FreeRTOS header file
  *
  * Version 0.02
  *    Initial Proposal Phase
