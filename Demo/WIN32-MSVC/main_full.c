@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -46,7 +46,7 @@
  * in main.c.  This file implements the comprehensive test and demo version.
  *
  * NOTE 3:  This file only contains the source code that is specific to the
- * basic demo.  Generic functions, such FreeRTOS hook functions, are defined in
+ * full demo.  Generic functions, such FreeRTOS hook functions, are defined in
  * main.c.
  *******************************************************************************
  *
@@ -141,8 +141,8 @@ static void prvDemonstrateTaskStateAndHandleGetFunctions( void );
 static void prvDemonstratePendingFunctionCall( void );
 
 /*
-* The function that is pended by prvDemonstratePendingFunctionCall().
-*/
+ * The function that is pended by prvDemonstratePendingFunctionCall().
+ */
 static void prvPendedFunction( void *pvParameter1, uint32_t ulParameter2 );
 
 /*
@@ -204,10 +204,10 @@ int main_full( void )
 	xTaskCreate( prvPermanentlyBlockingSemaphoreTask, "BlockSem", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 	xTaskCreate( prvPermanentlyBlockingNotificationTask, "BlockNoti", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 
-	vStartMessageBufferTasks();
+	vStartMessageBufferTasks( configMINIMAL_STACK_SIZE );
 	vStartStreamBufferTasks();
 	vStartStreamBufferInterruptDemo();
-	vStartMessageBufferAMPTasks();
+	vStartMessageBufferAMPTasks( configMINIMAL_STACK_SIZE );
 
 	#if( configSUPPORT_STATIC_ALLOCATION == 1 )
 	{

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ extern "C" {
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
  * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
- * See http://www.freertos.org/a00110.html.
+ * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
 /* The MPU version of port.c includes and excludes functions depending on the
@@ -120,7 +120,7 @@ to exclude the API function. */
 	/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
 	#define configPRIO_BITS		       __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS		       8	/* 15 priority levels */
+	#define configPRIO_BITS		       4	/* 15 priority levels */
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -28,7 +28,7 @@
 #ifndef MESSAGE_BUFFER_AMP_H
 #define MESSAGE_BUFFER_AMP_H
 
-void vStartMessageBufferAMPTasks( void );
+void vStartMessageBufferAMPTasks( configSTACK_DEPTH_TYPE xStackSize );
 BaseType_t xAreMessageBufferAMPTasksStillRunning( void );
 void vGenerateCoreBInterrupt( void * xUpdatedMessageBuffer );
 

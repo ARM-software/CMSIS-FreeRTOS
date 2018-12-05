@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -126,18 +126,18 @@ BaseType_t xDemoStatus = pdPASS;
 
 /*-----------------------------------------------------------*/
 
-void vStartMessageBufferAMPTasks( void )
+void vStartMessageBufferAMPTasks( configSTACK_DEPTH_TYPE xStackSize )
 {
 BaseType_t x;
 
 	xControlMessageBuffer = xMessageBufferCreate( mbaCONTROL_MESSAGE_BUFFER_SIZE );
 
-	xTaskCreate( prvCoreATask,				/* The function that implements the task. */
-				 "AMPCoreA",				/* Human readable name for the task. */
-				 configMINIMAL_STACK_SIZE,	/* Stack size (in words!). */
-				 NULL,						/* Task parameter is not used. */
-				 tskIDLE_PRIORITY,			/* The priority at which the task is created. */
-				 NULL );					/* No use for the task handle. */
+	xTaskCreate( prvCoreATask,		/* The function that implements the task. */
+				 "AMPCoreA",		/* Human readable name for the task. */
+				 xStackSize,		/* Stack size (in words!). */
+				 NULL,				/* Task parameter is not used. */
+				 tskIDLE_PRIORITY,	/* The priority at which the task is created. */
+				 NULL );			/* No use for the task handle. */
 
 	for( x = 0; x < mbaNUMBER_OF_CORE_B_TASKS; x++ )
 	{
@@ -149,7 +149,7 @@ BaseType_t x;
 		ulCycleCounters and xCoreBMessageBuffers arrays. */
 		xTaskCreate( prvCoreBTasks,
 					 "AMPCoreB1",
-					 configMINIMAL_STACK_SIZE,
+					 xStackSize,
 					 ( void * ) x,
 					 tskIDLE_PRIORITY + 1,
 					 NULL );
@@ -230,6 +230,7 @@ char cReceivedString[ 15 ];
 
 		/* Check the number of bytes received was as expected. */
 		configASSERT( xReceivedBytes == strlen( cExpectedString ) );
+		( void ) xReceivedBytes; /* Incase configASSERT() is not defined. */
 
 		/* If the received string matches that expected then increment the loop
 		counter so the check task knows this task is still running. */

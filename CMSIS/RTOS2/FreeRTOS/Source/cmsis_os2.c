@@ -86,7 +86,7 @@
                                    ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
-#define KERNEL_ID                 "FreeRTOS V10.0.1"
+#define KERNEL_ID                 "FreeRTOS V10.1.1"
 
 /* Timer callback information structure definition */
 typedef struct {
@@ -126,8 +126,10 @@ void SysTick_Handler (void) {
   /* Clear overflow flag */
   SysTick->CTRL;
 
-  /* Call tick handler */
-  xPortSysTickHandler();
+  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+    /* Call tick handler */
+    xPortSysTickHandler();
+  }
 }
 #endif /* SysTick */
 
@@ -330,7 +332,7 @@ uint32_t osKernelGetSysTimerCount (void) {
   TickType_t ticks;
   uint32_t val;
 
-  portDISABLE_INTERRUPTS();
+  portENTER_CRITICAL();
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
@@ -341,7 +343,7 @@ uint32_t osKernelGetSysTimerCount (void) {
   }
   val += ticks * OS_Tick_GetInterval();
 
-  portENABLE_INTERRUPTS();
+  portEXIT_CRITICAL();
 
   return (val);
 }

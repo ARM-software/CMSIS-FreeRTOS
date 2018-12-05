@@ -185,7 +185,7 @@ _freertos_vector_table:
 
 
 
-
+#if 0
 SynchronousInterruptHandler:
 	stp	X0,X1, [sp,#-0x10]!
 	stp	X2,X3, [sp,#-0x10]!
@@ -303,5 +303,6 @@ SErrorInterruptHandler:
 	ldp	X0,X1, [sp], #0x10
 
 	eret
+#endif
 
 .end

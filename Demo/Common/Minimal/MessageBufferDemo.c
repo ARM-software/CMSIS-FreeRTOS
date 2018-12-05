@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -41,7 +41,7 @@
 #define mbMESSAGE_BUFFER_LENGTH_BYTES	( ( size_t ) 50 )
 
 /* The number of additional bytes used to store the length of each message. */
-#define mbBYTES_TO_STORE_MESSAGE_LENGTH ( sizeof( size_t ) )
+#define mbBYTES_TO_STORE_MESSAGE_LENGTH ( sizeof( configMESSAGE_BUFFER_LENGTH_TYPE ) )
 
 /* Start and end ASCII characters used in messages sent to the buffers. */
 #define mbASCII_SPACE					32
@@ -62,9 +62,6 @@ priority tasks, and from high to low priority tasks. */
 /* A block time of 0 means "don't block". */
 #define mbDONT_BLOCK				( 0 )
 
-/* The size of the stack allocated to the tasks that run as part of this demo/
-test.  The stack size is over generous in most cases. */
-#define mbSTACK_SIZE				( configMINIMAL_STACK_SIZE + ( configMINIMAL_STACK_SIZE >> 1 ) )
 /*-----------------------------------------------------------*/
 
 /*
@@ -122,33 +119,38 @@ static uint32_t ulNonBlockingRxCounter = 0;
 message buffer to test writing different lengths at different offsets. */
 static const char *pc55ByteString = "One two three four five six seven eight nine ten eleve";
 
+/* Remember the required stack size so tasks can be created at run time (after
+initialisation time. */
+static configSTACK_DEPTH_TYPE xBlockingStackSize = 0;
 
 /*-----------------------------------------------------------*/
 
-void vStartMessageBufferTasks( void )
+void vStartMessageBufferTasks( configSTACK_DEPTH_TYPE xStackSize  )
 {
 MessageBufferHandle_t xMessageBuffer;
+
+	xBlockingStackSize = ( xStackSize + ( xStackSize >> 1U ) );
 
 	/* The echo servers sets up the message buffers before creating the echo
 	client tasks.  One set of tasks has the server as the higher priority, and
 	the other has the client as the higher priority. */
-	xTaskCreate( prvEchoServer, "1EchoServer", mbSTACK_SIZE, NULL, mbHIGHER_PRIORITY, NULL );
-	xTaskCreate( prvEchoServer, "2EchoServer", mbSTACK_SIZE, NULL, mbLOWER_PRIORITY, NULL );
+	xTaskCreate( prvEchoServer, "1EchoServer", xBlockingStackSize, NULL, mbHIGHER_PRIORITY, NULL );
+	xTaskCreate( prvEchoServer, "2EchoServer", xBlockingStackSize, NULL, mbLOWER_PRIORITY, NULL );
 
 	/* The non blocking tasks run continuously and will interleave with each
 	other, so must be created at the lowest priority.  The message buffer they
 	use is created and passed in using the task's parameter. */
 	xMessageBuffer = xMessageBufferCreate( mbMESSAGE_BUFFER_LENGTH_BYTES );
-	xTaskCreate( prvNonBlockingReceiverTask, "NonBlkRx", configMINIMAL_STACK_SIZE, ( void * ) xMessageBuffer, tskIDLE_PRIORITY, NULL );
-	xTaskCreate( prvNonBlockingSenderTask, "NonBlkTx", configMINIMAL_STACK_SIZE, ( void * ) xMessageBuffer, tskIDLE_PRIORITY, NULL );
+	xTaskCreate( prvNonBlockingReceiverTask, "NonBlkRx", xStackSize, ( void * ) xMessageBuffer, tskIDLE_PRIORITY, NULL );
+	xTaskCreate( prvNonBlockingSenderTask, "NonBlkTx", xStackSize, ( void * ) xMessageBuffer, tskIDLE_PRIORITY, NULL );
 
 	#if( configSUPPORT_STATIC_ALLOCATION == 1  )
 	{
 		/* The sender tasks set up the message buffers before creating the
 		receiver tasks.  Priorities must be 0 and 1 as the priority is used to
 		index into the xStaticMessageBuffers and ucBufferStorage arrays. */
-		xTaskCreate( prvSenderTask, "1Sender", mbSTACK_SIZE, NULL, mbHIGHER_PRIORITY, NULL );
-		xTaskCreate( prvSenderTask, "2Sender", mbSTACK_SIZE, NULL, mbLOWER_PRIORITY, NULL );
+		xTaskCreate( prvSenderTask, "1Sender", xBlockingStackSize, NULL, mbHIGHER_PRIORITY, NULL );
+		xTaskCreate( prvSenderTask, "2Sender", xBlockingStackSize, NULL, mbLOWER_PRIORITY, NULL );
 	}
 	#endif /* configSUPPORT_STATIC_ALLOCATION */
 }
@@ -156,7 +158,7 @@ MessageBufferHandle_t xMessageBuffer;
 
 static void prvSingleTaskTests( MessageBufferHandle_t xMessageBuffer )
 {
-size_t xReturned, xItem, xExpectedSpace;
+size_t xReturned, xItem, xExpectedSpace, xNextLength;
 const size_t xMax6ByteMessages = mbMESSAGE_BUFFER_LENGTH_BYTES / ( 6 + mbBYTES_TO_STORE_MESSAGE_LENGTH );
 const size_t x6ByteLength = 6, x17ByteLength = 17;
 uint8_t *pucFullBuffer, *pucData, *pucReadData;
@@ -177,17 +179,22 @@ UBaseType_t uxOriginalPriority;
 	pucReadData = pucData + x17ByteLength;
 
 	/* Nothing has been added or removed yet, so expect the free space to be
-	exactly as created. */
+	exactly as created and the length of the next message to be 0. */
 	xExpectedSpace = xMessageBufferSpaceAvailable( xMessageBuffer );
 	configASSERT( xExpectedSpace == mbMESSAGE_BUFFER_LENGTH_BYTES );
 	configASSERT( xMessageBufferIsEmpty( xMessageBuffer ) == pdTRUE );
-
+	xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+	configASSERT( xNextLength == 0 );
+	/* In case configASSERT() is not define. */
+	( void ) xExpectedSpace;
+	( void ) xNextLength;
 
 	/* The buffer is 50 bytes long.  When an item is added to the buffer an
 	additional 4 bytes are added to hold the item's size.  That means adding
 	6 bytes to the buffer will actually add 10 bytes to the buffer.  Therefore,
 	with a 50 byte buffer, a maximum of 5 6 bytes items can be added before the
-	buffer is completely full. */
+	buffer is completely full.  NOTE:  The numbers in this paragraph assume
+	sizeof( configMESSAGE_BUFFER_LENGTH_TYPE ) == 4. */
 	for( xItem = 0; xItem < xMax6ByteMessages; xItem++ )
 	{
 		configASSERT( xMessageBufferIsFull( xMessageBuffer ) == pdFALSE );
@@ -215,6 +222,11 @@ UBaseType_t uxOriginalPriority;
 		xReturned = xMessageBufferSpaceAvailable( xMessageBuffer );
 		configASSERT( xReturned == xExpectedSpace );
 		( void ) xReturned; /* In case configASSERT() is not defined. */
+
+		/* Only 6 byte messages are written. */
+		xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+		configASSERT( xNextLength == x6ByteLength );
+		( void ) xNextLength; /* In case configASSERT() is not defined. */
 	}
 
 	/* Now the buffer should be full, and attempting to add anything will should
@@ -255,6 +267,11 @@ UBaseType_t uxOriginalPriority;
 		configASSERT( xReturned == 0 );
 		( void ) xReturned; /* In case configASSERT() is not defined. */
 
+		/* Should still be at least one 6 byte message still available. */
+		xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+		configASSERT( xNextLength == x6ByteLength );
+		( void ) xNextLength; /* In case configASSERT() is not defined. */
+
 		/* Read the next 6 bytes out.  The 'FromISR' version is used to give it
 		some exercise as a block time is not used.  THa requires the code to be
 		in a critical section so this test can be run with FreeRTOS ports that
@@ -284,6 +301,11 @@ UBaseType_t uxOriginalPriority;
 	configASSERT( xMessageBufferIsEmpty( xMessageBuffer ) == pdTRUE );
 	xExpectedSpace = xMessageBufferSpaceAvailable( xMessageBuffer );
 	configASSERT( xExpectedSpace == mbMESSAGE_BUFFER_LENGTH_BYTES );
+	( void ) xExpectedSpace; /* In case configASSERT() is not defined. */
+	xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+	configASSERT( xNextLength == 0 );
+	( void ) xNextLength; /* In case configASSERT() is not defined. */
+
 
 	/* Reading with a timeout should also fail after the appropriate time.  The
 	priority is temporarily boosted in this part of the test to keep the
@@ -320,6 +342,11 @@ UBaseType_t uxOriginalPriority;
 		configASSERT( xReturned == x17ByteLength );
 		( void ) xReturned; /* In case configASSERT() is not defined. */
 
+		/* Only 17 byte messages are written. */
+		xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+		configASSERT( xNextLength == x17ByteLength );
+		( void ) xNextLength; /* In case configASSERT() is not defined. */
+
 		/* The space in the buffer will have reduced by the amount of user data
 		written into the buffer and the amount of space used to store the length
 		of the data written into the buffer. */
@@ -334,6 +361,12 @@ UBaseType_t uxOriginalPriority;
 
 		/* Does the data read out match that expected? */
 		configASSERT( memcmp( ( void * ) pucData, ( void * ) pucReadData, x17ByteLength ) == 0 );
+
+		/* Don't expect any messages to be available as the data was read out
+		again. */
+		xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+		configASSERT( xNextLength == 0 );
+		( void ) xNextLength; /* In case configASSERT() is not defined. */
 	}
 
 	/* The buffer should be empty again. */
@@ -347,20 +380,35 @@ UBaseType_t uxOriginalPriority;
 	xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES, mbDONT_BLOCK );
 	configASSERT( xReturned == 0 );
 	( void ) xReturned; /* In case configASSERT() is not defined. */
-	xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 1, mbDONT_BLOCK );
-	configASSERT( xReturned == 0 );
-	( void ) xReturned; /* In case configASSERT() is not defined. */
-	xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 2, mbDONT_BLOCK );
-	configASSERT( xReturned == 0 );
-	( void ) xReturned; /* In case configASSERT() is not defined. */
-	xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 3, mbDONT_BLOCK );
-	configASSERT( xReturned == 0 );
-	( void ) xReturned; /* In case configASSERT() is not defined. */
+	#ifndef configMESSAGE_BUFFER_LENGTH_TYPE
+	{
+		/* The following will fail if configMESSAGE_BUFFER_LENGTH_TYPE is set
+		to a non 32-bit type. */
+		xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 1, mbDONT_BLOCK );
+		configASSERT( xReturned == 0 );
+		( void ) xReturned; /* In case configASSERT() is not defined. */
+		xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 2, mbDONT_BLOCK );
+		configASSERT( xReturned == 0 );
+		( void ) xReturned; /* In case configASSERT() is not defined. */
+		xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - 3, mbDONT_BLOCK );
+		configASSERT( xReturned == 0 );
+		( void ) xReturned; /* In case configASSERT() is not defined. */
+	}
+	#endif
+
+	/* Don't expect any messages to be available as the above were too large to
+	get written. */
+	xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+	configASSERT( xNextLength == 0 );
+	( void ) xNextLength; /* In case configASSERT() is not defined. */
 
 	/* Can write mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ) bytes though. */
 	xReturned = xMessageBufferSend( xMessageBuffer, ( const void * ) pc55ByteString, mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ), mbDONT_BLOCK );
 	configASSERT( xReturned == mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ) );
 	( void ) xReturned; /* In case configASSERT() is not defined. */
+	xNextLength = xMessageBufferNextLengthBytes( xMessageBuffer );
+	configASSERT( xNextLength == ( mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ) ) );
+	( void ) xNextLength; /* In case configASSERT() is not defined. */
 	xReturned = xMessageBufferReceive( xMessageBuffer, ( void * ) pucFullBuffer, mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ), mbDONT_BLOCK );
 	configASSERT( xReturned == ( mbMESSAGE_BUFFER_LENGTH_BYTES - sizeof( size_t ) ) );
 	( void ) xReturned; /* In case configASSERT() is not defined. */
@@ -521,11 +569,11 @@ char cRxString[ 12 ];
 			/* Here prvSingleTaskTests() performs various tests on a message buffer
 			that was created statically. */
 			prvSingleTaskTests( xMessageBuffer );
-			xTaskCreate( prvReceiverTask, "MsgReceiver", mbSTACK_SIZE,  ( void * ) xMessageBuffer, mbHIGHER_PRIORITY, NULL );
+			xTaskCreate( prvReceiverTask, "MsgReceiver", xBlockingStackSize,  ( void * ) xMessageBuffer, mbHIGHER_PRIORITY, NULL );
 		}
 		else
 		{
-			xTaskCreate( prvReceiverTask, "MsgReceiver", mbSTACK_SIZE,  ( void * ) xMessageBuffer, mbLOWER_PRIORITY, NULL );
+			xTaskCreate( prvReceiverTask, "MsgReceiver", xBlockingStackSize,  ( void * ) xMessageBuffer, mbLOWER_PRIORITY, NULL );
 		}
 
 		for( ;; )
@@ -735,9 +783,9 @@ const TickType_t xTicksToBlock = pdMS_TO_TICKS( 250UL );
 		memset( pcReceivedString, 0x00, mbMESSAGE_BUFFER_LENGTH_BYTES );
 
 		/* Has any data been sent by the client? */
-		xReceivedLength = xMessageBufferReceive( xMessageBuffers.xEchoClientBuffer, ( void * ) pcReceivedString, mbMESSAGE_BUFFER_LENGTH_BYTES, xTicksToBlock );
+		xReceivedLength = xMessageBufferReceive( xMessageBuffers.xEchoClientBuffer, ( void * ) pcReceivedString, mbMESSAGE_BUFFER_LENGTH_BYTES, portMAX_DELAY );
 
-		/* Should always receive data as a delay was used. */
+		/* Should always receive data as max delay was used. */
 		configASSERT( xReceivedLength > 0 );
 
 		/* Echo the received data back to the client. */

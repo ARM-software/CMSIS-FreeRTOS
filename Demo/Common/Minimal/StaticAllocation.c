@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -695,8 +695,7 @@ StaticEventGroup_t xEventGroupBuffer;
 	/* Create the event group.  xEventGroupCreateStatic() has an extra parameter
 	than the normal xEventGroupCreate() API function.  The parameter is a
 	pointer to the StaticEventGroup_t structure that will hold the event group
-	structure.  If the parameter is passed as NULL then the structure will be
-	allocated dynamically, just as if xEventGroupCreate() had been called. */
+	structure. */
 	xEventGroup = xEventGroupCreateStatic( &xEventGroupBuffer );
 
 	/* The event group handle should equal the static event group structure

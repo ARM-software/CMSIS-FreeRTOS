@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -191,18 +191,18 @@ unsigned long ulTicksToWait = mainCHECK_DELAY_NO_ERROR;
 		{
 			ulTicksToWait = mainCHECK_DELAY_ERROR;
 		}
-	    else if( xAreSemaphoreTasksStillRunning() != pdTRUE )
-	    {
-	        ulTicksToWait = mainCHECK_DELAY_ERROR;
-	    }
-	    else if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
-	    {
-	        ulTicksToWait = mainCHECK_DELAY_ERROR;
-	    }
-	    else if( xAreRecursiveMutexTasksStillRunning() != pdTRUE )
-	    {
-	    	ulTicksToWait = mainCHECK_DELAY_ERROR;
-	    }
+		else if( xAreSemaphoreTasksStillRunning() != pdTRUE )
+		{
+			ulTicksToWait = mainCHECK_DELAY_ERROR;
+		}
+		else if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
+		{
+			ulTicksToWait = mainCHECK_DELAY_ERROR;
+		}
+		else if( xAreRecursiveMutexTasksStillRunning() != pdTRUE )
+		{
+			ulTicksToWait = mainCHECK_DELAY_ERROR;
+		}
 
 		vParTestToggleLED( mainCHECK_LED );
 	}

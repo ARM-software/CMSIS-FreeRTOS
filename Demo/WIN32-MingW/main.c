@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -75,9 +75,9 @@ that make up the total heap.  heap_5 is only used for test and example purposes
 as this demo could easily create one large heap region instead of multiple
 smaller heap regions - in which case heap_4.c would be the more appropriate
 choice.  See http://www.freertos.org/a00111.html for an explanation. */
-#define mainREGION_1_SIZE	7201
+#define mainREGION_1_SIZE	10801
 #define mainREGION_2_SIZE	29905
-#define mainREGION_3_SIZE	6407
+#define mainREGION_3_SIZE	6007
 
 /*-----------------------------------------------------------*/
 
@@ -111,12 +111,23 @@ void vApplicationMallocFailedHook( void );
 void vApplicationIdleHook( void );
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName );
 void vApplicationTickHook( void );
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize );
 
 /*
  * Writes trace data to a disk file when the trace recording is stopped.
  * This function will simply overwrite any trace files that already exist.
  */
 static void prvSaveTraceFile( void );
+
+/*-----------------------------------------------------------*/
+
+/* When configSUPPORT_STATIC_ALLOCATION is set to 1 the application writer can
+use a callback function to optionally provide the memory required by the idle
+and timer tasks.  This is the stack that will be used by the timer task.  It is
+declared here, as a global, so it can be checked by a test that is implemented
+in a different file. */
+StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 
 /* Notes if the trace is running or not. */
 static BaseType_t xTraceRunning = pdTRUE;
@@ -130,10 +141,6 @@ int main( void )
 	http://www.freertos.org/a00111.html for an explanation. */
 	prvInitialiseHeap();
 
-	/* Initialise the trace recorder.  Use of the trace recorder is optional.
-	See http://www.FreeRTOS.org/trace for more information. */
-	vTraceEnable( TRC_START );
-
 	/* The mainCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
 	of this file. */
 	#if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1 )
@@ -142,11 +149,20 @@ int main( void )
 	}
 	#else
 	{
-		/* Start the trace recording - the recording is written to a file if
-		configASSERT() is called. */
-		printf( "\r\nTrace started.\r\nThe trace will be dumped to disk if a call to configASSERT() fails.\r\n" );
-		printf( "Uncomment the call to kbhit() in this file to also dump trace with a key press.\r\n" );
-		uiTraceStart();
+		/* Do not include trace code when performing a code coverage analysis. */
+		#if( projCOVERAGE_TEST != 1 )
+		{
+			/* Initialise the trace recorder.  Use of the trace recorder is optional.
+			See http://www.FreeRTOS.org/trace for more information. */
+			vTraceEnable( TRC_START );
+
+			/* Start the trace recording - the recording is written to a file if
+			configASSERT() is called. */
+			printf( "\r\nTrace started.\r\nThe trace will be dumped to disk if a call to configASSERT() fails.\r\n" );
+			printf( "Uncomment the call to kbhit() in this file to also dump trace with a key press.\r\n" );
+			uiTraceStart();
+		}
+		#endif
 
 		main_full();
 	}
@@ -271,7 +287,6 @@ volatile uint32_t ulSetToNonZeroInDebuggerToContinue = 0;
 			xPrinted = pdTRUE;
 			if( xTraceRunning == pdTRUE )
 			{
-				vTraceStop();
 				prvSaveTraceFile();
 			}
 		}
@@ -291,20 +306,27 @@ volatile uint32_t ulSetToNonZeroInDebuggerToContinue = 0;
 
 static void prvSaveTraceFile( void )
 {
-FILE* pxOutputFile;
-
-	pxOutputFile = fopen( "Trace.dump", "wb");
-
-	if( pxOutputFile != NULL )
+	/* Tracing is not used when code coverage analysis is being performed. */
+	#if( projCOVERAGE_TEST != 1 )
 	{
-		fwrite( RecorderDataPtr, sizeof( RecorderDataType ), 1, pxOutputFile );
-		fclose( pxOutputFile );
-		printf( "\r\nTrace output saved to Trace.dump\r\n" );
+		FILE* pxOutputFile;
+
+		vTraceStop();
+
+		pxOutputFile = fopen( "Trace.dump", "wb");
+
+		if( pxOutputFile != NULL )
+		{
+			fwrite( RecorderDataPtr, sizeof( RecorderDataType ), 1, pxOutputFile );
+			fclose( pxOutputFile );
+			printf( "\r\nTrace output saved to Trace.dump\r\n" );
+		}
+		else
+		{
+			printf( "\r\nFailed to create trace dump file\r\n" );
+		}
 	}
-	else
-	{
-		printf( "\r\nFailed to create trace dump file\r\n" );
-	}
+	#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -341,3 +363,52 @@ const HeapRegion_t xHeapRegions[] =
 	vPortDefineHeapRegions( xHeapRegions );
 }
 /*-----------------------------------------------------------*/
+
+/* configUSE_STATIC_ALLOCATION is set to 1, so the application must provide an
+implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
+used by the Idle task. */
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
+{
+/* If the buffers to be provided to the Idle task are declared inside this
+function then they must be declared static - otherwise they will be allocated on
+the stack and so not exists after this function exits. */
+static StaticTask_t xIdleTaskTCB;
+static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+
+	/* Pass out a pointer to the StaticTask_t structure in which the Idle task's
+	state will be stored. */
+	*ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+
+	/* Pass out the array that will be used as the Idle task's stack. */
+	*ppxIdleTaskStackBuffer = uxIdleTaskStack;
+
+	/* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
+	Note that, as the array is necessarily of type StackType_t,
+	configMINIMAL_STACK_SIZE is specified in words, not bytes. */
+	*pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+/*-----------------------------------------------------------*/
+
+/* configUSE_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
+application must provide an implementation of vApplicationGetTimerTaskMemory()
+to provide the memory that is used by the Timer service task. */
+void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize )
+{
+/* If the buffers to be provided to the Timer task are declared inside this
+function then they must be declared static - otherwise they will be allocated on
+the stack and so not exists after this function exits. */
+static StaticTask_t xTimerTaskTCB;
+
+	/* Pass out a pointer to the StaticTask_t structure in which the Timer
+	task's state will be stored. */
+	*ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
+
+	/* Pass out the array that will be used as the Timer task's stack. */
+	*ppxTimerTaskStackBuffer = uxTimerTaskStack;
+
+	/* Pass out the size of the array pointed to by *ppxTimerTaskStackBuffer.
+	Note that, as the array is necessarily of type StackType_t,
+	configMINIMAL_STACK_SIZE is specified in words, not bytes. */
+	*pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
+}
+

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -46,7 +46,7 @@
  * in main.c.  This file implements the comprehensive test and demo version.
  *
  * NOTE 3:  This file only contains the source code that is specific to the
- * basic demo.  Generic functions, such FreeRTOS hook functions, are defined in
+ * full demo.  Generic functions, such FreeRTOS hook functions, are defined in
  * main.c.
  *******************************************************************************
  *
@@ -74,10 +74,10 @@
 
 /* Kernel includes. */
 #include <FreeRTOS.h>
-#include "task.h"
-#include "queue.h"
-#include "timers.h"
-#include "semphr.h"
+#include <task.h>
+#include <queue.h>
+#include <timers.h>
+#include <semphr.h>
 
 /* Standard demo includes. */
 #include "BlockQ.h"
@@ -98,10 +98,13 @@
 #include "IntSemTest.h"
 #include "TaskNotify.h"
 #include "QueueSetPolling.h"
+#include "StaticAllocation.h"
 #include "blocktim.h"
 #include "AbortDelay.h"
 #include "MessageBufferDemo.h"
 #include "StreamBufferDemo.h"
+#include "StreamBufferInterrupt.h"
+#include "MessageBufferAMP.h"
 
 /* Priorities at which the tasks are created. */
 #define mainCHECK_TASK_PRIORITY			( configMAX_PRIORITIES - 2 )
@@ -116,6 +119,12 @@
 #define mainQUEUE_OVERWRITE_PRIORITY	( tskIDLE_PRIORITY )
 
 #define mainTIMER_TEST_PERIOD			( 50 )
+
+/*
+ * Exercises code that is not otherwise covered by the standard demo/test
+ * tasks.
+ */
+extern BaseType_t xRunCodeCoverageTestAdditions( void );
 
 /* Task function prototypes. */
 static void prvCheckTask( void *pvParameters );
@@ -202,8 +211,16 @@ int main_full( void )
 	xTaskCreate( prvPermanentlyBlockingSemaphoreTask, "BlockSem", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 	xTaskCreate( prvPermanentlyBlockingNotificationTask, "BlockNoti", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 
-	vStartMessageBufferTasks();
+	vStartMessageBufferTasks( configMINIMAL_STACK_SIZE );
 	vStartStreamBufferTasks();
+	vStartStreamBufferInterruptDemo();
+	vStartMessageBufferAMPTasks( configMINIMAL_STACK_SIZE );
+
+	#if( configSUPPORT_STATIC_ALLOCATION == 1 )
+	{
+		vStartStaticallyAllocatedTasks();
+	}
+	#endif
 
 	#if( configUSE_PREEMPTION != 0  )
 	{
@@ -342,10 +359,28 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 		{
 			pcStatusMessage = "Error: Abort delay";
 		}
+		else if( xIsInterruptStreamBufferDemoStillRunning() != pdPASS )
+		{
+			pcStatusMessage = "Error: Stream buffer interrupt";
+		}
+		else if( xAreMessageBufferAMPTasksStillRunning() != pdPASS )
+		{
+			pcStatusMessage = "Error: Message buffer AMP";
+		}
+
+		#if( configSUPPORT_STATIC_ALLOCATION == 1 )
+			else if( xAreStaticAllocationTasksStillRunning() != pdPASS )
+			{
+				pcStatusMessage = "Error: Static allocation";
+			}
+		#endif /* configSUPPORT_STATIC_ALLOCATION */
 
 		/* This is the only task that uses stdout so its ok to call printf()
 		directly. */
-		printf( ( char * ) "%s - %u\r\n", pcStatusMessage, ( unsigned int ) xTaskGetTickCount() );
+		printf( "%s - tick count %u - free heap %u - min free heap %u\r\n", pcStatusMessage,
+																			   xTaskGetTickCount(),
+																			   xPortGetFreeHeapSize(),
+																			   xPortGetMinimumEverFreeHeapSize() );
 		fflush( stdout );
 	}
 }
@@ -391,7 +426,6 @@ void *pvAllocated;
 	timer. */
 	prvDemonstrateTimerQueryFunctions();
 
-
 	/* If xMutexToDelete has not already been deleted, then delete it now.
 	This is done purely to demonstrate the use of, and test, the
 	vSemaphoreDelete() macro.  Care must be taken not to delete a semaphore
@@ -416,6 +450,25 @@ void *pvAllocated;
 	allocations so there is no need to test here. */
 	pvAllocated = pvPortMalloc( ( rand() % 500 ) + 1 );
 	vPortFree( pvAllocated );
+
+	/* Exit after a fixed time so code coverage results are written to the
+	disk. */
+	#if( projCOVERAGE_TEST == 1 )
+	{
+		const TickType_t xMaxRunTime = pdMS_TO_TICKS( 30000UL );
+
+		/* Exercise code not otherwise executed by standard demo/test tasks. */
+		if( xRunCodeCoverageTestAdditions() != pdPASS )
+		{
+			pcStatusMessage = "Code coverage additions failed.\r\n";
+		}
+
+		if( ( xTaskGetTickCount() - configINITIAL_TICK_COUNT ) >= xMaxRunTime )
+		{
+			vTaskEndScheduler();
+		}
+	}
+	#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -453,6 +506,10 @@ TaskHandle_t xTimerTask;
 	/* Writes to stream buffer byte by byte to test the stream buffer trigger
 	level functionality. */
 	vPeriodicStreamBufferProcessing();
+
+	/* Writes a string to a string buffer four bytes at a time to demonstrate
+	a stream being sent from an interrupt to a task. */
+	vBasicStreamBufferSendFromISR();
 
 	/* For code coverage purposes. */
 	xTimerTask = xTimerGetTimerDaemonTaskHandle();
@@ -551,6 +608,7 @@ char *pcTaskName;
 static portBASE_TYPE xPerformedOneShotTests = pdFALSE;
 TaskHandle_t xTestTask;
 TaskStatus_t xTaskInfo;
+extern StackType_t uxTimerTaskStack[];
 
 	/* Demonstrate the use of the xTimerGetTimerDaemonTaskHandle() and
 	xTaskGetIdleTaskHandle() functions.  Also try using the function that sets
@@ -611,6 +669,7 @@ TaskStatus_t xTaskInfo;
 	if( ( xTaskInfo.eCurrentState != eBlocked )						 ||
 		( strcmp( xTaskInfo.pcTaskName, "Tmr Svc" ) != 0 )			 ||
 		( xTaskInfo.uxCurrentPriority != configTIMER_TASK_PRIORITY ) ||
+		( xTaskInfo.pxStackBase != uxTimerTaskStack )				 ||
 		( xTaskInfo.xHandle != xTimerTaskHandle ) )
 	{
 		pcStatusMessage = "Error:  vTaskGetInfo() returned incorrect information about the timer task";

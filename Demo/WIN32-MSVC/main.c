@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -68,7 +68,7 @@ The blinky demo is implemented and described in main_blinky.c.
 If mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is not 1 then the comprehensive test and
 demo application will be built.  The comprehensive test and demo application is
 implemented and described in main_full.c. */
-#define mainCREATE_SIMPLE_BLINKY_DEMO_ONLY	0
+#define mainCREATE_SIMPLE_BLINKY_DEMO_ONLY	1
 
 /* This demo uses heap_5.c, and these constants define the sizes of the regions
 that make up the total heap.  heap_5 is only used for test and example purposes
