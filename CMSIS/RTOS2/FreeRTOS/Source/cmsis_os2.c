@@ -329,10 +329,11 @@ uint32_t osKernelGetTickFreq (void) {
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
+  uint32_t primask = __get_PRIMASK();
   TickType_t ticks;
   uint32_t val;
 
-  portENTER_CRITICAL();
+  __disable_irq();
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
@@ -343,7 +344,9 @@ uint32_t osKernelGetSysTimerCount (void) {
   }
   val += ticks * OS_Tick_GetInterval();
 
-  portEXIT_CRITICAL();
+  if (primask == 0U) {
+    __enable_irq();
+  }
 
   return (val);
 }
