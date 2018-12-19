@@ -202,13 +202,22 @@
 
       <!-- Ready Tasks -->
       <readlist name="pxReadyTasksLists" type="List_t" symbol="tasks.c/pxReadyTasksLists" count="__size_of(&quot;tasks.c/pxReadyTasksLists&quot;)" init="1"/>
-
+      
+      <!-- Read ready lists for each priority -->
       <list name="i" start="0" limit="pxReadyTasksLists._count">
-        <readlist cond="pxReadyTasksLists[i].uxNumberOfItems" name="pxReadyTasks" type="ListItem_t" offset="pxReadyTasksLists[i].pxIndex" next="pxNext"/>
+        <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+        <calc> n = pxReadyTasksLists[i].xListEnd_pxNext; </calc>
+
+        <list name="j" start="0" limit="pxReadyTasksLists[i].uxNumberOfItems">
+          <readlist name="pxReadyTasks" type="ListItem_t" offset="n" count="1"/>
+
+          <calc> n = pxReadyTasks[pxReadyTasks._count-1].pxNext; </calc>
+        </list>
       </list>
 
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="pxReadyTasks._count">
-        <readlist cond="pxReadyTasks[i].pvOwner &amp;&amp; !(xSchedulerRunning==1 &amp;&amp; (pxReadyTasks[i].pvOwner == pxCurrentTCB))" name="Ready_TCB" type="TCB_t" offset="pxReadyTasks[i].pvOwner"/>
+        <readlist name="Ready_TCB" type="TCB_t" offset="pxReadyTasks[i].pvOwner" cond="!(xSchedulerRunning==1 &amp;&amp; (pxReadyTasks[i].pvOwner == pxCurrentTCB))"/>
       </list>
 
       <!-- Process control blocks -->
@@ -221,11 +230,20 @@
         </calc>
       </list>
 
+
       <!-- Pending Ready Tasks -->
       <read name="xPendingReadyList" type="List_t" symbol="tasks.c/xPendingReadyList"/>
+      
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc> n = xPendingReadyList.xListEnd_pxNext; </calc>
 
-      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xPendingReadyList.uxNumberOfItems" name="pxPendingReadyTasks" type="ListItem_t" offset="xPendingReadyList.xListEnd_pxNext" next="pxNext"/>
+      <list name="j" start="0" limit="xPendingReadyList.uxNumberOfItems">
+        <readlist name="pxPendingReadyTasks" type="ListItem_t" offset="n" count="1"/>
 
+        <calc> n = pxPendingReadyTasks[pxPendingReadyTasks._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="xPendingReadyList.uxNumberOfItems">
         <readlist name="PendingReady_TCB" type="TCB_t" offset="pxPendingReadyTasks[i].pvOwner"/>
       </list>
@@ -240,12 +258,23 @@
         </calc>
       </list>
 
+
       <!-- Delayed Tasks -->
       <read name="DelayListAddr" type="uint32_t" symbol="tasks.c/pxDelayedTaskList"/>
+      <read name="pxDelayedTaskList" type="List_t" offset="DelayListAddr" cond="DelayListAddr"/>
+      
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc cond="DelayListAddr">
+        n = pxDelayedTaskList.xListEnd_pxNext;
+      </calc>
 
-      <read     cond="DelayListAddr" name="pxDelayedTaskList" type="List_t"     offset="DelayListAddr"/>
-      <readlist cond="DelayListAddr" name="pxDelayedTasks"    type="ListItem_t" offset="pxDelayedTaskList.xListEnd_pxNext" next="pxNext"/>
+      <list name="j" start="0" limit="pxDelayedTaskList.uxNumberOfItems" cond="DelayListAddr">
+        <readlist name="pxDelayedTasks" type="ListItem_t" offset="n" count="1"/>
 
+        <calc> n = pxDelayedTasks[pxDelayedTasks._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="pxDelayedTaskList.uxNumberOfItems" cond="DelayListAddr">
         <readlist name="Delayed_TCB" type="TCB_t" offset="pxDelayedTasks[i].pvOwner"/>
       </list>
@@ -260,12 +289,23 @@
         </calc>
       </list>
 
+
       <!-- Overflow Delayed Tasks -->
       <read name="OverflowDelayListAddr" type="uint32_t" symbol="tasks.c/pxOverflowDelayedTaskList"/>
+      <read name="pxOverflowDelayedTaskList" type="List_t" offset="OverflowDelayListAddr" cond="OverflowDelayListAddr"/>
 
-      <read     cond="OverflowDelayListAddr" name="pxOverflowDelayedTaskList" type="List_t"     offset="OverflowDelayListAddr"/>
-      <readlist cond="OverflowDelayListAddr" name="pxOverflowDelayedTasks"    type="ListItem_t" offset="pxOverflowDelayedTaskList.xListEnd_pxNext" next="pxNext"/>
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc cond="OverflowDelayListAddr">
+        n = pxOverflowDelayedTaskList.xListEnd_pxNext;
+      </calc>
 
+      <list name="j" start="0" limit="pxOverflowDelayedTaskList.uxNumberOfItems" cond="OverflowDelayListAddr">
+        <readlist name="pxOverflowDelayedTasks" type="ListItem_t" offset="n" count="1"/>
+
+        <calc> n = pxOverflowDelayedTasks[pxOverflowDelayedTasks._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="pxOverflowDelayedTaskList.uxNumberOfItems" cond="OverflowDelayListAddr" >
         <readlist name="OverflowDelayed_TCB" type="TCB_t" offset="pxOverflowDelayedTasks[i].pvOwner"/>
       </list>
@@ -280,11 +320,20 @@
         </calc>
       </list>
 
+
       <!-- Suspended Tasks (Note: #if (INCLUDE_vTaskSuspend == 1)) -->
       <read name="xSuspendedTaskList" type="List_t" symbol="tasks.c/xSuspendedTaskList"/>
 
-      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xSuspendedTaskList.uxNumberOfItems" name="pxSuspendedTasks" type="ListItem_t" offset="xSuspendedTaskList.xListEnd_pxNext" next="pxNext"/>
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc> n = xSuspendedTaskList.xListEnd_pxNext; </calc>
 
+      <list name="j" start="0" limit="xSuspendedTaskList.uxNumberOfItems">
+        <readlist name="pxSuspendedTasks" type="ListItem_t" offset="n" count="1"/>
+
+        <calc> n = pxSuspendedTasks[pxSuspendedTasks._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="xSuspendedTaskList.uxNumberOfItems">
         <readlist name="Suspended_TCB" type="TCB_t" offset="pxSuspendedTasks[i].pvOwner"/>
       </list>
@@ -299,11 +348,20 @@
         </calc>
       </list>
 
+
       <!-- Tasks Waiting Termination (Note: #if(INCLUDE_vTaskDelete == 1)) -->
       <read name="xTasksWaitingTermination" type="List_t" symbol="tasks.c/xTasksWaitingTermination"/>
 
-      <readlist cond="uxCurrentNumberOfTasks &amp;&amp; xTasksWaitingTermination.uxNumberOfItems" name="pxTasksWaitingTermination" type="ListItem_t" offset="xTasksWaitingTermination.xListEnd_pxNext" next="pxNext"/>
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc> n = xTasksWaitingTermination.xListEnd_pxNext; </calc>
 
+      <list name="j" start="0" limit="xTasksWaitingTermination.uxNumberOfItems">
+        <readlist name="pxTasksWaitingTermination" type="ListItem_t" offset="n" count="1"/>
+
+        <calc> n = pxTasksWaitingTermination[pxTasksWaitingTermination._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="xTasksWaitingTermination.uxNumberOfItems">
         <readlist name="WaitTermination_TCB" type="TCB_t" offset="pxTasksWaitingTermination[i].pvOwner"/>
       </list>
@@ -318,12 +376,23 @@
         </calc>
       </list>
 
+
       <!-- Timers -->
       <read name="TimerListAddr"      type="uint32_t" symbol="timers.c/pxCurrentTimerList"/>
       <read name="pxCurrentTimerList" type="List_t"   offset="TimerListAddr" />
+      
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc cond="TimerListAddr">
+        n = pxCurrentTimerList.xListEnd_pxNext;
+      </calc>
 
-      <readlist cond="TimerListAddr &amp;&amp; pxCurrentTimerList.uxNumberOfItems" name="pxCurrentTimers" type="ListItem_t" offset="pxCurrentTimerList.pxIndex" next="pxNext"/>
+      <list name="j" start="0" limit="pxCurrentTimerList.uxNumberOfItems" cond="TimerListAddr">
+        <readlist name="pxCurrentTimers" type="ListItem_t" offset="n" count="1"/>
 
+        <calc> n = pxCurrentTimers[pxCurrentTimers._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="pxCurrentTimers._count">
         <readlist cond="pxCurrentTimers[i].pvOwner" name="Timer_CB" type="Timer_t" offset="pxCurrentTimers[i].pvOwner"/>
       </list>
@@ -344,12 +413,23 @@
         </list>
       </list>
 
+
       <!-- Overflow Timers -->
       <read name="OverflowTimerListAddr" type="uint32_t" symbol="timers.c/pxOverflowTimerList"/>
       <read name="pxOverflowTimerList"   type="List_t"   offset="OverflowTimerListAddr" />
 
-      <readlist cond="OverflowTimerListAddr &amp;&amp; pxOverflowTimerList.uxNumberOfItems" name="pxOverflowTimers" type="ListItem_t" offset="pxOverflowTimerList.pxIndex" next="pxNext"/>
+      <!-- Determine address of first item in list, read current item and determine address of next item in list -->
+      <calc cond="OverflowTimerListAddr">
+        n = pxOverflowTimerList.xListEnd_pxNext;
+      </calc>
 
+      <list name="j" start="0" limit="pxOverflowTimerList.uxNumberOfItems" cond="OverflowTimerListAddr">
+        <readlist name="pxOverflowTimers" type="ListItem_t" offset="n" count="1"/>
+
+        <calc> n = pxOverflowTimers[pxOverflowTimers._count-1].pxNext; </calc>
+      </list>
+
+      <!-- Read control blocks -->
       <list name="i" start="0" limit="pxOverflowTimers._count">
         <readlist cond="pxOverflowTimers[i].pvOwner" name="OverflowTimer_CB" type="Timer_t" offset="pxOverflowTimers[i].pvOwner"/>
       </list>
@@ -369,7 +449,8 @@
           </calc>
         </list>
       </list>
-      
+
+
       <!-- Read Queue Registry (Queues, Semaphores, Mutexes) -->
       <calc cond="__Symbol_exists (&quot;queue.c/xQueueRegistry&quot;)">
         Queue_REG_Size = __size_of (&quot;queue.c/xQueueRegistry&quot;);
