@@ -116,6 +116,8 @@ static HeapRegion_t xHeapRegions[] = {
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
 
 #if defined(SysTick)
+/* CMSIS SysTick interrupt handler prototype */
+extern void SysTick_Handler     (void);
 /* FreeRTOS tick timer interrupt handler prototype */
 extern void xPortSysTickHandler (void);
 
@@ -143,6 +145,7 @@ osStatus_t osKernelInitialize (void) {
   }
   else {
     if (KernelState == osKernelInactive) {
+      EvrFreeRTOSSetup();
       #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
         vPortDefineHeapRegions (xHeapRegions);
       #endif

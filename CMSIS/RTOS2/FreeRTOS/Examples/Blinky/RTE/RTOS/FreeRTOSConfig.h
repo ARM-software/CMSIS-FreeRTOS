@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.0.1
+ * $Revision:   V10.1.1
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -44,8 +44,6 @@
 
 #include "RTE_Components.h"
 #include CMSIS_device_header
-
-#include "os_tick.h"
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
@@ -131,6 +129,58 @@
 //  <i> Default: 0
 #define configQUEUE_REGISTRY_SIZE               0
 
+// <h>Event Recorder configuration
+//  <i> Initialize and setup Event Recorder level filtering.
+//  <i> Settings have no effect when Event Recorder is not present.
+
+//  <q>Initialize Event Recorder
+//  <i> Initialize Event Recorder before FreeRTOS kernel start.
+//  <i> Default: 1
+#define configEVR_INITIALIZE                    1
+
+//  <e>Setup recording level filter
+//  <i> Enable configuration of FreeRTOS events recording level
+//  <i> Default: 1
+#define configEVR_SETUP_LEVEL                   1
+
+//  <o>Tasks functions
+//  <i> Define event recording level bitmask for events generated from Tasks functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_TASKS                   0x05
+
+//  <o>Queue functions
+//  <i> Define event recording level bitmask for events generated from Queue functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_QUEUE                   0x05
+
+//  <o>Timer functions
+//  <i> Define event recording level bitmask for events generated from Timer functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_TIMERS                  0x05
+
+//  <o>Event Groups functions
+//  <i> Define event recording level bitmask for events generated from Event Groups functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_EVENTGROUPS             0x05
+
+//  <o>Heap functions
+//  <i> Define event recording level bitmask for events generated from Heap functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_HEAP                    0x05
+
+//  <o>Stream Buffer functions
+//  <i> Define event recording level bitmask for events generated from Stream Buffer functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_STREAMBUFFER            0x05
+//  </e>
+// </h>
+
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
@@ -165,8 +215,8 @@
 #define INCLUDE_xTimerPendFunctionCall          1
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
-#define xPortPendSVHandler                    PendSV_Handler
-#define vPortSVCHandler                       SVC_Handler
+#define xPortPendSVHandler                      PendSV_Handler
+#define vPortSVCHandler                         SVC_Handler
 
 /* Include debug event definitions */
 #include "freertos_evr.h"

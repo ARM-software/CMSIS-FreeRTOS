@@ -44,6 +44,11 @@
 #define StreamBuffer_t   void*
 
 /**
+  \brief  Setup Event Recorder configuration
+*/
+extern void EvrFreeRTOSSetup (void);
+
+/**
   \brief  Event on successful task create (Op)
   \param[in]  pxNewTCB          pointer to task handle.
 */

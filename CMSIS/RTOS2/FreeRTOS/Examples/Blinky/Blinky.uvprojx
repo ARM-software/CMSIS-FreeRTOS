@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -199,7 +200,7 @@
             <NoZi2>0</NoZi2>
             <NoZi3>0</NoZi3>
             <NoZi4>0</NoZi4>
-            <NoZi5>0</NoZi5>
+            <NoZi5>1</NoZi5>
             <Ro1Chk>0</Ro1Chk>
             <Ro2Chk>0</Ro2Chk>
             <Ro3Chk>0</Ro3Chk>
@@ -303,8 +304,8 @@
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress>0x20020000</StartAddress>
+                <Size>0x2000</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -324,6 +325,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
             <v6LangP>3</v6LangP>
@@ -423,8 +425,8 @@
       </api>
     </apis>
     <components>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.0.1" condition="CMSIS RTOS2 FreeRTOS">
-        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.0.1-dev0"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.1.1" condition="CMSIS RTOS2 FreeRTOS">
+        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.0.2-dev3"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
@@ -472,9 +474,13 @@
         </targetInfos>
       </component>
       <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.4.0" condition="Cortex-M Device">
-        <package name="ARM_Compiler" schemaVersion="1.4.9" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.0"/>
+        <package name="ARM_Compiler" schemaVersion="1.4.9" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.1"/>
         <targetInfos>
-          <targetInfo name="Simulation"/>
+          <targetInfo name="Simulation">
+            <mem>
+              <RVCTZI>5</RVCTZI>
+            </mem>
+          </targetInfo>
         </targetInfos>
       </component>
     </components>
@@ -482,7 +488,7 @@
       <file attr="config" category="header" name="Config\EventRecorderConf.h" version="1.1.0">
         <instance index="0">RTE\Compiler\EventRecorderConf.h</instance>
         <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.4.0" condition="Cortex-M Device"/>
-        <package name="ARM_Compiler" schemaVersion="1.4.9" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.0"/>
+        <package name="ARM_Compiler" schemaVersion="1.4.9" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
@@ -503,10 +509,10 @@
           <targetInfo name="Simulation"/>
         </targetInfos>
       </file>
-      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="10.0.1">
+      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="10.1.1">
         <instance index="0">RTE\RTOS\FreeRTOSConfig.h</instance>
         <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.1.1" condition="CMSIS RTOS2 FreeRTOS"/>
-        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.0.2-dev2"/>
+        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.0.2-dev3"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
