@@ -1,3 +1,36 @@
+
+/**
+\defgroup freertos_setup Event Recorder Setup
+\ingroup freertos_specific
+\brief Information about Event Recorder configuration and setup
+\details
+CMSIS-FreeRTOS interfaces to the
+<a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a>
+to provide event information which helps you to understand and analyze the operation.
+
+To use the Event Recorder together with CMSIS-FreeRTOS, it is required to create an image that generates event information.
+The steps are described under \ref cre_freertos_proj.
+@{
+*/
+
+/**
+\fn void EvrFreeRTOSSetup (void)
+\details
+The function \b EvrFreeRTOSSetup initializes Event Recorder and configures recording level filter. It must be called before any event is sent to the Event Recorder.
+
+Behavior of this function execution is defined with Event Recorder Configuration (\ref cmsis_freertos_evr_config). Calling this function has
+no effect when Event Recorder component is not selected.
+
+\note \b EvrFreeRTOSSetup is called by function \b osKernelInitialize when CMSIS-RTOS2 API is in use and should not be called explicitly.
+
+
+
+*/
+
+/**
+@}
+*/
+
 /** 
 \defgroup freertos_evr Event functions
 \ingroup freertos_specific 
