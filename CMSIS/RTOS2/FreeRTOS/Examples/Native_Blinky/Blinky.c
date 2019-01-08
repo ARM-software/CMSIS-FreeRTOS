@@ -132,6 +132,8 @@ void app_main (void *argument) {
 int main (void) {
   SystemCoreClockUpdate();
 
+  EvrFreeRTOSSetup();
+
   xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
 
   vTaskStartScheduler();

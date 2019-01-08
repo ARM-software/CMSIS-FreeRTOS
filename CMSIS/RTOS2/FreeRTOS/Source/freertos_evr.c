@@ -96,50 +96,6 @@
   #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_STREAMBUFFER."
 #endif
 
-/* Event Recorder setup hooks for FreeRTOS without CMSIS-RTOS2 API */
-#if !defined(RTE_CMSIS_RTOS2_FreeRTOS) && !defined(EVR_FREERTOS_HOOK_DISABLE)
-
-#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
-  /* Sub and Super use dollar characters - disable compiler warning */
-  #pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
-#endif
-
-extern void $Sub$$SystemInit  (void);
-extern void $Super$$SystemInit(void);
-
-extern void $Sub$$SystemCoreClockUpdate  (void);
-extern void $Super$$SystemCoreClockUpdate(void);
-
-/*
-  Event Recorder setup hook for FreeRTOS
-
-  Event Recorder must be initialized and configured before first event is recorded.
-  Therefore we replace global SystemInit function with patched implementation to
-  setup Event Recorder before FreeRTOS API functions send out the first event.
-*/
-void $Sub$$SystemInit(void) {
-  /* Call system initialization function */
-  $Super$$SystemInit();
-
-  /* Initialize, setup level filter and start Event Recorder */
-  EvrFreeRTOSSetup();
-}
-
-/*
-  Event Recorder clock update hook for FreeRTOS
-
-  Event Recorder timestamp clock must be updated when a clock change in the system occured.
-  Therefore we replace global SystemCoreClockUpdate function with patched implementation to
-  update Event Recorder timestamp clock after SystemCoreClock is updated.
-*/
-void $Sub$$SystemCoreClockUpdate(void) {
-  /* Update SystemCoreClock */
-  $Super$$SystemCoreClockUpdate();
-
-  /* Update Event Recorder timestamp clock */
-  EventRecorderClockUpdate();
-}
-#endif
 #endif /* !defined(EVR_FREERTOS_DISABLE) */
 
 /* Event IDs for "FreeRTOS Tasks" */
