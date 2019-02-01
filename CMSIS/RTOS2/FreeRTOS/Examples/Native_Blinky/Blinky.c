@@ -132,7 +132,7 @@ void app_main (void *argument) {
 int main (void) {
   SystemCoreClockUpdate();
 
-  EvrFreeRTOSSetup();
+  EvrFreeRTOSSetup(0);
 
   xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
 

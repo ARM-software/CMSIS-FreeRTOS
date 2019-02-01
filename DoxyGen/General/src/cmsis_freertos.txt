@@ -57,6 +57,28 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.0.2-dev4</td>
+      <td>
+        <p><b>FreeRTOS V10.1.1</b></p>
+        <p>Maintenance release for CMSIS 5.4.0:
+        <ul>
+          <li>Updated ARM standard C library interface</li>
+          <li>Added reset option for \ref EvrFreeRTOSSetup</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>10.0.2-dev3</td>
+      <td>
+        <p><b>FreeRTOS V10.1.1</b></p>
+        <p>Maintenance release for CMSIS 5.4.0:
+        <ul>
+          <li>Added Event Recorder configuration</li>
+          <li>Corrected CMSIS-FreeRTOS component viewer linked list processing</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
       <td>10.0.2-dev2</td>
       <td>
         <p><b>FreeRTOS V10.1.1</b></p>

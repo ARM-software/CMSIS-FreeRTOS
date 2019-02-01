@@ -199,22 +199,33 @@
 #endif /* RTE_Compiler_EventRecorder */
 
 /* Event Recorder initialization and level filter setup */
-void EvrFreeRTOSSetup (void) {
+void EvrFreeRTOSSetup (uint32_t reset) {
 #if !defined(EVR_FREERTOS_DISABLE)
-  #if (configEVR_INITIALIZE != 0)
-    EventRecorderInitialize(EVR_INIT_RECORDING, EVR_INIT_START);
-  #endif
+  static uint8_t init = 0U;
 
-  #if (configEVR_SETUP_LEVEL != 0)
-    EventRecorderEnable(configEVR_LEVEL_TASKS,        EvtFreeRTOSTasksNo,       EvtFreeRTOSTasksNo);
-    EventRecorderEnable(configEVR_LEVEL_QUEUE,        EvtFreeRTOSQueueNo,       EvtFreeRTOSQueueNo);
-    EventRecorderEnable(configEVR_LEVEL_TIMERS,       EvtFreeRTOSTimersNo,      EvtFreeRTOSTimersNo);
-    EventRecorderEnable(configEVR_LEVEL_EVENTGROUPS,  EvtFreeRTOSEventGroupsNo, EvtFreeRTOSEventGroupsNo);
-    EventRecorderEnable(configEVR_LEVEL_HEAP,         EvtFreeRTOSHeapNo,        EvtFreeRTOSHeapNo);
-    EventRecorderEnable(configEVR_LEVEL_STREAMBUFFER, EvtFreeRTOSStreamBufNo,   EvtFreeRTOSStreamBufNo);
-  #endif
+  if (reset != 0U) {
+    init = 0U;
+  }
 
-  EventRecord2(EvtFreeRTOSTasks_TaskTrackingReset, 0U, 0U);
+  if (init == 0U) {
+    init = 1U;
+    #if (configEVR_INITIALIZE != 0)
+      EventRecorderInitialize(EVR_INIT_RECORDING, EVR_INIT_START);
+    #endif
+
+    #if (configEVR_SETUP_LEVEL != 0)
+      EventRecorderEnable(configEVR_LEVEL_TASKS,        EvtFreeRTOSTasksNo,       EvtFreeRTOSTasksNo);
+      EventRecorderEnable(configEVR_LEVEL_QUEUE,        EvtFreeRTOSQueueNo,       EvtFreeRTOSQueueNo);
+      EventRecorderEnable(configEVR_LEVEL_TIMERS,       EvtFreeRTOSTimersNo,      EvtFreeRTOSTimersNo);
+      EventRecorderEnable(configEVR_LEVEL_EVENTGROUPS,  EvtFreeRTOSEventGroupsNo, EvtFreeRTOSEventGroupsNo);
+      EventRecorderEnable(configEVR_LEVEL_HEAP,         EvtFreeRTOSHeapNo,        EvtFreeRTOSHeapNo);
+      EventRecorderEnable(configEVR_LEVEL_STREAMBUFFER, EvtFreeRTOSStreamBufNo,   EvtFreeRTOSStreamBufNo);
+    #endif
+
+    EventRecord2(EvtFreeRTOSTasks_TaskTrackingReset, 0U, 0U);
+  }
+#else
+  (void)reset;
 #endif
 }
 

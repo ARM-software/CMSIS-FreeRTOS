@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2017 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -23,24 +23,31 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "cmsis_os2.h"
-#include "cmsis_compiler.h"
+#include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
+#include "task.h"                       // ARM.FreeRTOS::RTOS:Core
+#include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 
 /* Define the number of Threads which use standard C/C++ library libspace */
 #ifndef OS_THREAD_LIBSPACE_NUM
   #define OS_THREAD_LIBSPACE_NUM      4
 #endif
 
+/* Define the number of Mutexes used by standard C/C++ library for stream protection */
+#ifndef OS_MUTEX_CLIB_NUM
+  #define OS_MUTEX_CLIB_NUM           5
+#endif
+
 /*----------------------------------------------------------------------------*/
 
-/* Initialize OS */
+/* Initialization after stack and heap setup */
 #if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
 
 #ifndef __MICROLIB
 __WEAK
 void _platform_post_stackheap_init (void);
 void _platform_post_stackheap_init (void) {
-  osKernelInitialize();
+  /* Initialize OS, memory, etc. */
+  EvrFreeRTOSSetup(0);
 }
 #endif /* __MICROLIB */
 
@@ -48,7 +55,8 @@ void _platform_post_stackheap_init (void) {
 __WEAK
 void software_init_hook (void);
 void software_init_hook (void) {
-  osKernelInitialize();
+  /* Initialize OS, memory, etc. */
+  EvrFreeRTOSSetup(0);
 }
 
 #endif
@@ -64,14 +72,14 @@ void software_init_hook (void) {
 static uint32_t os_libspace[OS_THREAD_LIBSPACE_NUM+1][LIBSPACE_SIZE/sizeof(uint32_t)];
 
 /* Array of Threads (IDs) using libspace */
-static osThreadId_t os_libspace_id[OS_THREAD_LIBSPACE_NUM];
+static TaskHandle_t os_libspace_id[OS_THREAD_LIBSPACE_NUM];
 
 /* OS Kernel state checking */
 static uint32_t os_kernel_is_active (void) {
   static uint8_t os_kernel_active = 0U;
 
   if (os_kernel_active == 0U) {
-    if (osKernelGetState() > osKernelReady) {
+    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
       os_kernel_active = 1U;
       return 1U;
     }
@@ -82,18 +90,22 @@ static uint32_t os_kernel_is_active (void) {
 }
 
 /* Provide libspace for current thread */
+void *__user_perthread_libspace (void);
 void *__user_perthread_libspace (void) {
-  osThreadId_t id;
+  TaskHandle_t id;
   uint32_t     n;
 
   if (!os_kernel_is_active()) {
     return (void *)&os_libspace[OS_THREAD_LIBSPACE_NUM][0];
   }
 
-  id = osThreadGetId();
+  id = xTaskGetCurrentTaskHandle();
+
   for (n = 0U; n < OS_THREAD_LIBSPACE_NUM; n++) {
     if (os_libspace_id[n] == NULL) {
+
       os_libspace_id[n] = id;
+
       return (void *)&os_libspace[n][0];
     }
     if (os_libspace_id[n] == id) {
@@ -106,6 +118,11 @@ void *__user_perthread_libspace (void) {
 
 /*----------------------------------------------------------------------------*/
 
+#if (OS_MUTEX_CLIB_NUM > 0)
+static StaticSemaphore_t clib_mutex_cb[OS_MUTEX_CLIB_NUM];
+static SemaphoreHandle_t clib_mutex_id[OS_MUTEX_CLIB_NUM];
+#endif
+
 /* Define mutex object and function prototypes */
 typedef void *mutex;
 
@@ -117,7 +134,30 @@ __USED void _mutex_free      (mutex *m);
 
 /* Initialize mutex */
 int _mutex_initialize(mutex *m) {
-  *m = osMutexNew(NULL);
+#if (OS_MUTEX_CLIB_NUM > 0)
+  uint32_t i;
+#endif
+
+  *m = NULL;
+
+#if (OS_MUTEX_CLIB_NUM > 0)
+  for (i = 0U; i < OS_MUTEX_CLIB_NUM; i++) {
+    if (clib_mutex_id[i] == NULL) {
+      /* Create mutex using static memory */
+      clib_mutex_id[i] = xSemaphoreCreateMutexStatic(&clib_mutex_cb[i]);
+
+      /* Return mutex id */
+      *m = clib_mutex_id[i];
+
+      return 1;
+    }
+  }
+#endif
+  if (os_kernel_is_active()) {
+    /* Create mutex using dynamic memory */
+    *m = xSemaphoreCreateMutex();
+  }
+
   if (*m == NULL) {
     return 0;
   }
@@ -126,21 +166,37 @@ int _mutex_initialize(mutex *m) {
 
 /* Acquire mutex */
 void _mutex_acquire(mutex *m) {
+
   if (os_kernel_is_active()) {
-    osMutexAcquire(*m, osWaitForever);
+    xSemaphoreTake(*m, portMAX_DELAY);
   }
 }
 
 /* Release mutex */
 void _mutex_release(mutex *m) {
+
   if (os_kernel_is_active()) {
-    osMutexRelease(*m);
+    xSemaphoreGive(*m);
   }
 }
 
-/* // Free mutex */
+/* Free mutex */
 void _mutex_free(mutex *m) {
-  osMutexDelete(*m);
+#if (OS_MUTEX_CLIB_NUM > 0)
+  uint32_t i;
+#endif
+
+  vSemaphoreDelete(*m);
+
+#if (OS_MUTEX_CLIB_NUM > 0)
+  /* Check if mutex was using static memory */
+  for (i = 0U; i < OS_MUTEX_CLIB_NUM; i++) {
+    if (*m == clib_mutex_id[i]) {
+      clib_mutex_id[i] = NULL;
+      break;
+    }
+  }
+#endif
 }
 
 #endif

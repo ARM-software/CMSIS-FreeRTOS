@@ -45,8 +45,9 @@
 
 /**
   \brief  Setup Event Recorder configuration
+  \param[in]  reset             reset if already configured (0:no reset, 1:reset)
 */
-extern void EvrFreeRTOSSetup (void);
+extern void EvrFreeRTOSSetup (uint32_t reset);
 
 /**
   \brief  Event on successful task create (Op)

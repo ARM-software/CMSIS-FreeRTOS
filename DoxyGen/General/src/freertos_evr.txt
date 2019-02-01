@@ -14,9 +14,11 @@ The steps are described under \ref cre_freertos_proj.
 */
 
 /**
-\fn void EvrFreeRTOSSetup (void)
+\fn void EvrFreeRTOSSetup (uint32_t reset)
 \details
 The function \b EvrFreeRTOSSetup initializes Event Recorder and configures recording level filter. It must be called before any event is sent to the Event Recorder.
+
+The argument \a reset specifies if reset of previously applied configuration is performed in case if EvrFreeRTOSSetup was already called.
 
 Behavior of this function execution is defined with Event Recorder Configuration (\ref cmsis_freertos_evr_config). Calling this function has
 no effect when Event Recorder component is not selected.

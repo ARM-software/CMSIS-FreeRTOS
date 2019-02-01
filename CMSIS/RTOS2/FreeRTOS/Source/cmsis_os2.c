@@ -95,7 +95,7 @@ typedef struct {
 } TimerCallback_t;
 
 /* Kernel initialization state */
-static osKernelState_t KernelState;
+static osKernelState_t KernelState = osKernelInactive;
 
 /*
   Heap region definition used by heap_5 variant
@@ -169,7 +169,7 @@ osStatus_t osKernelInitialize (void) {
   }
   else {
     if (KernelState == osKernelInactive) {
-      EvrFreeRTOSSetup();
+      EvrFreeRTOSSetup(0U);
       #if defined(RTE_RTOS_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
         vPortDefineHeapRegions (configHEAP_5_REGIONS);
       #endif

@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="10.0.2-dev4">
+      CMSIS:RTOS2:FreeRTOS update:
+        - Updated ARM standard C library interface
+    </release>
     <release version="10.0.2-dev3">
       CMSIS:RTOS2:FreeRTOS update:
         - Added Event Recorder configuration
