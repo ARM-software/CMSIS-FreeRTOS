@@ -831,7 +831,7 @@ osStatus_t osDelay (uint32_t ticks) {
 }
 
 osStatus_t osDelayUntil (uint32_t ticks) {
-  TickType_t tcnt;
+  TickType_t tcnt, delay;
   osStatus_t stat;
 
   if (IS_IRQ()) {
@@ -840,8 +840,12 @@ osStatus_t osDelayUntil (uint32_t ticks) {
   else {
     stat = osOK;
     tcnt = xTaskGetTickCount();
+    delay = (TickType_t)ticks - tcnt;
 
-    vTaskDelayUntil (&tcnt, (TickType_t)(ticks - tcnt));
+    /* check if target tick has not expired */
+    if(delay && 0 == (delay >> (8 * sizeof(TickType_t) - 1)){
+      vTaskDelayUntil (&tcnt, delay));
+    }
   }
 
   return (stat);
