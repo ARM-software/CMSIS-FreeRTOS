@@ -843,8 +843,13 @@ osStatus_t osDelayUntil (uint32_t ticks) {
     delay = (TickType_t)ticks - tcnt;
 
     /* check if target tick has not expired */
-    if(delay && 0 == (delay >> (8 * sizeof(TickType_t) - 1)){
+    if(delay && 0 == (delay >> (8 * sizeof(TickType_t) - 1))){
       vTaskDelayUntil (&tcnt, delay));
+    }
+    else
+    {
+      /* No delay or already expired */
+      stat = osErrorParameter;
     }
   }
 
