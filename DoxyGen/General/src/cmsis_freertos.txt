@@ -167,8 +167,10 @@ settings.
 
 \subsection native_freertos_er Add Event Recorder Visibility
 - To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
-- Edit \ref native_freertos_config "FreeRTOSConfig.h" and add Event Recorder configuration definitions (see \ref cmsis_freertos_evr_config)
-- Call <b>EvrFreeRTOSSetup();</b> in your application code (ideally in \c main()).
+- Open \ref native_freertos_config "FreeRTOSConfig.h" and
+  - verify the header file \b freertos_evr.h is included
+  - add Event Recorder configuration definitions (see \ref cmsis_freertos_evr_config)
+- Call <b>EvrFreeRTOSSetup()</b> in your application code (ideally in \c main()).
 - If you are using simulation mode, add an initialization file with the following content:
   \code
   MAP 0xE0001000, 0xE0001007 READ WRITE 
@@ -249,7 +251,10 @@ Stream Buffer functions        | configEVR_LEVEL_STREAMBUFFER         | Define e
   
 \subsection cmsis_freertos_er Add Event Recorder Visibility
 - To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
-- Call <b>osKernelInitialize</b> in your application code (ideally in \c main()) to setup Event Recorder according to configuration settings. 
+- Open \ref native_freertos_config "FreeRTOSConfig.h" and
+  - verify the header file \b freertos_evr.h is included
+  - modify Event Recorder configuration definitions (see \ref cmsis_freertos_evr_config) to change default configuration
+- Call <b>osKernelInitialize()</b> in your application code (ideally in \c main()) to setup Event Recorder according to configuration settings. 
 - If you are using simulation mode, add an initialization file with the following content:
   \code
   MAP 0xE0001000, 0xE0001007 READ WRITE 
