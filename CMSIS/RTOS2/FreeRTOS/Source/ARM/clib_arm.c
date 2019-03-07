@@ -47,7 +47,9 @@ __WEAK
 void _platform_post_stackheap_init (void);
 void _platform_post_stackheap_init (void) {
   /* Initialize OS, memory, etc. */
-  EvrFreeRTOSSetup(0);
+  #if defined(RTE_Compiler_EventRecorder)
+    EvrFreeRTOSSetup(0);
+  #endif
 }
 #endif /* __MICROLIB */
 
@@ -56,7 +58,9 @@ __WEAK
 void software_init_hook (void);
 void software_init_hook (void) {
   /* Initialize OS, memory, etc. */
-  EvrFreeRTOSSetup(0);
+  #if defined(RTE_Compiler_EventRecorder)
+    EvrFreeRTOSSetup(0);
+  #endif
 }
 
 #endif

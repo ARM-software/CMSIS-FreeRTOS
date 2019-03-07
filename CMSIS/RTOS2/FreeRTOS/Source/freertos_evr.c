@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -196,8 +196,6 @@
 #define EvtFreeRTOSStreamBuf_StreamBufferReceiveFailed      EventID(EventLevelError,  EvtFreeRTOSStreamBufNo, 0x0BU)
 #define EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr     EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x0CU)
 
-#endif /* RTE_Compiler_EventRecorder */
-
 /* Event Recorder initialization and level filter setup */
 void EvrFreeRTOSSetup (uint32_t reset) {
 #if !defined(EVR_FREERTOS_DISABLE)
@@ -228,6 +226,8 @@ void EvrFreeRTOSSetup (uint32_t reset) {
   (void)reset;
 #endif
 }
+
+#endif /* RTE_Compiler_EventRecorder */
 
 /* Tasks */
 
@@ -971,7 +971,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer) 
 #if defined(RTE_Compiler_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateFailed, (uint32_t)uxIsMessageBuffer, 0U);
 #else
-  (void)pxStreamBuffer;
+  (void)uxIsMessageBuffer;
 #endif
 }
 #endif

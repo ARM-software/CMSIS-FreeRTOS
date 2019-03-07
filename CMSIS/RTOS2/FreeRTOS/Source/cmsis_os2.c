@@ -56,8 +56,11 @@
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
 #elif  (__ARM_ARCH_6M__      == 1U)
 #define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
-#elif (__ARM_ARCH_7A__       == 1)
-#define IS_IRQ_MASKED()           (0U)
+#elif (__ARM_ARCH_7A__       == 1U)
+/* CPSR mask bits */
+#define CPSR_MASKBIT_I            0x80U
+
+#define IS_IRQ_MASKED()           ((__get_CPSR() & CPSR_MASKBIT_I) != 0U)
 #else
 #define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #endif
@@ -169,7 +172,9 @@ osStatus_t osKernelInitialize (void) {
   }
   else {
     if (KernelState == osKernelInactive) {
-      EvrFreeRTOSSetup(0U);
+      #if defined(RTE_Compiler_EventRecorder)
+        EvrFreeRTOSSetup(0U);
+      #endif
       #if defined(RTE_RTOS_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
         vPortDefineHeapRegions (configHEAP_5_REGIONS);
       #endif
@@ -356,7 +361,7 @@ uint32_t osKernelGetTickFreq (void) {
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
-  uint32_t primask = __get_PRIMASK();
+  uint32_t irqmask = IS_IRQ_MASKED();
   TickType_t ticks;
   uint32_t val;
 
@@ -371,7 +376,7 @@ uint32_t osKernelGetSysTimerCount (void) {
   }
   val += ticks * OS_Tick_GetInterval();
 
-  if (primask == 0U) {
+  if (irqmask == 0U) {
     __enable_irq();
   }
 
@@ -840,10 +845,12 @@ osStatus_t osDelayUntil (uint32_t ticks) {
   else {
     stat = osOK;
     tcnt = xTaskGetTickCount();
+
+    /* Determine remaining number of ticks to delay */
     delay = (TickType_t)ticks - tcnt;
 
-    /* check if target tick has not expired */
-    if(delay && 0 == (delay >> (8 * sizeof(TickType_t) - 1))){
+    /* Check if target tick has not expired */
+    if((delay != 0U) && (0 == (delay >> (8 * sizeof(TickType_t) - 1)))) {
       vTaskDelayUntil (&tcnt, delay);
     }
     else

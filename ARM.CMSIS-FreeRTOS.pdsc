@@ -8,6 +8,11 @@
   <license>License/license.txt</license>
     
   <releases>
+    <release version="10.0.2-dev5">
+      CMSIS:RTOS2:FreeRTOS update:
+        - Build Event Recorder setup function conditionally.
+        - Fix build issues for Cortex-A profile.
+    </release>
     <release version="10.0.2-dev4">
       CMSIS:RTOS2:FreeRTOS update:
         - Updated ARM standard C library interface
