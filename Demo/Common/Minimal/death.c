@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -98,7 +98,7 @@ TaskHandle_t xTaskToKill;
 const TickType_t xDelay = pdMS_TO_TICKS( ( TickType_t ) 200 );
 
 	/* Test deletion of a task's secure context, if any. */
-	portTASK_CALLS_SECURE_FUNCTIONS();
+	portALLOCATE_SECURE_CONTEXT( configMINIMAL_SECURE_STACK_SIZE );
 
 	if( pvParameters != NULL )
 	{

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -381,6 +381,11 @@ const uint32_t ulRunTimeTollerance = ( uint32_t ) 0xfff;
 		xReturn = pdFAIL;
 	}
 
+	if( uxTaskGetStackHighWaterMark2( NULL ) != ( configSTACK_DEPTH_TYPE ) xStatus.usStackHighWaterMark )
+	{
+		xReturn = pdFAIL;
+	}
+
 	/* Now obtain a task status without the high water mark but with the state,
 	which in the case of the idle task should be Read. */
 	xTimerTask = xTimerGetTimerDaemonTaskHandle();
@@ -405,6 +410,10 @@ const uint32_t ulRunTimeTollerance = ( uint32_t ) 0xfff;
 		xReturn = pdFAIL;
 	}
 	if( uxTaskGetStackHighWaterMark( xTimerTask ) != xStatus.usStackHighWaterMark )
+	{
+		xReturn = pdFAIL;
+	}
+	if( uxTaskGetStackHighWaterMark2( xTimerTask ) != ( configSTACK_DEPTH_TYPE ) xStatus.usStackHighWaterMark )
 	{
 		xReturn = pdFAIL;
 	}
@@ -499,9 +508,19 @@ TaskHandle_t xTask;
 		}
 	}
 
+	/* Try FromISR version too. */
+	if( xTaskGetApplicationTaskTagFromISR( xTask ) != prvDummyTagFunction )
+	{
+		xReturn = pdFAIL;
+	}
+
 	/* Now try with a NULL handle, so using this task. */
 	vTaskSetApplicationTaskTag( NULL, NULL );
 	if( xTaskGetApplicationTaskTag( NULL ) != NULL )
+	{
+		xReturn = pdFAIL;
+	}
+	if( xTaskGetApplicationTaskTagFromISR( NULL ) != NULL )
 	{
 		xReturn = pdFAIL;
 	}
@@ -521,6 +540,12 @@ TaskHandle_t xTask;
 		{
 			xReturn = pdFAIL;
 		}
+	}
+
+	/* Try FromISR version too. */
+	if( xTaskGetApplicationTaskTagFromISR( NULL ) != prvDummyTagFunction )
+	{
+		xReturn = pdFAIL;
 	}
 
 	vTaskSetApplicationTaskTag( NULL, NULL );

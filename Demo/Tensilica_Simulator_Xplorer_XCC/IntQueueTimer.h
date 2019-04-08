@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel V10.0.0
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,8 +29,9 @@
 #ifndef INT_QUEUE_TIMER_H
 #define INT_QUEUE_TIMER_H
 
+/**
+ * The function called from interrupt tests to initialise timer.
+ */
 void vInitialiseTimerForIntQueueTest( void );
-void vTimer2Handler_C( void );
 
 #endif /* INT_QUEUE_TIMER_H */
-

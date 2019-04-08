@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -104,6 +104,7 @@ functions anyway. */
 #define INCLUDE_vTaskDelayUntil					1
 #define INCLUDE_vTaskDelay						1
 #define INCLUDE_uxTaskGetStackHighWaterMark		1
+#define INCLUDE_uxTaskGetStackHighWaterMark2	1
 #define INCLUDE_xTaskGetSchedulerState			1
 #define INCLUDE_xTimerGetTimerDaemonTaskHandle	1
 #define INCLUDE_xTaskGetIdleTaskHandle			1

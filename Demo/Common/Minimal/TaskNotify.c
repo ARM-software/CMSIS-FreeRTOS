@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -40,6 +40,11 @@
 
 /* Demo program include files. */
 #include "TaskNotify.h"
+
+/* Allow parameters to be overridden on a demo by demo basis. */
+#ifndef notifyNOTIFIED_TASK_STACK_SIZE
+	#define notifyNOTIFIED_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
+#endif
 
 #define notifyTASK_PRIORITY		( tskIDLE_PRIORITY )
 #define notifyUINT32_MAX	( ( uint32_t ) 0xffffffff )
@@ -104,7 +109,12 @@ void vStartTaskNotifyTask( void  )
 {
 	/* Create the task that performs some tests by itself, then loops around
 	being notified by both a software timer and an interrupt. */
-	xTaskCreate( prvNotifiedTask, "Notified", configMINIMAL_STACK_SIZE, NULL, notifyTASK_PRIORITY, &xTaskToNotify );
+	xTaskCreate( prvNotifiedTask, /* Function that implements the task. */
+				 "Notified", /* Text name for the task - for debugging only - not used by the kernel. */
+				 notifyNOTIFIED_TASK_STACK_SIZE, /* Task's stack size in words, not bytes!. */
+				 NULL, /* Task parameter, not used in this case. */
+				 notifyTASK_PRIORITY, /* Task priority, 0 is the lowest. */
+				 &xTaskToNotify ); /* Used to pass a handle to the task out is needed, otherwise set to NULL. */
 
 	/* Pseudo seed the random number generator. */
 	uxNextRand = ( size_t ) prvRand;

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -75,9 +75,9 @@ that make up the total heap.  heap_5 is only used for test and example purposes
 as this demo could easily create one large heap region instead of multiple
 smaller heap regions - in which case heap_4.c would be the more appropriate
 choice.  See http://www.freertos.org/a00111.html for an explanation. */
-#define mainREGION_1_SIZE	7201
+#define mainREGION_1_SIZE	8201
 #define mainREGION_2_SIZE	29905
-#define mainREGION_3_SIZE	6407
+#define mainREGION_3_SIZE	7607
 
 /*-----------------------------------------------------------*/
 

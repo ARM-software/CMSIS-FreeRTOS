@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.1.1
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -729,7 +729,9 @@ TaskHandle_t xCreatedTask;
 
 /* The variable that will hold the TCB of tasks created by this function.  See
 the comments above the declaration of the xCreatorTaskTCBBuffer variable for
-more information. */
+more information.  NOTE:  This is not static so relies on the tasks that use it
+being deleted before this function returns and deallocates its stack.  That will
+only be the case if configUSE_PREEMPTION is set to 1. */
 StaticTask_t xTCBBuffer;
 
 /* This buffer that will be used as the stack of tasks created by this function.
