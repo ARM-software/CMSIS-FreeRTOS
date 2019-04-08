@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2019 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -122,12 +122,18 @@
  
 #ifndef CMSIS_OS_H_
 #define CMSIS_OS_H_
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+#define RTOS_ID_n             ((tskKERNEL_VERSION_MAJOR << 16) | (tskKERNEL_VERSION_MINOR))
+#define RTOS_ID_s             ("FreeRTOS " tskKERNEL_VERSION_NUMBER)
+
+#define osCMSIS               0x20001U  ///< API version (main[31:16].sub[15:0])
+
+#define osCMSIS_FreeRTOS      RTOS_ID_n ///< RTOS identification and version (main[31:16].sub[15:0])
  
-#define osCMSIS             0x20001U    ///< API version (main[31:16].sub[15:0])
- 
-#define osCMSIS_FreeRTOS    0x90000U    ///< RTOS identification and version (main[31:16].sub[15:0])
- 
-#define osKernelSystemId    "FreeRTOS V9.0.0" ///< RTOS identification string
+#define osKernelSystemId      RTOS_ID_s ///< RTOS identification string
  
 #define osFeature_MainThread  0         ///< main thread      1=main can be thread, 0=not available
 #define osFeature_Signals     24U       ///< maximum number of Signal Flags available per thread
@@ -147,7 +153,6 @@
 #endif
  
 #include "cmsis_os2.h"
-#include "FreeRTOS.h"
  
 #ifdef  __cplusplus
 extern "C"
