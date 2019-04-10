@@ -698,7 +698,7 @@ extern const osPoolDef_t os_pool_def_##name
 #else                            // define the object
 #define osPoolDef(name, no, type) \
 const osPoolDef_t os_pool_def_##name = \
-{ (no), sizeof(type), NULL }
+{ (no), sizeof(type), {NULL} }
 #endif
  
 /// \brief Access a Memory Pool definition.

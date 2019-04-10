@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS-FreeRTOS" version="10.1.1"/>
+  <component name="CMSIS-FreeRTOS" version="10.2.0"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -139,7 +139,7 @@
       <var name="WaitValue"      type="uint32_t" info="Waiting object value (Index in Queue_CB or event group flags)"/>
     </typedef>
 
-    <typedef name="Timer_t" size="45" info="Timer Control Block definition (timers.c)">
+    <typedef name="Timer_t" size="36" info="Timer Control Block definition (timers.c)">
       <member name="pcTimerName" type="uint32_t" offset="0" info="Timer name (type is const char *)."/>
       <!-- Inlined "ListItem_t" structure -->
       <member name="xTimerListItem_xItemValue"  type="uint32_t"    offset="4+0"  info=""/>
@@ -149,17 +149,14 @@
       <member name="xTimerListItem_pvContainer" type="uint32_t"    offset="4+16" info=""/>
 
       <member name="xTimerPeriodInTicks" type="uint32_t" offset="24" info="How quickly and often the timer expires."/>
-      <member name="uxAutoReload"        type="uint32_t" offset="28" info="Set to pdTRUE if the timer should be automatically restarted once expired."/>
-      <member name="pvTimerID"           type="uint32_t" offset="32" info="An ID to identify the timer (type is void *)."/>
-      <member name="pxCallbackFunction"  type="uint32_t" offset="36" info="The function that will be called when the timer expires."/>
+      <member name="pvTimerID"           type="uint32_t" offset="28" info="An ID to identify the timer (type is void *)."/>
+      <member name="pxCallbackFunction"  type="uint32_t" offset="32" info="The function that will be called when the timer expires."/>
 
       <!-- #if(configUSE_TRACE_FACILITY == 1) -->
-      <!-- <member name="uxTimerNumber" type="uint32_t" offset="40" info="An ID assigned by trace tools such as FreeRTOS+Trace."/> -->
+      <!-- <member name="uxTimerNumber" type="uint32_t" offset="36" info="An ID assigned by trace tools such as FreeRTOS+Trace."/> -->
       <!-- #endif -->
 
-      <!-- #if((configSUPPORT_STATIC_ALLOCATION == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) -->
-      <!-- <member name="ucStaticallyAllocated" type="uint8_t" offset="44" info="Set to pdTRUE if the timer was created statically."/> -->
-      <!-- #endif -->
+      <!-- <member name="ucStatus"      type="uint8_t"  offset="40" info="Status bitmask (timer active/inactive, static allocation)."/> -->
 
       <var name="Name" type="uint8_t" info="Timer name string" size="64"/>
     </typedef>
@@ -173,12 +170,15 @@
       <var name="n"  type="uint32_t" value="0"/>
       <var name="sp" type="uint32_t" value="0"/>
 
+      <var name="CV_En" type="uint8_t" value="0"/>
+
       <var name="Queue_REG_Size"       type="uint32_t" value="0"/>
       <var name="Queue_REG_Queues"     type="uint32_t" value="0"/>
       <var name="Queue_REG_Mutexes"    type="uint32_t" value="0"/>
       <var name="Queue_REG_Semaphores" type="uint32_t" value="0"/>
 
       <read name="xSchedulerRunning"      type="uint32_t" symbol="tasks.c/xSchedulerRunning"/>
+      <read name="xYieldPending"          type="uint32_t" symbol="tasks.c/xYieldPending"/>
       <read name="xTickCount"             type="uint32_t" symbol="tasks.c/xTickCount"/>
       <read name="xNumOfOverflows"        type="uint32_t" symbol="tasks.c/xNumOfOverflows"/>
       <read name="uxPendedTicks"          type="uint32_t" symbol="tasks.c/uxPendedTicks"/>
@@ -189,10 +189,15 @@
       <read name="xTimerTaskHandle"       type="uint32_t" symbol="timers.c/xTimerTaskHandle"/>
       <read name="xTimerQueue"            type="uint32_t" symbol="timers.c/xTimerQueue"/>
 
-      <!-- Running Task -->
-      <read name="Running_TCB" type="TCB_t" offset="pxCurrentTCB"/>
+      <!-- Try to determine if memory is initialized -->
+      <calc cond="((xSchedulerRunning &lt; 2) &amp;&amp; (xYieldPending &lt; 2))">
+        CV_En = 1;
+      </calc>
 
-      <calc>
+      <!-- Running Task -->
+      <read cond="CV_En" name="Running_TCB" type="TCB_t" offset="pxCurrentTCB"/>
+
+      <calc cond="CV_En">
         sp = __GetRegVal ("PSP");
 
         Running_TCB.StackAvailable = sp - Running_TCB.pxStack;
@@ -201,7 +206,7 @@
 
 
       <!-- Ready Tasks -->
-      <readlist name="pxReadyTasksLists" type="List_t" symbol="tasks.c/pxReadyTasksLists" count="__size_of(&quot;tasks.c/pxReadyTasksLists&quot;)" init="1"/>
+      <readlist cond="CV_En" name="pxReadyTasksLists" type="List_t" symbol="tasks.c/pxReadyTasksLists" count="__size_of(&quot;tasks.c/pxReadyTasksLists&quot;)" init="1"/>
       
       <!-- Read ready lists for each priority -->
       <list name="i" start="0" limit="pxReadyTasksLists._count">
@@ -232,19 +237,21 @@
 
 
       <!-- Pending Ready Tasks -->
-      <read name="xPendingReadyList" type="List_t" symbol="tasks.c/xPendingReadyList"/>
+      <read name="xPendingReadyList" type="List_t" symbol="tasks.c/xPendingReadyList" cond="CV_En"/>
       
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
-      <calc> n = xPendingReadyList.xListEnd_pxNext; </calc>
+      <calc cond="CV_En">
+        n = xPendingReadyList.xListEnd_pxNext;
+      </calc>
 
-      <list name="j" start="0" limit="xPendingReadyList.uxNumberOfItems">
+      <list name="j" start="0" limit="xPendingReadyList.uxNumberOfItems" cond="CV_En">
         <readlist name="pxPendingReadyTasks" type="ListItem_t" offset="n" count="1"/>
 
         <calc> n = pxPendingReadyTasks[pxPendingReadyTasks._count-1].pxNext; </calc>
       </list>
 
       <!-- Read control blocks -->
-      <list name="i" start="0" limit="xPendingReadyList.uxNumberOfItems">
+      <list name="i" start="0" limit="xPendingReadyList.uxNumberOfItems" cond="CV_En">
         <readlist name="PendingReady_TCB" type="TCB_t" offset="pxPendingReadyTasks[i].pvOwner"/>
       </list>
 
@@ -260,8 +267,8 @@
 
 
       <!-- Delayed Tasks -->
-      <read name="DelayListAddr" type="uint32_t" symbol="tasks.c/pxDelayedTaskList"/>
-      <read name="pxDelayedTaskList" type="List_t" offset="DelayListAddr" cond="DelayListAddr"/>
+      <read name="DelayListAddr" type="uint32_t" symbol="tasks.c/pxDelayedTaskList" cond="CV_En"/>
+      <read name="pxDelayedTaskList" type="List_t" offset="DelayListAddr"           cond="CV_En &amp;&amp; DelayListAddr"/>
       
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
       <calc cond="DelayListAddr">
@@ -291,8 +298,8 @@
 
 
       <!-- Overflow Delayed Tasks -->
-      <read name="OverflowDelayListAddr" type="uint32_t" symbol="tasks.c/pxOverflowDelayedTaskList"/>
-      <read name="pxOverflowDelayedTaskList" type="List_t" offset="OverflowDelayListAddr" cond="OverflowDelayListAddr"/>
+      <read name="OverflowDelayListAddr" type="uint32_t" symbol="tasks.c/pxOverflowDelayedTaskList" cond="CV_En"/>
+      <read name="pxOverflowDelayedTaskList" type="List_t" offset="OverflowDelayListAddr"           cond="CV_En &amp;&amp; OverflowDelayListAddr"/>
 
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
       <calc cond="OverflowDelayListAddr">
@@ -322,19 +329,21 @@
 
 
       <!-- Suspended Tasks (Note: #if (INCLUDE_vTaskSuspend == 1)) -->
-      <read name="xSuspendedTaskList" type="List_t" symbol="tasks.c/xSuspendedTaskList"/>
+      <read name="xSuspendedTaskList" type="List_t" symbol="tasks.c/xSuspendedTaskList" cond="CV_En"/>
 
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
-      <calc> n = xSuspendedTaskList.xListEnd_pxNext; </calc>
+      <calc cond="CV_En">
+        n = xSuspendedTaskList.xListEnd_pxNext;
+      </calc>
 
-      <list name="j" start="0" limit="xSuspendedTaskList.uxNumberOfItems">
+      <list name="j" start="0" limit="xSuspendedTaskList.uxNumberOfItems" cond="CV_En">
         <readlist name="pxSuspendedTasks" type="ListItem_t" offset="n" count="1"/>
 
         <calc> n = pxSuspendedTasks[pxSuspendedTasks._count-1].pxNext; </calc>
       </list>
 
       <!-- Read control blocks -->
-      <list name="i" start="0" limit="xSuspendedTaskList.uxNumberOfItems">
+      <list name="i" start="0" limit="xSuspendedTaskList.uxNumberOfItems" cond="CV_En">
         <readlist name="Suspended_TCB" type="TCB_t" offset="pxSuspendedTasks[i].pvOwner"/>
       </list>
 
@@ -350,19 +359,21 @@
 
 
       <!-- Tasks Waiting Termination (Note: #if(INCLUDE_vTaskDelete == 1)) -->
-      <read name="xTasksWaitingTermination" type="List_t" symbol="tasks.c/xTasksWaitingTermination"/>
+      <read name="xTasksWaitingTermination" type="List_t" symbol="tasks.c/xTasksWaitingTermination" cond="CV_En"/>
 
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
-      <calc> n = xTasksWaitingTermination.xListEnd_pxNext; </calc>
+      <calc cond="CV_En">
+        n = xTasksWaitingTermination.xListEnd_pxNext;
+      </calc>
 
-      <list name="j" start="0" limit="xTasksWaitingTermination.uxNumberOfItems">
+      <list name="j" start="0" limit="xTasksWaitingTermination.uxNumberOfItems" cond="CV_En">
         <readlist name="pxTasksWaitingTermination" type="ListItem_t" offset="n" count="1"/>
 
         <calc> n = pxTasksWaitingTermination[pxTasksWaitingTermination._count-1].pxNext; </calc>
       </list>
 
       <!-- Read control blocks -->
-      <list name="i" start="0" limit="xTasksWaitingTermination.uxNumberOfItems">
+      <list name="i" start="0" limit="xTasksWaitingTermination.uxNumberOfItems" cond="CV_En">
         <readlist name="WaitTermination_TCB" type="TCB_t" offset="pxTasksWaitingTermination[i].pvOwner"/>
       </list>
 
@@ -378,8 +389,8 @@
 
 
       <!-- Timers -->
-      <read name="TimerListAddr"      type="uint32_t" symbol="timers.c/pxCurrentTimerList"/>
-      <read name="pxCurrentTimerList" type="List_t"   offset="TimerListAddr" />
+      <read name="TimerListAddr"      type="uint32_t" symbol="timers.c/pxCurrentTimerList" cond="CV_En"/>
+      <read name="pxCurrentTimerList" type="List_t"   offset="TimerListAddr"               cond="CV_En"/>
       
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
       <calc cond="TimerListAddr">
@@ -415,8 +426,8 @@
 
 
       <!-- Overflow Timers -->
-      <read name="OverflowTimerListAddr" type="uint32_t" symbol="timers.c/pxOverflowTimerList"/>
-      <read name="pxOverflowTimerList"   type="List_t"   offset="OverflowTimerListAddr" />
+      <read name="OverflowTimerListAddr" type="uint32_t" symbol="timers.c/pxOverflowTimerList" cond="CV_En"/>
+      <read name="pxOverflowTimerList"   type="List_t"   offset="OverflowTimerListAddr"        cond="CV_En"/>
 
       <!-- Determine address of first item in list, read current item and determine address of next item in list -->
       <calc cond="OverflowTimerListAddr">
@@ -538,14 +549,14 @@
 
       <out name="FreeRTOS RTOS">
         <item property="Kernel" value="">
-          <item property="Scheduler State"      value="%t[xSchedulerRunning ? &quot;Running&quot; : &quot;Not running&quot;]"/>
-          <item property="Tick Pending"         value="%d[uxPendedTicks]" cond="uxPendedTicks"/>
-          <item property="Tick Count"           value="%d[xTickCount]"/>
-          <item property="Tick Count Overflows" value="%d[xNumOfOverflows]" cond="xNumOfOverflows"/>
-          <item property="Task Count"           value="%d[uxCurrentNumberOfTasks]"/>
+          <item property="Scheduler State"      value="%t[(CV_En &amp;&amp; xSchedulerRunning) ? &quot;Running&quot; : &quot;Not running&quot;]"/>
+          <item property="Tick Pending"         value="%d[uxPendedTicks]"          cond="CV_En &amp;&amp; uxPendedTicks"/>
+          <item property="Tick Count"           value="%d[xTickCount]"             cond="CV_En"/>
+          <item property="Tick Count Overflows" value="%d[xNumOfOverflows]"        cond="CV_En &amp;&amp; xNumOfOverflows"/>
+          <item property="Task Count"           value="%d[uxCurrentNumberOfTasks]" cond="CV_En"/>
         </item>
 
-        <item property="Running Task" value="" cond="xSchedulerRunning">
+        <item property="Running Task" value="" cond="CV_En &amp;&amp; xSchedulerRunning">
           <item property="h: %x[pxCurrentTCB] %t[Running_TCB.pcTaskName]" value="">
             <item property="Priority"    value="%d[Running_TCB.uxPriority]" />
             <item property="Stack Limit" value="%x[Running_TCB.pxStack]" />
@@ -664,7 +675,6 @@
             <item property="h: %x[Timer_CB[i]._addr] %t[Timer_CB[i].Name]" value="">
               <item property="Wake Time"   value="%d[Timer_CB[i].xTimerListItem_xItemValue]" />
               <item property="Period"      value="%d[Timer_CB[i].xTimerPeriodInTicks]" />
-              <item property="Auto Reload" value="%t[Timer_CB[i].uxAutoReload ? &quot;True&quot; : &quot;False&quot;]" />
               <item property="ID"          value="%x[Timer_CB[i].pvTimerID]" />
               <item property="Callback"    value="%S[Timer_CB[i].pxCallbackFunction]" />
             </item>
@@ -676,7 +686,6 @@
             <item property="h: %x[OverflowTimer_CB[i]._addr] %t[OverflowTimer_CB[i].Name]" value="">
               <item property="Wake Time"   value="%d[OverflowTimer_CB[i].xTimerListItem_xItemValue]" />
               <item property="Period"      value="%d[OverflowTimer_CB[i].xTimerPeriodInTicks]" />
-              <item property="Auto Reload" value="%t[OverflowTimer_CB[i].uxAutoReload ? &quot;True&quot; : &quot;False&quot;]" />
               <item property="ID"          value="%x[OverflowTimer_CB[i].pvTimerID]" />
               <item property="Callback"    value="%S[OverflowTimer_CB[i].pxCallbackFunction]" />
             </item>

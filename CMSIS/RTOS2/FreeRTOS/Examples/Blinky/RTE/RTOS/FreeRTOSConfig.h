@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,13 +17,12 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.1.1
+ * $Revision:   V10.2.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
  *
  * --------------------------------------------------------------------------*/
-
 
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
@@ -37,7 +36,7 @@
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
  * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
- * See http://www.freertos.org/a00110.html.
+ * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
 #include <stdint.h>
@@ -179,6 +178,35 @@
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_STREAMBUFFER            0x05
 //  </e>
+// </h>
+
+// <h> Port Specific Features
+// <i> Enable and configure port specific features.
+// <i> Check FreeRTOS documentation for definitions that apply for the used port.
+
+//  <q>Use Floating Point Unit
+//  <i> Using Floating Point Unit (FPU) affects context handling.
+//  <i> Enable FPU when application uses floating point operations.
+//  <i> Default: 1
+#define configENABLE_FPU                      1
+
+//  <q>Use Memory Protection Unit
+//  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
+//  <i> This setting is only releavant for MPU enabled ports.
+//  <i> Default: 0
+#define configENABLE_MPU                      0
+
+//  <q>Use TrustZone Security Extension
+//  <i> Using TrustZone affects context handling.
+//  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
+//  <i> Default: 1
+#define configENABLE_TRUSTZONE                1
+
+//  <o>Minimal secure stack size [words] <0-65535>
+//  <i> Stack for idle task Secure side context in words.
+//  <i> This setting is only relevant when TrustZone extension is enabled.
+//  <i> Default: 128
+#define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
 // </h>
 
 //------------- <<< end of configuration section >>> ---------------------------

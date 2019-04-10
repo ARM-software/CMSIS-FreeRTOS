@@ -53,9 +53,9 @@
 #if   ((__ARM_ARCH_7M__      == 1U) || \
        (__ARM_ARCH_7EM__     == 1U) || \
        (__ARM_ARCH_8M_MAIN__ == 1U))
-#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
+#define IS_IRQ_MASKED()           ((KernelState == osKernelRunning) && ((__get_PRIMASK() != 0U) || (__get_BASEPRI() != 0U)))
 #elif  (__ARM_ARCH_6M__      == 1U)
-#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
+#define IS_IRQ_MASKED()           ((KernelState == osKernelRunning) && (__get_PRIMASK() != 0U))
 #elif (__ARM_ARCH_7A__       == 1U)
 /* CPSR mask bits */
 #define CPSR_MASKBIT_I            0x80U
@@ -84,12 +84,12 @@
 #define THREAD_FLAGS_INVALID_BITS (~((1UL << MAX_BITS_TASK_NOTIFY)  - 1U))
 #define EVENT_FLAGS_INVALID_BITS  (~((1UL << MAX_BITS_EVENT_GROUPS) - 1U))
 
-/* Kernel version and identification string definition */
+/* Kernel version and identification string definition (major.minor.rev: mmnnnrrrr dec) */
 #define KERNEL_VERSION            (((uint32_t)tskKERNEL_VERSION_MAJOR * 10000000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
-#define KERNEL_ID                 "FreeRTOS V10.1.1"
+#define KERNEL_ID                 ("FreeRTOS " tskKERNEL_VERSION_NUMBER)
 
 /* Timer callback information structure definition */
 typedef struct {
@@ -143,6 +143,8 @@ static osKernelState_t KernelState = osKernelInactive;
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
 
 #if defined(SysTick)
+#undef SysTick_Handler
+
 /* CMSIS SysTick interrupt handler prototype */
 extern void SysTick_Handler     (void);
 /* FreeRTOS tick timer interrupt handler prototype */
@@ -191,6 +193,7 @@ osStatus_t osKernelInitialize (void) {
 osStatus_t osKernelGetInfo (osVersion_t *version, char *id_buf, uint32_t id_size) {
 
   if (version != NULL) {
+    /* Version encoding is major.minor.rev: mmnnnrrrr dec */
     version->api    = KERNEL_VERSION;
     version->kernel = KERNEL_VERSION;
   }
@@ -238,7 +241,11 @@ osStatus_t osKernelStart (void) {
   }
   else {
     if (KernelState == osKernelReady) {
+      /* Ensure SVC priority is at the reset value */
+      NVIC_SetPriority (SVCall_IRQn, 0U);
+      /* Change state to enable IRQ masking check */
       KernelState = osKernelRunning;
+      /* Start the kernel scheduler */
       vTaskStartScheduler();
       stat = osOK;
     } else {
@@ -361,11 +368,11 @@ uint32_t osKernelGetTickFreq (void) {
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
-  uint32_t irqmask = IS_IRQ_MASKED();
+  uint32_t irqmask;
   TickType_t ticks;
   uint32_t val;
 
-  __disable_irq();
+  irqmask = __disable_irq();
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
@@ -390,7 +397,6 @@ uint32_t osKernelGetSysTimerFreq (void) {
 /*---------------------------------------------------------------------------*/
 
 osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAttr_t *attr) {
-  char empty;
   const char *name;
   uint32_t stack;
   TaskHandle_t hTask;
@@ -403,9 +409,8 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     stack = configMINIMAL_STACK_SIZE;
     prio  = (UBaseType_t)osPriorityNormal;
 
-    empty = '\0';
-    name  = &empty;
-    mem   = -1;
+    name = NULL;
+    mem  = -1;
 
     if (attr != NULL) {
       if (attr->name != NULL) {
