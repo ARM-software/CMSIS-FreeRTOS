@@ -53,9 +53,9 @@
 #if   ((__ARM_ARCH_7M__      == 1U) || \
        (__ARM_ARCH_7EM__     == 1U) || \
        (__ARM_ARCH_8M_MAIN__ == 1U))
-#define IS_IRQ_MASKED()           ((KernelState == osKernelRunning) && ((__get_PRIMASK() != 0U) || (__get_BASEPRI() != 0U)))
+#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || (__get_BASEPRI() != 0U))
 #elif  (__ARM_ARCH_6M__      == 1U)
-#define IS_IRQ_MASKED()           ((KernelState == osKernelRunning) && (__get_PRIMASK() != 0U))
+#define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #elif (__ARM_ARCH_7A__       == 1U)
 /* CPSR mask bits */
 #define CPSR_MASKBIT_I            0x80U
@@ -75,7 +75,7 @@
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
 #endif
 
-#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
+#define IS_IRQ()                  (IS_IRQ_MODE() || (IS_IRQ_MASKED() && (KernelState == osKernelRunning)))
 
 /* Limits */
 #define MAX_BITS_TASK_NOTIFY      31U
@@ -164,6 +164,18 @@ void SysTick_Handler (void) {
 }
 #endif /* SysTick */
 
+/*
+  Setup SVC to reset value.
+*/
+__STATIC_INLINE void SVC_Setup (void) {
+#if (__ARM_ARCH_7A__ == 0U)
+  /* Service Call interrupt might be configured before kernel start     */
+  /* and when its priority is lower or equal to BASEPRI, svc intruction */
+  /* causes a Hard Fault.                                               */
+  NVIC_SetPriority (SVCall_IRQn, 0U);
+#endif
+}
+
 /*---------------------------------------------------------------------------*/
 
 osStatus_t osKernelInitialize (void) {
@@ -242,7 +254,7 @@ osStatus_t osKernelStart (void) {
   else {
     if (KernelState == osKernelReady) {
       /* Ensure SVC priority is at the reset value */
-      NVIC_SetPriority (SVCall_IRQn, 0U);
+      SVC_Setup();
       /* Change state to enable IRQ masking check */
       KernelState = osKernelRunning;
       /* Start the kernel scheduler */
@@ -368,11 +380,11 @@ uint32_t osKernelGetTickFreq (void) {
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
-  uint32_t irqmask;
+  uint32_t irqmask = IS_IRQ_MASKED();
   TickType_t ticks;
   uint32_t val;
 
-  irqmask = __disable_irq();
+  __disable_irq();
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();

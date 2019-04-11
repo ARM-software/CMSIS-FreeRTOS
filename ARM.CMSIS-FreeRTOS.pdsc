@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.2.0-RC">
+    <release version="10.2.0-RC1">
       FreeRTOS 10.2.0
       Maintenance for CMSIS 5.5.1:
       - Updated to CMSIS API 2.1.3
