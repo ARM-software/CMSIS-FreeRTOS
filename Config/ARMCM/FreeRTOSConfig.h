@@ -41,9 +41,11 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 #include <stdint.h>
 
 extern uint32_t SystemCoreClock;
+#endif
 
 /* Constants that describe the hardware and memory usage. */
 #define configCPU_CLOCK_HZ                    (SystemCoreClock)
@@ -151,7 +153,9 @@ extern uint32_t SystemCoreClock;
 #define vPortSVCHandler                       SVC_Handler
 #define xPortSysTickHandler                   SysTick_Handler
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 /* Include debug event definitions */
 #include "freertos_evr.h"
+#endif
 
 #endif /* FREERTOS_CONFIG_H */

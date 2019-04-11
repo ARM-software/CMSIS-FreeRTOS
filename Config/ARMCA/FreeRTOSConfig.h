@@ -41,7 +41,9 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 #include <stdint.h>
+#endif
 
 /* Constants that describe the hardware and memory usage. */
 #define configCPU_CLOCK_HZ                    100000000UL
@@ -140,6 +142,7 @@
 #define INCLUDE_xTaskGetSchedulerState        1
 #define INCLUDE_xTaskGetCurrentTaskHandle     1
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 /*
  * The application must provide a function that configures a peripheral to
  * create the FreeRTOS tick interrupt, then define configSETUP_TICK_INTERRUPT()
@@ -156,5 +159,6 @@ void vClearTickInterrupt    ( void );
 code (which is where the vector table is defined). */
 #define FreeRTOS_IRQ_Handler                  IRQ_Handler
 #define FreeRTOS_SWI_Handler                  SWI_Handler
+#endif
 
 #endif /* FREERTOS_CONFIG_H */

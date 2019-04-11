@@ -602,7 +602,7 @@
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
 
-        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
+        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c"/>
       </files>
     </component>
 
@@ -680,18 +680,25 @@
 
           <file category="include"   condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/"/>
           <file category="source"    condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/port.c"/>
+          <file category="sourceAsm" condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/portasm.s"/>
           <file category="include"   condition="CM3_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
           <file category="source"    condition="CM3_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="sourceAsm" condition="CM3_IAR"    name="Source/portable/IAR/ARM_CM3/portasm.s"/>
           <file category="include"   condition="CM4_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
           <file category="source"    condition="CM4_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="sourceAsm" condition="CM4_IAR"    name="Source/portable/IAR/ARM_CM3/portasm.s"/>
           <file category="include"   condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F/"/>
           <file category="source"    condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F/port.c"/>
+          <file category="sourceAsm" condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F/portasm.s"/>
           <file category="include"   condition="CM7_IAR"    name="Source/portable/IAR/ARM_CM3/"/>
           <file category="source"    condition="CM7_IAR"    name="Source/portable/IAR/ARM_CM3/port.c"/>
+          <file category="sourceAsm" condition="CM7_IAR"    name="Source/portable/IAR/ARM_CM3/portasm.s"/>
           <file category="include"   condition="CM7_DP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_DP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/port.c"/>
+          <file category="sourceAsm" condition="CM7_DP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/portasm.s"/>
           <file category="include"   condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/port.c"/>
+          <file category="sourceAsm" condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/portasm.s"/>
           <file category="include"   condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>

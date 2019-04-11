@@ -39,12 +39,14 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 #include <stdint.h>
 
 #include "RTE_Components.h"
 #include CMSIS_device_header
 
 #include "os_tick.h"
+#endif
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
