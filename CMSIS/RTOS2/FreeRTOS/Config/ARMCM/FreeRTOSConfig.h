@@ -196,6 +196,11 @@
 //  <i> Default: 0
 #define configENABLE_MPU                      0
 
+//  <q> Use TrustZone Secure Side Only
+//  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.
+//  <i> Enable this setting when FreeRTOS runs on the Secure side only.
+#define configRUN_FREERTOS_SECURE_ONLY        0
+
 //  <q>Use TrustZone Security Extension
 //  <i> Using TrustZone affects context handling.
 //  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
