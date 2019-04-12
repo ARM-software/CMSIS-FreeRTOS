@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2017 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -53,11 +53,14 @@
 #if   ((__ARM_ARCH_7M__      == 1U) || \
        (__ARM_ARCH_7EM__     == 1U) || \
        (__ARM_ARCH_8M_MAIN__ == 1U))
-#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || ((KernelState == osKernelRunning) && (__get_BASEPRI() != 0U)))
+#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) || (__get_BASEPRI() != 0U))
 #elif  (__ARM_ARCH_6M__      == 1U)
-#define IS_IRQ_MASKED()           ((__get_PRIMASK() != 0U) &&  (KernelState == osKernelRunning))
-#elif (__ARM_ARCH_7A__       == 1)
-#define IS_IRQ_MASKED()           (0U)
+#define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
+#elif (__ARM_ARCH_7A__       == 1U)
+/* CPSR mask bits */
+#define CPSR_MASKBIT_I            0x80U
+
+#define IS_IRQ_MASKED()           ((__get_CPSR() & CPSR_MASKBIT_I) != 0U)
 #else
 #define IS_IRQ_MASKED()           (__get_PRIMASK() != 0U)
 #endif
@@ -72,7 +75,7 @@
 #define IS_IRQ_MODE()             (__get_IPSR() != 0U)
 #endif
 
-#define IS_IRQ()                  (IS_IRQ_MODE() || IS_IRQ_MASKED())
+#define IS_IRQ()                  (IS_IRQ_MODE() || (IS_IRQ_MASKED() && (KernelState == osKernelRunning)))
 
 /* Limits */
 #define MAX_BITS_TASK_NOTIFY      31U
@@ -81,12 +84,12 @@
 #define THREAD_FLAGS_INVALID_BITS (~((1UL << MAX_BITS_TASK_NOTIFY)  - 1U))
 #define EVENT_FLAGS_INVALID_BITS  (~((1UL << MAX_BITS_EVENT_GROUPS) - 1U))
 
-/* Kernel version and identification string definition */
+/* Kernel version and identification string definition (major.minor.rev: mmnnnrrrr dec) */
 #define KERNEL_VERSION            (((uint32_t)tskKERNEL_VERSION_MAJOR * 10000000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
-#define KERNEL_ID                 "FreeRTOS V10.0.1"
+#define KERNEL_ID                 ("FreeRTOS " tskKERNEL_VERSION_NUMBER)
 
 /* Timer callback information structure definition */
 typedef struct {
@@ -95,27 +98,55 @@ typedef struct {
 } TimerCallback_t;
 
 /* Kernel initialization state */
-static osKernelState_t KernelState;
+static osKernelState_t KernelState = osKernelInactive;
 
-/* Heap region definition used by heap_5 variant */
-#if defined(RTE_RTOS_FreeRTOS_HEAP_5)
-#if (configAPPLICATION_ALLOCATED_HEAP == 1)
 /*
-  The application writer has already defined the array used for the RTOS
-  heap - probably so it can be placed in a special segment or address.
-*/
-  extern uint8_t ucHeap[configTOTAL_HEAP_SIZE];
-#else
-  static uint8_t ucHeap[configTOTAL_HEAP_SIZE];
-#endif /* configAPPLICATION_ALLOCATED_HEAP */
+  Heap region definition used by heap_5 variant
 
-static HeapRegion_t xHeapRegions[] = {
-  { ucHeap, configTOTAL_HEAP_SIZE },
-  { NULL,   0                     }
-};
+  Define configAPPLICATION_ALLOCATED_HEAP as nonzero value in FreeRTOSConfig.h if
+  heap regions are already defined and vPortDefineHeapRegions is called in application.
+
+  Otherwise vPortDefineHeapRegions will be called by osKernelInitialize using
+  definition configHEAP_5_REGIONS as parameter. Overriding configHEAP_5_REGIONS
+  is possible by defining it globally or in FreeRTOSConfig.h.
+*/
+#if defined(RTE_RTOS_FreeRTOS_HEAP_5)
+#if (configAPPLICATION_ALLOCATED_HEAP == 0)
+  /*
+    FreeRTOS heap is not defined by the application.
+    Single region of size configTOTAL_HEAP_SIZE (defined in FreeRTOSConfig.h)
+    is provided by default. Define configHEAP_5_REGIONS to provide custom
+    HeapRegion_t array.
+  */
+  #define HEAP_5_REGION_SETUP   1
+  
+  #ifndef configHEAP_5_REGIONS
+    #define configHEAP_5_REGIONS xHeapRegions
+
+    static uint8_t ucHeap[configTOTAL_HEAP_SIZE];
+
+    static HeapRegion_t xHeapRegions[] = {
+      { ucHeap, configTOTAL_HEAP_SIZE },
+      { NULL,   0                     }
+    };
+  #else
+    /* Global definition is provided to override default heap array */
+    extern HeapRegion_t configHEAP_5_REGIONS[];
+  #endif
+#else
+  /*
+    The application already defined the array used for the FreeRTOS heap and
+    called vPortDefineHeapRegions to initialize heap.
+  */
+  #define HEAP_5_REGION_SETUP   0
+#endif /* configAPPLICATION_ALLOCATED_HEAP */
 #endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
 
 #if defined(SysTick)
+#undef SysTick_Handler
+
+/* CMSIS SysTick interrupt handler prototype */
+extern void SysTick_Handler     (void);
 /* FreeRTOS tick timer interrupt handler prototype */
 extern void xPortSysTickHandler (void);
 
@@ -126,10 +157,24 @@ void SysTick_Handler (void) {
   /* Clear overflow flag */
   SysTick->CTRL;
 
-  /* Call tick handler */
-  xPortSysTickHandler();
+  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+    /* Call tick handler */
+    xPortSysTickHandler();
+  }
 }
 #endif /* SysTick */
+
+/*
+  Setup SVC to reset value.
+*/
+__STATIC_INLINE void SVC_Setup (void) {
+#if (__ARM_ARCH_7A__ == 0U)
+  /* Service Call interrupt might be configured before kernel start     */
+  /* and when its priority is lower or equal to BASEPRI, svc intruction */
+  /* causes a Hard Fault.                                               */
+  NVIC_SetPriority (SVCall_IRQn, 0U);
+#endif
+}
 
 /*---------------------------------------------------------------------------*/
 
@@ -141,8 +186,11 @@ osStatus_t osKernelInitialize (void) {
   }
   else {
     if (KernelState == osKernelInactive) {
-      #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
-        vPortDefineHeapRegions (xHeapRegions);
+      #if defined(RTE_Compiler_EventRecorder)
+        EvrFreeRTOSSetup(0U);
+      #endif
+      #if defined(RTE_RTOS_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
+        vPortDefineHeapRegions (configHEAP_5_REGIONS);
       #endif
       KernelState = osKernelReady;
       stat = osOK;
@@ -157,6 +205,7 @@ osStatus_t osKernelInitialize (void) {
 osStatus_t osKernelGetInfo (osVersion_t *version, char *id_buf, uint32_t id_size) {
 
   if (version != NULL) {
+    /* Version encoding is major.minor.rev: mmnnnrrrr dec */
     version->api    = KERNEL_VERSION;
     version->kernel = KERNEL_VERSION;
   }
@@ -204,7 +253,11 @@ osStatus_t osKernelStart (void) {
   }
   else {
     if (KernelState == osKernelReady) {
+      /* Ensure SVC priority is at the reset value */
+      SVC_Setup();
+      /* Change state to enable IRQ masking check */
       KernelState = osKernelRunning;
+      /* Start the kernel scheduler */
       vTaskStartScheduler();
       stat = osOK;
     } else {
@@ -327,10 +380,11 @@ uint32_t osKernelGetTickFreq (void) {
 }
 
 uint32_t osKernelGetSysTimerCount (void) {
+  uint32_t irqmask = IS_IRQ_MASKED();
   TickType_t ticks;
   uint32_t val;
 
-  portDISABLE_INTERRUPTS();
+  __disable_irq();
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
@@ -341,7 +395,9 @@ uint32_t osKernelGetSysTimerCount (void) {
   }
   val += ticks * OS_Tick_GetInterval();
 
-  portENABLE_INTERRUPTS();
+  if (irqmask == 0U) {
+    __enable_irq();
+  }
 
   return (val);
 }
@@ -353,7 +409,6 @@ uint32_t osKernelGetSysTimerFreq (void) {
 /*---------------------------------------------------------------------------*/
 
 osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAttr_t *attr) {
-  char empty;
   const char *name;
   uint32_t stack;
   TaskHandle_t hTask;
@@ -366,9 +421,8 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     stack = configMINIMAL_STACK_SIZE;
     prio  = (UBaseType_t)osPriorityNormal;
 
-    empty = '\0';
-    name  = &empty;
-    mem   = -1;
+    name = NULL;
+    mem  = -1;
 
     if (attr != NULL) {
       if (attr->name != NULL) {
@@ -434,11 +488,7 @@ const char *osThreadGetName (osThreadId_t thread_id) {
 osThreadId_t osThreadGetId (void) {
   osThreadId_t id;
 
-  if (IS_IRQ()) {
-    id = NULL;
-  } else {
-    id = (osThreadId_t)xTaskGetCurrentTaskHandle();
-  }
+  id = (osThreadId_t)xTaskGetCurrentTaskHandle();
 
   return (id);
 }
@@ -803,7 +853,7 @@ osStatus_t osDelay (uint32_t ticks) {
 }
 
 osStatus_t osDelayUntil (uint32_t ticks) {
-  TickType_t tcnt;
+  TickType_t tcnt, delay;
   osStatus_t stat;
 
   if (IS_IRQ()) {
@@ -813,7 +863,18 @@ osStatus_t osDelayUntil (uint32_t ticks) {
     stat = osOK;
     tcnt = xTaskGetTickCount();
 
-    vTaskDelayUntil (&tcnt, (TickType_t)ticks);
+    /* Determine remaining number of ticks to delay */
+    delay = (TickType_t)ticks - tcnt;
+
+    /* Check if target tick has not expired */
+    if((delay != 0U) && (0 == (delay >> (8 * sizeof(TickType_t) - 1)))) {
+      vTaskDelayUntil (&tcnt, delay);
+    }
+    else
+    {
+      /* No delay or already expired */
+      stat = osErrorParameter;
+    }
   }
 
   return (stat);
@@ -1040,7 +1101,7 @@ uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
   else if (IS_IRQ()) {
     yield = pdFALSE;
 
-    if (xEventGroupSetBitsFromISR (hEventGroup, (EventBits_t)flags, &yield) != pdFAIL) {
+    if (xEventGroupSetBitsFromISR (hEventGroup, (EventBits_t)flags, &yield) == pdFAIL) {
       rflags = (uint32_t)osErrorResource;
     } else {
       rflags = flags;

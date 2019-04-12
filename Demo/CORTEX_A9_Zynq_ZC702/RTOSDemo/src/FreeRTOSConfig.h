@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -39,7 +39,7 @@
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
  * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
- * See http://www.freertos.org/a00110.html.
+ * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
 /*
@@ -78,7 +78,7 @@
 #define configUSE_TICK_HOOK						1
 #define configMAX_PRIORITIES					( 7 )
 #define configMINIMAL_STACK_SIZE				( ( unsigned short ) 250 ) /* Large in case configUSE_TASK_FPU_SUPPORT is 2 in which case all tasks have an FPU context. */
-#define configTOTAL_HEAP_SIZE					( 90 * 1024 )
+#define configTOTAL_HEAP_SIZE					( 125 * 1024 )
 #define configMAX_TASK_NAME_LEN					( 10 )
 #define configUSE_TRACE_FACILITY				1
 #define configUSE_16_BIT_TICKS					0
@@ -127,6 +127,7 @@ to exclude the API function. */
 #define INCLUDE_xTaskAbortDelay					1
 #define INCLUDE_xTaskGetTaskHandle				1
 #define INCLUDE_xTaskGetHandle					1
+#define INCLUDE_xSemaphoreGetMutexHolder		1
 
 /* This demo makes use of one or more example stats formatting functions.  These
 format the raw data provided by the uxTaskGetSystemState() function in to human

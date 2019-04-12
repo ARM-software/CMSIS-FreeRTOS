@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -56,6 +56,13 @@
 #define genqMUTEX_MEDIUM_PRIORITY	( tskIDLE_PRIORITY + 2 )
 #define genqMUTEX_HIGH_PRIORITY		( tskIDLE_PRIORITY + 3 )
 
+#ifndef genqMUTEX_TEST_TASK_STACK_SIZE
+	#define genqMUTEX_TEST_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
+#endif
+
+#ifndef genqGENERIC_QUEUE_TEST_TASK_STACK_SIZE
+	#define genqGENERIC_QUEUE_TEST_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
+#endif
 /*-----------------------------------------------------------*/
 
 /*
@@ -158,7 +165,7 @@ SemaphoreHandle_t xMutex;
 		/* Create the demo task and pass it the queue just created.  We are
 		passing the queue handle by value so it does not matter that it is
 		declared on the stack here. */
-		xTaskCreate( prvSendFrontAndBackTest, "GenQ", configMINIMAL_STACK_SIZE, ( void * ) xQueue, uxPriority, NULL );
+		xTaskCreate( prvSendFrontAndBackTest, "GenQ", genqGENERIC_QUEUE_TEST_TASK_STACK_SIZE, ( void * ) xQueue, uxPriority, NULL );
 	}
 
 	/* Create the mutex used by the prvMutexTest task. */
@@ -177,9 +184,9 @@ SemaphoreHandle_t xMutex;
 		/* Create the mutex demo tasks and pass it the mutex just created.  We
 		are passing the mutex handle by value so it does not matter that it is
 		declared on the stack here. */
-		xTaskCreate( prvLowPriorityMutexTask, "MuLow", configMINIMAL_STACK_SIZE, ( void * ) xMutex, genqMUTEX_LOW_PRIORITY, NULL );
+		xTaskCreate( prvLowPriorityMutexTask, "MuLow", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_LOW_PRIORITY, NULL );
 		xTaskCreate( prvMediumPriorityMutexTask, "MuMed", configMINIMAL_STACK_SIZE, NULL, genqMUTEX_MEDIUM_PRIORITY, &xMediumPriorityMutexTask );
-		xTaskCreate( prvHighPriorityMutexTask, "MuHigh", configMINIMAL_STACK_SIZE, ( void * ) xMutex, genqMUTEX_HIGH_PRIORITY, &xHighPriorityMutexTask );
+		xTaskCreate( prvHighPriorityMutexTask, "MuHigh", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_HIGH_PRIORITY, &xHighPriorityMutexTask );
 
 		/* If INCLUDE_xTaskAbortDelay is set then additional tests are performed,
 		requiring two instances of prvHighPriorityMutexTask(). */
@@ -433,8 +440,17 @@ QueueHandle_t xQueue;
 		/* The tests in this function are very similar, the slight variations
 		are for code coverage purposes. */
 
-		/* Take the mutex.  It should be available now. */
+		/* Take the mutex.  It should be available now.  Check before and after
+		taking that the holder is reported correctly. */
+		if( xSemaphoreGetMutexHolder( xMutex ) != NULL )
+		{
+			xErrorDetected = pdTRUE;
+		}
 		if( xSemaphoreTake( xMutex, intsemNO_BLOCK ) != pdPASS )
+		{
+			xErrorDetected = pdTRUE;
+		}
+		if( xSemaphoreGetMutexHolder( xMutex ) != xTaskGetCurrentTaskHandle() )
 		{
 			xErrorDetected = pdTRUE;
 		}
@@ -524,8 +540,17 @@ QueueHandle_t xQueue;
 			vTaskDelay( genqSHORT_BLOCK );
 		}
 
-		/* Give the semaphore back ready for the next test. */
+		/* Give the semaphore back ready for the next test.  Check the mutex
+		holder before and after using the "FromISR" version for code coverage. */
+		if( xSemaphoreGetMutexHolderFromISR( xMutex ) != xTaskGetCurrentTaskHandle() )
+		{
+			xErrorDetected = pdTRUE;
+		}
 		xSemaphoreGive( xMutex );
+		if( xSemaphoreGetMutexHolderFromISR( xMutex ) != NULL )
+		{
+			xErrorDetected = pdTRUE;
+		}
 
 		configASSERT( xErrorDetected == pdFALSE );
 

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -110,6 +110,10 @@
 #include "IntSemTest.h"
 #include "StaticAllocation.h"
 #include "AbortDelay.h"
+#include "MessageBufferDemo.h"
+#include "StreamBufferDemo.h"
+#include "StreamBufferInterrupt.h"
+#include "MessageBufferAMP.h"
 
 
 /* Priorities for the demo application tasks. */
@@ -148,6 +152,9 @@ purpose of ensuring parameters are passed into tasks correctly. */
 
 /* The base period used by the timer test tasks. */
 #define mainTIMER_TEST_PERIOD				( 50 )
+
+/* Base stack size of tasks created in the message buffer demos. */
+#define mainMESSAGE_BUFFER_STACK_SIZE		( configMINIMAL_STACK_SIZE * 2 )
 
 /*-----------------------------------------------------------*/
 
@@ -221,6 +228,10 @@ void main_full( void )
 	vStartInterruptSemaphoreTasks();
 	vStartStaticallyAllocatedTasks();
 	vCreateAbortDelayTasks();
+	vStartMessageBufferTasks( mainMESSAGE_BUFFER_STACK_SIZE );
+	vStartStreamBufferTasks();
+	vStartStreamBufferInterruptDemo();
+	vStartMessageBufferAMPTasks( mainMESSAGE_BUFFER_STACK_SIZE );
 
 	/* Start the tasks that implements the command console on the UART, as
 	described above. */
@@ -372,17 +383,37 @@ unsigned long ulErrorFound = pdFALSE;
 			ulErrorFound |= 1UL << 16UL;
 		}
 
+		if( xAreStreamBufferTasksStillRunning() != pdTRUE )
+		{
+			ulErrorFound |= 1UL << 17UL;
+		}
+
+		if( xAreMessageBufferTasksStillRunning() != pdTRUE )
+		{
+			ulErrorFound |= 1UL << 18UL;
+		}
+
+		if( xIsInterruptStreamBufferDemoStillRunning() != pdPASS )
+		{
+			ulErrorFound |= 1UL << 19UL;
+		}
+
+		if( xAreMessageBufferAMPTasksStillRunning() != pdPASS )
+		{
+			ulErrorFound |= 1UL << 20UL;
+		}
+
 		/* Check that the register test 1 task is still running. */
 		if( ulLastRegTest1Value == ulRegTest1LoopCounter )
 		{
-			ulErrorFound |= 1UL << 17UL;
+			ulErrorFound |= 1UL << 21UL;
 		}
 		ulLastRegTest1Value = ulRegTest1LoopCounter;
 
 		/* Check that the register test 2 task is still running. */
 		if( ulLastRegTest2Value == ulRegTest2LoopCounter )
 		{
-			ulErrorFound |= 1UL << 18UL;
+			ulErrorFound |= 1UL << 22UL;
 		}
 		ulLastRegTest2Value = ulRegTest2LoopCounter;
 

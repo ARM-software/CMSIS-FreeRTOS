@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -78,6 +78,7 @@ that synchronise with the xEventGroupSync() function. */
 
 /* A block time of zero simply means "don't block". */
 #define ebDONT_BLOCK	( 0 )
+#define ebONE_TICK		( ( TickType_t ) 1 )
 
 /* A 5ms delay. */
 #define ebSHORT_DELAY	pdMS_TO_TICKS( ( TickType_t ) 5 )
@@ -86,6 +87,14 @@ that synchronise with the xEventGroupSync() function. */
 event bits in a group are unblocked as appropriate as different bits get set. */
 #define ebSELECTIVE_BITS_1		0x03
 #define ebSELECTIVE_BITS_2		0x05
+
+#ifndef ebRENDESVOUS_TEST_TASK_STACK_SIZE
+	#define ebRENDESVOUS_TEST_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
+#endif
+
+#ifndef ebEVENT_GROUP_SET_BITS_TEST_TASK_STACK_SIZE
+	#define ebEVENT_GROUP_SET_BITS_TEST_TASK_STACK_SIZE	configMINIMAL_STACK_SIZE
+#endif
 
 /*-----------------------------------------------------------*/
 
@@ -178,10 +187,10 @@ TaskHandle_t xTestSlaveTaskHandle;
 	 *
 	 * Create the test tasks as described at the top of this file.
 	 */
-	xTaskCreate( prvTestSlaveTask, "WaitO", configMINIMAL_STACK_SIZE, NULL, ebWAIT_BIT_TASK_PRIORITY, &xTestSlaveTaskHandle );
-	xTaskCreate( prvTestMasterTask, "SetB", configMINIMAL_STACK_SIZE, ( void * ) xTestSlaveTaskHandle, ebSET_BIT_TASK_PRIORITY, NULL );
-	xTaskCreate( prvSyncTask, "Rndv", configMINIMAL_STACK_SIZE, ( void * ) ebRENDESVOUS_TASK_1_SYNC_BIT, ebWAIT_BIT_TASK_PRIORITY, &xSyncTask1 );
-	xTaskCreate( prvSyncTask, "Rndv", configMINIMAL_STACK_SIZE, ( void * ) ebRENDESVOUS_TASK_2_SYNC_BIT, ebWAIT_BIT_TASK_PRIORITY, &xSyncTask2 );
+	xTaskCreate( prvTestSlaveTask, "WaitO", ebRENDESVOUS_TEST_TASK_STACK_SIZE, NULL, ebWAIT_BIT_TASK_PRIORITY, &xTestSlaveTaskHandle );
+	xTaskCreate( prvTestMasterTask, "SetB", ebEVENT_GROUP_SET_BITS_TEST_TASK_STACK_SIZE, ( void * ) xTestSlaveTaskHandle, ebSET_BIT_TASK_PRIORITY, NULL );
+	xTaskCreate( prvSyncTask, "Rndv", ebRENDESVOUS_TEST_TASK_STACK_SIZE, ( void * ) ebRENDESVOUS_TASK_1_SYNC_BIT, ebWAIT_BIT_TASK_PRIORITY, &xSyncTask1 );
+	xTaskCreate( prvSyncTask, "Rndv", ebRENDESVOUS_TEST_TASK_STACK_SIZE, ( void * ) ebRENDESVOUS_TASK_2_SYNC_BIT, ebWAIT_BIT_TASK_PRIORITY, &xSyncTask2 );
 
 	/* If the last task was created then the others will have been too. */
 	configASSERT( xSyncTask2 );
@@ -281,7 +290,29 @@ EventBits_t uxSynchronisationBit, uxReturned;
 		/* Set the bit that indicates this task is at the synchronisation
 		point.  The first time this is done the 'test master' task has a lower
 		priority than this task so this task will get to the sync point before
-		the set bits task. */
+		the set bits task - test this by first calling xEventGroupSync() with
+		a zero block time, and a block time that is too short for the other
+		task, before calling again with a max delay - the first two calls should
+		return before the rendezvous completes, the third only after the
+		rendezvous is complete. */
+		uxReturned = xEventGroupSync( xEventGroup,	/* The event group used for the synchronisation. */
+									  uxSynchronisationBit, /* The bit to set in the event group to indicate this task is at the sync point. */
+									  ebALL_SYNC_BITS,/* The bits to wait for - these bits are set by the other tasks taking part in the sync. */
+									  ebDONT_BLOCK ); /* The maximum time to wait for the sync condition to be met before giving up. */
+
+		/* No block time was specified, so as per the comments above, the
+		rendezvous is not expected to have completed yet. */
+		configASSERT( ( uxReturned & ebALL_SYNC_BITS ) != ebALL_SYNC_BITS );
+
+		uxReturned = xEventGroupSync( xEventGroup,	/* The event group used for the synchronisation. */
+									  uxSynchronisationBit, /* The bit to set in the event group to indicate this task is at the sync point. */
+									  ebALL_SYNC_BITS, /* The bits to wait for - these bits are set by the other tasks taking part in the sync. */
+									  ebONE_TICK ); /* The maximum time to wait for the sync condition to be met before giving up. */
+
+		/* A short block time was specified, so as per the comments above, the
+		rendezvous is not expected to have completed yet. */
+		configASSERT( ( uxReturned & ebALL_SYNC_BITS ) != ebALL_SYNC_BITS );
+
 		uxReturned = xEventGroupSync( xEventGroup,	/* The event group used for the synchronisation. */
 									uxSynchronisationBit, /* The bit to set in the event group to indicate this task is at the sync point. */
 									ebALL_SYNC_BITS,/* The bits to wait for - these bits are set by the other tasks taking part in the sync. */

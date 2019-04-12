@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -240,7 +240,7 @@ uint32_t ulReceivedValue;
 		is it an expected value?  Normally calling printf() from a task is not
 		a good idea.  Here there is lots of stack space and only one task is
 		using console IO so it is ok.  However, note the comments at the top of
-		this file about the risks of making Windows system calls (such as 
+		this file about the risks of making Windows system calls (such as
 		console output) from a FreeRTOS task. */
 		if( ulReceivedValue == mainVALUE_SENT_FROM_TASK )
 		{

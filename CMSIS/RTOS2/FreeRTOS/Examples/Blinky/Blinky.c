@@ -25,10 +25,6 @@
 #include "RTE_Components.h"
 #include CMSIS_device_header
 
-#ifdef RTE_Compiler_EventRecorder
-#include "EventRecorder.h"
-#endif
-
 #include "cmsis_os2.h"
 
 
@@ -141,10 +137,6 @@ int main (void) {
   // System Initialization
   SystemCoreClockUpdate();
 
-#ifdef RTE_Compiler_EventRecorder
-  // Initialize and start Event Recorder
-  EventRecorderInitialize(EventRecordAll, 1U);
-#endif
   osKernelInitialize();                 // Initialize CMSIS-RTOS
   osThreadNew(app_main, NULL, NULL);    // Create application main thread
   if (osKernelGetState() == osKernelReady) {

@@ -40,13 +40,18 @@
 									<listOptionValue builtIn="false" value="ARMCA9"/>
 								</option>
 								<option id="com.arm.tool.c.compiler.v6.base.option.implicit.incpath.1049772562" name="Implicit Include paths" superClass="com.arm.tool.c.compiler.v6.base.option.implicit.incpath" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
@@ -62,46 +67,56 @@
 									<listOptionValue builtIn="false" value="ARMCA9"/>
 								</option>
 								<option id="com.arm.tool.c.compiler.v6.base.option.implicit.incpath.472781531" name="Implicit Include paths" superClass="com.arm.tool.c.compiler.v6.base.option.implicit.incpath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
 							</tool>
 							<tool id="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6.1570900149" name="ARM Assembler 6" superClass="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6">
 								<option id="com.arm.tool.assembler.v6.base.option.incpath.1164483337" name="Include path (-I)" superClass="com.arm.tool.assembler.v6.base.option.incpath"/>
-								<option defaultValue="com.arm.tool.assembler.v6.base.options.debug.level.std" id="com.arm.tool.assembler.v6.base.options.debug.level.2060646253" name="Debug Level" superClass="com.arm.tool.assembler.v6.base.options.debug.level" valueType="enumerated"/>
-								<option id="com.arm.tool.assembler.v6.base.option.cpu.2054559583" name="CPU (-mcpu)" superClass="com.arm.tool.assembler.v6.base.option.cpu" value="cortex-a9" valueType="string"/>
-								<option id="com.arm.tool.assembler.v6.base.option.target.1634463090" name="Target (--target)" superClass="com.arm.tool.assembler.v6.base.option.target" value="arm-arm-none-eabi" valueType="string"/>
-								<option id="com.arm.tool.assembler.v6.base.option.fpu.2081426725" name="FPU (-mfpu)" superClass="com.arm.tool.assembler.v6.base.option.fpu" value="neon-fp16" valueType="string"/>
-								<option id="com.arm.tool.assembler.v6.base.option.floatabi.1712306619" name="Float ABI (-mfloat-abi)" superClass="com.arm.tool.assembler.v6.base.option.floatabi" value="com.arm.tool.c.compiler.v6.base.option.floatabi.hard" valueType="enumerated"/>
-								<option id="com.arm.tool.assembler.v6.base.option.inst.722708142" name="Instruction set" superClass="com.arm.tool.assembler.v6.base.option.inst" value="com.arm.tool.c.compiler.v6.base.option.inst.arm" valueType="enumerated"/>
-								<option id="com.arm.tool.assembler.v6.base.useMicroLib.1954932451" name="Use microlib (--pd &quot;__MICROLIB SETA 1&quot;)" superClass="com.arm.tool.assembler.v6.base.useMicroLib" value="true" valueType="boolean"/>
-								<option id="com.arm.tool.assembler.v6.base.option.endian.1220019593" name="Byte order" superClass="com.arm.tool.assembler.v6.base.option.endian" value="com.arm.tool.c.compiler.v6.base.option.endian.little" valueType="enumerated"/>
+								<option defaultValue="com.arm.tool.assembler.v6.base.options.debug.level.std" id="com.arm.tool.assembler.v6.base.options.debug.level.2060646253" name="Debug Level" superClass="com.arm.tool.assembler.v6.base.options.debug.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.v6.base.option.cpu.2054559583" name="CPU (-mcpu)" superClass="com.arm.tool.assembler.v6.base.option.cpu" useByScannerDiscovery="false" value="cortex-a9" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.target.1634463090" name="Target (--target)" superClass="com.arm.tool.assembler.v6.base.option.target" useByScannerDiscovery="false" value="arm-arm-none-eabi" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.fpu.2081426725" name="FPU (-mfpu)" superClass="com.arm.tool.assembler.v6.base.option.fpu" useByScannerDiscovery="true" value="neon-fp16" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.floatabi.1712306619" name="Float ABI (-mfloat-abi)" superClass="com.arm.tool.assembler.v6.base.option.floatabi" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.floatabi.hard" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.v6.base.option.inst.722708142" name="Instruction set" superClass="com.arm.tool.assembler.v6.base.option.inst" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.inst.arm" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.v6.base.useMicroLib.1954932451" name="Use microlib (--pd &quot;__MICROLIB SETA 1&quot;)" superClass="com.arm.tool.assembler.v6.base.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.assembler.v6.base.option.endian.1220019593" name="Byte order" superClass="com.arm.tool.assembler.v6.base.option.endian" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.endian.little" valueType="enumerated"/>
 								<option id="com.arm.tool.assembler.v6.base.option.implicit.defmac.141257448" name="Implicit Define macros" superClass="com.arm.tool.assembler.v6.base.option.implicit.defmac" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_RTE_"/>
 									<listOptionValue builtIn="false" value="ARMCA9"/>
 								</option>
 								<option id="com.arm.tool.assembler.v6.base.option.implicit.incpath.1669911332" name="Implicit Include paths" superClass="com.arm.tool.assembler.v6.base.option.implicit.incpath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
 								<inputType id="com.arm.tool.assembler.v6.base.input.1206789971" superClass="com.arm.tool.assembler.v6.base.input"/>
 							</tool>
 							<tool id="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6.305840377" name="ARM Linker 6" superClass="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6">
-								<option id="com.arm.tool.linker.v6.option.useMicroLib.62230281" name="Use microlib" superClass="com.arm.tool.linker.v6.option.useMicroLib" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.linker.v6.option.useMicroLib.62230281" name="Use microlib" superClass="com.arm.tool.linker.v6.option.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.arm.tool.c.linker.option.scatter.732031659" name="Scatter file (--scatter)" superClass="com.arm.tool.c.linker.option.scatter" value="${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9/ARMCA9.sct" valueType="string"/>
 								<option id="com.arm.tool.c.linker.option.entry.1574253646" superClass="com.arm.tool.c.linker.option.entry" value="Vectors" valueType="string"/>
 							</tool>
@@ -138,13 +153,18 @@
 									<listOptionValue builtIn="false" value="ARMCA9"/>
 								</option>
 								<option id="com.arm.tool.c.compiler.option.implicit.incpath.565275652" name="Implicit Include paths" superClass="com.arm.tool.c.compiler.option.implicit.incpath" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
@@ -159,39 +179,49 @@
 									<listOptionValue builtIn="false" value="ARMCA9"/>
 								</option>
 								<option id="com.arm.tool.c.compiler.option.implicit.incpath.258704500" name="Implicit Include paths" superClass="com.arm.tool.c.compiler.option.implicit.incpath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
 							</tool>
 							<tool id="com.arm.tool.assembler.base.var.arm_compiler_5-5.103348867" name="ARM Assembler 5" superClass="com.arm.tool.assembler.base.var.arm_compiler_5-5">
-								<option id="com.arm.tool.assembler.option.cpu.60771308" name="Target CPU (--cpu)" superClass="com.arm.tool.assembler.option.cpu" value="Cortex-A9.no_neon" valueType="string"/>
-								<option id="com.arm.tool.assembler.option.endian.1890884161" name="Byte order" superClass="com.arm.tool.assembler.option.endian" value="com.arm.tool.c.compiler.v6.base.option.endian.little" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.option.cpu.60771308" name="Target CPU (--cpu)" superClass="com.arm.tool.assembler.option.cpu" useByScannerDiscovery="true" value="Cortex-A9.no_neon" valueType="string"/>
+								<option id="com.arm.tool.assembler.option.endian.1890884161" name="Byte order" superClass="com.arm.tool.assembler.option.endian" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.endian.little" valueType="enumerated"/>
 								<option id="com.arm.tool.assembler.option.implicit.predefine.2089075885" name="Implicit Predefines" superClass="com.arm.tool.assembler.option.implicit.predefine" valueType="stringList">
 									<listOptionValue builtIn="false" value="_RTE_ SETA 1"/>
 									<listOptionValue builtIn="false" value="ARMCA9 SETA 1"/>
 								</option>
 								<option id="com.arm.tool.assembler.option.implicit.incpath.1629146654" name="Implicit Include paths" superClass="com.arm.tool.assembler.option.implicit.incpath" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.0.1/Source/portable/GCC/ARM_CA9&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/Core_A/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/CMSIS/RTOS2/Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.2.0/Device/ARM/ARMCA9/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/CMSIS/RTOS2/FreeRTOS/Source/ARM&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/GCC/ARM_CA9&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS-FreeRTOS/10.2.0/Source/portable/MemMang&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core_A/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/RTOS2/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/Device/ARM/ARMCA9/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/CMSIS&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/RTOS&quot;"/>
 								</option>
 								<inputType id="com.arm.tool.assembler.input.1753557288" superClass="com.arm.tool.assembler.input"/>
 							</tool>
 							<tool id="com.arm.tool.c.linker.base.var.arm_compiler_5-5.442023503" name="ARM Linker 5" superClass="com.arm.tool.c.linker.base.var.arm_compiler_5-5">
-								<option id="com.arm.tool.c.linker.option.cpu.491139689" name="Target CPU (--cpu)" superClass="com.arm.tool.c.linker.option.cpu" value="Cortex-A9.no_neon" valueType="string"/>
+								<option id="com.arm.tool.c.linker.option.cpu.491139689" name="Target CPU (--cpu)" superClass="com.arm.tool.c.linker.option.cpu" useByScannerDiscovery="true" value="Cortex-A9.no_neon" valueType="string"/>
 								<option id="com.arm.tool.c.linker.option.scatter.1506248592" name="Scatter file (--scatter)" superClass="com.arm.tool.c.linker.option.scatter" value="${workspace_loc:/${ProjName}}/RTE/Device/ARMCA9/ARMCA9.sct" valueType="string"/>
 							</tool>
 							<tool id="com.arm.tool.librarian.base.var.arm_compiler_5-5.216359866" name="ARM Librarian 5" superClass="com.arm.tool.librarian.base.var.arm_compiler_5-5"/>
@@ -224,8 +254,8 @@
 		<files>
 			<file name="RTE/Device/ARMCA9/ARMCA9.sct" version="1.0.0"/>
 			<file name="RTE/Device/ARMCA9/startup_ARMCA9.c" version="1.0.0"/>
-			<file name="RTE/RTOS/FreeRTOSConfig.h" version="10.0.1"/>
-			<file name="RTE/Device/ARMCA9/system_ARMCA9.c" version="1.0.0"/>
+			<file name="RTE/RTOS/FreeRTOSConfig.h" version="10.2.0"/>
+			<file name="RTE/Device/ARMCA9/system_ARMCA9.c" version="1.0.1"/>
 			<file name="RTE/Device/ARMCA9/mem_ARMCA9.h" version="1.0.0"/>
 			<file name="RTE/CMSIS/handlers.c" version="9.1.0"/>
 			<file name="RTE/Device/ARMCA9/system_ARMCA9.h" version="1.0.0"/>

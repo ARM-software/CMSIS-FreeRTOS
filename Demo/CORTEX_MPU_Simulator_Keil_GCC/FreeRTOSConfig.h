@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -42,7 +42,7 @@ extern "C" {
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
  * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
- * See http://www.freertos.org/a00110.html.
+ * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
 /* The MPU version of port.c includes and excludes functions depending on the
@@ -105,7 +105,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil				1
 #define INCLUDE_vTaskDelay					1
 #define INCLUDE_eTaskGetState				1
-#define INCLUDE_xTimerPendFunctionCall		0
+#define INCLUDE_xTimerPendFunctionCall		1
 #define INCLUDE_xSemaphoreGetMutexHolder	1
 #define INCLUDE_xTaskGetHandle				1
 #define INCLUDE_xTaskGetCurrentTaskHandle	1
@@ -114,13 +114,14 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetSchedulerState		1
 #define INCLUDE_xTaskGetIdleTaskHandle		1
 #define INCLUDE_uxTaskGetStackHighWaterMark 1
+#define INCLUDE_uxTaskGetStackHighWaterMark2 1
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
 	/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
 	#define configPRIO_BITS		       __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS		       8	/* 15 priority levels */
+	#define configPRIO_BITS		       4	/* 15 priority levels */
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"
@@ -149,7 +150,7 @@ standard names. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT( x ) if( ( x ) == 0UL ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
+#define configASSERT( x ) if( ( x ) == 0UL ) { portDISABLE_INTERRUPTS(); for( ;; ); }
 
 /* LED not used at present, so just increment a variable to keep a count of the
 number of times the LED would otherwise have been toggled. */

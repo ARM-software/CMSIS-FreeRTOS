@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -191,7 +191,7 @@ void main_full( void )
 	vStartTaskNotifyTask();
 	vStartInterruptSemaphoreTasks();
 	vStartStreamBufferTasks();
-	vStartMessageBufferTasks();
+	vStartMessageBufferTasks( configMINIMAL_STACK_SIZE );
 
 	/* Create the register check tasks, as described at the top of this	file */
 	xTaskCreate( prvRegTestTaskEntry1, "Reg1", configMINIMAL_STACK_SIZE, mainREG_TEST_TASK_1_PARAMETER, tskIDLE_PRIORITY, NULL );

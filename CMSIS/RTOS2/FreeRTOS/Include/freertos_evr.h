@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -42,6 +42,12 @@
 #define PendedFunction_t void*
 #define EventGroup_t     void*
 #define StreamBuffer_t   void*
+
+/**
+  \brief  Setup Event Recorder configuration
+  \param[in]  reset             reset if already configured (0:no reset, 1:reset)
+*/
+extern void EvrFreeRTOSSetup (uint32_t reset);
 
 /**
   \brief  Event on successful task create (Op)

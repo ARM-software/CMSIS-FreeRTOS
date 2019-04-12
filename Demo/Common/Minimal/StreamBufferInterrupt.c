@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -172,7 +172,7 @@ BaseType_t xNextByte = 0;
 				continuing to look for the end of the string. */
 				xNextByte++;
 
-				configASSERT( xNextByte < sizeof( cRxBuffer ) );
+				configASSERT( ( size_t ) xNextByte < sizeof( cRxBuffer ) );
 			}
 		}
 	}
@@ -193,7 +193,7 @@ static BaseType_t xCallCount = 0;
 
 		/* Send the next four bytes to the stream buffer. */
 		xStreamBufferSendFromISR( xStreamBuffer,
-								  ( void * ) ( pcStringToSend + xNextByteToSend ),
+								  ( const void * ) ( pcStringToSend + xNextByteToSend ),
 								  xBytesToSend,
 								  NULL );
 

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,19 +20,11 @@
  *
  *---------------------------------------------------------------------------*/
 
-#include "freertos_evr.h"
-#include "cmsis_compiler.h"
-
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
 #include "stream_buffer.h"              // ARM.FreeRTOS::RTOS:Stream Buffer
-
-
-#ifdef RTE_Compiler_EventRecorder
-
-#include "EventRecorder.h"
 
 /* FreeRTOS component number */
 #define EvtFreeRTOSTasksNo              (0xF0U)
@@ -42,7 +34,72 @@
 #define EvtFreeRTOSHeapNo               (0xF4U)
 #define EvtFreeRTOSStreamBufNo          (0xF5U)
 
+#ifdef RTE_Compiler_EventRecorder
+
+#include "EventRecorder.h"
+
+#if !defined(EVR_FREERTOS_DISABLE)
+
+/* Ensure default configuration for FreeRTOSConfig files without EVR configuration */
+#ifndef configEVR_INITIALIZE
+#define configEVR_INITIALIZE          1
+#endif
+#ifndef configEVR_SETUP_LEVEL
+#define configEVR_SETUP_LEVEL         1
+#endif
+#ifndef configEVR_LEVEL_TASKS
+#define configEVR_LEVEL_TASKS         0x05
+#endif
+#ifndef configEVR_LEVEL_QUEUE
+#define configEVR_LEVEL_QUEUE         0x05
+#endif
+#ifndef configEVR_LEVEL_TIMERS
+#define configEVR_LEVEL_TIMERS        0x05
+#endif
+#ifndef configEVR_LEVEL_EVENTGROUPS
+#define configEVR_LEVEL_EVENTGROUPS   0x05
+#endif
+#ifndef configEVR_LEVEL_HEAP
+#define configEVR_LEVEL_HEAP          0x05
+#endif
+#ifndef configEVR_LEVEL_STREAMBUFFER
+#define configEVR_LEVEL_STREAMBUFFER  0x05
+#endif
+
+/* Event Recorder level mask for event filter set during initialization */
+#ifndef EVR_INIT_RECORDING
+#define EVR_INIT_RECORDING            0x01
+#endif
+
+/* Start Event Recorder during initialization (1-start, 0-stop) */
+#ifndef EVR_INIT_START
+#define EVR_INIT_START                1
+#endif
+
+/* Verify configuration */
+#if ((configEVR_LEVEL_TASKS & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_TASKS"
+#endif
+#if ((configEVR_LEVEL_QUEUE & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_QUEUE."
+#endif
+#if ((configEVR_LEVEL_TIMERS & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_TIMERS."
+#endif
+#if ((configEVR_LEVEL_EVENTGROUPS & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_EVENTGROUPS."
+#endif
+#if ((configEVR_LEVEL_HEAP & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_HEAP."
+#endif
+#if ((configEVR_LEVEL_STREAMBUFFER & (~0x0F)) != 0)
+  #error "FreeRTOSConfig.h: invalid bitmask value - configEVR_LEVEL_STREAMBUFFER."
+#endif
+
+#endif /* !defined(EVR_FREERTOS_DISABLE) */
+
 /* Event IDs for "FreeRTOS Tasks" */
+#define EvtFreeRTOSTasks_TaskTrackingReset                  EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0xFFU)
 #define EvtFreeRTOSTasks_TaskCreate                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x00U)
 #define EvtFreeRTOSTasks_TaskCreateFailed                   EventID(EventLevelError,  EvtFreeRTOSTasksNo, 0x01U)
 #define EvtFreeRTOSTasks_TaskDelete                         EventID(EventLevelOp,     EvtFreeRTOSTasksNo, 0x02U)
@@ -139,8 +196,38 @@
 #define EvtFreeRTOSStreamBuf_StreamBufferReceiveFailed      EventID(EventLevelError,  EvtFreeRTOSStreamBufNo, 0x0BU)
 #define EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr     EventID(EventLevelOp,     EvtFreeRTOSStreamBufNo, 0x0CU)
 
-#endif /* RTE_Compiler_EventRecorder */
+/* Event Recorder initialization and level filter setup */
+void EvrFreeRTOSSetup (uint32_t reset) {
+#if !defined(EVR_FREERTOS_DISABLE)
+  static uint8_t init = 0U;
 
+  if (reset != 0U) {
+    init = 0U;
+  }
+
+  if (init == 0U) {
+    init = 1U;
+    #if (configEVR_INITIALIZE != 0)
+      EventRecorderInitialize(EVR_INIT_RECORDING, EVR_INIT_START);
+    #endif
+
+    #if (configEVR_SETUP_LEVEL != 0)
+      EventRecorderEnable(configEVR_LEVEL_TASKS,        EvtFreeRTOSTasksNo,       EvtFreeRTOSTasksNo);
+      EventRecorderEnable(configEVR_LEVEL_QUEUE,        EvtFreeRTOSQueueNo,       EvtFreeRTOSQueueNo);
+      EventRecorderEnable(configEVR_LEVEL_TIMERS,       EvtFreeRTOSTimersNo,      EvtFreeRTOSTimersNo);
+      EventRecorderEnable(configEVR_LEVEL_EVENTGROUPS,  EvtFreeRTOSEventGroupsNo, EvtFreeRTOSEventGroupsNo);
+      EventRecorderEnable(configEVR_LEVEL_HEAP,         EvtFreeRTOSHeapNo,        EvtFreeRTOSHeapNo);
+      EventRecorderEnable(configEVR_LEVEL_STREAMBUFFER, EvtFreeRTOSStreamBufNo,   EvtFreeRTOSStreamBufNo);
+    #endif
+
+    EventRecord2(EvtFreeRTOSTasks_TaskTrackingReset, 0U, 0U);
+  }
+#else
+  (void)reset;
+#endif
+}
+
+#endif /* RTE_Compiler_EventRecorder */
 
 /* Tasks */
 
@@ -884,7 +971,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer) 
 #if defined(RTE_Compiler_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateFailed, (uint32_t)uxIsMessageBuffer, 0U);
 #else
-  (void)pxStreamBuffer;
+  (void)uxIsMessageBuffer;
 #endif
 }
 #endif

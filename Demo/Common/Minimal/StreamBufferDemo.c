@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -39,6 +39,9 @@
 
 /* The number of bytes of storage in the stream buffers used in this test. */
 #define sbSTREAM_BUFFER_LENGTH_BYTES	( ( size_t ) 30 )
+
+/* Stream buffer length one. */
+#define sbSTREAM_BUFFER_LENGTH_ONE		( ( size_t ) 1 )
 
 /* Start and end ASCII characters used in data sent to the buffers. */
 #define sbASCII_SPACE					32
@@ -91,6 +94,10 @@ static void prvEchoServer( void *pvParameters );
  */
 static void prvNonBlockingReceiverTask( void *pvParameters );
 static void prvNonBlockingSenderTask( void *pvParameters );
+
+/* Performs an assert() like check in a way that won't get removed when
+performing a code coverage analysis. */
+static void prvCheckExpectedState( BaseType_t xState );
 
 /*
  * A task that creates a stream buffer with a specific trigger level, then
@@ -151,6 +158,10 @@ accidentally read out of the buffer. */
 static const char *pc55ByteString = "One two three four five six seven eight nine ten eleven";
 static const char *pc54ByteString = "01234567891abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQ";
 
+/* Used to log the status of the tests contained within this file for reporting
+to a monitoring task ('check' task). */
+static BaseType_t xErrorStatus = pdPASS;
+
 /*-----------------------------------------------------------*/
 
 void vStartStreamBufferTasks( void )
@@ -188,6 +199,16 @@ StreamBufferHandle_t xStreamBuffer;
 }
 /*-----------------------------------------------------------*/
 
+static void prvCheckExpectedState( BaseType_t xState )
+{
+	configASSERT( xState );
+	if( xState == pdFAIL )
+	{
+		xErrorStatus = pdFAIL;
+	}
+}
+/*-----------------------------------------------------------*/
+
 static void prvSingleTaskTests( StreamBufferHandle_t xStreamBuffer )
 {
 size_t xReturned, xItem, xExpectedSpace;
@@ -213,15 +234,15 @@ UBaseType_t uxOriginalPriority;
 	/* Nothing has been added or removed yet, so expect the free space to be
 	exactly as created. */
 	xExpectedSpace = xStreamBufferSpacesAvailable( xStreamBuffer );
-	configASSERT( xExpectedSpace == sbSTREAM_BUFFER_LENGTH_BYTES );
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xExpectedSpace == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
 
 
 	/* The buffer is 30 bytes long.  6 5 byte messages should fit before the
 	buffer is completely full. */
 	for( xItem = 0; xItem < xMax6ByteMessages; xItem++ )
 	{
-		configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
+		prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
 
 		/* Generate recognisable data to write to the buffer.  This is just
 		ascii characters that shows which loop iteration the data was written
@@ -235,27 +256,23 @@ UBaseType_t uxOriginalPriority;
 			xReturned = xStreamBufferSendFromISR( xStreamBuffer, ( void * ) pucData, x6ByteLength, NULL );
 		}
 		taskEXIT_CRITICAL();
-		configASSERT( xReturned == x6ByteLength );
-		( void ) xReturned; /* In case configASSERT() is not defined. */
+		prvCheckExpectedState( xReturned == x6ByteLength );
 
 		/* The space in the buffer will have reduced by the amount of user data
 		written into the buffer. */
 		xExpectedSpace -= x6ByteLength;
 		xReturned = xStreamBufferSpacesAvailable( xStreamBuffer );
-		configASSERT( xReturned == xExpectedSpace );
-		( void ) xReturned; /* In case configASSERT() is not defined. */
+		prvCheckExpectedState( xReturned == xExpectedSpace );
 		xReturned = xStreamBufferBytesAvailable( xStreamBuffer );
 		/* +1 as it is zero indexed. */
-		configASSERT( xReturned == ( ( xItem + 1 ) * x6ByteLength ) );
-		( void ) xReturned; /* In case configASSERT() is not defined. */
+		prvCheckExpectedState( xReturned == ( ( xItem + 1 ) * x6ByteLength ) );
 	}
 
 	/* Now the buffer should be full, and attempting to add anything will should
 	fail. */
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
 	xReturned = xStreamBufferSend( xStreamBuffer, ( void * ) pucData, sizeof( pucData[ 0 ] ), sbDONT_BLOCK );
-	configASSERT( xReturned == 0 );
-	( void ) xReturned; /* In case configASSERT() is not defined. */
+	prvCheckExpectedState( xReturned == 0 );
 
 	/* Adding with a timeout should also fail after the appropriate time.  The
 	priority is temporarily boosted in this part of the test to keep the
@@ -266,12 +283,9 @@ UBaseType_t uxOriginalPriority;
 	xReturned = xStreamBufferSend( xStreamBuffer, ( void * ) pucData, sizeof( pucData[ 0 ] ), xBlockTime );
 	xTimeAfterCall = xTaskGetTickCount();
 	vTaskPrioritySet( NULL, uxOriginalPriority );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) >= xBlockTime );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) < ( xBlockTime + xAllowableMargin ) );
-	configASSERT( xReturned == 0 ); /* In case configASSERT() is not defined. */
-	( void ) xTimeAfterCall;
-	( void ) xTimeBeforeCall;
-
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) >= xBlockTime );
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) < ( xBlockTime + xAllowableMargin ) );
+	prvCheckExpectedState( xReturned == 0 );
 
 	/* The buffer is now full of data in the form "000000", "111111", etc.  Make
 	sure the data is read out as expected. */
@@ -290,24 +304,24 @@ UBaseType_t uxOriginalPriority;
 			xReturned = xStreamBufferReceiveFromISR( xStreamBuffer, ( void * ) pucReadData, x6ByteLength, NULL );
 		}
 		taskEXIT_CRITICAL();
-		configASSERT( xReturned == x6ByteLength );
+		prvCheckExpectedState( xReturned == x6ByteLength );
 
 		/* Does the data read out match that expected? */
-		configASSERT( memcmp( ( void * ) pucData, ( void * ) pucReadData, x6ByteLength ) == 0 );
+		prvCheckExpectedState( memcmp( ( void * ) pucData, ( void * ) pucReadData, x6ByteLength ) == 0 );
 
 		/* The space in the buffer will have increased by the amount of user
 		data removed from the buffer. */
 		xExpectedSpace += x6ByteLength;
 		xReturned = xStreamBufferSpacesAvailable( xStreamBuffer );
-		configASSERT( xReturned == xExpectedSpace );
+		prvCheckExpectedState( xReturned == xExpectedSpace );
 		xReturned = xStreamBufferBytesAvailable( xStreamBuffer );
-		configASSERT( xReturned == ( sbSTREAM_BUFFER_LENGTH_BYTES - xExpectedSpace ) );
+		prvCheckExpectedState( xReturned == ( sbSTREAM_BUFFER_LENGTH_BYTES - xExpectedSpace ) );
 	}
 
 	/* The buffer should be empty again. */
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
 	xExpectedSpace = xStreamBufferSpacesAvailable( xStreamBuffer );
-	configASSERT( xExpectedSpace == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( xExpectedSpace == sbSTREAM_BUFFER_LENGTH_BYTES );
 
 	/* Reading with a timeout should also fail after the appropriate time.  The
 	priority is temporarily boosted in this part of the test to keep the
@@ -317,9 +331,9 @@ UBaseType_t uxOriginalPriority;
 	xReturned = xStreamBufferReceive( xStreamBuffer, ( void * ) pucReadData, x6ByteLength, xBlockTime );
 	xTimeAfterCall = xTaskGetTickCount();
 	vTaskPrioritySet( NULL, uxOriginalPriority );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) >= xBlockTime );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) < ( xBlockTime + xAllowableMargin ) );
-	configASSERT( xReturned == 0 );
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) >= xBlockTime );
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) < ( xBlockTime + xAllowableMargin ) );
+	prvCheckExpectedState( xReturned == 0 );
 
 
 	/* In the next loop 17 bytes are written to then read out on each
@@ -333,38 +347,38 @@ UBaseType_t uxOriginalPriority;
 		in. */
 		memset( ( void * ) pucData, ( ( int ) '0' ) + ( int ) xItem, x17ByteLength );
 		xReturned = xStreamBufferSend( xStreamBuffer, ( void * ) pucData, x17ByteLength, sbDONT_BLOCK );
-		configASSERT( xReturned == x17ByteLength );
+		prvCheckExpectedState( xReturned == x17ByteLength );
 
 		/* The space in the buffer will have reduced by the amount of user data
 		written into the buffer. */
 		xReturned = xStreamBufferSpacesAvailable( xStreamBuffer );
-		configASSERT( xReturned == xExpectedSpace );
+		prvCheckExpectedState( xReturned == xExpectedSpace );
 		xReturned = xStreamBufferBytesAvailable( xStreamBuffer );
-		configASSERT( xReturned == x17ByteLength );
-		configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
-		configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
+		prvCheckExpectedState( xReturned == x17ByteLength );
+		prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
+		prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
 
 		/* Read the 17 bytes out again. */
 		xReturned = xStreamBufferReceive( xStreamBuffer, ( void * ) pucReadData, x17ByteLength, sbDONT_BLOCK );
-		configASSERT( xReturned == x17ByteLength );
+		prvCheckExpectedState( xReturned == x17ByteLength );
 
 		/* Does the data read out match that expected? */
-		configASSERT( memcmp( ( void * ) pucData, ( void * ) pucReadData, x17ByteLength ) == 0 );
+		prvCheckExpectedState( memcmp( ( void * ) pucData, ( void * ) pucReadData, x17ByteLength ) == 0 );
 
 		/* Full buffer space available again. */
 		xReturned = xStreamBufferSpacesAvailable( xStreamBuffer );
-		configASSERT( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
+		prvCheckExpectedState( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
 		xReturned = xStreamBufferBytesAvailable( xStreamBuffer );
-		configASSERT( xReturned == 0 );
-		configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
-		configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
+		prvCheckExpectedState( xReturned == 0 );
+		prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
+		prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
 	}
 
 	/* Fill the buffer with one message, check it is full, then read it back
 	again and check the correct data is received. */
 	xStreamBufferSend( xStreamBuffer, ( const void * ) pc55ByteString, sbSTREAM_BUFFER_LENGTH_BYTES, sbDONT_BLOCK );
 	xStreamBufferReceive( xStreamBuffer, ( void * ) pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES, sbDONT_BLOCK );
-	configASSERT( memcmp( pc55ByteString, pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
+	prvCheckExpectedState( memcmp( pc55ByteString, pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
 
 	/* Fill the buffer one bytes at a time. */
 	for( xItem = 0; xItem < sbSTREAM_BUFFER_LENGTH_BYTES; xItem++ )
@@ -375,23 +389,23 @@ UBaseType_t uxOriginalPriority;
 	}
 
 	/* The buffer should now be full. */
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
 
 	/* Read the message out in one go, even though it was written in individual
 	bytes.  Try reading much more data than is actually available to ensure only
 	the available bytes are returned (otherwise this read will write outside of
 	the memory allocated anyway!). */
 	xReturned = xStreamBufferReceive( xStreamBuffer, pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES * ( size_t ) 2, sbRX_TX_BLOCK_TIME );
-	configASSERT( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
-	configASSERT( memcmp( ( const void * ) pc54ByteString, ( const void * ) pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
+	prvCheckExpectedState( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( memcmp( ( const void * ) pc54ByteString, ( const void * ) pucFullBuffer, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
 
 	/* Now do the opposite, write in one go and read out in single bytes. */
 	xReturned = xStreamBufferSend( xStreamBuffer, ( const void * ) pc55ByteString, sbSTREAM_BUFFER_LENGTH_BYTES, sbRX_TX_BLOCK_TIME );
-	configASSERT( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
-	configASSERT( xStreamBufferBytesAvailable( xStreamBuffer ) == sbSTREAM_BUFFER_LENGTH_BYTES );
-	configASSERT( xStreamBufferSpacesAvailable( xStreamBuffer ) == 0 );
+	prvCheckExpectedState( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
+	prvCheckExpectedState( xStreamBufferBytesAvailable( xStreamBuffer ) == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( xStreamBufferSpacesAvailable( xStreamBuffer ) == 0 );
 
 	/* Read from the buffer one byte at a time. */
 	for( xItem = 0; xItem < sbSTREAM_BUFFER_LENGTH_BYTES; xItem++ )
@@ -399,10 +413,10 @@ UBaseType_t uxOriginalPriority;
 		/* Block time is only for test coverage, the task should never actually
 		block here. */
 		xStreamBufferReceive( xStreamBuffer, ( void * ) pucFullBuffer, sizeof( char ), sbRX_TX_BLOCK_TIME );
-		configASSERT( pc55ByteString[ xItem ] == pucFullBuffer[ 0 ] );
+		prvCheckExpectedState( pc55ByteString[ xItem ] == pucFullBuffer[ 0 ] );
 	}
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
 
 	/* Try writing more bytes than there is space. */
 	vTaskPrioritySet( NULL, configMAX_PRIORITIES - 1 );
@@ -410,23 +424,23 @@ UBaseType_t uxOriginalPriority;
 	xReturned = xStreamBufferSend( xStreamBuffer, ( const void * ) pc54ByteString, sbSTREAM_BUFFER_LENGTH_BYTES * ( size_t ) 2, xMinimalBlockTime );
 	xTimeAfterCall = xTaskGetTickCount();
 	vTaskPrioritySet( NULL, uxOriginalPriority );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) >= xMinimalBlockTime );
-	configASSERT( ( xTimeAfterCall - xTimeBeforeCall ) < ( xMinimalBlockTime + xAllowableMargin ) );
-	configASSERT( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) >= xMinimalBlockTime );
+	prvCheckExpectedState( ( xTimeAfterCall - xTimeBeforeCall ) < ( xMinimalBlockTime + xAllowableMargin ) );
+	prvCheckExpectedState( xReturned == sbSTREAM_BUFFER_LENGTH_BYTES );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdFALSE );
 
 	/* No space now though. */
 	xReturned = xStreamBufferSend( xStreamBuffer, ( const void * ) pc54ByteString, sbSTREAM_BUFFER_LENGTH_BYTES * ( size_t ) 2, xMinimalBlockTime );
-	configASSERT( xReturned == 0 );
+	prvCheckExpectedState( xReturned == 0 );
 
 	/* Ensure data was written as expected even when there was an attempt to
 	write more than was available.  This also tries to read more bytes than are
 	available. */
 	xReturned = xStreamBufferReceive( xStreamBuffer, ( void * ) pucFullBuffer, xFullBufferSize, xMinimalBlockTime );
-	configASSERT( memcmp( ( const void * ) pucFullBuffer, ( const void * ) pc54ByteString, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
-	configASSERT( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
-	configASSERT( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
+	prvCheckExpectedState( memcmp( ( const void * ) pucFullBuffer, ( const void * ) pc54ByteString, sbSTREAM_BUFFER_LENGTH_BYTES ) == 0 );
+	prvCheckExpectedState( xStreamBufferIsFull( xStreamBuffer ) == pdFALSE );
+	prvCheckExpectedState( xStreamBufferIsEmpty( xStreamBuffer ) == pdTRUE );
 
 	/* Clean up with data in the buffer to ensure the tests that follow don't
 	see the data (the data should be discarded). */
@@ -458,12 +472,12 @@ const size_t xStringLength = strlen( pc54ByteString );
 
 		/* Attempt to send right up to the end of the string. */
 		xBytesActuallySent = xStreamBufferSend( xStreamBuffer, ( const void * ) &( pc54ByteString[ xNextChar ] ), xBytesToSend, sbDONT_BLOCK );
-		configASSERT( xBytesActuallySent <= xBytesToSend );
+		prvCheckExpectedState( xBytesActuallySent <= xBytesToSend );
 
 		/* Move the index up the string to the next character to be sent,
 		wrapping if the end of the string has been reached. */
 		xNextChar += xBytesActuallySent;
-		configASSERT( xNextChar <= xStringLength );
+		prvCheckExpectedState( xNextChar <= xStringLength );
 
 		if( xNextChar == xStringLength )
 		{
@@ -565,7 +579,7 @@ BaseType_t xNonBlockingReceiveError = pdFALSE;
 
 		/* Make sure a change in priority does not inadvertently result in an
 		invalid array index. */
-		configASSERT( uxIndex < sbNUMBER_OF_ECHO_CLIENTS );
+		prvCheckExpectedState( uxIndex < sbNUMBER_OF_ECHO_CLIENTS );
 
 		/* Avoid compiler warnings about unused parameters. */
 		( void ) pvParameters;
@@ -600,13 +614,13 @@ BaseType_t xNonBlockingReceiveError = pdFALSE;
 			xBytesToSend = xStringLength - xNextChar;
 
 			/* Attempt to send right up to the end of the string. */
-			xBytesActuallySent = xStreamBufferSend( xStreamBuffer, ( void * ) &( pc55ByteString[ xNextChar ] ), xBytesToSend, xTicksToWait );
-			configASSERT( xBytesActuallySent <= xBytesToSend );
+			xBytesActuallySent = xStreamBufferSend( xStreamBuffer, ( const void * ) &( pc55ByteString[ xNextChar ] ), xBytesToSend, xTicksToWait );
+			prvCheckExpectedState( xBytesActuallySent <= xBytesToSend );
 
 			/* Move the index up the string to the next character to be sent,
 			wrapping if the end of the string has been reached. */
 			xNextChar += xBytesActuallySent;
-			configASSERT( xNextChar <= xStringLength );
+			prvCheckExpectedState( xNextChar <= xStringLength );
 
 			if( xNextChar == xStringLength )
 			{
@@ -630,6 +644,7 @@ BaseType_t xNonBlockingReceiveError = pdFALSE;
 			string, but no data is written into the buffer so any valid address
 			will do. */
 			xTempStreamBuffer = xStreamBufferCreateStatic( sizeof( ucTempBuffer ), sbTRIGGER_LEVEL_1, ucTempBuffer, &xStaticStreamBuffer );
+			xStreamBufferReset( xTempStreamBuffer );
 			vStreamBufferDelete( xTempStreamBuffer );
 		}
 	}
@@ -641,7 +656,7 @@ BaseType_t xNonBlockingReceiveError = pdFALSE;
 
 	static void prvReceiverTask( void *pvParameters )
 	{
-	StreamBufferHandle_t * const pxStreamBuffer = ( StreamBufferHandle_t * ) pvParameters;
+	StreamBufferHandle_t const pxStreamBuffer = ( StreamBufferHandle_t ) pvParameters;
 	char cRxString[ 12 ]; /* Large enough to hold a 32-bit number in ASCII. */
 	const TickType_t xTicksToWait = pdMS_TO_TICKS( 5UL );
 	const size_t xStringLength = strlen( pc55ByteString );
@@ -661,7 +676,7 @@ BaseType_t xNonBlockingReceiveError = pdFALSE;
 			} while( xReceivedLength == 0 );
 
 			/* Ensure the received string matches the expected string. */
-			configASSERT( memcmp( ( void * ) cRxString, ( void * ) &( pc55ByteString[ xNextChar ] ), xReceivedLength ) == 0 );
+			prvCheckExpectedState( memcmp( ( void * ) cRxString, ( const void * ) &( pc55ByteString[ xNextChar ] ), xReceivedLength ) == 0 );
 
 			/* Move the index into the string up to the end of the bytes
 			received so far - wrapping if the end of the string has been
@@ -743,7 +758,7 @@ EchoStreamBuffers_t *pxStreamBuffers = ( EchoStreamBuffers_t * ) pvParameters;
 		memset( pcStringReceived, 0x00, sbSTREAM_BUFFER_LENGTH_BYTES );
 		xStreamBufferReceive( pxStreamBuffers->xEchoServerBuffer, ( void * ) pcStringReceived, xSendLength, portMAX_DELAY );
 
-		configASSERT( strcmp( pcStringToSend, pcStringReceived ) == 0 );
+		prvCheckExpectedState( strcmp( pcStringToSend, pcStringReceived ) == 0 );
 
 		/* Maintain a count of the number of times this code executes so a
 		check task can determine if this task is still functioning as
@@ -756,6 +771,51 @@ EchoStreamBuffers_t *pxStreamBuffers = ( EchoStreamBuffers_t * ) pvParameters;
 		leaks. */
 		xTempStreamBuffer = xStreamBufferCreate( sbSTREAM_BUFFER_LENGTH_BYTES, sbTRIGGER_LEVEL_1 );
 		prvSingleTaskTests( xTempStreamBuffer );
+		vStreamBufferDelete( xTempStreamBuffer );
+
+		/* The following are tests for a stream buffer of size one. */
+		/* Create a buffer of size one. */
+		xTempStreamBuffer = xStreamBufferCreate( sbSTREAM_BUFFER_LENGTH_ONE, sbTRIGGER_LEVEL_1 );
+		/* Ensure that the buffer was created successfully. */
+		configASSERT( xTempStreamBuffer );
+
+		/* Send one byte to the buffer. */
+		ux = xStreamBufferSend( xTempStreamBuffer, ( void * ) pcStringToSend, ( size_t ) 1, sbDONT_BLOCK );
+		/* Ensure that the byte was sent successfully. */
+		configASSERT( ux == 1 );
+		/* Try sending another byte to the buffer. */
+		ux = xStreamBufferSend( xTempStreamBuffer, ( void * ) pcStringToSend, ( size_t ) 1, sbDONT_BLOCK );
+		/* Make sure that send failed as the buffer is full. */
+		configASSERT( ux == 0 );
+
+		/* Receive one byte from the buffer. */
+		memset( pcStringReceived, 0x00, sbSTREAM_BUFFER_LENGTH_BYTES );
+		ux = xStreamBufferReceive( xTempStreamBuffer, ( void * ) pcStringReceived, ( size_t ) 1, sbDONT_BLOCK );
+		/* Ensure that the receive was successful. */
+		configASSERT( ux == 1 );
+		/* Ensure that the correct data was received. */
+		configASSERT( pcStringToSend[ 0 ] == pcStringReceived[ 0 ] );
+		/* Try receiving another byte from the buffer. */
+		ux = xStreamBufferReceive( xTempStreamBuffer, ( void * ) pcStringReceived, ( size_t ) 1, sbDONT_BLOCK );
+		/* Ensure that the receive failed as the buffer is empty. */
+		configASSERT( ux == 0 );
+
+		/* Try sending two bytes to the buffer. Since the size of the
+		 * buffer is one, we must not be able to send more than one. */
+		ux = xStreamBufferSend( xTempStreamBuffer, ( void * ) pcStringToSend, ( size_t ) 2, sbDONT_BLOCK );
+		/* Ensure that only one byte was sent. */
+		configASSERT( ux == 1 );
+
+		/* Try receiving two bytes from the buffer. Since the size of the
+		 * buffer is one, we must not be able to get more than one. */
+		memset( pcStringReceived, 0x00, sbSTREAM_BUFFER_LENGTH_BYTES );
+		ux = xStreamBufferReceive( xTempStreamBuffer, ( void * ) pcStringReceived, ( size_t ) 2, sbDONT_BLOCK );
+		/* Ensure that only one byte was received. */
+		configASSERT( ux == 1 );
+		/* Ensure that the correct data was received. */
+		configASSERT( pcStringToSend[ 0 ] == pcStringReceived[ 0 ] );
+
+		/* Delete the buffer. */
 		vStreamBufferDelete( xTempStreamBuffer );
 	}
 }
@@ -787,9 +847,8 @@ const TickType_t xTicksToBlock = pdMS_TO_TICKS( 350UL );
 	/* Don't expect to receive anything yet! */
 	xTimeOnEntering = xTaskGetTickCount();
 	xReceivedLength = xStreamBufferReceive( xStreamBuffers.xEchoClientBuffer, ( void * ) pcReceivedString, sbSTREAM_BUFFER_LENGTH_BYTES, xTicksToBlock );
-	configASSERT( ( xTaskGetTickCount() - xTimeOnEntering ) >= xTicksToBlock );
-	configASSERT( xReceivedLength == 0 );
-	( void ) xTimeOnEntering;
+	prvCheckExpectedState( ( xTaskGetTickCount() - xTimeOnEntering ) >= xTicksToBlock );
+	prvCheckExpectedState( xReceivedLength == 0 );
 
 	/* Now the stream buffers have been created the echo client task can be
 	created.  If this server task has the higher priority then the client task
@@ -812,10 +871,10 @@ const TickType_t xTicksToBlock = pdMS_TO_TICKS( 350UL );
 		memset( pcReceivedString, 0x00, sbSTREAM_BUFFER_LENGTH_BYTES );
 
 		/* Has any data been sent by the client? */
-		xReceivedLength = xStreamBufferReceive( xStreamBuffers.xEchoClientBuffer, ( void * ) pcReceivedString, sbSTREAM_BUFFER_LENGTH_BYTES, xTicksToBlock );
+		xReceivedLength = xStreamBufferReceive( xStreamBuffers.xEchoClientBuffer, ( void * ) pcReceivedString, sbSTREAM_BUFFER_LENGTH_BYTES, portMAX_DELAY );
 
-		/* Should always receive data as a delay was used. */
-		configASSERT( xReceivedLength > 0 );
+		/* Should always receive data as max delay was used. */
+		prvCheckExpectedState( xReceivedLength > 0 );
 
 		/* Echo the received data back to the client. */
 		xStreamBufferSend( xStreamBuffers.xEchoServerBuffer, ( void * ) pcReceivedString, xReceivedLength, portMAX_DELAY );
@@ -946,13 +1005,13 @@ BaseType_t xAreStreamBufferTasksStillRunning( void )
 static uint32_t ulLastEchoLoopCounters[ sbNUMBER_OF_ECHO_CLIENTS ] = { 0 };
 static uint32_t ulLastNonBlockingRxCounter = 0;
 static uint32_t ulLastInterruptTriggerCounter = 0;
-BaseType_t xReturn = pdPASS, x;
+BaseType_t x;
 
 	for( x = 0; x < sbNUMBER_OF_ECHO_CLIENTS; x++ )
 	{
 		if( ulLastEchoLoopCounters[ x ] == ulEchoLoopCounters[ x ] )
 		{
-			xReturn = pdFAIL;
+			xErrorStatus = pdFAIL;
 		}
 		else
 		{
@@ -962,7 +1021,7 @@ BaseType_t xReturn = pdPASS, x;
 
 	if( ulNonBlockingRxCounter == ulLastNonBlockingRxCounter )
 	{
-		xReturn = pdFAIL;
+		xErrorStatus = pdFAIL;
 	}
 	else
 	{
@@ -971,7 +1030,7 @@ BaseType_t xReturn = pdPASS, x;
 
 	if( ulLastInterruptTriggerCounter == ulInterruptTriggerCounter )
 	{
-		xReturn = pdFAIL;
+		xErrorStatus = pdFAIL;
 	}
 	else
 	{
@@ -986,7 +1045,7 @@ BaseType_t xReturn = pdPASS, x;
 		{
 			if( ulLastSenderLoopCounters[ x ] == ulSenderLoopCounters[ x ] )
 			{
-				xReturn = pdFAIL;
+				xErrorStatus = pdFAIL;
 			}
 			else
 			{
@@ -996,7 +1055,7 @@ BaseType_t xReturn = pdPASS, x;
 	}
 	#endif /* configSUPPORT_STATIC_ALLOCATION */
 
-	return xReturn;
+	return xErrorStatus;
 }
 /*-----------------------------------------------------------*/
 

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.2.0
+ * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -85,6 +85,10 @@ be overridden by a definition in FreeRTOSConfig.h. */
 #define recmuNO_DELAY					( ( TickType_t ) 0 )
 #define recmu15ms_DELAY					( pdMS_TO_TICKS( 15 ) )
 
+#ifndef recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE
+	#define recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE configMINIMAL_STACK_SIZE
+#endif
+
 /* The three tasks as described at the top of this file. */
 static void prvRecursiveMutexControllingTask( void *pvParameters );
 static void prvRecursiveMutexBlockingTask( void *pvParameters );
@@ -119,9 +123,9 @@ void vStartRecursiveMutexTasks( void )
 		defined to be less than 1. */
 		vQueueAddToRegistry( ( QueueHandle_t ) xMutex, "Recursive_Mutex" );
 
-		xTaskCreate( prvRecursiveMutexControllingTask, "Rec1", configMINIMAL_STACK_SIZE, NULL, recmuCONTROLLING_TASK_PRIORITY, &xControllingTaskHandle );
-		xTaskCreate( prvRecursiveMutexBlockingTask, "Rec2", configMINIMAL_STACK_SIZE, NULL, recmuBLOCKING_TASK_PRIORITY, &xBlockingTaskHandle );
-		xTaskCreate( prvRecursiveMutexPollingTask, "Rec3", configMINIMAL_STACK_SIZE, NULL, recmuPOLLING_TASK_PRIORITY, NULL );
+		xTaskCreate( prvRecursiveMutexControllingTask, "Rec1", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuCONTROLLING_TASK_PRIORITY, &xControllingTaskHandle );
+		xTaskCreate( prvRecursiveMutexBlockingTask, "Rec2", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuBLOCKING_TASK_PRIORITY, &xBlockingTaskHandle );
+		xTaskCreate( prvRecursiveMutexPollingTask, "Rec3", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuPOLLING_TASK_PRIORITY, NULL );
 	}
 }
 /*-----------------------------------------------------------*/

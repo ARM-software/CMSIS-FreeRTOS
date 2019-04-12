@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,13 +17,12 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.0.1
+ * $Revision:   V10.2.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
  *
  * --------------------------------------------------------------------------*/
-
 
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
@@ -37,15 +36,15 @@
  * THESE PARAMETERS ARE DESCRIBED WITHIN THE 'CONFIGURATION' SECTION OF THE
  * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE.
  *
- * See http://www.freertos.org/a00110.html.
+ * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 #include <stdint.h>
 
 #include "RTE_Components.h"
 #include CMSIS_device_header
-
-#include "os_tick.h"
+#endif
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
@@ -131,6 +130,92 @@
 //  <i> Default: 0
 #define configQUEUE_REGISTRY_SIZE               0
 
+// <h>Event Recorder configuration
+//  <i> Initialize and setup Event Recorder level filtering.
+//  <i> Settings have no effect when Event Recorder is not present.
+
+//  <q>Initialize Event Recorder
+//  <i> Initialize Event Recorder before FreeRTOS kernel start.
+//  <i> Default: 1
+#define configEVR_INITIALIZE                    1
+
+//  <e>Setup recording level filter
+//  <i> Enable configuration of FreeRTOS events recording level
+//  <i> Default: 1
+#define configEVR_SETUP_LEVEL                   1
+
+//  <o>Tasks functions
+//  <i> Define event recording level bitmask for events generated from Tasks functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_TASKS                   0x05
+
+//  <o>Queue functions
+//  <i> Define event recording level bitmask for events generated from Queue functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_QUEUE                   0x05
+
+//  <o>Timer functions
+//  <i> Define event recording level bitmask for events generated from Timer functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_TIMERS                  0x05
+
+//  <o>Event Groups functions
+//  <i> Define event recording level bitmask for events generated from Event Groups functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_EVENTGROUPS             0x05
+
+//  <o>Heap functions
+//  <i> Define event recording level bitmask for events generated from Heap functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_HEAP                    0x05
+
+//  <o>Stream Buffer functions
+//  <i> Define event recording level bitmask for events generated from Stream Buffer functions.
+//  <i> Default: 0x05
+//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
+#define configEVR_LEVEL_STREAMBUFFER            0x05
+//  </e>
+// </h>
+
+// <h> Port Specific Features
+// <i> Enable and configure port specific features.
+// <i> Check FreeRTOS documentation for definitions that apply for the used port.
+
+//  <q>Use Floating Point Unit
+//  <i> Using Floating Point Unit (FPU) affects context handling.
+//  <i> Enable FPU when application uses floating point operations.
+//  <i> Default: 1
+#define configENABLE_FPU                      1
+
+//  <q>Use Memory Protection Unit
+//  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
+//  <i> This setting is only releavant for MPU enabled ports.
+//  <i> Default: 0
+#define configENABLE_MPU                      0
+
+//  <q> Use TrustZone Secure Side Only
+//  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.
+//  <i> Enable this setting when FreeRTOS runs on the Secure side only.
+#define configRUN_FREERTOS_SECURE_ONLY        0
+
+//  <q>Use TrustZone Security Extension
+//  <i> Using TrustZone affects context handling.
+//  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
+//  <i> Default: 1
+#define configENABLE_TRUSTZONE                1
+
+//  <o>Minimal secure stack size [words] <0-65535>
+//  <i> Stack for idle task Secure side context in words.
+//  <i> This setting is only relevant when TrustZone extension is enabled.
+//  <i> Default: 128
+#define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
+// </h>
+
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
@@ -165,10 +250,15 @@
 #define INCLUDE_xTimerPendFunctionCall          1
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
-#define xPortPendSVHandler                    PendSV_Handler
-#define vPortSVCHandler                       SVC_Handler
+#define xPortPendSVHandler                      PendSV_Handler
+#define vPortSVCHandler                         SVC_Handler
 
+/* Ensure Cortex-M port compatibility. */
+#define SysTick_Handler                         xPortSysTickHandler
+
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 /* Include debug event definitions */
 #include "freertos_evr.h"
+#endif
 
 #endif /* FREERTOS_CONFIG_H */
