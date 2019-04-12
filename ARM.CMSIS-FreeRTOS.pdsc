@@ -606,7 +606,7 @@
       </files>
     </component>
 
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.2.0" condition="FreeRTOS">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.2.0">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/Documentation/FreeRTOS_Reference_Manual_V10.0.0.pdf</doc>
 
