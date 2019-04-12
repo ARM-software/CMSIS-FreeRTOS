@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.2.0-RC1">
+    <release version="10.2.0-RC2">
       FreeRTOS 10.2.0
       Maintenance for CMSIS 5.5.1:
       - Updated to CMSIS API 2.1.3
@@ -602,7 +602,7 @@
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
 
-        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c"/>
+        <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
       </files>
     </component>
 
@@ -859,7 +859,7 @@
       </component>
 
       <component Cgroup="Core" Cvariant="Cortex-A" isDefaultVariant="true" condition="FreeRTOS CA">
-        <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M</description>
+        <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-A</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
         </RTE_Components_h>
