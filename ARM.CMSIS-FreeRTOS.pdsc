@@ -8,9 +8,9 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.2.0">
+    <release version="10.2.0" date="2019-04-12">
       FreeRTOS 10.2.0
-      Maintenance for CMSIS 5.5.1:
+      Maintenance for CMSIS 5.4.0:
       - Updated to CMSIS API 2.1.3
       - Updated Arm standard C library interface
       - Added configuration for the Event Recorder
