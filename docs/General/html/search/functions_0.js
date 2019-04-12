@@ -38,6 +38,7 @@ var searchData=
   ['evrfreertosqueue_5fqueuesendfromisrfailed',['EvrFreeRTOSQueue_QueueSendFromIsrFailed',['../group__freertos__evr__queue.html#gabcbc7ca489384b8fc4cf6d88a0819960',1,'freertos_evr.h']]],
   ['evrfreertosqueue_5ftakemutexrecursive',['EvrFreeRTOSQueue_TakeMutexRecursive',['../group__freertos__evr__queue.html#gae523dab25c47359f13267aa5f1496a6e',1,'freertos_evr.h']]],
   ['evrfreertosqueue_5ftakemutexrecursivefailed',['EvrFreeRTOSQueue_TakeMutexRecursiveFailed',['../group__freertos__evr__queue.html#gaf0e44408b746e8fa9c2ae43494717eb0',1,'freertos_evr.h']]],
+  ['evrfreertossetup',['EvrFreeRTOSSetup',['../group__freertos__setup.html#ga943f40b05c79f40c73d67b1adcbe3dbe',1,'freertos_evr.h']]],
   ['evrfreertosstreambuf_5fstreambufferblockingonreceive',['EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive',['../group__freertos__evr__streambuf.html#ga268fb70a2761313c4d402c696c09a563',1,'freertos_evr.h']]],
   ['evrfreertosstreambuf_5fstreambufferblockingonsend',['EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend',['../group__freertos__evr__streambuf.html#ga12f2a913902bcea879c6705cef7d3f2f',1,'freertos_evr.h']]],
   ['evrfreertosstreambuf_5fstreambuffercreate',['EvrFreeRTOSStreamBuf_StreamBufferCreate',['../group__freertos__evr__streambuf.html#gaeba2d793e2e75861beed404403c9bfab',1,'freertos_evr.h']]],

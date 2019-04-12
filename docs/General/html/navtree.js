@@ -14,7 +14,8 @@ var NAVTREE =
       [ "Create a CMSIS-FreeRTOS project", "cre_freertos_proj.html#cmsis_freertos", [
         [ "Configure CMSIS-FreeRTOS", "cre_freertos_proj.html#cmsis_freertos_config", null ],
         [ "Add Event Recorder Visibility", "cre_freertos_proj.html#cmsis_freertos_er", null ]
-      ] ]
+      ] ],
+      [ "Configure Event Recorder", "cre_freertos_proj.html#cmsis_freertos_evr_config", null ]
     ] ],
     [ "Example projects", "examples.html", [
       [ "Blinky example using FreeRTOS natively", "examples.html#examples_native", null ],
