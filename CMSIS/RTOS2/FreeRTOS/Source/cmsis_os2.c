@@ -522,7 +522,7 @@ uint32_t osThreadGetStackSpace (osThreadId_t thread_id) {
   if (IS_IRQ() || (hTask == NULL)) {
     sz = 0U;
   } else {
-    sz = (uint32_t)uxTaskGetStackHighWaterMark (hTask);
+    sz = (uint32_t)(uxTaskGetStackHighWaterMark(hTask) * sizeof(StackType_t));
   }
 
   return (sz);

@@ -57,6 +57,14 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.2.1</td>
+      <td>
+        <ul>
+          <li>Corrected osThreadGetStackSpace return value (bytes instead of words)</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
       <td>10.2.0</td>
       <td>
         <p><b>FreeRTOS V10.2.0</b></p>
