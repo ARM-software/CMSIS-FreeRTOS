@@ -60,6 +60,7 @@ File/Directory             |Content
       <td>10.2.1</td>
       <td>
         <ul>
+          <li>Updated to FreeRTOS V10.2.1</li>
           <li>Corrected osThreadGetStackSpace return value (bytes instead of words)</li>
         </ul>
       </td>
