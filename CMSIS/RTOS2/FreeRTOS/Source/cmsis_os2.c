@@ -1181,7 +1181,7 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
     rflags = xEventGroupWaitBits (hEventGroup, (EventBits_t)flags, exit_clr, wait_all, (TickType_t)timeout);
 
     if (options & osFlagsWaitAll) {
-      if (flags != rflags) {
+      if ((flags & rflags) != flags) {
         if (timeout > 0U) {
           rflags = (uint32_t)osErrorTimeout;
         } else {
