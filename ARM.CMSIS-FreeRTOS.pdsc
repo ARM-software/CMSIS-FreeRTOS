@@ -8,6 +8,9 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.2.1-dev2">
+      - Added implementation of the osMemoryPool functions using FreeRTOS
+    </release>
     <release version="10.2.1-dev1">
       - Updated to FreeRTOS 10.2.1
     </release>  
@@ -659,6 +662,7 @@
       </RTE_Components_h>
       <files>
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
@@ -676,6 +680,7 @@
       </RTE_Components_h>
       <files>
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
