@@ -10,6 +10,7 @@
   <releases>
     <release version="10.2.1-dev2">
       - Added implementation of the osMemoryPool functions using FreeRTOS
+      - Removed Cortex-A example (will be available in separate pack)
     </release>
     <release version="10.2.1-dev1">
       - Updated to FreeRTOS 10.2.1
@@ -1206,34 +1207,6 @@
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
         <environment name="uv" load="Blinky.uvprojx"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC5)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 5)</description>
-      <board name="Fixed Virtual Platform" vendor="ARM"/>
-      <project>
-        <environment name="ds5" load=".project"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC6)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9_AC6">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 6)</description>
-      <board name="Fixed Virtual Platform" vendor="ARM"/>
-      <project>
-        <environment name="ds5" load=".project"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
