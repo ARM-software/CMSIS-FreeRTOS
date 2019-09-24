@@ -9,6 +9,7 @@
 
   <releases>
     <release version="10.2.1-dev2">
+      - Moved device and environment specifics into separate header
       - Added implementation of the osMemoryPool functions using FreeRTOS
       - Removed Cortex-A example (will be available in separate pack)
     </release>

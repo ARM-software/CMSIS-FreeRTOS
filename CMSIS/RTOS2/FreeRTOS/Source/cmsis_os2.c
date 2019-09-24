@@ -22,18 +22,17 @@
 
 #include <string.h>
 
-#include "RTE_Components.h"             // Component selection
-
 #include "cmsis_os2.h"                  // ::CMSIS:RTOS2
-#include "cmsis_compiler.h"
-#include "os_tick.h"
+#include "cmsis_compiler.h"             // Compiler agnostic definitions
+#include "os_tick.h"                    // OS Tick API
 
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 
-#include "freertos_mpool.h"
+#include "freertos_mpool.h"             // osMemoryPool definitions
+#include "freertos_os2.h"               // Configuration check and setup
 
 /*---------------------------------------------------------------------------*/
 #ifndef __ARM_ARCH_6M__
@@ -112,7 +111,7 @@ static osKernelState_t KernelState = osKernelInactive;
   definition configHEAP_5_REGIONS as parameter. Overriding configHEAP_5_REGIONS
   is possible by defining it globally or in FreeRTOSConfig.h.
 */
-#if defined(RTE_RTOS_FreeRTOS_HEAP_5)
+#if defined(USE_FreeRTOS_HEAP_5)
 #if (configAPPLICATION_ALLOCATED_HEAP == 0)
   /*
     FreeRTOS heap is not defined by the application.
@@ -142,7 +141,7 @@ static osKernelState_t KernelState = osKernelInactive;
   */
   #define HEAP_5_REGION_SETUP   0
 #endif /* configAPPLICATION_ALLOCATED_HEAP */
-#endif /* RTE_RTOS_FreeRTOS_HEAP_5 */
+#endif /* USE_FreeRTOS_HEAP_5 */
 
 #if defined(SysTick)
 #undef SysTick_Handler
@@ -195,10 +194,10 @@ osStatus_t osKernelInitialize (void) {
   }
   else {
     if (KernelState == osKernelInactive) {
-      #if defined(RTE_Compiler_EventRecorder)
+      #if defined(USE_TRACE_EVENT_RECORDER)
         EvrFreeRTOSSetup(0U);
       #endif
-      #if defined(RTE_RTOS_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
+      #if defined(USE_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
         vPortDefineHeapRegions (configHEAP_5_REGIONS);
       #endif
       KernelState = osKernelReady;
@@ -618,7 +617,7 @@ osStatus_t osThreadResume (osThreadId_t thread_id) {
 }
 
 __NO_RETURN void osThreadExit (void) {
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   vTaskDelete (NULL);
 #endif
   for (;;);
@@ -627,7 +626,7 @@ __NO_RETURN void osThreadExit (void) {
 osStatus_t osThreadTerminate (osThreadId_t thread_id) {
   TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   eTaskState tstate;
 
   if (IS_IRQ()) {
@@ -1035,7 +1034,7 @@ uint32_t osTimerIsRunning (osTimerId_t timer_id) {
 osStatus_t osTimerDelete (osTimerId_t timer_id) {
   TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   TimerCallback_t *callb;
 
   if (IS_IRQ()) {
@@ -1216,7 +1215,7 @@ osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
   EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   osStatus_t stat;
 
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -1406,7 +1405,7 @@ osThreadId_t osMutexGetOwner (osMutexId_t mutex_id) {
 
 osStatus_t osMutexDelete (osMutexId_t mutex_id) {
   osStatus_t stat;
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   SemaphoreHandle_t hMutex;
 
   hMutex = (SemaphoreHandle_t)((uint32_t)mutex_id & ~1U);
@@ -1585,7 +1584,7 @@ osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
   SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   osStatus_t stat;
 
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
@@ -1834,7 +1833,7 @@ osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
   QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
 
-#ifndef RTE_RTOS_FreeRTOS_HEAP_1
+#ifndef USE_FreeRTOS_HEAP_1
   if (IS_IRQ()) {
     stat = osErrorISR;
   }
