@@ -16,7 +16,7 @@ Note: The *branch* develop of this GitHub repository reflects our current state 
 | Config                        | FreeRTOS configuration file       |
 | Demo                          | FreeRTOS demo projects            |
 | DoxyGen                       | Source of the documentation       |
-| License                       | FreeRTOS license text file        |
+| License                       | license text file                 |
 | Source                        | FreeRTOS source code              |
 | Utilities                     | Utility programs                  |
 
@@ -39,4 +39,4 @@ The file ./DoxyGen/How2Doc.txt describes the rules for creating API documentatio
 
 ## License
 
-CMSIS-FreeRTOS is licensed under the FreeRTOS license.
+The FreeRTOS kernel is released under the MIT open source license (see License/license.txt).
