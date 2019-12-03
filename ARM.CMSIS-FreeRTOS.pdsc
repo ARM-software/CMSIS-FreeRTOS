@@ -8,19 +8,13 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.2.1-dev3">
-      - Reworked component conditions
-    </release>
-    <release version="10.2.1-dev2">
-      - Moved device and environment specifics into separate header
-      - Added implementation of the osMemoryPool functions using FreeRTOS
-      - Removed Cortex-A example (will be available in separate pack)
-    </release>
-    <release version="10.2.1-dev1">
-      - Updated to FreeRTOS 10.2.1
-    </release>  
-    <release version="10.2.1-dev0">
-      - Corrected osThreadGetStackSpace return value (bytes instead of words)
+    <release version="10.3.0-rc0">
+      FreeRTOS 10.3.0
+      Maintenance for CMSIS 5.4.0:
+       - Added osMemoryPool functions using FreeRTOS
+       - Corrected osEventFlagsWait flag comparison when using osFlagsWaitAll
+       - Corrected osThreadGetStackSpace return value (bytes instead of words)
+       - Removed Cortex-A examples (available in device specific packs)
     </release>
     <release version="10.2.0" date="2019-04-12">
       FreeRTOS 10.2.0
@@ -80,18 +74,9 @@
       <require Tcompiler="IAR"/>
     </condition>
 
-    <condition id="ARMCC GCC">
-      <accept condition="ARMCC"/>
-      <accept condition="GCC"/>
-    </condition>
     <condition id="ARMCC6 GCC">
       <accept condition="ARMCC6"/>
       <accept condition="GCC"/>
-    </condition>
-    <condition id="ARMCC GCC IAR">
-      <accept condition="ARMCC"/>
-      <accept condition="GCC"/>
-      <accept condition="IAR"/>
     </condition>
     <condition id="ARMCC6 GCC IAR">
       <accept condition="ARMCC6"/>
@@ -265,12 +250,6 @@
       <require condition="ARMCC"/>
     </condition>
 
-    <condition id="CA9_DP_ARMCC">
-      <description>Cortex-A9 processor based device for the ARM Compiler 5</description>
-      <require condition="CA9_DP"/>
-      <require condition="ARMCC"/>
-    </condition>
-
     <!-- ARMCC6 compiler -->
     <condition id="CM0_ARMCC6">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
@@ -316,11 +295,6 @@
       <require condition="CM23"/>
       <require condition="ARMCC6"/>
     </condition>
-    <condition id="CM23_NoTZ_ARMCC6">
-      <description>Cortex-M23 processor based device without TrustZone for the ARM Compiler 6</description>
-      <require condition="CM23_NoTZ"/>
-      <require condition="ARMCC6"/>
-    </condition>
     <condition id="CM23_TZ_ARMCC6">
       <description>Cortex-M23 processor based device with TrustZone for the ARM Compiler 6</description>
       <require condition="CM23_TZ"/>
@@ -332,20 +306,9 @@
       <require condition="CM33"/>
       <require condition="ARMCC6"/>
     </condition>
-    <condition id="CM33_NoTZ_ARMCC6">
-      <description>Cortex-M33 processor based device without TrustZone for the ARM Compiler 6</description>
-      <require condition="CM33_NoTZ"/>
-      <require condition="ARMCC6"/>
-    </condition>
     <condition id="CM33_TZ_ARMCC6">
       <description>Cortex-M33 processor based device with TrustZone for the ARM Compiler 6</description>
       <require condition="CM33_TZ"/>
-      <require condition="ARMCC6"/>
-    </condition>
-
-    <condition id="CA9_DP_ARMCC6">
-      <description>Cortex-A9 processor based device for the ARM Compiler 6</description>
-      <require condition="CA9_DP"/>
       <require condition="ARMCC6"/>
     </condition>
 
@@ -394,11 +357,6 @@
       <require condition="CM23"/>
       <require condition="GCC"/>
     </condition>
-    <condition id="CM23_NoTZ_GCC">
-      <description>Cortex-M23 processor based device without TrustZone for the GCC Compiler</description>
-      <require condition="CM23_NoTZ"/>
-      <require condition="GCC"/>
-    </condition>
     <condition id="CM23_TZ_GCC">
       <description>Cortex-M23 processor based device with TrustZone for the GCC Compiler</description>
       <require condition="CM23_TZ"/>
@@ -410,20 +368,9 @@
       <require condition="CM33"/>
       <require condition="GCC"/>
     </condition>
-    <condition id="CM33_NoTZ_GCC">
-      <description>Cortex-M33 processor based device without TrustZone for the GCC Compiler</description>
-      <require condition="CM33_NoTZ"/>
-      <require condition="GCC"/>
-    </condition>
     <condition id="CM33_TZ_GCC">
       <description>Cortex-M33 processor based device with TrustZone for the GCC Compiler</description>
       <require condition="CM33_TZ"/>
-      <require condition="GCC"/>
-    </condition>
-
-    <condition id="CA9_DP_GCC">
-      <description>Cortex-A9 processor based device for the GCC Compiler</description>
-      <require condition="CA9_DP"/>
       <require condition="GCC"/>
     </condition>
 
@@ -472,11 +419,6 @@
       <require condition="CM23"/>
       <require condition="IAR"/>
     </condition>
-    <condition id="CM23_NoTZ_IAR">
-      <description>Cortex-M23 processor based device without TrustZone for the IAR Compiler</description>
-      <require condition="CM23_NoTZ"/>
-      <require condition="IAR"/>
-    </condition>
     <condition id="CM23_TZ_IAR">
       <description>Cortex-M23 processor based device with TrustZone for the IAR Compiler</description>
       <require condition="CM23_TZ"/>
@@ -488,20 +430,9 @@
       <require condition="CM33"/>
       <require condition="IAR"/>
     </condition>
-    <condition id="CM33_NoTZ_IAR">
-      <description>Cortex-M33 processor based device without TrustZone for the IAR Compiler</description>
-      <require condition="CM33_NoTZ"/>
-      <require condition="IAR"/>
-    </condition>
     <condition id="CM33_TZ_IAR">
       <description>Cortex-M33 processor based device with TrustZone for the IAR Compiler</description>
       <require condition="CM33_TZ"/>
-      <require condition="IAR"/>
-    </condition>
-
-    <condition id="CA9_DP_IAR">
-      <description>Cortex-A9 processor based device for the IAR Compiler</description>
-      <require condition="CA9_DP"/>
       <require condition="IAR"/>
     </condition>
 

@@ -57,11 +57,15 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
-      <td>10.2.1</td>
+      <td>10.3.0</td>
       <td>
+        <p><b>FreeRTOS V10.2.1</b></p>
+        <p>Maintenance release for CMSIS 5.6.0:
         <ul>
-          <li>Updated to FreeRTOS V10.2.1</li>
+          <li>Added osMemoryPool functions using FreeRTOS
+          <li>Corrected osEventFlagsWait flag comparison when using osFlagsWaitAll</li>
           <li>Corrected osThreadGetStackSpace return value (bytes instead of words)</li>
+          <li>Removed Cortex-A examples (available in device specific packs)
         </ul>
       </td>
     </tr>
@@ -410,7 +414,6 @@ The following list briefly describes the limitations and unsupported features of
 - Robust mutex objects are not supported (\c osMutexNew returns NULL when \c osMutexRobust attribute is specified).
 - \c osMutexGetName is not implemented and always returns NULL.
 - \c osSemaphoreGetName is not implemented and always returns NULL.
-- Memory Pool functions are not implemented and will always return with error.
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
 
@@ -547,15 +550,15 @@ Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobu
 <a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">Memory Pool</a>
 -----------
 Memory Pool functions are not implemented and will always return with error.
-   - \b osMemoryPoolAlloc: \token{not implemented}
-   - \b osMemoryPoolDelete: \token{not implemented}
-   - \b osMemoryPoolFree: \token{not implemented}
-   - \b osMemoryPoolGetBlockSize: \token{not implemented}
-   - \b osMemoryPoolGetCapacity: \token{not implemented}
-   - \b osMemoryPoolGetCount: \token{not implemented}
-   - \b osMemoryPoolGetName: \token{not implemented}
-   - \b osMemoryPoolGetSpace: \token{not implemented}
-   - \b osMemoryPoolNew: \token{not implemented}
+   - \b osMemoryPoolAlloc: supported
+   - \b osMemoryPoolDelete: supported
+   - \b osMemoryPoolFree: supported
+   - \b osMemoryPoolGetBlockSize: supported
+   - \b osMemoryPoolGetCapacity: supported
+   - \b osMemoryPoolGetCount: supported
+   - \b osMemoryPoolGetName: supported
+   - \b osMemoryPoolGetSpace: supported
+   - \b osMemoryPoolNew: supported
 
 <a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">Message Queue</a>
 -------------
