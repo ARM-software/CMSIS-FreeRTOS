@@ -8,6 +8,14 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.3.0" date="2019-12-04">
+      FreeRTOS 10.3.0
+      Maintenance for CMSIS 5.4.0:
+       - Added osMemoryPool functions using FreeRTOS
+       - Corrected osEventFlagsWait flag comparison when using osFlagsWaitAll
+       - Corrected osThreadGetStackSpace return value (bytes instead of words)
+       - Removed Cortex-A examples (available in device specific packs)
+    </release>
     <release version="10.2.0" date="2019-04-12">
       FreeRTOS 10.2.0
       Maintenance for CMSIS 5.4.0:
@@ -66,18 +74,9 @@
       <require Tcompiler="IAR"/>
     </condition>
 
-    <condition id="ARMCC GCC">
-      <accept condition="ARMCC"/>
-      <accept condition="GCC"/>
-    </condition>
     <condition id="ARMCC6 GCC">
       <accept condition="ARMCC6"/>
       <accept condition="GCC"/>
-    </condition>
-    <condition id="ARMCC GCC IAR">
-      <accept condition="ARMCC"/>
-      <accept condition="GCC"/>
-      <accept condition="IAR"/>
     </condition>
     <condition id="ARMCC6 GCC IAR">
       <accept condition="ARMCC6"/>
@@ -135,6 +134,23 @@
       <require Dcore="Cortex-M7" Dfpu="DP_FPU"/>
     </condition>
 
+    <condition id="CM23">
+      <description>Cortex-M23 processor based device</description>
+      <require Dcore="Cortex-M23"/>
+    </condition>
+
+    <condition id="CM23_NoTZ">
+      <description>Cortex-M23 processor based device without TrustZone</description>
+      <require condition="CM23"/>
+      <require Dtz="NO_TZ"/>
+    </condition>
+
+    <condition id="CM23_TZ">
+      <description>Cortex-M23 processor based device with TrustZone</description>
+      <require condition="CM23"/>
+      <require Dtz="TZ"/>
+    </condition>
+
     <condition id="CM33">
       <description>Cortex-M33 processor based device</description>
       <accept Dcore="Cortex-M33"/>
@@ -165,6 +181,7 @@
       <accept condition="CM4_FP"/>
       <accept condition="CM7"/>
       <accept condition="CM7_FP"/>
+      <accept condition="CM23"/>
       <accept condition="CM33"/>
     </condition>
 
@@ -180,6 +197,9 @@
 
     <condition id="CoreM_v8">
       <description>Cortex-M v8 processor based device</description>
+      <accept condition="CM23"/>
+      <accept condition="CM23_NoTZ"/>
+      <accept condition="CM23_TZ"/>
       <accept condition="CM33"/>
       <accept condition="CM33_NoTZ"/>
       <accept condition="CM33_TZ"/>
@@ -230,12 +250,6 @@
       <require condition="ARMCC"/>
     </condition>
 
-    <condition id="CA9_DP_ARMCC">
-      <description>Cortex-A9 processor based device for the ARM Compiler 5</description>
-      <require condition="CA9_DP"/>
-      <require condition="ARMCC"/>
-    </condition>
-
     <!-- ARMCC6 compiler -->
     <condition id="CM0_ARMCC6">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
@@ -276,25 +290,25 @@
       <require condition="ARMCC6"/>
     </condition>
 
+    <condition id="CM23_ARMCC6">
+      <description>Cortex-M23 processor based device for the ARM Compiler 6</description>
+      <require condition="CM23"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM23_TZ_ARMCC6">
+      <description>Cortex-M23 processor based device with TrustZone for the ARM Compiler 6</description>
+      <require condition="CM23_TZ"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
     <condition id="CM33_ARMCC6">
       <description>Cortex-M33 processor based device for the ARM Compiler 6</description>
       <require condition="CM33"/>
       <require condition="ARMCC6"/>
     </condition>
-    <condition id="CM33_NoTZ_ARMCC6">
-      <description>Cortex-M33 processor based device without TrustZone for the ARM Compiler 6</description>
-      <require condition="CM33_NoTZ"/>
-      <require condition="ARMCC6"/>
-    </condition>
     <condition id="CM33_TZ_ARMCC6">
       <description>Cortex-M33 processor based device with TrustZone for the ARM Compiler 6</description>
       <require condition="CM33_TZ"/>
-      <require condition="ARMCC6"/>
-    </condition>
-
-    <condition id="CA9_DP_ARMCC6">
-      <description>Cortex-A9 processor based device for the ARM Compiler 6</description>
-      <require condition="CA9_DP"/>
       <require condition="ARMCC6"/>
     </condition>
 
@@ -338,25 +352,25 @@
       <require condition="GCC"/>
     </condition>
 
+    <condition id="CM23_GCC">
+      <description>Cortex-M23 processor based device for the GCC Compiler</description>
+      <require condition="CM23"/>
+      <require condition="GCC"/>
+    </condition>
+    <condition id="CM23_TZ_GCC">
+      <description>Cortex-M23 processor based device with TrustZone for the GCC Compiler</description>
+      <require condition="CM23_TZ"/>
+      <require condition="GCC"/>
+    </condition>
+
     <condition id="CM33_GCC">
       <description>Cortex-M33 processor based device for the GCC Compiler</description>
       <require condition="CM33"/>
       <require condition="GCC"/>
     </condition>
-    <condition id="CM33_NoTZ_GCC">
-      <description>Cortex-M33 processor based device without TrustZone for the GCC Compiler</description>
-      <require condition="CM33_NoTZ"/>
-      <require condition="GCC"/>
-    </condition>
     <condition id="CM33_TZ_GCC">
       <description>Cortex-M33 processor based device with TrustZone for the GCC Compiler</description>
       <require condition="CM33_TZ"/>
-      <require condition="GCC"/>
-    </condition>
-
-    <condition id="CA9_DP_GCC">
-      <description>Cortex-A9 processor based device for the GCC Compiler</description>
-      <require condition="CA9_DP"/>
       <require condition="GCC"/>
     </condition>
 
@@ -400,14 +414,20 @@
       <require condition="IAR"/>
     </condition>
 
+    <condition id="CM23_IAR">
+      <description>Cortex-M23 processor based device for the IAR Compiler</description>
+      <require condition="CM23"/>
+      <require condition="IAR"/>
+    </condition>
+    <condition id="CM23_TZ_IAR">
+      <description>Cortex-M23 processor based device with TrustZone for the IAR Compiler</description>
+      <require condition="CM23_TZ"/>
+      <require condition="IAR"/>
+    </condition>
+
     <condition id="CM33_IAR">
       <description>Cortex-M33 processor based device for the IAR Compiler</description>
       <require condition="CM33"/>
-      <require condition="IAR"/>
-    </condition>
-    <condition id="CM33_NoTZ_IAR">
-      <description>Cortex-M33 processor based device without TrustZone for the IAR Compiler</description>
-      <require condition="CM33_NoTZ"/>
       <require condition="IAR"/>
     </condition>
     <condition id="CM33_TZ_IAR">
@@ -416,38 +436,41 @@
       <require condition="IAR"/>
     </condition>
 
-    <condition id="CA9_DP_IAR">
-      <description>Cortex-A9 processor based device for the IAR Compiler</description>
-      <require condition="CA9_DP"/>
-      <require condition="IAR"/>
-    </condition>
-
-    <condition id="CMSIS RTOS2 FreeRTOS">
-      <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
-    </condition>
-
+    <!-- FreeRTOS ports for the Arm Cortex core -->
     <condition id="FreeRTOS Port Cortex-A">
+      <description>Requirements for FreeRTOS port for Cortex-A</description>
       <require condition="ARMCC ARMCC6 GCC IAR"/>
       <require condition="CoreA"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M">
+      <description>Requirements for FreeRTOS port for Cortex-M v6 and v7</description>
       <require condition="ARMCC ARMCC6 GCC IAR"/>
       <require condition="CoreM_v6_v7"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M v8">
+      <description>Requirements for FreeRTOS port for Cortex-M v8</description>
       <require condition="ARMCC6 GCC IAR"/>
       <require condition="CoreM_v8"/>
     </condition>
-
-
-    <condition id="FreeRTOS">
-      <!-- All existing FreeRTOS ports for Cortex combined -->
+    <condition id="FreeRTOS Port">
+      <description>FreeRTOS ports for Arm Cortex combined</description>
       <accept condition="FreeRTOS Port Cortex-A"/>
       <accept condition="FreeRTOS Port Cortex-M"/>
       <accept condition="FreeRTOS Port Cortex-M v8"/>
     </condition>
 
-    <condition id="FreeRTOS CM">
+    <!-- Conditions for RTOS::FreeRTOS components -->
+    <condition id="FreeRTOS Core CA">
+      <description>Requirements for FreeRTOS Core for Cortex-A</description>
+      <require condition="FreeRTOS Port Cortex-A"/>
+
+      <require Cclass="Device" Cgroup="Startup"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
+    </condition>
+
+    <condition id="FreeRTOS Core CM">
+      <description>Requirements for FreeRTOS Core for Cortex-M</description>
       <accept condition="FreeRTOS Port Cortex-M"/>
       <accept condition="FreeRTOS Port Cortex-M v8"/>
 
@@ -456,7 +479,8 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
-    <condition id="FreeRTOS MPU CM3 CM4">
+    <condition id="FreeRTOS Core MPU CM3 CM4">
+    <description>Requirements for FreeRTOS Core with MPU support for CM3 and CM4</description>
       <require condition="ARMCC6 GCC"/>
       <accept  condition="CM3"/>
       <accept  condition="CM4"/>
@@ -470,7 +494,8 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
 
-    <condition id="FreeRTOS MPU CM4_FP">
+    <condition id="FreeRTOS Core MPU CM4_FP">
+      <description>Requirements for FreeRTOS Core with MPU support for CM4 with FPU</description>
       <require condition="ARMCC ARMCC6 GCC IAR"/>
       <require condition="CM4_FP"/>
 
@@ -483,18 +508,22 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
 
-    <condition id="FreeRTOS TZ">
+    <condition id="FreeRTOS Core TZ">
+      <description>Requirements for FreeRTOS Core with TrustZone support</description>
       <require condition="ARMCC6 GCC IAR"/>
-      <require condition="CM33_TZ"/>
+      <accept condition="CM23_TZ"/>
+      <accept condition="CM33_TZ"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
-    <condition id="FreeRTOS TZ MPU">
+    <condition id="FreeRTOS Core TZ MPU">
+      <description>Requirements for FreeRTOS Core with TrustZone and MPU support</description>
       <require condition="ARMCC6 GCC IAR"/>
-      <require condition="CM33_TZ"/>
+      <accept condition="CM23_TZ"/>
+      <accept condition="CM33_TZ"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
@@ -505,22 +534,70 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
 
-    <condition id="FreeRTOS CA">
-      <require condition="ARMCC ARMCC6 GCC IAR"/>
-      <require condition="CoreA"/>
+    <condition id="FreeRTOS Config Native">
+      <description>Components required for FreeRTOS Config Native variant</description>
+      <require condition="FreeRTOS Port"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
     </condition>
 
-    <condition id="FreeRTOS Core">
+    <condition id="FreeRTOS Config CMSIS RTOS2">
+      <description>Components required for FreeRTOS Config CMSIS RTOS2 variant</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
+    </condition>
+
+    <condition id="FreeRTOS Coroutines">
+      <description>Components required for FreeRTOS Coroutines</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    </condition>
+
+    <condition id="FreeRTOS Event Groups">
+      <description>Components required for FreeRTOS Event Groups</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    </condition>
+
+    <condition id="FreeRTOS Heap">
+      <description>Components required for FreeRTOS Heap</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    </condition>
+
+    <condition id="FreeRTOS Message Buffer">
+      <description>Components required for FreeRTOS Message Buffer</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    </condition>
+
+    <condition id="FreeRTOS Stream Buffer">
+      <description>Components required for FreeRTOS Stream Buffer</description>
+      <require condition="FreeRTOS Port"/>
+
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    </condition>
+
+    <condition id="FreeRTOS Timers">
+      <description>Components required for FreeRTOS Timers</description>
+      <require condition="FreeRTOS Port"/>
+
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
     </condition>
 
     <condition id="FreeRTOS TrustZone">
-      <require condition="CM33_TZ"/>
+      <description>Components required for FreeRTOS TrustZone</description>
+      <accept condition="CM23_TZ"/>
+      <accept condition="CM33_TZ"/>
       <!-- TrustZone Secure Context is a standalone component -->
+      <deny Cclass="CMSIS" Cgroup="RTOS"  Csub="FreeRTOS"/>
+      <deny Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
+
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Coroutines"/>
@@ -530,37 +607,42 @@
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
+    
+    <condition id="CMSIS RTOS FreeRTOS">
+      <description>Components required for CMSIS RTOS API on top of FreeRTOS</description>
+      <require condition="FreeRTOS Port"/>
 
-    <condition id="FreeRTOS RTOS2 Core">
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+      <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
     </condition>
 
-    <condition id="FreeRTOS RTOS2 CortexM">
-      <require condition="CoreM"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+    <condition id="CMSIS RTOS2 FreeRTOS CortexM">
+      <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-M</description>
+      <accept condition="FreeRTOS Port Cortex-M"/>
+      <accept condition="FreeRTOS Port Cortex-M v8"/>
+
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>      
     </condition>
 
-    <condition id="FreeRTOS RTOS2 CortexA">
-      <require condition="CoreA"/>
+    <condition id="CMSIS RTOS2 FreeRTOS CortexA">
+      <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-A</description>
+      <require condition="FreeRTOS Port Cortex-A"/>
+
       <require Cclass="Device" Cgroup="IRQ Controller"/>
       <require Cclass="Device" Cgroup="OS Tick"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
     </condition>
 
   </conditions>
 
   <components>
     <!-- CMSIS-RTOS FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="10.2.0" Capiversion="1.0.0" condition="FreeRTOS RTOS2 Core">
+    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="10.2.1" Capiversion="1.0.0" condition="CMSIS RTOS FreeRTOS">
       <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
@@ -573,7 +655,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.0" Capiversion="2.1.3" condition="FreeRTOS RTOS2 CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -581,6 +663,7 @@
       </RTE_Components_h>
       <files>
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
@@ -590,7 +673,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.0" Capiversion="2.1.3" condition="FreeRTOS RTOS2 CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -598,6 +681,7 @@
       </RTE_Components_h>
       <files>
         <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
@@ -606,11 +690,11 @@
       </files>
     </component>
 
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.2.0">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.2.1">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/Documentation/FreeRTOS_Reference_Manual_V10.0.0.pdf</doc>
 
-      <component Cgroup="Core" Cvariant="Cortex-M" isDefaultVariant="true" condition="FreeRTOS CM">
+      <component Cgroup="Core" Cvariant="Cortex-M" isDefaultVariant="true" condition="FreeRTOS Core CM">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -656,6 +740,9 @@
           <file category="source"    condition="CM7_DP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
           <file category="include"   condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_ARMCC6" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM23_ARMCC6"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/"/>
+          <file category="source"    condition="CM23_ARMCC6"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM23_ARMCC6"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/portasm.c"/>
           <file category="include"   condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
@@ -674,6 +761,9 @@
           <file category="source"    condition="CM7_DP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
           <file category="include"   condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_GCC" name="Source/portable/GCC/ARM_CM7/r0p1/port.c"/>
+          <file category="include"   condition="CM23_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/"/>
+          <file category="source"    condition="CM23_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM23_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/portasm.c"/>
           <file category="include"   condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
@@ -699,6 +789,9 @@
           <file category="include"   condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/"/>
           <file category="source"    condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/port.c"/>
           <file category="sourceAsm" condition="CM7_SP_IAR" name="Source/portable/IAR/ARM_CM7/r0p1/portasm.s"/>
+          <file category="include"   condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/"/>
+          <file category="source"    condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/portasm.s"/>
           <file category="include"   condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>
@@ -709,7 +802,7 @@
         </files>
       </component>
 
-      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS MPU CM3 CM4">
+      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core MPU CM3 CM4">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using MPU</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -738,7 +831,7 @@
       </component>
 
 
-      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS MPU CM4_FP">
+      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core MPU CM4_FP">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using MPU</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -777,7 +870,7 @@
       </component>
 
 
-      <component Cgroup="Core" Cvariant="Cortex-M Non-Secure" condition="FreeRTOS TZ">
+      <component Cgroup="Core" Cvariant="Cortex-M Non-Secure" condition="FreeRTOS Core TZ">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using Non-Secure Domain (TrustZone)</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -795,20 +888,32 @@
           <file category="source"  name="Source/queue.c"/>
           <file category="source"  name="Source/tasks.c"/>
 
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/port.c"/>
+          <file category="source"    condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/portasm.c"/>
+          <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/port.c"/>
+          <file category="source"    condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/portasm.c"/>
+          <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
-          <file category="sourceAsm" condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
+          <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/portasm.s"/>
+          <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -817,7 +922,7 @@
       </component>
 
 
-      <component Cgroup="Core" Cvariant="Cortex-M Non-Secure MPU" condition="FreeRTOS TZ MPU">
+      <component Cgroup="Core" Cvariant="Cortex-M Non-Secure MPU" condition="FreeRTOS Core TZ MPU">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using Non-Secure Domain (TrustZone) and MPU</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -837,20 +942,32 @@
           <file category="source"  name="Source/tasks.c"/>
           <file category="source"  name="Source/portable/Common/mpu_wrappers.c"/>
 
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/port.c"/>
+          <file category="source"    condition="CM23_ARMCC6" name="Source/portable/GCC/ARM_CM23/non_secure/portasm.c"/>
+          <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/port.c"/>
+          <file category="source"    condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/portasm.c"/>
+          <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
-          <file category="source"    condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
-          <file category="sourceAsm" condition="IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
+          <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
+          <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/"/>
+          <file category="source"    condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/portasm.s"/>
+          <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -858,7 +975,7 @@
         </files>
       </component>
 
-      <component Cgroup="Core" Cvariant="Cortex-A" isDefaultVariant="true" condition="FreeRTOS CA">
+      <component Cgroup="Core" Cvariant="Cortex-A" isDefaultVariant="true" condition="FreeRTOS Core CA">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-A</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -897,7 +1014,7 @@
         </files>
       </component>
 
-      <component Cgroup="Config" Cvariant="CMSIS RTOS2" condition="CMSIS RTOS2 FreeRTOS">
+      <component Cgroup="Config" Cvariant="CMSIS RTOS2" condition="FreeRTOS Config CMSIS RTOS2">
         <description>FreeRTOS CMSIS-RTOS2 API configuration file</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
@@ -909,7 +1026,7 @@
         </files>
       </component>
 
-      <component Cgroup="Config" Cvariant="FreeRTOS" condition="FreeRTOS Core">
+      <component Cgroup="Config" Cvariant="FreeRTOS" condition="FreeRTOS Config Native">
         <description>FreeRTOS API configuration file</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
@@ -921,7 +1038,7 @@
         </files>
       </component>
 
-      <component Cgroup="Coroutines" condition="FreeRTOS Core">
+      <component Cgroup="Coroutines" condition="FreeRTOS Coroutines">
         <description>Co-routine API</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_COROUTINE     /* RTOS FreeRTOS Co-routines */
@@ -932,7 +1049,7 @@
         </files>
       </component>
 
-      <component Cgroup="Event Groups" condition="FreeRTOS Core">
+      <component Cgroup="Event Groups" condition="FreeRTOS Event Groups">
         <description>Event Group API</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_EVENTGROUPS   /* RTOS FreeRTOS Event Groups */
@@ -943,7 +1060,7 @@
         </files>
       </component>
 
-      <component Cgroup="Heap" Cvariant="Heap_1" condition="FreeRTOS Core">
+      <component Cgroup="Heap" Cvariant="Heap_1" condition="FreeRTOS Heap">
         <description>Very simple, does not permit memory to be freed.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_1        /* RTOS FreeRTOS Heap 1 */
@@ -954,7 +1071,7 @@
         </files>
       </component>
 
-      <component Cgroup="Heap" Cvariant="Heap_2" condition="FreeRTOS Core">
+      <component Cgroup="Heap" Cvariant="Heap_2" condition="FreeRTOS Heap">
         <description>Permits memory to be freed, but not does coalescence adjacent free memory blocks.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_2        /* RTOS FreeRTOS Heap 2 */
@@ -965,7 +1082,7 @@
         </files>
       </component>
 
-      <component Cgroup="Heap" Cvariant="Heap_3" condition="FreeRTOS Core">
+      <component Cgroup="Heap" Cvariant="Heap_3" condition="FreeRTOS Heap">
         <description>Wraps the standard malloc() and free() for thread safety.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_3        /* RTOS FreeRTOS Heap 3 */
@@ -976,7 +1093,7 @@
         </files>
       </component>
 
-      <component Cgroup="Heap" Cvariant="Heap_4" condition="FreeRTOS Core" isDefaultVariant="true">
+      <component Cgroup="Heap" Cvariant="Heap_4" condition="FreeRTOS Heap" isDefaultVariant="true">
         <description>Coalescences adjacent free memory blocks to avoid fragmentation. Includes absolute address placement option.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_4        /* RTOS FreeRTOS Heap 4 */
@@ -987,7 +1104,7 @@
         </files>
       </component>
 
-      <component Cgroup="Heap" Cvariant="Heap_5" condition="FreeRTOS Core">
+      <component Cgroup="Heap" Cvariant="Heap_5" condition="FreeRTOS Heap">
         <description>Same as Heap_4, with the ability to span the heap across multiple non-adjacent memory areas.</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_HEAP_5        /* RTOS FreeRTOS Heap 5 */
@@ -998,7 +1115,7 @@
         </files>
       </component>
 
-      <component Cgroup="Message Buffer" condition="FreeRTOS Core">
+      <component Cgroup="Message Buffer" condition="FreeRTOS Message Buffer">
         <description>Message Buffer API</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_MESSAGE_BUFFER /* RTOS FreeRTOS Message Buffers */
@@ -1009,7 +1126,7 @@
         </files>
       </component>
 
-      <component Cgroup="Stream Buffer" condition="FreeRTOS Core">
+      <component Cgroup="Stream Buffer" condition="FreeRTOS Stream Buffer">
         <description>Stream Buffer API</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_STREAM_BUFFER /* RTOS FreeRTOS Stream Buffers */
@@ -1020,7 +1137,7 @@
         </files>
       </component>
 
-      <component Cgroup="Timers" condition="FreeRTOS Core">
+      <component Cgroup="Timers" condition="FreeRTOS Timers">
         <description>Timer API</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_TIMERS        /* RTOS FreeRTOS Timers */
@@ -1039,6 +1156,12 @@
         <files>
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM_TZ/FreeRTOSConfig.h" version="10.2.0"/>
 
+          <file category="header"    condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="source"    condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/secure_context.c"/>
+          <file category="source"    condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/secure_heap.c"/>
+          <file category="source"    condition="CM23_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM23/secure/secure_init.c"/>
           <file category="header"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
@@ -1046,6 +1169,12 @@
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
 
+          <file category="header"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
+          <file category="source"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_context.c"/>
+          <file category="source"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_heap.c"/>
+          <file category="source"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_init.c"/>
           <file category="header"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
@@ -1053,6 +1182,13 @@
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
 
+          <file category="header"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
+          <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context.c"/>
+          <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context_port.c"/>
+          <file category="sourceAsm" condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context_port_asm.s"/>
+          <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_heap.c"/>
+          <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_init.c"/>
           <file category="header"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context.c"/>
@@ -1071,34 +1207,6 @@
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
         <environment name="uv" load="Blinky.uvprojx"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC5)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 5)</description>
-      <board name="Fixed Virtual Platform" vendor="ARM"/>
-      <project>
-        <environment name="ds5" load=".project"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky CA9 (AC6)" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_CA9_AC6">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS for Cortex-A9 (ARM Compiler 6)</description>
-      <board name="Fixed Virtual Platform" vendor="ARM"/>
-      <project>
-        <environment name="ds5" load=".project"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>

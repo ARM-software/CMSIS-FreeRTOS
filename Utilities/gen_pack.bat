@@ -68,7 +68,7 @@ RMDIR /S /Q ..\CMSIS\Documentation
 
 :: Checking 
 :: Silencing warnings that are irrelevant in the context (M324, M382, M363)
-Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M353 -x M364 -x M324 -x M382 -x M363 -x M362
+Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M324 -x M382 -x M363 -x M362
 
 :: --Check if PackChk.exe has completed successfully
 IF %errorlevel% neq 0 GOTO ErrPackChk
