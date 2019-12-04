@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.3.0-rc0">
+    <release version="10.3.0" date="2019-12-04">
       FreeRTOS 10.3.0
       Maintenance for CMSIS 5.4.0:
        - Added osMemoryPool functions using FreeRTOS
