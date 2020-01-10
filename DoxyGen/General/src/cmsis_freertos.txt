@@ -57,6 +57,19 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.3.1</td>
+      <td>
+        <p><b>FreeRTOS V10.2.1</b></p>
+        <p>Development version:
+        <ul>
+          <li>Pack description updated to avoid component identification issues:
+            <br>-- Added variant tag for the CMSIS::RTOS2::FreeRTOS component
+            <br>-- Merged description for the RTOS::Core::Cortex-M MPU component
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
       <td>10.3.0</td>
       <td>
         <p><b>FreeRTOS V10.2.1</b></p>

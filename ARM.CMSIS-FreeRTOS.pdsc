@@ -9,7 +9,9 @@
 
   <releases>
     <release version="10.3.1-dev0">
-      Active development ...
+      Pack description updated to avoid component identification issues:
+       - Added variant tag for the CMSIS::RTOS2::FreeRTOS component
+       - Merged description for the RTOS::Core::Cortex-M MPU component
     </release>
     <release version="10.3.0" date="2019-12-04">
       FreeRTOS 10.2.1
@@ -77,15 +79,6 @@
       <require Tcompiler="IAR"/>
     </condition>
 
-    <condition id="ARMCC6 GCC">
-      <accept condition="ARMCC6"/>
-      <accept condition="GCC"/>
-    </condition>
-    <condition id="ARMCC6 GCC IAR">
-      <accept condition="ARMCC6"/>
-      <accept condition="GCC"/>
-      <accept condition="IAR"/>
-    </condition>
     <condition id="ARMCC ARMCC6 GCC IAR">
       <accept condition="ARMCC"/>
       <accept condition="ARMCC6"/>
@@ -188,26 +181,6 @@
       <accept condition="CM33"/>
     </condition>
 
-    <condition id="CoreM_v6_v7">
-      <description>Cortex-M v6 and v7 processor based device</description>
-      <accept condition="CM0"/>
-      <accept condition="CM3"/>
-      <accept condition="CM4"/>
-      <accept condition="CM4_FP"/>
-      <accept condition="CM7"/>
-      <accept condition="CM7_FP"/>
-    </condition>
-
-    <condition id="CoreM_v8">
-      <description>Cortex-M v8 processor based device</description>
-      <accept condition="CM23"/>
-      <accept condition="CM23_NoTZ"/>
-      <accept condition="CM23_TZ"/>
-      <accept condition="CM33"/>
-      <accept condition="CM33_NoTZ"/>
-      <accept condition="CM33_TZ"/>
-    </condition>
-
     <condition id="CoreA">
       <description>Cortex-A processor based device</description>
       <accept condition="CA9_DP"/>
@@ -298,6 +271,11 @@
       <require condition="CM23"/>
       <require condition="ARMCC6"/>
     </condition>
+    <condition id="CM23_NoTZ_ARMCC6">
+      <description>Cortex-M23 processor based device without TrustZone for the ARM Compiler 6</description>
+      <require condition="CM23_NoTZ"/>
+      <require condition="ARMCC6"/>
+    </condition>
     <condition id="CM23_TZ_ARMCC6">
       <description>Cortex-M23 processor based device with TrustZone for the ARM Compiler 6</description>
       <require condition="CM23_TZ"/>
@@ -307,6 +285,11 @@
     <condition id="CM33_ARMCC6">
       <description>Cortex-M33 processor based device for the ARM Compiler 6</description>
       <require condition="CM33"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM33_NoTZ_ARMCC6">
+      <description>Cortex-M33 processor based device without TrustZone for the ARM Compiler 6</description>
+      <require condition="CM33_NoTZ"/>
       <require condition="ARMCC6"/>
     </condition>
     <condition id="CM33_TZ_ARMCC6">
@@ -360,6 +343,11 @@
       <require condition="CM23"/>
       <require condition="GCC"/>
     </condition>
+    <condition id="CM23_NoTZ_GCC">
+      <description>Cortex-M23 processor based device without TrustZone for the GCC Compiler</description>
+      <require condition="CM23_NoTZ"/>
+      <require condition="GCC"/>
+    </condition>
     <condition id="CM23_TZ_GCC">
       <description>Cortex-M23 processor based device with TrustZone for the GCC Compiler</description>
       <require condition="CM23_TZ"/>
@@ -369,6 +357,11 @@
     <condition id="CM33_GCC">
       <description>Cortex-M33 processor based device for the GCC Compiler</description>
       <require condition="CM33"/>
+      <require condition="GCC"/>
+    </condition>
+    <condition id="CM33_NoTZ_GCC">
+      <description>Cortex-M33 processor based device without TrustZone for the GCC Compiler</description>
+      <require condition="CM33_NoTZ"/>
       <require condition="GCC"/>
     </condition>
     <condition id="CM33_TZ_GCC">
@@ -422,6 +415,11 @@
       <require condition="CM23"/>
       <require condition="IAR"/>
     </condition>
+    <condition id="CM23_NoTZ_IAR">
+      <description>Cortex-M23 processor based device without TrustZone for the IAR Compiler</description>
+      <require condition="CM23_NoTZ"/>
+      <require condition="IAR"/>
+    </condition>
     <condition id="CM23_TZ_IAR">
       <description>Cortex-M23 processor based device with TrustZone for the IAR Compiler</description>
       <require condition="CM23_TZ"/>
@@ -433,6 +431,11 @@
       <require condition="CM33"/>
       <require condition="IAR"/>
     </condition>
+    <condition id="CM33_NoTZ_IAR">
+      <description>Cortex-M33 processor based device without TrustZone for the IAR Compiler</description>
+      <require condition="CM33_NoTZ"/>
+      <require condition="IAR"/>
+    </condition>
     <condition id="CM33_TZ_IAR">
       <description>Cortex-M33 processor based device with TrustZone for the IAR Compiler</description>
       <require condition="CM33_TZ"/>
@@ -440,29 +443,154 @@
     </condition>
 
     <!-- FreeRTOS ports for the Arm Cortex core -->
+    <condition id="FreeRTOS Port Cortex-M3">
+      <description>Requirements for FreeRTOS port for Cortex-M3</description>
+      <accept condition="CM3_ARMCC"/>
+      <accept condition="CM3_ARMCC6"/>
+      <accept condition="CM3_GCC"/>
+      <accept condition="CM3_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M3 MPU">
+      <description>Requirements for FreeRTOS port for Cortex-M3 using MPU</description>
+      <accept condition="CM3_ARMCC6"/>
+      <accept condition="CM3_GCC"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M4">
+      <description>Requirements for FreeRTOS port for Cortex-M4</description>
+      <accept condition="CM4_ARMCC"/>
+      <accept condition="CM4_ARMCC6"/>
+      <accept condition="CM4_GCC"/>
+      <accept condition="CM4_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M4 MPU">
+      <description>Requirements for FreeRTOS port for Cortex-M4 using MPU</description>
+      <accept condition="CM4_ARMCC6"/>
+      <accept condition="CM4_GCC"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M4 FPU">
+      <description>Requirements for FreeRTOS port for Cortex-M4 using FPU</description>
+      <accept condition="CM4_FP_ARMCC"/>
+      <accept condition="CM4_FP_ARMCC6"/>
+      <accept condition="CM4_FP_GCC"/>
+      <accept condition="CM4_FP_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M4 FPU MPU">
+      <description>Requirements for FreeRTOS port for Cortex-M4 using FPU and MPU</description>
+      <accept condition="CM4_FP_ARMCC"/>
+      <accept condition="CM4_FP_ARMCC6"/>
+      <accept condition="CM4_FP_GCC"/>
+      <accept condition="CM4_FP_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M7">
+      <description>Requirements for FreeRTOS port for Cortex-M7</description>
+      <accept condition="CM7_ARMCC"/>
+      <accept condition="CM7_ARMCC6"/>
+      <accept condition="CM7_GCC"/>
+      <accept condition="CM7_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M7 FPU SP">
+      <description>Requirements for FreeRTOS port for Cortex-M7 using FPU (SP)</description>
+      <accept condition="CM7_SP_ARMCC"/>
+      <accept condition="CM7_SP_ARMCC6"/>
+      <accept condition="CM7_SP_GCC"/>
+      <accept condition="CM7_SP_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M7 FPU DP">
+      <description>Requirements for FreeRTOS port for Cortex-M7 using FPU (DP)</description>
+      <accept condition="CM7_DP_ARMCC"/>
+      <accept condition="CM7_DP_ARMCC6"/>
+      <accept condition="CM7_DP_GCC"/>
+      <accept condition="CM7_DP_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M23">
+      <description>Requirements for FreeRTOS port for Cortex-M23</description>
+      <accept condition="CM23_ARMCC6"/>
+      <accept condition="CM23_GCC"/>
+      <accept condition="CM23_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M23 NoTZ">
+      <description>Requirements for FreeRTOS port for Cortex-M23 without TrustZone</description>
+      <accept condition="CM23_NoTZ_ARMCC6"/>
+      <accept condition="CM23_NoTZ_GCC"/>
+      <accept condition="CM23_NoTZ_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M23 TZ">
+      <description>Requirements for FreeRTOS port for Cortex-M23 with TrustZone</description>
+      <accept condition="CM23_TZ_ARMCC6"/>
+      <accept condition="CM23_TZ_GCC"/>
+      <accept condition="CM23_TZ_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M33">
+      <description>Requirements for FreeRTOS port for Cortex-M33</description>
+      <accept condition="CM33_ARMCC6"/>
+      <accept condition="CM33_GCC"/>
+      <accept condition="CM33_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M33 NoTZ">
+      <description>Requirements for FreeRTOS port for Cortex-M33 without TrustZone</description>
+      <accept condition="CM33_NoTZ_ARMCC6"/>
+      <accept condition="CM33_NoTZ_GCC"/>
+      <accept condition="CM33_NoTZ_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M33 TZ">
+      <description>Requirements for FreeRTOS port for Cortex-M33 with TrustZone</description>
+      <accept condition="CM33_TZ_ARMCC6"/>
+      <accept condition="CM33_TZ_GCC"/>
+      <accept condition="CM33_TZ_IAR"/>
+    </condition>
+
+    <condition id="FreeRTOS Port Cortex-M v6_v7">
+      <description>Requirements for FreeRTOS port for Cortex-M v6 and v7</description>
+      <accept condition="FreeRTOS Port Cortex-M3"/>
+      <accept condition="FreeRTOS Port Cortex-M4"/>
+      <accept condition="FreeRTOS Port Cortex-M4 FPU"/>
+      <accept condition="FreeRTOS Port Cortex-M7"/>
+      <accept condition="FreeRTOS Port Cortex-M7 FPU SP"/>
+      <accept condition="FreeRTOS Port Cortex-M7 FPU DP"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M v6_v7 MPU">
+      <description>Requirements for FreeRTOS port for Cortex-M v6 and v7 using MPU</description>
+      <accept condition="FreeRTOS Port Cortex-M3 MPU"/>
+      <accept condition="FreeRTOS Port Cortex-M4 MPU"/>
+      <accept condition="FreeRTOS Port Cortex-M4 FPU MPU"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M v8">
+      <description>Requirements for FreeRTOS port for Cortex-M v8</description>
+      <accept condition="FreeRTOS Port Cortex-M23"/>
+      <accept condition="FreeRTOS Port Cortex-M23 NoTZ"/>
+      <accept condition="FreeRTOS Port Cortex-M23 TZ"/>
+      <accept condition="FreeRTOS Port Cortex-M33"/>
+      <accept condition="FreeRTOS Port Cortex-M33 NoTZ"/>
+      <accept condition="FreeRTOS Port Cortex-M33 TZ"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M v8 TZ">
+      <description>Requirements for FreeRTOS port for Cortex-M v8 with TrustZone</description>
+      <accept condition="FreeRTOS Port Cortex-M23 TZ"/>
+      <accept condition="FreeRTOS Port Cortex-M33 TZ"/>
+    </condition>
     <condition id="FreeRTOS Port Cortex-A">
       <description>Requirements for FreeRTOS port for Cortex-A</description>
       <require condition="ARMCC ARMCC6 GCC IAR"/>
       <require condition="CoreA"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M">
-      <description>Requirements for FreeRTOS port for Cortex-M v6 and v7</description>
-      <require condition="ARMCC ARMCC6 GCC IAR"/>
-      <require condition="CoreM_v6_v7"/>
-    </condition>
-    <condition id="FreeRTOS Port Cortex-M v8">
-      <description>Requirements for FreeRTOS port for Cortex-M v8</description>
-      <require condition="ARMCC6 GCC IAR"/>
-      <require condition="CoreM_v8"/>
+      <description>Requirements for FreeRTOS port for Cortex-M</description>
+      <accept condition="FreeRTOS Port Cortex-M v6_v7"/>
+      <accept condition="FreeRTOS Port Cortex-M v8"/>
     </condition>
     <condition id="FreeRTOS Port">
       <description>FreeRTOS ports for Arm Cortex combined</description>
       <accept condition="FreeRTOS Port Cortex-A"/>
       <accept condition="FreeRTOS Port Cortex-M"/>
-      <accept condition="FreeRTOS Port Cortex-M v8"/>
     </condition>
 
     <!-- Conditions for RTOS::FreeRTOS components -->
+    <condition id="FreeRTOS Message or Stream Buffer API">
+      <description>FreeRTOS Message or Stream Buffer component</description>
+      <accept Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Message Buffer"/>
+      <accept Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
+    </condition>
+
     <condition id="FreeRTOS Core CA">
       <description>Requirements for FreeRTOS Core for Cortex-A</description>
       <require condition="FreeRTOS Port Cortex-A"/>
@@ -474,48 +602,28 @@
 
     <condition id="FreeRTOS Core CM">
       <description>Requirements for FreeRTOS Core for Cortex-M</description>
-      <accept condition="FreeRTOS Port Cortex-M"/>
-      <accept condition="FreeRTOS Port Cortex-M v8"/>
+      <require condition="FreeRTOS Port Cortex-M"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
-    <condition id="FreeRTOS Core MPU CM3 CM4">
-    <description>Requirements for FreeRTOS Core with MPU support for CM3 and CM4</description>
-      <require condition="ARMCC6 GCC"/>
-      <accept  condition="CM3"/>
-      <accept  condition="CM4"/>
+    <condition id="FreeRTOS Core CM v6_v7 MPU">
+    <description>Requirements for FreeRTOS Core with MPU support for Cortex-M v6 and v7</description>
+      <require condition="FreeRTOS Port Cortex-M v6_v7 MPU"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Message Buffer"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
-    </condition>
-
-    <condition id="FreeRTOS Core MPU CM4_FP">
-      <description>Requirements for FreeRTOS Core with MPU support for CM4 with FPU</description>
-      <require condition="ARMCC ARMCC6 GCC IAR"/>
-      <require condition="CM4_FP"/>
-
-      <require Cclass="Device" Cgroup="Startup"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Message Buffer"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require condition="FreeRTOS Message or Stream Buffer API"/>
     </condition>
 
     <condition id="FreeRTOS Core TZ">
       <description>Requirements for FreeRTOS Core with TrustZone support</description>
-      <require condition="ARMCC6 GCC IAR"/>
-      <accept condition="CM23_TZ"/>
-      <accept condition="CM33_TZ"/>
+      <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
@@ -524,17 +632,14 @@
 
     <condition id="FreeRTOS Core TZ MPU">
       <description>Requirements for FreeRTOS Core with TrustZone and MPU support</description>
-      <require condition="ARMCC6 GCC IAR"/>
-      <accept condition="CM23_TZ"/>
-      <accept condition="CM33_TZ"/>
+      <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
 
       <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Message Buffer"/>
-      <accept  Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
+      <require condition="FreeRTOS Message or Stream Buffer API"/>
     </condition>
 
     <condition id="FreeRTOS Config Native">
@@ -595,8 +700,8 @@
 
     <condition id="FreeRTOS TrustZone">
       <description>Components required for FreeRTOS TrustZone</description>
-      <accept condition="CM23_TZ"/>
-      <accept condition="CM33_TZ"/>
+      <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
+
       <!-- TrustZone Secure Context is a standalone component -->
       <deny Cclass="CMSIS" Cgroup="RTOS"  Csub="FreeRTOS"/>
       <deny Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
@@ -620,13 +725,12 @@
 
     <condition id="CMSIS RTOS2 FreeRTOS CortexM">
       <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-M</description>
-      <accept condition="FreeRTOS Port Cortex-M"/>
-      <accept condition="FreeRTOS Port Cortex-M v8"/>
+      <require condition="FreeRTOS Port Cortex-M"/>
 
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
-      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>      
+      <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
 
     <condition id="CMSIS RTOS2 FreeRTOS CortexA">
@@ -658,7 +762,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -671,12 +775,11 @@
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
 
-        <!-- OS Tick (SysTick) -->
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="10.2.1" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -805,7 +908,7 @@
         </files>
       </component>
 
-      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core MPU CM3 CM4">
+      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core CM v6_v7 MPU">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using MPU</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -824,54 +927,32 @@
           <file category="source"  name="Source/tasks.c"/>
           <file category="source"  name="Source/portable/Common/mpu_wrappers.c"/>
 
-          <file category="include" condition="ARMCC6 GCC" name="Source/portable/GCC/ARM_CM3_MPU/"/>
-          <file category="source"  condition="ARMCC6 GCC" name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
+          <file category="include"   condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4_MPU/"/>
+          <file category="source"    condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4_MPU/port.c"/>
+
+          <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
+          <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
+          <file category="include"   condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
+          <file category="source"    condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
+          <file category="include"   condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/"/>
+          <file category="source"    condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
+
+          <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
+          <file category="source"    condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
+          <file category="include"   condition="CM4_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
+          <file category="source"    condition="CM4_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
+          <file category="include"   condition="CM4_FP_GCC" name="Source/portable/GCC/ARM_CM4_MPU/"/>
+          <file category="source"    condition="CM4_FP_GCC" name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
+
+          <file category="include"   condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/"/>
+          <file category="source"    condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/port.c"/>
+          <file category="sourceAsm" condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
           <file category="other"   name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
         </files>
       </component>
-
-
-      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core MPU CM4_FP">
-        <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using MPU</description>
-        <RTE_Components_h>
-          #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
-          #define RTE_RTOS_FreeRTOS_CORE_MPU      /* RTOS FreeRTOS Core with MPU support */
-        </RTE_Components_h>
-        <files>
-          <file category="include" name="Source/include/"/>
-
-          <file category="header"  name="Source/include/FreeRTOS.h"/>
-          <file category="header"  name="Source/include/queue.h"/>
-          <file category="header"  name="Source/include/semphr.h"/>
-          <file category="header"  name="Source/include/task.h"/>
-
-          <file category="source"  name="Source/list.c"/>
-          <file category="source"  name="Source/queue.c"/>
-          <file category="source"  name="Source/tasks.c"/>
-          <file category="source"  name="Source/portable/Common/mpu_wrappers.c"/>
-
-          <file category="include"   condition="ARMCC"  name="Source/portable/RVDS/ARM_CM4_MPU/"/>
-          <file category="source"    condition="ARMCC"  name="Source/portable/RVDS/ARM_CM4_MPU/port.c"/>
-
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
-
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CM4_MPU/"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
-
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CM4F_MPU/"/>
-          <file category="source"    condition="IAR"    name="Source/portable/IAR/ARM_CM4F_MPU/port.c"/>
-          <file category="sourceAsm" condition="IAR"    name="Source/portable/IAR/ARM_CM4F_MPU/portasm.s"/>
-
-          <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
-          <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
-          <file category="other"   name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
-        </files>
-      </component>
-
 
       <component Cgroup="Core" Cvariant="Cortex-M Non-Secure" condition="FreeRTOS Core TZ">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using Non-Secure Domain (TrustZone)</description>
@@ -923,7 +1004,6 @@
           <file category="other"   name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
         </files>
       </component>
-
 
       <component Cgroup="Core" Cvariant="Cortex-M Non-Secure MPU" condition="FreeRTOS Core TZ MPU">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using Non-Secure Domain (TrustZone) and MPU</description>
