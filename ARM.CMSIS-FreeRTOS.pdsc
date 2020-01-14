@@ -8,6 +8,11 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.3.1-dev1">
+      Pack description updated based on feedback:
+       - Fixed conditions for Cortex-M0 and Cortex-M0+ ports
+       - Aligned conditions for Cortex-A9 port to improve readability
+    </release>
     <release version="10.3.1-dev0">
       Pack description updated to avoid component identification issues:
        - Added variant tag for the CMSIS::RTOS2::FreeRTOS component
@@ -77,13 +82,6 @@
     </condition>
     <condition id="IAR">
       <require Tcompiler="IAR"/>
-    </condition>
-
-    <condition id="ARMCC ARMCC6 GCC IAR">
-      <accept condition="ARMCC"/>
-      <accept condition="ARMCC6"/>
-      <accept condition="GCC"/>
-      <accept condition="IAR"/>
     </condition>
 
     <condition id="CM0">
@@ -226,6 +224,12 @@
       <require condition="ARMCC"/>
     </condition>
 
+    <condition id="CA9_DP_ARMCC">
+      <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the ARM Compiler 5</description>
+      <require condition="CA9_DP"/>
+      <require condition="ARMCC"/>
+    </condition>
+
     <!-- ARMCC6 compiler -->
     <condition id="CM0_ARMCC6">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 6</description>
@@ -295,6 +299,12 @@
     <condition id="CM33_TZ_ARMCC6">
       <description>Cortex-M33 processor based device with TrustZone for the ARM Compiler 6</description>
       <require condition="CM33_TZ"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
+    <condition id="CA9_DP_ARMCC6">
+      <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the ARM Compiler 6</description>
+      <require condition="CA9_DP"/>
       <require condition="ARMCC6"/>
     </condition>
 
@@ -370,6 +380,12 @@
       <require condition="GCC"/>
     </condition>
 
+    <condition id="CA9_DP_GCC">
+      <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the GCC Compiler</description>
+      <require condition="CA9_DP"/>
+      <require condition="GCC"/>
+    </condition>
+
     <!-- IAR compiler -->
     <condition id="CM0_IAR">
       <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the IAR Compiler</description>
@@ -442,7 +458,20 @@
       <require condition="IAR"/>
     </condition>
 
+    <condition id="CA9_DP_IAR">
+      <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the IAR Compiler</description>
+      <require condition="CA9_DP"/>
+      <require condition="IAR"/>
+    </condition>
+
     <!-- FreeRTOS ports for the Arm Cortex core -->
+    <condition id="FreeRTOS Port Cortex-M0">
+      <description>Requirements for FreeRTOS port for Cortex-M0 and Cortex-M0+</description>
+      <accept condition="CM0_ARMCC"/>
+      <accept condition="CM0_ARMCC6"/>
+      <accept condition="CM0_GCC"/>
+      <accept condition="CM0_IAR"/>
+    </condition>
     <condition id="FreeRTOS Port Cortex-M3">
       <description>Requirements for FreeRTOS port for Cortex-M3</description>
       <accept condition="CM3_ARMCC"/>
@@ -538,9 +567,17 @@
       <accept condition="CM33_TZ_GCC"/>
       <accept condition="CM33_TZ_IAR"/>
     </condition>
+    <condition id="FreeRTOS Port Cortex-A9 FPU DP">
+      <description>Requirements for FreeRTOS port for Cortex-A9 using FPU (DP)</description>
+      <accept condition="CA9_DP_ARMCC"/>
+      <accept condition="CA9_DP_ARMCC6"/>
+      <accept condition="CA9_DP_GCC"/>
+      <accept condition="CA9_DP_IAR"/>
+    </condition>
 
     <condition id="FreeRTOS Port Cortex-M v6_v7">
       <description>Requirements for FreeRTOS port for Cortex-M v6 and v7</description>
+      <accept condition="FreeRTOS Port Cortex-M0"/>
       <accept condition="FreeRTOS Port Cortex-M3"/>
       <accept condition="FreeRTOS Port Cortex-M4"/>
       <accept condition="FreeRTOS Port Cortex-M4 FPU"/>
@@ -570,8 +607,7 @@
     </condition>
     <condition id="FreeRTOS Port Cortex-A">
       <description>Requirements for FreeRTOS port for Cortex-A</description>
-      <require condition="ARMCC ARMCC6 GCC IAR"/>
-      <require condition="CoreA"/>
+      <accept condition="FreeRTOS Port Cortex-A9 FPU DP"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M">
       <description>Requirements for FreeRTOS port for Cortex-M</description>
