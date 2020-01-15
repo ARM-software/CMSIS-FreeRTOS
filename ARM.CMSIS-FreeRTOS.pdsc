@@ -1326,5 +1326,20 @@
         <category>Getting Started</category>
       </attributes>
     </example>
+
+    <example name="CMSIS-RTOS2 FreeRTOS Blinky" doc="Blinky/Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_IAR">
+      <description>CMSIS-RTOS2 Blinky example using FreeRTOS</description>
+      <board name="EWARM Simulator" vendor="iar"/>
+      <project>
+        <environment name="iar" load="Blinky/Blinky.ewp"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="CMSIS" Cgroup="RTOS2"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+
   </examples>
 </package>
