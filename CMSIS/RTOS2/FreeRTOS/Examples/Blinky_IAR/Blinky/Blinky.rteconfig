@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<configuration xmlns:xs="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolchain Tcompiler="IAR" Toutput="exe"/>
+
+  <components>
+
+    <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.3.0">
+
+      <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/>
+
+      <file category="doc" name="CMSIS/Documentation/Core/html/index.html"/>
+
+      <file category="include" name="CMSIS/Core/Include/"/>
+
+    </component>
+
+    <component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="doc" name="CMSIS/Documentation/General/html/index.html"/>
+
+      <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
+
+      <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
+
+      <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
+
+    </component>
+
+    <component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.0" deviceDependent="1">
+
+      <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/>
+
+      <file category="header" deviceDependent="1" name="Device/ARM/ARMCM3/Include/ARMCM3.h"/>
+
+      <file attr="config" category="sourceAsm" condition="IAR" deviceDependent="1" name="Device/ARM/ARMCM3/Source/IAR/startup_ARMCM3.s" version="1.0.0"/>
+
+      <file attr="config" category="sourceC" deviceDependent="1" name="Device/ARM/ARMCM3/Source/system_ARMCM3.c" version="1.0.0"/>
+
+    </component>
+
+    <component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="doc" name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/>
+
+      <file attr="config" category="header" condition="CoreM" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.2.0"/>
+
+    </component>
+
+    <component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="include" name="Source/include/"/>
+
+      <file category="header" name="Source/include/FreeRTOS.h"/>
+
+      <file category="header" name="Source/include/queue.h"/>
+
+      <file category="header" name="Source/include/semphr.h"/>
+
+      <file category="header" name="Source/include/task.h"/>
+
+      <file category="source" name="Source/list.c"/>
+
+      <file category="source" name="Source/queue.c"/>
+
+      <file category="source" name="Source/tasks.c"/>
+
+      <file category="include" condition="CM3_IAR" name="Source/portable/IAR/ARM_CM3/"/>
+
+      <file category="source" condition="CM3_IAR" name="Source/portable/IAR/ARM_CM3/port.c"/>
+
+      <file category="sourceAsm" condition="CM3_IAR" name="Source/portable/IAR/ARM_CM3/portasm.s"/>
+
+      <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
+
+      <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
+
+      <file category="other" name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/>
+
+    </component>
+
+    <component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="header" name="Source/include/event_groups.h"/>
+
+      <file category="source" name="Source/event_groups.c"/>
+
+    </component>
+
+    <component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="source" name="Source/portable/MemMang/heap_4.c"/>
+
+      <file category="doc" name="http://www.freertos.org/a00111.html"/>
+
+    </component>
+
+    <component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.2.1">
+
+      <package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/>
+
+      <file category="header" name="Source/include/timers.h"/>
+
+      <file category="source" name="Source/timers.c"/>
+
+    </component>
+
+  </components>
+
+  <apis>
+
+    <api Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Cvendor="ARM" Cversion="2.1.3" exclusive="1">
+
+      <package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/>
+
+      <file category="doc" name="CMSIS/Documentation/RTOS2/html/index.html"/>
+
+      <file category="header" name="CMSIS/RTOS2/Include/cmsis_os2.h"/>
+
+    </api>
+
+  </apis>
+
+  <device Dclock="10000000" Dcore="Cortex-M3" DcoreVersion="r2p1" Dendian="Little-endian" Dfamily="ARM Cortex M3" Dfpu="NO_FPU" Dmpu="MPU" Dname="ARMCM3" Dvendor="ARM:82" info="ARM , 128 KB RAM, 256 KB ROM" url="http://www.keil.com/dd2/arm/armcm3">
+
+    <package info="CMSIS (Cortex Microcontroller Software Interface Standard)" name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/>
+
+  </device>
+
+  <packages useAllLatestPacks="1"/>
+
+</configuration>
+

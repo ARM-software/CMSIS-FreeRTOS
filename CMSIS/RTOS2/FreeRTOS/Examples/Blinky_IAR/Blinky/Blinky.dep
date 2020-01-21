@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <fileVersion>4</fileVersion>
+    <fileChecksum>3093954322</fileChecksum>
+    <configuration>
+        <name>Debug</name>
+        <outputs>
+            <file>$PROJ_DIR$\Debug\Obj\queue.o</file>
+            <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+            <file>$PROJ_DIR$\Debug\Obj\tasks.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\port.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\stream_buffer.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+            <file>$PROJ_DIR$\Debug\Exe\Blinky.out</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\list.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\freertos_evr.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\mpu_wrappers.h</file>
+            <file>$PROJ_DIR$\Debug\List\Blinky.map</file>
+            <file>$PROJ_DIR$\Debug\Obj\portasm.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\semphr.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\os_systick.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\heap_4.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\.iar\config\linker\ARMCM3.icf</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\event_groups.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\cmsis_os2.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\queue.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\tasks.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\list.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Include\freertos_os2.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\freertos_evr.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\os_systick.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Include\freertos_evr.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\os_tick.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Include\freertos_mpool.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\list.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\Device\ARM\ARMCM3\Include\ARMCM3.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\heap_4.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\system_ARMCM3.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\deprecated_definitions.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\event_groups.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\queue.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\startup_ARMCM3.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\Device\ARM\ARMCM3\Include\system_ARMCM3.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product_stdlib.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\system_ARMCM3.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_version.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\mpu_armv7.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\port.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\Blinky.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\iccarm_builtin.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_iccarm.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\Blinky.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\cmsis_os2.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\core_cm3.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\FreeRTOS.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\event_groups.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\timers.o</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\portable.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\projdefs.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\list.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\Blinky.pbd</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\IAR\ARM_CM3\portasm.s</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\timers.c</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\freertos_evr.c</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\cmsis_os2.c</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\stack_macros.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\queue.c</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\task.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\include\timers.h</file>
+            <file>$PROJ_DIR$\RTE\RTOS\FreeRTOSConfig.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\MemMang\heap_4.c</file>
+            <file>$PROJ_DIR$\RTE\Device\ARMCM3\system_ARMCM3.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\timers.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\IAR\ARM_CM3\port.c</file>
+            <file>$PROJ_DIR$\Blinky.c</file>
+            <file>$TOOLKIT_DIR$\inc\c\iar_intrinsics_common.h</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\tasks.c</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\IAR\ARM_CM3\portmacro.h</file>
+            <file>$PROJ_DIR$\RTE\Device\ARMCM3\startup_ARMCM3.s</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\os_systick.c</file>
+            <file>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\event_groups.c</file>
+            <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$PROJ_DIR$\RTE\RTE_Components.h</file>
+        </outputs>
+        <file>
+            <name>$PROJ_DIR$\Debug\Exe\Blinky.out</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 13</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 20 57 22 37 11 19 25 28 3 14 0 39 35 2 63 89 9 1 90</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\list.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 25</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 32</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 61 46 54 77 91 33 59 48 50 56 55 51 41 29 60 70 65 64 36 85 7 83 12 10</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\IAR\ARM_CM3\portasm.s</name>
+            <outputs>
+                <tool>
+                    <name>AARM</name>
+                    <file> 14</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>AARM</name>
+                    <file> 77</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\timers.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 63</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 80</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 61 46 54 77 91 33 59 48 50 56 55 51 41 29 60 70 65 64 36 85 7 83 12 75 10 23 76</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\freertos_evr.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 11</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 27</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 61 46 5 18 6 47 40 45 54 77 91 33 59 48 50 56 55 51 41 29 60 70 65 64 36 85 7 83 12 75 10 15 23 21 76 4</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\cmsis_os2.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 22</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 58</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 60 5 18 6 47 40 45 70 42 54 46 50 56 55 30 61 77 91 33 59 48 51 41 29 65 64 36 85 7 83 12 75 10 21 76 15 23 31 26</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\queue.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 0</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 38</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 60 70 61 46 54 77 91 33 59 48 50 56 55 51 41 29 65 64 36 85 7 83 12 75 10 23</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\MemMang\heap_4.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 19</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 34</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 61 46 54 77 91 33 59 48 50 56 55 51 41 29 60 70 65 64 36 85 7 83 12 75 10</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\RTE\Device\ARMCM3\system_ARMCM3.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 35</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 44</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 33 59 54 5 18 6 47 40 48 50 56 55 51 41</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\portable\IAR\ARM_CM3\port.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 3</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 52</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 7 55 18 6 47 40 83 61 46 5 45 54 77 91 33 59 48 50 56 51 41 29 60 70 65 64 36 85 12 75 10</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Blinky.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 57</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 53</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 17 5 18 6 47 40 45 91 33 59 54 48 50 56 55 51 41 42 46</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\tasks.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 2</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 24</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 60 70 61 46 54 77 91 33 59 48 50 56 55 51 41 29 65 64 36 85 7 83 12 75 10 76 73</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\RTE\Device\ARMCM3\startup_ARMCM3.s</name>
+            <outputs>
+                <tool>
+                    <name>AARM</name>
+                    <file> 39</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\CMSIS\RTOS2\FreeRTOS\Source\os_systick.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 28</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 16</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 30 54 5 18 6 47 40 91 33 59 48 50 56 55 51 41</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\..\..\..\IAR-CMSIS-Packs\ARM\CMSIS-FreeRTOS\10.3.1-dev0\Source\event_groups.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 37</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 62</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 49 5 18 6 47 40 45 43 61 46 54 77 91 33 59 48 50 56 55 51 41 29 60 70 65 64 36 85 7 83 12 75 10 76 21</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>[ROOT_NODE]</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 8 13</file>
+                </tool>
+            </outputs>
+        </file>
+    </configuration>
+    <configuration>
+        <name>Release</name>
+        <outputs />
+        <forcedrebuild>
+            <name>[MULTI_TOOL]</name>
+            <tool>ILINK</tool>
+        </forcedrebuild>
+    </configuration>
+</project>
