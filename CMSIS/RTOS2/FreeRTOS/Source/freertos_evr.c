@@ -1076,6 +1076,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReceive (/*StreamBuffer_t*/void *pxStreamB
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceive, (uint32_t)pxStreamBuffer, xReceivedLength);
 #else
   (void)pxStreamBuffer;
+  (void)xReceivedLength;
 #endif
 }
 #endif
@@ -1096,6 +1097,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr (/*StreamBuffer_t*/void *px
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr, (uint32_t)pxStreamBuffer, xReceivedLength);
 #else
   (void)pxStreamBuffer;
+  (void)xReceivedLength;
 #endif
 }
 #endif
