@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2020 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -465,14 +465,18 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     }
 
     if (mem == 1) {
-      hTask = xTaskCreateStatic ((TaskFunction_t)func, name, stack, argument, prio, (StackType_t  *)attr->stack_mem,
-                                                                                    (StaticTask_t *)attr->cb_mem);
+      #if (configSUPPORT_STATIC_ALLOCATION == 1)
+        hTask = xTaskCreateStatic ((TaskFunction_t)func, name, stack, argument, prio, (StackType_t  *)attr->stack_mem,
+                                                                                      (StaticTask_t *)attr->cb_mem);
+      #endif
     }
     else {
       if (mem == 0) {
-        if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &hTask) != pdPASS) {
-          hTask = NULL;
-        }
+        #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+          if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &hTask) != pdPASS) {
+            hTask = NULL;
+          }
+        #endif
       }
     }
   }
@@ -580,6 +584,7 @@ osStatus_t osThreadYield (void) {
   return (stat);
 }
 
+#if (configUSE_OS2_THREAD_SUSPEND_RESUME == 1)
 osStatus_t osThreadSuspend (osThreadId_t thread_id) {
   TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
@@ -615,6 +620,7 @@ osStatus_t osThreadResume (osThreadId_t thread_id) {
 
   return (stat);
 }
+#endif /* (configUSE_OS2_THREAD_SUSPEND_RESUME == 1) */
 
 __NO_RETURN void osThreadExit (void) {
 #ifndef USE_FreeRTOS_HEAP_1
@@ -664,6 +670,7 @@ uint32_t osThreadGetCount (void) {
   return (count);
 }
 
+#if (configUSE_OS2_THREAD_ENUMERATE == 1)
 uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
   uint32_t i, count;
   TaskStatus_t *task;
@@ -691,7 +698,9 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 
   return (count);
 }
+#endif /* (configUSE_OS2_THREAD_ENUMERATE == 1) */
 
+#if (configUSE_OS2_THREAD_FLAGS == 1)
 uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
   TaskHandle_t hTask = (TaskHandle_t)thread_id;
   uint32_t rflags;
@@ -842,6 +851,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
   /* Return flags before clearing */
   return (rflags);
 }
+#endif /* (configUSE_OS2_THREAD_FLAGS == 1) */
 
 osStatus_t osDelay (uint32_t ticks) {
   osStatus_t stat;
@@ -889,6 +899,7 @@ osStatus_t osDelayUntil (uint32_t ticks) {
 }
 
 /*---------------------------------------------------------------------------*/
+#if (configUSE_OS2_TIMER == 1)
 
 static void TimerCallback (TimerHandle_t hTimer) {
   TimerCallback_t *callb;
@@ -945,12 +956,20 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       }
 
       if (mem == 1) {
-        hTimer = xTimerCreateStatic (name, 1, reload, callb, TimerCallback, (StaticTimer_t *)attr->cb_mem);
+        #if (configSUPPORT_STATIC_ALLOCATION == 1)
+          hTimer = xTimerCreateStatic (name, 1, reload, callb, TimerCallback, (StaticTimer_t *)attr->cb_mem);
+        #endif
       }
       else {
         if (mem == 0) {
-          hTimer = xTimerCreate (name, 1, reload, callb, TimerCallback);
+          #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+            hTimer = xTimerCreate (name, 1, reload, callb, TimerCallback);
+          #endif
         }
+      }
+
+      if ((hTimer == NULL) && (callb != NULL)) {
+        vPortFree (callb);
       }
     }
   }
@@ -1059,6 +1078,7 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
 
   return (stat);
 }
+#endif /* (configUSE_OS2_TIMER == 1) */
 
 /*---------------------------------------------------------------------------*/
 
@@ -1086,11 +1106,15 @@ osEventFlagsId_t osEventFlagsNew (const osEventFlagsAttr_t *attr) {
     }
 
     if (mem == 1) {
+      #if (configSUPPORT_STATIC_ALLOCATION == 1)
       hEventGroup = xEventGroupCreateStatic (attr->cb_mem);
+      #endif
     }
     else {
       if (mem == 0) {
-        hEventGroup = xEventGroupCreate();
+        #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+          hEventGroup = xEventGroupCreate();
+        #endif
       }
     }
   }
@@ -1107,6 +1131,11 @@ uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
+  #if (configUSE_OS2_EVENTFLAGS_FROM_ISR == 0)
+    (void)yield;
+    /* Enable timers and xTimerPendFunctionCall function to support osEventFlagsSet from ISR */
+    rflags = (uint32_t)osErrorResource;
+  #else
     yield = pdFALSE;
 
     if (xEventGroupSetBitsFromISR (hEventGroup, (EventBits_t)flags, &yield) == pdFAIL) {
@@ -1115,6 +1144,7 @@ uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
       rflags = flags;
       portYIELD_FROM_ISR (yield);
     }
+  #endif
   }
   else {
     rflags = xEventGroupSetBits (hEventGroup, (EventBits_t)flags);
@@ -1131,11 +1161,16 @@ uint32_t osEventFlagsClear (osEventFlagsId_t ef_id, uint32_t flags) {
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IS_IRQ()) {
+  #if (configUSE_OS2_EVENTFLAGS_FROM_ISR == 0)
+    /* Enable timers and xTimerPendFunctionCall function to support osEventFlagsSet from ISR */
+    rflags = (uint32_t)osErrorResource;
+  #else
     rflags = xEventGroupGetBitsFromISR (hEventGroup);
 
     if (xEventGroupClearBitsFromISR (hEventGroup, (EventBits_t)flags) == pdFAIL) {
       rflags = (uint32_t)osErrorResource;
     }
+  #endif
   }
   else {
     rflags = xEventGroupClearBits (hEventGroup, (EventBits_t)flags);
@@ -1234,6 +1269,7 @@ osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
 }
 
 /*---------------------------------------------------------------------------*/
+#if (configUSE_OS2_MUTEX == 1)
 
 osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
   SemaphoreHandle_t hMutex;
@@ -1277,20 +1313,28 @@ osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
       }
 
       if (mem == 1) {
-        if (rmtx != 0U) {
-          hMutex = xSemaphoreCreateRecursiveMutexStatic (attr->cb_mem);
-        }
-        else {
-          hMutex = xSemaphoreCreateMutexStatic (attr->cb_mem);
-        }
+        #if (configSUPPORT_STATIC_ALLOCATION == 1)
+          if (rmtx != 0U) {
+            #if (configUSE_RECURSIVE_MUTEXES == 1)
+            hMutex = xSemaphoreCreateRecursiveMutexStatic (attr->cb_mem);
+            #endif
+          }
+          else {
+            hMutex = xSemaphoreCreateMutexStatic (attr->cb_mem);
+          }
+        #endif
       }
       else {
         if (mem == 0) {
-          if (rmtx != 0U) {
-            hMutex = xSemaphoreCreateRecursiveMutex ();
-          } else {
-            hMutex = xSemaphoreCreateMutex ();
-          }
+          #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+            if (rmtx != 0U) {
+              #if (configUSE_RECURSIVE_MUTEXES == 1)
+              hMutex = xSemaphoreCreateRecursiveMutex ();
+              #endif
+            } else {
+              hMutex = xSemaphoreCreateMutex ();
+            }
+          #endif
         }
       }
 
@@ -1333,6 +1377,7 @@ osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
   }
   else {
     if (rmtx != 0U) {
+      #if (configUSE_RECURSIVE_MUTEXES == 1)
       if (xSemaphoreTakeRecursive (hMutex, timeout) != pdPASS) {
         if (timeout != 0U) {
           stat = osErrorTimeout;
@@ -1340,6 +1385,7 @@ osStatus_t osMutexAcquire (osMutexId_t mutex_id, uint32_t timeout) {
           stat = osErrorResource;
         }
       }
+      #endif
     }
     else {
       if (xSemaphoreTake (hMutex, timeout) != pdPASS) {
@@ -1374,9 +1420,11 @@ osStatus_t osMutexRelease (osMutexId_t mutex_id) {
   }
   else {
     if (rmtx != 0U) {
+      #if (configUSE_RECURSIVE_MUTEXES == 1)
       if (xSemaphoreGiveRecursive (hMutex) != pdPASS) {
         stat = osErrorResource;
       }
+      #endif
     }
     else {
       if (xSemaphoreGive (hMutex) != pdPASS) {
@@ -1429,6 +1477,7 @@ osStatus_t osMutexDelete (osMutexId_t mutex_id) {
 
   return (stat);
 }
+#endif /* (configUSE_OS2_MUTEX == 1) */
 
 /*---------------------------------------------------------------------------*/
 
@@ -1461,10 +1510,14 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
     if (mem != -1) {
       if (max_count == 1U) {
         if (mem == 1) {
-          hSemaphore = xSemaphoreCreateBinaryStatic ((StaticSemaphore_t *)attr->cb_mem);
+          #if (configSUPPORT_STATIC_ALLOCATION == 1)
+            hSemaphore = xSemaphoreCreateBinaryStatic ((StaticSemaphore_t *)attr->cb_mem);
+          #endif
         }
         else {
-          hSemaphore = xSemaphoreCreateBinary();
+          #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+            hSemaphore = xSemaphoreCreateBinary();
+          #endif
         }
 
         if ((hSemaphore != NULL) && (initial_count != 0U)) {
@@ -1476,10 +1529,14 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
       }
       else {
         if (mem == 1) {
-          hSemaphore = xSemaphoreCreateCountingStatic (max_count, initial_count, (StaticSemaphore_t *)attr->cb_mem);
+          #if (configSUPPORT_STATIC_ALLOCATION == 1)
+            hSemaphore = xSemaphoreCreateCountingStatic (max_count, initial_count, (StaticSemaphore_t *)attr->cb_mem);
+          #endif
         }
         else {
-          hSemaphore = xSemaphoreCreateCounting (max_count, initial_count);
+          #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+            hSemaphore = xSemaphoreCreateCounting (max_count, initial_count);
+          #endif
         }
       }
       
@@ -1637,11 +1694,15 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
     }
 
     if (mem == 1) {
-      hQueue = xQueueCreateStatic (msg_count, msg_size, attr->mq_mem, attr->cb_mem);
+      #if (configSUPPORT_STATIC_ALLOCATION == 1)
+        hQueue = xQueueCreateStatic (msg_count, msg_size, attr->mq_mem, attr->cb_mem);
+      #endif
     }
     else {
       if (mem == 0) {
-        hQueue = xQueueCreate (msg_count, msg_size);
+        #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+          hQueue = xQueueCreate (msg_count, msg_size);
+        #endif
       }
     }
 
@@ -1868,7 +1929,6 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
   const char *name;
   int32_t mem_cb, mem_mp;
   uint32_t sz;
-  SemaphoreHandle_t hSemaphore;
 
   if (IS_IRQ()) {
     mp = NULL;
@@ -1929,9 +1989,15 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
 
     if (mp != NULL) {
       /* Create a semaphore (max count == initial count == block_count) */
-      hSemaphore = xSemaphoreCreateCountingStatic (block_count, block_count, &mp->sem);
+      #if (configSUPPORT_STATIC_ALLOCATION == 1)
+        mp->sem = xSemaphoreCreateCountingStatic (block_count, block_count, &mp->mem_sem);
+      #elif (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+        mp->sem = xSemaphoreCreateCounting (block_count, block_count);
+      #else
+        mp->sem == NULL;
+      #endif
 
-      if (hSemaphore == (SemaphoreHandle_t)&mp->sem) {
+      if (mp->sem != NULL) {
         /* Setup memory array */
         if (mem_mp == 0) {
           mp->mem_arr = pvPortMalloc (sz);
@@ -2009,7 +2075,7 @@ void *osMemoryPoolAlloc (osMemoryPoolId_t mp_id, uint32_t timeout) {
     if ((mp->status & MPOOL_STATUS) == MPOOL_STATUS) {
       if (IS_IRQ()) {
         if (timeout == 0U) {
-          if (xSemaphoreTakeFromISR ((SemaphoreHandle_t)&mp->sem, NULL) == pdTRUE) {
+          if (xSemaphoreTakeFromISR (mp->sem, NULL) == pdTRUE) {
             if ((mp->status & MPOOL_STATUS) == MPOOL_STATUS) {
               isrm  = taskENTER_CRITICAL_FROM_ISR();
 
@@ -2027,7 +2093,7 @@ void *osMemoryPoolAlloc (osMemoryPoolId_t mp_id, uint32_t timeout) {
         }
       }
       else {
-        if (xSemaphoreTake ((SemaphoreHandle_t)&mp->sem, timeout) == pdTRUE) {
+        if (xSemaphoreTake (mp->sem, (TickType_t)timeout) == pdTRUE) {
           if ((mp->status & MPOOL_STATUS) == MPOOL_STATUS) {
             taskENTER_CRITICAL();
 
@@ -2074,7 +2140,7 @@ osStatus_t osMemoryPoolFree (osMemoryPoolId_t mp_id, void *block) {
       stat = osOK;
 
       if (IS_IRQ()) {
-        if (uxSemaphoreGetCountFromISR ((SemaphoreHandle_t)&mp->sem) == mp->bl_cnt) {
+        if (uxSemaphoreGetCountFromISR (mp->sem) == mp->bl_cnt) {
           stat = osErrorResource;
         }
         else {
@@ -2086,12 +2152,12 @@ osStatus_t osMemoryPoolFree (osMemoryPoolId_t mp_id, void *block) {
           taskEXIT_CRITICAL_FROM_ISR(isrm);
 
           yield = pdFALSE;
-          xSemaphoreGiveFromISR ((SemaphoreHandle_t)&mp->sem, &yield);
+          xSemaphoreGiveFromISR (mp->sem, &yield);
           portYIELD_FROM_ISR (yield);
         }
       }
       else {
-        if (uxSemaphoreGetCount ((SemaphoreHandle_t)&mp->sem) == mp->bl_cnt) {
+        if (uxSemaphoreGetCount (mp->sem) == mp->bl_cnt) {
           stat = osErrorResource;
         }
         else {
@@ -2102,7 +2168,7 @@ osStatus_t osMemoryPoolFree (osMemoryPoolId_t mp_id, void *block) {
 
           taskEXIT_CRITICAL();
 
-          xSemaphoreGive ((SemaphoreHandle_t)&mp->sem);
+          xSemaphoreGive (mp->sem);
         }
       }
     }
@@ -2176,9 +2242,9 @@ uint32_t osMemoryPoolGetCount (osMemoryPoolId_t mp_id) {
     }
     else {
       if (IS_IRQ()) {
-        n = uxSemaphoreGetCountFromISR ((SemaphoreHandle_t)&mp->sem);
+        n = uxSemaphoreGetCountFromISR (mp->sem);
       } else {
-        n = uxSemaphoreGetCount        ((SemaphoreHandle_t)&mp->sem);
+        n = uxSemaphoreGetCount        (mp->sem);
       }
 
       n = mp->bl_cnt - n;
@@ -2206,9 +2272,9 @@ uint32_t osMemoryPoolGetSpace (osMemoryPoolId_t mp_id) {
     }
     else {
       if (IS_IRQ()) {
-        n = uxSemaphoreGetCountFromISR ((SemaphoreHandle_t)&mp->sem);
+        n = uxSemaphoreGetCountFromISR (mp->sem);
       } else {
-        n = uxSemaphoreGetCount        ((SemaphoreHandle_t)&mp->sem);
+        n = uxSemaphoreGetCount        (mp->sem);
       }
     }
   }
@@ -2237,7 +2303,7 @@ osStatus_t osMemoryPoolDelete (osMemoryPoolId_t mp_id) {
     mp->status  = mp->status & 3U;
 
     /* Wake-up tasks waiting for pool semaphore */
-    while (xSemaphoreGive ((SemaphoreHandle_t)&mp->sem) == pdTRUE);
+    while (xSemaphoreGive (mp->sem) == pdTRUE);
 
     mp->head    = NULL;
     mp->bl_sz   = 0U;
@@ -2264,7 +2330,7 @@ osStatus_t osMemoryPoolDelete (osMemoryPoolId_t mp_id) {
   Create new block given according to the current block index.
 */
 static void *CreateBlock (MemPool_t *mp) {
-  MPOOL_BLOCK *p = NULL;
+  MemPoolBlock_t *p = NULL;
 
   if (mp->n < mp->bl_cnt) {
     /* Unallocated blocks exist, set pointer to new block */
@@ -2281,7 +2347,7 @@ static void *CreateBlock (MemPool_t *mp) {
   Allocate a block by reading the list of free blocks.
 */
 static void *AllocBlock (MemPool_t *mp) {
-  MPOOL_BLOCK *p = NULL;
+  MemPoolBlock_t *p = NULL;
 
   if (mp->head != NULL) {
     /* List of free block exists, get head block */
@@ -2298,7 +2364,7 @@ static void *AllocBlock (MemPool_t *mp) {
   Free block by putting it to the list of free blocks.
 */
 static void FreeBlock (MemPool_t *mp, void *block) {
-  MPOOL_BLOCK *p = block;
+  MemPoolBlock_t *p = block;
 
   /* Store current head into block memory space */
   p->next = mp->head;
@@ -2356,7 +2422,7 @@ __WEAK void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTa
 #endif
 
 /*---------------------------------------------------------------------------*/
-
+#if (configSUPPORT_STATIC_ALLOCATION == 1)
 /* External Idle and Timer task static memory allocation functions */
 extern void vApplicationGetIdleTaskMemory  (StaticTask_t **ppxIdleTaskTCBBuffer,  StackType_t **ppxIdleTaskStackBuffer,  uint32_t *pulIdleTaskStackSize);
 extern void vApplicationGetTimerTaskMemory (StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
@@ -2388,3 +2454,4 @@ __WEAK void vApplicationGetTimerTaskMemory (StaticTask_t **ppxTimerTaskTCBBuffer
   *ppxTimerTaskStackBuffer = &Timer_Stack[0];
   *pulTimerTaskStackSize   = (uint32_t)configTIMER_TASK_STACK_DEPTH;
 }
+#endif
