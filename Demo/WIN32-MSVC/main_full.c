@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.3.1
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -193,11 +193,9 @@ int main_full( void )
 	vStartRecursiveMutexTasks();
 	vStartCountingSemaphoreTasks();
 	vStartDynamicPriorityTasks();
-	vStartQueueSetTasks();
 	vStartQueueOverwriteTask( mainQUEUE_OVERWRITE_PRIORITY );
 	vStartEventGroupTasks();
 	vStartInterruptSemaphoreTasks();
-	vStartQueueSetPollingTask();
 	vCreateBlockTimeTasks();
 	vCreateAbortDelayTasks();
 	xTaskCreate( prvDemoQueueSpaceFunctions, "QSpace", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
@@ -208,6 +206,13 @@ int main_full( void )
 	vStartStreamBufferTasks();
 	vStartStreamBufferInterruptDemo();
 	vStartMessageBufferAMPTasks( configMINIMAL_STACK_SIZE );
+
+	#if( configUSE_QUEUE_SETS == 1 )
+	{
+		vStartQueueSetTasks();
+		vStartQueueSetPollingTask();
+	}
+	#endif
 
 	#if( configSUPPORT_STATIC_ALLOCATION == 1 )
 	{
@@ -244,7 +249,8 @@ int main_full( void )
 static void prvCheckTask( void *pvParameters )
 {
 TickType_t xNextWakeTime;
-const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
+const TickType_t xCycleFrequency = pdMS_TO_TICKS( 5000UL );
+HeapStats_t xHeapStats;
 
 	/* Just to remove compiler warning. */
 	( void ) pvParameters;
@@ -332,17 +338,9 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 		{
 			pcStatusMessage = "Error: Dynamic";
 		}
-		else if( xAreQueueSetTasksStillRunning() != pdPASS )
-		{
-			pcStatusMessage = "Error: Queue set";
-		}
 		else if( xIsQueueOverwriteTaskStillRunning() != pdPASS )
 		{
 			pcStatusMessage = "Error: Queue overwrite";
-		}
-		else if( xAreQueueSetPollTasksStillRunning() != pdPASS )
-		{
-			pcStatusMessage = "Error: Queue set polling";
 		}
 		else if( xAreBlockTimeTestTasksStillRunning() != pdPASS )
 		{
@@ -361,6 +359,17 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 			pcStatusMessage = "Error: Message buffer AMP";
 		}
 
+		#if( configUSE_QUEUE_SETS == 1 )
+			else if( xAreQueueSetTasksStillRunning() != pdPASS )
+			{
+				pcStatusMessage = "Error: Queue set";
+			}
+			else if( xAreQueueSetPollTasksStillRunning() != pdPASS )
+			{
+				pcStatusMessage = "Error: Queue set polling";
+			}
+		#endif
+
 		#if( configSUPPORT_STATIC_ALLOCATION == 1 )
 			else if( xAreStaticAllocationTasksStillRunning() != pdPASS )
 			{
@@ -370,10 +379,17 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 
 		/* This is the only task that uses stdout so its ok to call printf()
 		directly. */
-		printf( "%s - tick count %zu - free heap %zu - min free heap %zu\r\n", pcStatusMessage,
-																			   xTaskGetTickCount(),
-																			   xPortGetFreeHeapSize(),
-																			   xPortGetMinimumEverFreeHeapSize() );
+		vPortGetHeapStats( &xHeapStats );
+
+		configASSERT( xHeapStats.xAvailableHeapSpaceInBytes == xPortGetFreeHeapSize() );
+		configASSERT( xHeapStats.xMinimumEverFreeBytesRemaining == xPortGetMinimumEverFreeHeapSize() );
+
+		printf( "%s - tick count %zu - free heap %zu - min free heap %zu - largest free block %zu \r\n",
+			pcStatusMessage,
+			xTaskGetTickCount(),
+			xHeapStats.xAvailableHeapSpaceInBytes,
+			xHeapStats.xMinimumEverFreeBytesRemaining,
+			xHeapStats.xSizeOfLargestFreeBlockInBytes );
 	}
 }
 /*-----------------------------------------------------------*/
@@ -463,10 +479,14 @@ TaskHandle_t xTimerTask;
 	/* Call the periodic queue overwrite from ISR demo. */
 	vQueueOverwritePeriodicISRDemo();
 
-	/* Write to a queue that is in use as part of the queue set demo to
-	demonstrate using queue sets from an ISR. */
-	vQueueSetAccessQueueSetFromISR();
-	vQueueSetPollingInterruptAccess();
+	#if( configUSE_QUEUE_SETS == 1 ) /* Remove the tests if queue sets are not defined. */
+	{
+		/* Write to a queue that is in use as part of the queue set demo to
+		demonstrate using queue sets from an ISR. */
+		vQueueSetAccessQueueSetFromISR();
+		vQueueSetPollingInterruptAccess();
+	}
+	#endif
 
 	/* Exercise event groups from interrupts. */
 	vPeriodicEventGroupsProcessing();

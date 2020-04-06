@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2020 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -29,26 +29,26 @@
 
 /* Memory Pool implementation definitions */
 #define MPOOL_STATUS              0x5EED0000U
-#define MPOOL_SEM                 StaticSemaphore_t
 
 /* Memory Block header */
 typedef struct {
   void *next;                   /* Pointer to next block  */
-} MPOOL_BLOCK;
+} MemPoolBlock_t;
 
 /* Memory Pool control block */
 typedef struct MemPoolDef_t {
-  MPOOL_BLOCK *head;            /* Pointer to head block  */
-  MPOOL_SEM    sem;             /* Pool semaphore object  */
-  uint8_t     *mem_arr;         /* Pool memory array      */
-  uint32_t     mem_sz;          /* Pool memory array size */
-  const
-  char        *name;            /* Pointer to name string */
-  uint32_t     bl_sz;           /* Size of a single block */
-  uint32_t     bl_cnt;          /* Number of blocks       */
-  uint32_t     n;               /* Block allocation index */
-  volatile
-  uint32_t     status;          /* Object status flags    */
+  MemPoolBlock_t    *head;      /* Pointer to head block   */
+  SemaphoreHandle_t  sem;       /* Pool semaphore handle   */
+  uint8_t           *mem_arr;   /* Pool memory array       */
+  uint32_t           mem_sz;    /* Pool memory array size  */
+  const char        *name;      /* Pointer to name string  */
+  uint32_t           bl_sz;     /* Size of a single block  */
+  uint32_t           bl_cnt;    /* Number of blocks        */
+  uint32_t           n;         /* Block allocation index  */
+  volatile uint32_t  status;    /* Object status flags     */
+#if (configSUPPORT_STATIC_ALLOCATION == 1)
+  StaticSemaphore_t  mem_sem;   /* Semaphore object memory */
+#endif
 } MemPool_t;
 
 /* No need to hide static object type, just align to coding style */

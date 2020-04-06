@@ -57,7 +57,31 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
-      <td>10.3.1</td>
+      <td>10.3.1-dev2</td>
+      <td>
+        <p><b>FreeRTOS V10.3.1</b></p>
+        <p>Development version:
+        <ul>
+          <li>Pack updated to FreeRTOS V10.3.1
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>10.3.1-dev1</td>
+      <td>
+        <p><b>FreeRTOS V10.2.1</b></p>
+        <p>Development version:
+        <ul>
+          <li>Pack description updated based on feedback:
+            <br>-- Fixed conditions for Cortex-M0 and Cortex-M0+ ports
+            <br>-- Aligned conditions for Cortex-A9 port to improve readability
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>10.3.1-dev0</td>
       <td>
         <p><b>FreeRTOS V10.2.1</b></p>
         <p>Development version:

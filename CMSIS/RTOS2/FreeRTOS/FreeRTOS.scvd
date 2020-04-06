@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS-FreeRTOS" version="10.3.0"/>
+  <component name="CMSIS-FreeRTOS" version="10.3.1"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -181,7 +181,7 @@
       <read name="xYieldPending"          type="uint32_t" symbol="tasks.c/xYieldPending"/>
       <read name="xTickCount"             type="uint32_t" symbol="tasks.c/xTickCount"/>
       <read name="xNumOfOverflows"        type="uint32_t" symbol="tasks.c/xNumOfOverflows"/>
-      <read name="uxPendedTicks"          type="uint32_t" symbol="tasks.c/uxPendedTicks"/>
+      <read name="xPendedTicks"           type="uint32_t" symbol="tasks.c/xPendedTicks"/>
       <read name="pxCurrentTCB"           type="uint32_t" symbol="tasks.c/pxCurrentTCB"/>
       <read name="uxCurrentNumberOfTasks" type="uint32_t" symbol="tasks.c/uxCurrentNumberOfTasks"/>
 
@@ -550,7 +550,7 @@
       <out name="FreeRTOS RTOS">
         <item property="Kernel" value="">
           <item property="Scheduler State"      value="%t[(CV_En &amp;&amp; xSchedulerRunning) ? &quot;Running&quot; : &quot;Not running&quot;]"/>
-          <item property="Tick Pending"         value="%d[uxPendedTicks]"          cond="CV_En &amp;&amp; uxPendedTicks"/>
+          <item property="Tick Pending"         value="%d[xPendedTicks]"           cond="CV_En &amp;&amp; xPendedTicks"/>
           <item property="Tick Count"           value="%d[xTickCount]"             cond="CV_En"/>
           <item property="Tick Count Overflows" value="%d[xNumOfOverflows]"        cond="CV_En &amp;&amp; xNumOfOverflows"/>
           <item property="Task Count"           value="%d[uxCurrentNumberOfTasks]" cond="CV_En"/>

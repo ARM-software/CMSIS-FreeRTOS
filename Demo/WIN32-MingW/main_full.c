@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.3.1
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -173,7 +173,7 @@ static void prvPermanentlyBlockingNotificationTask( void *pvParameters );
 
 /*
  * The test function and callback function used when exercising the timer AP
- * function that changes the timer's autoreload mode.
+ * function that changes the timer's auto-reload mode.
  */
 static void prvDemonstrateChangingTimerReloadMode( void *pvParameters );
 static void prvReloadModeTestTimerCallback( TimerHandle_t xTimer );
@@ -260,6 +260,7 @@ static void prvCheckTask( void *pvParameters )
 {
 TickType_t xNextWakeTime;
 const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
+HeapStats_t xHeapStats;
 
 	/* Just to remove compiler warning. */
 	( void ) pvParameters;
@@ -385,10 +386,19 @@ const TickType_t xCycleFrequency = pdMS_TO_TICKS( 2500UL );
 
 		/* This is the only task that uses stdout so its ok to call printf()
 		directly. */
-		printf( "%s - tick count %u - free heap %u - min free heap %u\r\n", pcStatusMessage,
-																			   xTaskGetTickCount(),
-																			   xPortGetFreeHeapSize(),
-																			   xPortGetMinimumEverFreeHeapSize() );
+		vPortGetHeapStats( &xHeapStats );
+
+		configASSERT( xHeapStats.xAvailableHeapSpaceInBytes == xPortGetFreeHeapSize() );
+		configASSERT( xHeapStats.xMinimumEverFreeBytesRemaining == xPortGetMinimumEverFreeHeapSize() );
+
+		printf( "%s - tick count %u - free heap %u - min free heap %u - largest free block %u - number of free blocks %u\r\n",
+					pcStatusMessage,
+					xTaskGetTickCount(),
+					xHeapStats.xAvailableHeapSpaceInBytes,
+					xHeapStats.xMinimumEverFreeBytesRemaining,
+					xHeapStats.xSizeOfLargestFreeBlockInBytes,
+					xHeapStats.xNumberOfFreeBlocks );
+
 		fflush( stdout );
 	}
 }
@@ -617,8 +627,8 @@ static portBASE_TYPE xPerformedOneShotTests = pdFALSE;
 TaskHandle_t xTestTask;
 TaskStatus_t xTaskInfo;
 extern StackType_t uxTimerTaskStack[];
-static TickType_t xLastIdleExecutionTime = 0;
-TickType_t xIdleExecutionTime;
+static uint32_t ulLastIdleExecutionTime = 0;
+uint32_t ulIdleExecutionTime;
 
 	/* Demonstrate the use of the xTimerGetTimerDaemonTaskHandle() and
 	xTaskGetIdleTaskHandle() functions.  Also try using the function that sets
@@ -718,12 +728,12 @@ TickType_t xIdleExecutionTime;
 		}
 	}
 
-	xIdleExecutionTime = xTaskGetIdleRunTimeCounter();
-	if( xIdleExecutionTime == xLastIdleExecutionTime )
+	ulIdleExecutionTime = ulTaskGetIdleRunTimeCounter();
+	if( ulIdleExecutionTime == ulLastIdleExecutionTime )
 	{
 		pcStatusMessage = "Error: Total amount of Idle task execution time did not change";
 	}
-	xLastIdleExecutionTime = xIdleExecutionTime;
+	ulLastIdleExecutionTime = ulIdleExecutionTime;
 }
 /*-----------------------------------------------------------*/
 
@@ -856,7 +866,7 @@ const TickType_t x100ms = pdMS_TO_TICKS( 100UL );
 
 	xTimer = xTimerCreate( 	pcTimerName,
 							x100ms,
-							pdFALSE, /* Created as a one shot timer. */
+							pdFALSE, /* Created as a one-shot timer. */
 							0,
 							prvReloadModeTestTimerCallback );
 	configASSERT( xTimer );
@@ -865,7 +875,7 @@ const TickType_t x100ms = pdMS_TO_TICKS( 100UL );
 	configASSERT( strcmp( pcTimerName, pcTimerGetName( xTimer ) ) == 0 );
 	configASSERT( xTimerGetPeriod( xTimer ) == x100ms );
 
-	/* Timer was created as a one shot timer.  Its callback just increments the
+	/* Timer was created as a one-shot timer.  Its callback just increments the
 	timer's ID - so set the ID to 0, let the timer run for a number of timeout
 	periods, then check the timer has only executed once. */
 	vTimerSetTimerID( xTimer, ( void * ) 0 );
@@ -873,7 +883,7 @@ const TickType_t x100ms = pdMS_TO_TICKS( 100UL );
 	vTaskDelay( 3UL * x100ms );
 	configASSERT( ( ( uint32_t ) ( pvTimerGetTimerID( xTimer ) ) ) == 1UL );
 
-	/* Now change the timer to be an autoreload timer and check it executes
+	/* Now change the timer to be an auto-reload timer and check it executes
 	the expected number of times. */
 	vTimerSetReloadMode( xTimer, pdTRUE );
 	vTimerSetTimerID( xTimer, ( void * ) 0 );
@@ -882,7 +892,7 @@ const TickType_t x100ms = pdMS_TO_TICKS( 100UL );
 	configASSERT( ( uint32_t ) ( pvTimerGetTimerID( xTimer ) ) == 3UL );
 	configASSERT( xTimerStop( xTimer, 0 ) != pdFAIL );
 
-	/* Now change the timer back to be a one shot timer and check it only
+	/* Now change the timer back to be a one-shot timer and check it only
 	executes once. */
 	vTimerSetReloadMode( xTimer, pdFALSE );
 	vTimerSetTimerID( xTimer, ( void * ) 0 );
