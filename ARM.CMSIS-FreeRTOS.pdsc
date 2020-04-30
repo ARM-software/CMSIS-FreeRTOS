@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.4.0" date="2020-04-30">
+    <release version="10.3.1" date="2020-04-30">
       FreeRTOS 10.3.1
       Maintenance for CMSIS 5.7.0:
       - Enhanced kernel configuration handling and checking when using CMSIS-RTOS2 API
