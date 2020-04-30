@@ -8,18 +8,12 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.3.1-dev2">
-      Updated to FreeRTOS 10.3.1
-    </release>
-    <release version="10.3.1-dev1">
-      Pack description updated based on feedback:
-       - Fixed conditions for Cortex-M0 and Cortex-M0+ ports
-       - Aligned conditions for Cortex-A9 port to improve readability
-    </release>
-    <release version="10.3.1-dev0">
-      Pack description updated to avoid component identification issues:
-       - Added variant tag for the CMSIS::RTOS2::FreeRTOS component
-       - Merged description for the RTOS::Core::Cortex-M MPU component
+    <release version="10.4.0-rc0">
+      FreeRTOS 10.3.1
+      Maintenance for CMSIS 5.7.0:
+      - Enhanced kernel configuration handling and checking when using CMSIS-RTOS2 API
+      - Added CMSIS-RTOS2 Blinky example for IAR using EWARM simulator
+      - Modified pack description to avoid component identification issues
     </release>
     <release version="10.3.0" date="2019-12-04">
       FreeRTOS 10.2.1

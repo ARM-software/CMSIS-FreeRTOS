@@ -57,39 +57,14 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
-      <td>10.3.1-dev2</td>
+      <td>10.4.0</td>
       <td>
         <p><b>FreeRTOS V10.3.1</b></p>
-        <p>Development version:
+        <p>Maintenance release for CMSIS 5.7.0:
         <ul>
-          <li>Pack updated to FreeRTOS V10.3.1
-          </li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>10.3.1-dev1</td>
-      <td>
-        <p><b>FreeRTOS V10.2.1</b></p>
-        <p>Development version:
-        <ul>
-          <li>Pack description updated based on feedback:
-            <br>-- Fixed conditions for Cortex-M0 and Cortex-M0+ ports
-            <br>-- Aligned conditions for Cortex-A9 port to improve readability
-          </li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>10.3.1-dev0</td>
-      <td>
-        <p><b>FreeRTOS V10.2.1</b></p>
-        <p>Development version:
-        <ul>
-          <li>Pack description updated to avoid component identification issues:
-            <br>-- Added variant tag for the CMSIS::RTOS2::FreeRTOS component
-            <br>-- Merged description for the RTOS::Core::Cortex-M MPU component
-          </li>
+          <li>Enhanced kernel configuration handling and checking when using CMSIS-RTOS2 API</li>
+          <li>Added CMSIS-RTOS2 Blinky example for IAR using EWARM simulator</li>
+          <li>Modified pack description to avoid component identification issues</li>
         </ul>
       </td>
     </tr>
@@ -99,10 +74,10 @@ File/Directory             |Content
         <p><b>FreeRTOS V10.2.1</b></p>
         <p>Maintenance release for CMSIS 5.6.0:
         <ul>
-          <li>Added osMemoryPool functions using FreeRTOS
+          <li>Added osMemoryPool functions using FreeRTOS</li>
           <li>Corrected osEventFlagsWait flag comparison when using osFlagsWaitAll</li>
           <li>Corrected osThreadGetStackSpace return value (bytes instead of words)</li>
-          <li>Removed Cortex-A examples (available in device specific packs)
+          <li>Removed Cortex-A examples (available in device specific packs)</li>
         </ul>
       </td>
     </tr>
