@@ -1994,7 +1994,7 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
       #elif (configSUPPORT_DYNAMIC_ALLOCATION == 1)
         mp->sem = xSemaphoreCreateCounting (block_count, block_count);
       #else
-        mp->sem == NULL;
+        mp->sem = NULL;
       #endif
 
       if (mp->sem != NULL) {
