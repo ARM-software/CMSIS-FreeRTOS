@@ -2427,7 +2427,10 @@ __WEAK void vApplicationIdleHook (void){}
   Dummy implementation of the callback function vApplicationMallocFailedHook().
 */
 #if (configUSE_MALLOC_FAILED_HOOK == 1)
-__WEAK void vApplicationMallocFailedHook (void){}
+__WEAK void vApplicationMallocFailedHook (void) {
+  /* Assert when malloc failed hook is enabled but no application defined function exists */
+  configASSERT(0);
+}
 #endif
 
 /**
@@ -2444,6 +2447,8 @@ __WEAK void vApplicationDaemonTaskStartupHook (void){}
 __WEAK void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName) {
   (void)xTask;
   (void)pcTaskName;
+
+  /* Assert when stack overflow is enabled but no application defined function exists */
   configASSERT(0);
 }
 #endif
