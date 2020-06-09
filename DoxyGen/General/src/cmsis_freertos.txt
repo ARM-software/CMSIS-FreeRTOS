@@ -57,6 +57,16 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.3.2-dev0</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <ul>
+          <li>Fix osMemoryPoolNew expression use (#42)</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.3.1</td>
       <td>
         <p><b>FreeRTOS V10.3.1</b></p>

@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.3.2-dev0">
+      Active development:
+      - Fix osMemoryPoolNew expression use (#42)
+    </release>
     <release version="10.3.1" date="2020-04-30">
       FreeRTOS 10.3.1
       Maintenance for CMSIS 5.7.0:
