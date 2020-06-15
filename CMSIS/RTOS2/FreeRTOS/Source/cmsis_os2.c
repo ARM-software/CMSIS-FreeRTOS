@@ -282,15 +282,19 @@ osKernelState_t osKernelGetState (void) {
 
 osStatus_t osKernelStart (void) {
   osStatus_t stat;
+  BaseType_t state;
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
   else {
-    if (KernelState == osKernelReady) {
+    state = xTaskGetSchedulerState();
+
+    /* Start scheduler if initialized and not started before */
+    if ((state == taskSCHEDULER_NOT_STARTED) && (KernelState == osKernelReady)) {
       /* Ensure SVC priority is at the reset value */
       SVC_Setup();
-      /* Change state to enable IRQ masking check */
+      /* Change state to ensure correct API flow */
       KernelState = osKernelRunning;
       /* Start the kernel scheduler */
       vTaskStartScheduler();
