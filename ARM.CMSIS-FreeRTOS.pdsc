@@ -8,6 +8,11 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.3.2-dev1">
+      Active development:
+      - Added FreeRTOS kernel state check to osKernelInitialize and osKernelState
+      - Make source code more verbose with documented limitations (#41)
+    </release>
     <release version="10.3.2-dev0">
       Active development:
       - Fix osMemoryPoolNew expression use (#42)

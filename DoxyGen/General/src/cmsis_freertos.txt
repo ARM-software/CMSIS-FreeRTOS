@@ -57,6 +57,17 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.3.2-dev1</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <ul>
+          <li>Added FreeRTOS kernel state check to osKernelInitialize and osKernelState</li>
+          <li>Make source code more verbose with documented limitations (#41)<li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.3.2-dev0</td>
       <td>
         <p><b>Active development...</b></p>
@@ -287,6 +298,90 @@ Stream Buffer functions        | configEVR_LEVEL_STREAMBUFFER         | Define e
   
 Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder.</b>
 
+
+\section freertos_interfaces Create a mixed-interface project
+
+Using CMSIS-RTOS2 API and native FreeRTOS API simultaneously is possible and some projects do require using the native FreeRTOS API and the CMSIS-RTOS2 API at the same time. 
+Such project should be \ref cmsis_freertos "created as CMSIS-FreeRTOS project".
+
+Depending on the application requirements, FreeRTOS kernel can be started either by using FreeRTOS native API or by using CMSIS-RTOS2 API.
+
+\subsection freertos_interface_rtos2 Start the kernel using CMSIS-RTOS2 API
+
+\code
+/*
+  Application thread: Initialize and start the Application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+ 
+  // Initialize CMSIS-RTOS2
+  osKernelInitialize();
+ 
+  // Create application main thread
+  osThreadNew(app_main, NULL, NULL);
+ 
+  // Start the kernel and execute the first thread
+  osKernelStart();
+ 
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using CMSIS-RTOS2 API, FreeRTOS native API can be used with the following restrictions:
+- vTaskStartScheduler must not be called
+
+
+\subsection freertos_interface_native Start the kernel using native API
+
+\code
+/*
+  Application main thread: Initialize and start the application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+ 
+  // Setup the Event Recorder (optionally)
+  EvrFreeRTOSSetup(0);
+ 
+  // Create application main thread
+  xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
+ 
+  // Start the kernel and execute the first thread
+  vTaskStartScheduler();
+ 
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using FreeRTOS native API, CMSIS-RTOS2 API can be used without restrictions.
+
 \section cmsis_freertos_evr_config Configure Event Recorder
 
 This section describes the configuration settings for the <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank">Event Recorder</a>
@@ -424,7 +519,6 @@ The following list briefly describes the limitations and unsupported features of
   - provide the memory for control blocks for other objects in the object's attributes structure.
 - Each timer object requires additional 8 bytes of dynamic memory.
 - \c osKernelSuspend and \c osKernelResume are not supported.
-- \c osKernelGetTickCount is limited to a 32-bit return value.
 - \c osThreadDetach, \c osThreadJoin() and attribute \c osThreadJoinable are not supported (\c osThreadNew returns NULL when
   osThreadJoinable attribute is specified).
 - \c osThreadGetStackSize is not implemented.
@@ -493,7 +587,7 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osKernelResume: \token{not implemented}
    - \b osKernelStart: supported
    - \b osKernelSuspend: \token{not implemented} 
-   - \b osKernelGetTickCount: limited to 32-bit return value.
+   - \b osKernelGetTickCount: supported
    - \b osKernelGetTickFreq: supported
 
 <a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>
