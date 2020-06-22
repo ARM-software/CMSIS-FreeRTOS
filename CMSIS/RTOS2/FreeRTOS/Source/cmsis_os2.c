@@ -220,12 +220,16 @@ __STATIC_INLINE uint32_t IRQ_Context (void) {
 */
 osStatus_t osKernelInitialize (void) {
   osStatus_t stat;
+  BaseType_t state;
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
   else {
-    if (KernelState == osKernelInactive) {
+    state = xTaskGetSchedulerState();
+
+    /* Initialize if scheduler not started and not initialized before */
+    if ((state == taskSCHEDULER_NOT_STARTED) && (KernelState == osKernelInactive)) {
       #if defined(USE_TRACE_EVENT_RECORDER)
         /* Initialize the trace macro debugging output channel */
         EvrFreeRTOSSetup(0U);
