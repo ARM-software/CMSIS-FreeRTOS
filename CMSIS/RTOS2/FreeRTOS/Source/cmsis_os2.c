@@ -1407,6 +1407,12 @@ uint32_t osEventFlagsClear (osEventFlagsId_t ef_id, uint32_t flags) {
     if (xEventGroupClearBitsFromISR (hEventGroup, (EventBits_t)flags) == pdFAIL) {
       rflags = (uint32_t)osErrorResource;
     }
+    else {
+      /* xEventGroupClearBitsFromISR only registers clear operation in the timer command queue. */
+      /* Yield is required here otherwise clear operation might not execute in the right order. */
+      /* See https://github.com/FreeRTOS/FreeRTOS-Kernel/issues/93 for more info.               */
+      portYIELD_FROM_ISR (pdTRUE);
+    }
   #endif
   }
   else {

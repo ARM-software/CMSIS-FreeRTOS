@@ -57,12 +57,22 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.3.2-dev2</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <ul>
+          <li>Added workaround for xEventGroupClearBitsFromISR no yield problem</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.3.2-dev1</td>
       <td>
         <p><b>Active development...</b></p>
         <ul>
           <li>Added FreeRTOS kernel state check to osKernelInitialize and osKernelState</li>
-          <li>Make source code more verbose with documented limitations (#41)<li>
+          <li>Make source code more verbose with documented limitations (#41)</li>
         </ul>
         </p>
       </td>
