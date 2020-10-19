@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.1-dev0">
+      Active development:
+      - Updated pack to FreeRTOS 10.4.1
+    </release>
     <release version="10.3.2-dev2">
       Active development:
       - Added workaround for xEventGroupClearBitsFromISR no yield problem
@@ -842,7 +846,7 @@
       </files>
     </component>
 
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.3.1">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.4.1">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/Documentation/FreeRTOS_Reference_Manual_V10.0.0.pdf</doc>
 

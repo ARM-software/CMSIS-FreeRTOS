@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.3.1
+ * FreeRTOS Kernel V10.4.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -351,7 +351,6 @@ purposes. */
 static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 volatile uint32_t ulAdditionalOffset = 19; /* Just to prevent 'condition is always true' warnings in configASSERT(). */
 HeapStats_t xHeapStats;
-const HeapStats_t xZeroHeapStats = { 0 };
 const HeapRegion_t xHeapRegions[] =
 {
 	/* Start address with dummy offsets						Size */
@@ -370,7 +369,6 @@ const HeapRegion_t xHeapRegions[] =
 
 	/* The heap has not been initialised yet so expect stats to all be zero. */
 	vPortGetHeapStats( &xHeapStats );
-	configASSERT( memcmp( &xHeapStats, &xZeroHeapStats, sizeof( HeapStats_t ) ) == 0 );
 
 	vPortDefineHeapRegions( xHeapRegions );
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.3.1
+ * FreeRTOS Kernel V10.4.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -101,7 +101,7 @@ void SystemInit( void )
 /*-----------------------------------------------------------*/
 
 /* Stack overflow hook. */
-void vApplicationStackOverflowHook( TaskHandle_t xTask, signed char *pcTaskName )
+void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
 {
 	/* Force an assert. */
 	configASSERT( pcTaskName == 0 );
@@ -173,6 +173,7 @@ void MemManage_Handler( void )
 		" ldr r1, handler_address_const						\n"
 		" bx r1												\n"
 		"													\n"
+		" .align 4											\n"
 		" handler_address_const: .word vHandleMemoryFault	\n"
 	);
 }

@@ -30,6 +30,7 @@
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "event_groups.h"               // ARM.FreeRTOS::RTOS:Event Groups
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
+#include "timers.h"                     // ARM.FreeRTOS::RTOS:Timers
 
 #include "freertos_mpool.h"             // osMemoryPool definitions
 #include "freertos_os2.h"               // Configuration check and setup
@@ -2775,10 +2776,8 @@ static void FreeBlock (MemPool_t *mp, void *block) {
 
 /* Callback function prototypes */
 extern void vApplicationIdleHook (void);
-extern void vApplicationTickHook (void);
 extern void vApplicationMallocFailedHook (void);
 extern void vApplicationDaemonTaskStartupHook (void);
-extern void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName);
 
 /**
   Dummy implementation of the callback function vApplicationIdleHook().
@@ -2815,7 +2814,7 @@ __WEAK void vApplicationDaemonTaskStartupHook (void){}
   Dummy implementation of the callback function vApplicationStackOverflowHook().
 */
 #if (configCHECK_FOR_STACK_OVERFLOW > 0)
-__WEAK void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName) {
+__WEAK void vApplicationStackOverflowHook (TaskHandle_t xTask, char *pcTaskName) {
   (void)xTask;
   (void)pcTaskName;
 
@@ -2826,10 +2825,6 @@ __WEAK void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTa
 
 /*---------------------------------------------------------------------------*/
 #if (configSUPPORT_STATIC_ALLOCATION == 1)
-/* External Idle and Timer task static memory allocation functions */
-extern void vApplicationGetIdleTaskMemory  (StaticTask_t **ppxIdleTaskTCBBuffer,  StackType_t **ppxIdleTaskStackBuffer,  uint32_t *pulIdleTaskStackSize);
-extern void vApplicationGetTimerTaskMemory (StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
-
 /*
   vApplicationGetIdleTaskMemory gets called when configSUPPORT_STATIC_ALLOCATION
   equals to 1 and is required for static memory allocation support.

@@ -232,61 +232,65 @@ The event \b LowPowerIdleEnd is generated when task scheduler exits from the low
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t xTicksToWait)
+\fn void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait)
 \details
 The event \b TaskNotifyTakeBlock is generated when the current running task is about to block and wait to take notification.
 
 \b Value in the Event Recorder shows:
+ - \b uxIndexToWait : task notification index
  - \b xTicksToWait : wait timeout in ticks.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t ulNotifiedValue)
+\fn void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t uxIndexToWait, uint32_t ulNotifiedValue)
 \details
 The event \b TaskNotifyTake is generated when task notify take is successfully executed.
  
 \b Value in the Event Recorder shows:
+ - \b uxIndexToWait : task notification index
  - \b ulNotifiedValue : current state of the notification value.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotifyWaitBlock (uint32_t xTicksToWait)
+\fn void EvrFreeRTOSTasks_TaskNotifyWaitBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait)
 \details
 The event \b TaskNotifyWaitBlock is generated when the current running task is about to block and wait to receive notification.
 
 \b Value in the Event Recorder shows:
+ - \b uxIndexToWait : task notification index
  - \b xTicksToWait : wait timeout in ticks.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t ulNotifiedValue)
+\fn void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t uxIndexToWait, uint32_t ulNotifiedValue)
 \details
 The event \b TaskNotifyWait is generated when task notify wait is completed.
 
 \b Value in the Event Recorder shows:
+ - \b uxIndexToWait : task notification index
  - \b ulNotifiedValue : current state of the notification value.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotify (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue)
+\fn void EvrFreeRTOSTasks_TaskNotify (TCB_t xTaskToNotify, uint32_t uxIndexToWait, uint32_t eAction, uint32_t ulNotifiedValue)
 \details
 The event \b TaskNotify is generated when task notify is successfully executed.
 
 \b Value in the Event Recorder shows:
  - \b xTaskToNotify : pointer to task object handle (control block address).
- - \b ulValue : notify value.
+ - \b uxIndexToWait : task notification index
  - \b eAction : task notification action (eNotifyAction).
  - \b ulNotifiedValue : current state of the notification value.
 */
 
 /**
-\fn void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue)
+\fn void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t uxIndexToWait, uint32_t eAction, uint32_t ulNotifiedValue)
 \details
 The event \b TaskNotifyFromIsr is generated when task notify from ISR is successfully executed.
 
 \b Value in the Event Recorder shows:
  - \b xTaskToNotify : pointer to task object handle (control block address).
- - \b ulValue : notify value.
+ - \b uxIndexToWait : task notification index
  - \b eAction : task notification action (eNotifyAction).
  - \b ulNotifiedValue : current state of the notification value.
 */
@@ -298,6 +302,7 @@ The event \b TaskNotifyGiveFromIsr is generated when task notify give from ISR i
 
 \b Value in the Event Recorder shows:
  - \b xTaskToNotify : pointer to task object handle (control block address).
+ - \b uxIndexToWait : task notification index
  - \b ulNotifiedValue : current state of the notification value.
 */
 
