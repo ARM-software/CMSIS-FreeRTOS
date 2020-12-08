@@ -213,6 +213,44 @@ settings.
 \image html freertos_config_h_native.png
 
 
+\subsection native_freertos_config_prio Interrupt priority configuration
+
+FreeRTOS implements critical sections using the
+<a href="https://developer.arm.com/documentation/dui0552/a/the-cortex-m3-processor/programmers-model/core-registers?lang=en" target="_blank">BASEPRI</a>
+register (available in Armv7-M and Armv8-M architecture based devices) which masks only a subset of interrupts. This is
+configured via the \c configMAX_SYSCALL_INTERRUPT_PRIORITY setting. Therefore, it is needed to properly configure this
+setting. It is also needed to set appropriate interrupt priorities for interrupt service routines (ISR) that use RTOS
+functions. This can especially impact drivers which typically use peripheral interrupts. Normally, these use the RTOS
+directly or indirectly through registered callbacks.
+
+Arm Cortex-M cores store interrupt priority values in the most significant bits of the interrupt priority registers which
+can have a maximum of eight bits. Many implementations offer only three priority bits. These three bits are shifted up to be
+bits five, six and seven respectively. Bits zero to four can take any value, but they are usually set to one. 
+\c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx11111. This results in the following table:
+
+| \c configMAX_SYSCALL_INTERRUPT_PRIORITY | Upper three bits | Priority    |
+|:---------------------------------------:|:----------------:|:-----------:|
+| 32                                      | 001              | 1 (Highest) |
+| 64                                      | 010              | 2           |
+| 96                                      | 011              | 3           |
+| 128                                     | 100              | 4           |
+| 160                                     | 101              | 5           |
+| 196                                     | 110              | 6           |
+| 224                                     | 111              | 7 (Lowest)  |
+
+\b Example
+
+If you set \c configMAX_SYSCALL_INTERRUPT_PRIORITY to 32, then the priority of an interrupt service routine that uses RTOS
+functions must then be higher or equal to 1. This ensures that this interrupt will be masked during critical a section.
+
+A WiFi driver using the SPI interface registers a callback to SPI which is executed in an interrupt context. The callback
+function in the WiFi driver uses RTOS functions. Therefore, the SPI interrupt priority must be set to a value equal or
+higher to the FreeRTOS preempt priority, for example 1.
+
+\note For a detailed description of how FreeRTOS is using Cortex-M code registers, refer to
+<a href="https://www.freertos.org/RTOS-Cortex-M3-M4.html" target="_blank">Running the RTOS on a ARM Cortex-M Core</a>.
+
+
 \subsection native_freertos_er Add Event Recorder Visibility
 - To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
 - Open \ref native_freertos_config "FreeRTOSConfig.h" and
@@ -280,6 +318,8 @@ Use tick hook                  | configUSE_TICK_HOOK                  | Enable c
 Use daemon task startup hook   | configUSE_DAEMON_TASK_STARTUP_HOOK   | Enable callback function call when timer service starts.              |
 Use malloc failed hook         | configUSE_MALLOC_FAILED_HOOK         | Enable callback function call when out of dynamic memory.             |
 Queue registry size            | configQUEUE_REGISTRY_SIZE            | Define maximum number of queue objects registered for debug purposes. |
+
+\note Refer to \ref native_freertos_config_prio for more information on the usage of \c configMAX_SYSCALL_INTERRUPT_PRIORITY.
 
 <b> Event Recorder Configuration </b>
 
