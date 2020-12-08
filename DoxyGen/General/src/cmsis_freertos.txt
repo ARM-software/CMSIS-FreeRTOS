@@ -225,8 +225,8 @@ directly or indirectly through registered callbacks.
 
 Arm Cortex-M cores store interrupt priority values in the most significant bits of the interrupt priority registers which
 can have a maximum of eight bits. Many implementations offer only three priority bits. These three bits are shifted up to be
-bits five, six and seven respectively. Bits zero to four can take any value, but they are usually set to one. 
-\c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx11111. This results in the following table:
+bits five, six and seven respectively. 
+\c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx00000. This results in the following table:
 
 | \c configMAX_SYSCALL_INTERRUPT_PRIORITY | Upper three bits | Priority    |
 |:---------------------------------------:|:----------------:|:-----------:|
