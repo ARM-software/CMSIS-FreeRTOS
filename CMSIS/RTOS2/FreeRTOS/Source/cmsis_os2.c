@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2020 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -1548,9 +1548,6 @@ osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
   uint32_t type;
   uint32_t rmtx;
   int32_t  mem;
-  #if (configQUEUE_REGISTRY_SIZE > 0)
-  const char *name;
-  #endif
 
   hMutex = NULL;
 
@@ -1614,12 +1611,10 @@ osMutexId_t osMutexNew (const osMutexAttr_t *attr) {
 
       #if (configQUEUE_REGISTRY_SIZE > 0)
       if (hMutex != NULL) {
-        if (attr != NULL) {
-          name = attr->name;
-        } else {
-          name = NULL;
+        if ((attr != NULL) && (attr->name != NULL)) {
+          /* Only non-NULL name objects are added to the Queue Registry */
+          vQueueAddToRegistry (hMutex, attr->name);
         }
-        vQueueAddToRegistry (hMutex, name);
       }
       #endif
 
@@ -1782,9 +1777,6 @@ osStatus_t osMutexDelete (osMutexId_t mutex_id) {
 osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, const osSemaphoreAttr_t *attr) {
   SemaphoreHandle_t hSemaphore;
   int32_t mem;
-  #if (configQUEUE_REGISTRY_SIZE > 0)
-  const char *name;
-  #endif
 
   hSemaphore = NULL;
 
@@ -1842,12 +1834,10 @@ osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, cons
       
       #if (configQUEUE_REGISTRY_SIZE > 0)
       if (hSemaphore != NULL) {
-        if (attr != NULL) {
-          name = attr->name;
-        } else {
-          name = NULL;
+        if ((attr != NULL) && (attr->name != NULL)) {
+          /* Only non-NULL name objects are added to the Queue Registry */
+          vQueueAddToRegistry (hSemaphore, attr->name);
         }
-        vQueueAddToRegistry (hSemaphore, name);
       }
       #endif
     }
@@ -1993,9 +1983,6 @@ osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
 osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, const osMessageQueueAttr_t *attr) {
   QueueHandle_t hQueue;
   int32_t mem;
-  #if (configQUEUE_REGISTRY_SIZE > 0)
-  const char *name;
-  #endif
 
   hQueue = NULL;
 
@@ -2035,12 +2022,10 @@ osMessageQueueId_t osMessageQueueNew (uint32_t msg_count, uint32_t msg_size, con
 
     #if (configQUEUE_REGISTRY_SIZE > 0)
     if (hQueue != NULL) {
-      if (attr != NULL) {
-        name = attr->name;
-      } else {
-        name = NULL;
+      if ((attr != NULL) && (attr->name != NULL)) {
+        /* Only non-NULL name objects are added to the Queue Registry */
+        vQueueAddToRegistry (hQueue, attr->name);
       }
-      vQueueAddToRegistry (hQueue, name);
     }
     #endif
 

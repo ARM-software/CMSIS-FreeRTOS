@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.1-dev1">
+      Active development:
+      - Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)
+    </release>
     <release version="10.4.1-dev0">
       Active development:
       - Updated pack to FreeRTOS 10.4.1
