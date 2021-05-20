@@ -641,7 +641,9 @@ The following list briefly describes the limitations and unsupported features of
   - provide the memory for control blocks and stack in the \c osThreadAttr_t structure for threads.
   - provide the memory for control blocks and message data in the \c osMessageQueueAttr_t structure for memory queues.
   - provide the memory for control blocks for other objects in the object's attributes structure.
-- Each timer object requires additional 8 bytes of dynamic memory.
+- Each timer object requires additional 8 bytes of memory:
+  - to allocate all memory statically, provide the memory for control block of size (sizeof(StaticTimer_t) + 8 bytes)
+  - otherwise, additional 8 bytes of dynamic memory will be used
 - \c osKernelSuspend and \c osKernelResume are not supported.
 - \c osThreadDetach, \c osThreadJoin() and attribute \c osThreadJoinable are not supported (\c osThreadNew returns NULL when
   osThreadJoinable attribute is specified).

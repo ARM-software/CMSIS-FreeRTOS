@@ -1089,7 +1089,11 @@ osStatus_t osDelayUntil (uint32_t ticks) {
 static void TimerCallback (TimerHandle_t hTimer) {
   TimerCallback_t *callb;
 
+  /* Retrieve pointer to callback function and argument */
   callb = (TimerCallback_t *)pvTimerGetTimerID (hTimer);
+
+  /* Remove dynamic allocation flag */
+  callb = (TimerCallback_t *)((uint32_t)callb & ~1U);
 
   if (callb != NULL) {
     callb->func (callb->arg);
@@ -1105,12 +1109,36 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
   TimerCallback_t *callb;
   UBaseType_t reload;
   int32_t mem;
+  uint32_t callb_dyn;
 
   hTimer = NULL;
 
   if ((IRQ_Context() == 0U) && (func != NULL)) {
-    /* Allocate memory to store callback function and argument */
-    callb = pvPortMalloc (sizeof(TimerCallback_t));
+    callb     = NULL;
+    callb_dyn = 0U;
+
+    #if (configSUPPORT_STATIC_ALLOCATION == 1)
+      /* Static memory allocation is available: check if memory for control block */
+      /* is provided and if it also contains space for callback and its argument  */
+      if ((attr != NULL) && (attr->cb_mem != NULL)) {
+        if (attr->cb_size >= (sizeof(StaticTimer_t) + sizeof(TimerCallback_t))) {
+          callb = (TimerCallback_t *)((uint32_t)attr->cb_mem + sizeof(StaticTimer_t));
+        }
+      }
+    #endif
+
+    #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+      /* Dynamic memory allocation is available: if memory for callback and */
+      /* its argument is not provided, allocate it from dynamic memory pool */
+      if (callb == NULL) {
+        callb = (TimerCallback_t *)pvPortMalloc (sizeof(TimerCallback_t));
+
+        if (callb != NULL) {
+          /* Callback memory was allocated from dynamic pool, set flag */
+          callb_dyn = 1U;
+        }
+      }
+    #endif
 
     if (callb != NULL) {
       callb->func = func;
@@ -1144,6 +1172,8 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       else {
         mem = 0;
       }
+      /* Store callback memory dynamic allocation flag */
+      callb = (TimerCallback_t *)((uint32_t)callb | callb_dyn);
       /*
         TimerCallback function is always provided as a callback and is used to call application
         specified function with its argument both stored in structure callb.
@@ -1161,10 +1191,14 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
         }
       }
 
-      if ((hTimer == NULL) && (callb != NULL)) {
+      #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+      if ((hTimer == NULL) && (callb != NULL) && (callb_dyn == 1U)) {
         /* Failed to create a timer, release allocated resources */
+        callb = (TimerCallback_t *)((uint32_t)callb & ~1U);
+
         vPortFree (callb);
       }
+      #endif
     }
   }
 
@@ -1268,7 +1302,9 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
   TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
 #ifndef USE_FreeRTOS_HEAP_1
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
   TimerCallback_t *callb;
+#endif
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
@@ -1277,10 +1313,20 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
     stat = osErrorParameter;
   }
   else {
+    #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     callb = (TimerCallback_t *)pvTimerGetTimerID (hTimer);
+    #endif
 
     if (xTimerDelete (hTimer, 0) == pdPASS) {
-      vPortFree (callb);
+      #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+        if ((uint32_t)callb & 1U) {
+          /* Callback memory was allocated from dynamic pool, clear flag */
+          callb = (TimerCallback_t *)((uint32_t)callb & ~1U);
+
+          /* Return allocated memory to dynamic pool */
+          vPortFree (callb);
+        }
+      #endif
       stat = osOK;
     } else {
       stat = osErrorResource;
