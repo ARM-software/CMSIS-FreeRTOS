@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.2.0
+ * FreeRTOS Kernel V10.3.0
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -127,7 +127,7 @@
 #define INCLUDE_uxTaskPriorityGet             1
 #define INCLUDE_vTaskDelete                   1
 #define INCLUDE_vTaskSuspend                  1
-#define INCLUDE_vTaskDelayUntil               1
+#define INCLUDE_xTaskDelayUntil               1
 #define INCLUDE_vTaskDelay                    1
 #define INCLUDE_xTaskGetIdleTaskHandle        1
 #define INCLUDE_xTaskAbortDelay               1

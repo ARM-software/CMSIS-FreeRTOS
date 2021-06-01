@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\apps\Embedded Workbench 8.4\common\bin\cspybat" -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --backend -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --backend -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\apps\Embedded Workbench 8.4\common\bin\cspybat" -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" "--debug_file=%~1" --backend -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
 
 @echo off 
 :end

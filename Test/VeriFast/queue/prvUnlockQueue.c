@@ -1,5 +1,5 @@
 /*
- * FreeRTOS VeriFast Proofs
+ * FreeRTOS V202104.00
  * Copyright (C) Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -78,7 +78,7 @@ static void prvUnlockQueue( Queue_t * const pxQueue )
                             if( xTaskRemoveFromEventList( &( pxQueue->xTasksWaitingToReceive ) ) != pdFALSE )
                             {
                                 /* The task waiting has a higher priority so record that a
-                                 * context	switch is required. */
+                                 * context switch is required. */
                                 vTaskMissedYield();
                             }
                             else
