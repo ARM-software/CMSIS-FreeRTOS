@@ -1003,10 +1003,10 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
         /* Update timeout */
         td = xTaskGetTickCount() - t0;
 
-        if (td > tout) {
+        if (td > timeout) {
           tout  = 0;
         } else {
-          tout -= td;
+          tout = timeout - td;
         }
       }
       else {

@@ -8,6 +8,10 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.3-dev1">
+      Active development:
+      - Corrected timeout handling in osThreadFlagsWait (#50)
+    </release>
     <release version="10.4.3-dev0">
       Active development:
       - Updated pack to FreeRTOS 10.4.3
