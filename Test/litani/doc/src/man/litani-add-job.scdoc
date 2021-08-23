@@ -1,0 +1,158 @@
+litani-add-job(1) "" "Litani Build System"
+
+# NAME
+
+litani add-job - Add a single command with its dependencies
+
+# SYNOPSIS
+
+litani add-job --command C --pipeline-name P --ci-stage S [OPTIONS...]
+
+
+# DESCRIPTION
+
+This program adds a job to an existing Litani run. The run must have been
+previously created *litani-init(1)*; you may add as many jobs as you need before
+running them with *litani-run-build(1)*.
+
+A _job_ is a command that is part of a dependency graph. Litani runs the command
+if any of the job's inputs were out-of-date; once the inputs have been made
+up-to-date, Litani runs the job, which thereby makes the job's outputs
+up-to-date.
+
+By repeatedly running *litani add-job*, you build up a dependency graph where
+jobs are connected by their inputs and outputs. Running *litani run-build* makes
+Litani run all of the jobs in the dependency graph that are needed to bring all
+inputs and outputs up-to-date.
+
+Many of the flags to this command give you platform-portable control on various
+aspects of the program: timeouts, dealing with return codes, output streams, and
+more
+
+
+# OPTIONS
+
+*--command* _CMD_
+	The command that Litani will execute to emit the output files (if any) from
+	the input files, once the input files are up-to-date. Litani invokes _CMD_
+	through a subshell, so wildcards and shell expansions are supported and
+	special characters must be escaped.
+
+*--inputs* _F_ _[F ...]_
+	A list of inputs that this job depends on. Litani interprets each _F_ as a file:
+	- If every _F_ exists and has an older timestamp than all of this job's
+	  outputs, then Litani will not run this job.
+	- If some of the _F_ are newer than any of this job's outputs, then those
+	  outputs are called 'out-of-date'. In this case, Litani will run all of the
+	  jobs whose outputs include every _F_ that is out of date before running this
+	  job.
+	- If option 2 applies, but there is no job whose output includes the
+	  out-of-date files, then the build will fail.
+
+*--outputs* _F_ _[F ...]_
+	A list of outputs that this job emits. Litani interprets each _F_ as a file,
+	and expects that the command will write a file with that name upon completion.
+	If a job _J_ has _F_ as an output, but does not actually write a file called
+	_F_, then _J_ will run unconditionally because _F_ will always be considered
+	out of date. Furthermore, all jobs whose inputs include _F_, and all their
+	descendants, will also always run.
+
+*--description* _D_
+	A human-readable description for this job. This flag is optional but highly
+	recommended, as it makes the HTML dashboard much easier to navigate.
+
+*--tags* _TAG_ _[TAG ...]_
+	A list of tags for this job. Litani does not interpret tags (although the HTML
+	dashboard generator does use some of them). Each tag can be in whatever format
+	you prefer, e.g. a plain string, key-value pair, or even arbitrary JSON. A
+	job's list of tags is included in its _run.json_ and is intended to help with
+	analyzing run data.
+
+*--pipeline-name* _P_
+	The 'pipeline' that this job is part of. A pipeline is a subgraph of the
+	overall build, representing a single 'end-to-end' set of related jobs. A job's
+	pipeline does not affect how it is scheduled to run, but is used for grouping
+	related jobs in the HTML dashboard.
+
+*--ci-stage* _<build|test|report>_
+	The 'CI stage' that this job is part of. A CI stage is a subgraph of the
+	overall build, representing a set of jobs that should complete before Litani
+	moves onto the next stage. A job's CI stage does not affect how it is
+	scheduled to run, but it is used for grouping related jobs in the HTML dashboard.
+
+*--cwd* _DIR_
+	The directory that this job should execute in.
+
+*--ok-returns* _RC_ _[RC ...]_
+	Set the job outcome to _success_ if the command exits with a return code of
+	_RC_. By default, a job is only considered successful if it returns with _0_.
+	You can also use the *--outcome-table* option for fine-grained control over
+	job outcomes.
+
+*--ignore-returns* _RC_ _[RC ...]_
+	Set the job outcome to _fail_ignore_ if the command exits with a return code
+	of _RC_. This means that jobs that depend on this one will still run as if
+	this job had passed, but the pipeline that contains this job will fail after
+	it completes.  This is useful when you want to generate a report even when a
+	command fails; you specify the report as a dependency of the command, and use
+	*--ignore-returns* to ensure that the report command runs even if the job
+	fails. You can also use the *--outcome-table* option for fine-grained control
+	over job outcomes.
+
+*--timeout* _N_
+	How many seconds this job should be allowed to run for. If the timeout is
+	reached, then the command is killed with _SIGTERM_ followed by _SIGKILL_ (see
+	*signal*(3)) and the _timeout_reached_ key of the job's record is set to _true_.
+	By default, the job also fails if the timeout is reached, though this behavior
+	can be modified using *--timeout-ok*, *--timeout-ignore*, and *--outcome-table*.
+
+*--timeout-ok*
+	Set the job outcome to _success_ if it reaches the timeout specified in the
+	*--timeout* flag.
+
+*--timeout-ignore*
+	Set the job outcome to _fail_ignore_ if it reaches the timeout specified in the
+	*--timeout* flag. This means that jobs that depend on this one will still run
+	as if this job had passed, but the pipeline that contains this job will fail
+	after it completes.
+
+*--interleave-stdout-stderr*
+	Use a single pipe for the job's stdout and stderr. Similar to redirecting
+	stderr to stdout using _2>&1 >..._. The job's _stdout_ list in the _run.json_
+	file will contain lines of output from both stdout and stderr, while the value
+	of _stderr_ will be _null_.
+
+*--stdout-file* _F_
+	Redirect the command's stdout to _F_. Litani will still retain a copy of the
+	output in the _stdout_ field of the _run.json_ file. This flag is a useful
+	alternative to using shell redirection (_>_).
+
+*--stderr-file* _F_
+	Redirect the command's stderr to _F_. Litani will still retain a copy of the
+	output in the _stderr_ field of the _run.json_ file. This flag is a useful
+	alternative to using shell redirection (_2>_).
+
+*--pool* _P_
+	Place this job in the pool named _P_. This pool must have been declared using
+	the *--pools* flag of *litani init*. If pool _P_ has a depth of _D_, that
+	means that a maximum of _D_ jobs whose pool is _P_ will be running in
+	parallel (though there may be other jobs in other pools that are also running
+	at the same time).
+
+*--profile-memory*
+	Turn on memory profiling for this job. The memory used by the command will be
+	recorded in the _memory_trace_ field of _run.json_.
+
+	The memory usage will also be included on a graph on the HTML dashboard if
+	this job's tags include a "stats group". For each string _G_, all jobs that
+	are tagged with "_stats-group:G_" and that have enabled memory profiling will
+	be included on a graph comparing memory usage amongst those jobs. Different
+	values for _G_ are intended to group different types of jobs. For example, you
+	might tag all the compilation jobs with _stats-group:compilation_ and all the
+	test jobs with _stats-group:test_. This will result in two graphs on the HTML
+	dasahboard, each one depicting the memory usage of the compilation and test
+	jobs respectively.
+
+*--profile-memory-interval* _N_
+	Profiles the memory usage of this job every _N_ seconds. Has no effect unless
+	*--profile-memory* is also passed.

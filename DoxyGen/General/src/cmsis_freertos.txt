@@ -57,6 +57,16 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.4-dev0</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <ul>
+          <li>Updated to FreeRTOS kernel 10.4.4</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.4.3-dev1</td>
       <td>
         <p><b>Active development...</b></p>

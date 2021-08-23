@@ -1,0 +1,71 @@
+                          Litani End-to-End Test Suite
+                          ============================
+
+
+Each file in the `tests` subdirectory contains a test definition. The `run`
+script imports a single one of those files, and uses the test definition to
+execute a complete Litani run. Once the run completes, the `run` script then
+loads the resulting `run.json` file and checks that it conforms to the test
+definition.
+
+Each "test definition" is a Python module that is expected to contain certain
+methods; the `run` script calls into each of these methods in order to set up,
+execute, and check the Litani run. Those methods are as follows:
+
+
+    get_init_args()
+        Returns a dict containing command-line arguments to be passed to `litani
+        init`. The dict must contain two keys, `args` and `kwargs`. `args` is a
+        list of switches (command-line options that don't take an argument),
+        while `kwargs` is a dict mapping command-line options to the value(s)
+        that they take as an argument. The keys or list items should be equal to
+        the name of the command-line switch, without the leading `--`. Values of
+        the `kwargs` dict can be a string or a list of strings. If a list of
+        strings, these will be joined together with whitespace.
+
+        For example, to make the run script run
+
+            `litani init --pools foo:1 bar:2 --project-name baz`
+
+        this method could return the dict
+
+            {
+                "kwargs": {
+                    "pools": [ "foo:1", "bar:2" ],
+                    "project-name": "baz",
+                }
+            }
+
+          The `kwargs` dict must not contain "output-symlink",
+          "output-directory", or "output-prefix", as the `run` script will
+          supply its own value for these.
+
+
+    get_jobs()
+        Returns a list of jobs that will be added to Litani. Each job is similar
+        to the return of `get_init_args()` above, i.e. it's a dict containing
+        command-line arguments. The run script will add each job before
+        executing the run. For example, to make the run script run
+
+            `litani add-job --command true --interleave-stdout-stderr`
+            `litani add-job --command false --description "oh no!"`
+
+        this method should return
+
+            [{
+                "args": [ "interleave-stdout-stderr" ],
+                "kwargs": { "command": "true" }
+            }, {
+                "kwargs": { "command": "false", "description": "oh no!" }
+            }]
+
+
+    def get_run_build_args()
+        Returns a dict containing the arguments to `litani run-build`, in the
+        same format as `get_init_args()` above.
+
+
+    check_run(run: dict)
+        Takes a deserialized run.json file and returns True iff the Litani run
+        was as expected. This method can check that particular keys of the run
+        have certain values, etc.

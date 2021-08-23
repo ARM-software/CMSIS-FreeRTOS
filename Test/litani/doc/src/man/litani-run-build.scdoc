@@ -1,0 +1,49 @@
+litani-run-build(1) "" "Litani Build System"
+
+# NAME
+
+litani run-build - Start a Litani run
+
+# SYNOPSIS
+
+litani run-build [OPTION...]
+
+# DESCRIPTION
+
+This program executes a Litani run. The run must have been created using
+*litani init* and had jobs added to it using *litani add-job*.
+
+# OPTIONS
+
+*-n*, *--dry-run*
+	Passes the *-n* flag directly to *ninja(1)*. This makes *ninja* parse
+	and run the build graph in dry-run mode, acting as if all the commands
+	succeeded.
+
+*-j* _N_, *--parallel* _N_
+	Run _N_ jobs in parallel. This passes the *-j* flag directly to
+	*ninja(1)*. Ninja's default is calculated based on the number of cores
+	in the system; run *ninja -h* to see the default. _N_=_0_ means do not
+	restrict parallelism.
+
+*-o* _F_, *--out-file* _F_
+	Periodically write the _run.json_ file to _F_.
+
+*--fail-on-pipeline-failure*
+	Return _0_ only if all pipelines were successful. See *RETURN CODE*
+	below.
+
+*-p* _P_ _[P ...]_, *--pipelines* _P_ _[P ...]_
+	Only run jobs that are part of the specified pipelines.
+
+*-s* _S_, *--ci-stage* _S_
+	Only run jobs that are part of the specified CI stage. Currently _S_
+	must be one of _build_, _test_, or _report_.
+
+
+# RETURN CODE
+
+Unless there was a crash, this program should return _0_ upon exit
+unless the *--fail-on-pipeline-failure* flag was supplied. In that case,
+this program will return _0_ if all pipelines were successful and _1_
+otherwise.

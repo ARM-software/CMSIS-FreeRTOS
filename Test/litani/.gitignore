@@ -1,0 +1,11 @@
+test/output
+test/e2e/output
+
+.litani_cache_dir
+
+doc/tmp
+doc/out
+
+__pycache__/
+
+build.ninja

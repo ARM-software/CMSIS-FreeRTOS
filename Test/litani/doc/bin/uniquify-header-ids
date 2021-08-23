@@ -1,0 +1,30 @@
+#!/usr/bin/sed -f
+#
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+
+# Give the IDs of section headers a @MAN_NAME@ prefix. This is intended to be further filtered through a script that replaces @MAN_NAME@ with the name of a manual page.
+
+s/class="Sh" id="\([a-zA-Z_0-9]*\)"><a class="permalink" href="#\([a-zA-Z0-9_]*\)"/class="Sh" id="@MAN_NAME@_\1"><a class="permalink" href="#@MAN_NAME@_\1"/g
+
+# Same with subsection headers
+
+s/class="Ss" id="\([a-zA-Z_0-9]*\)"><a class="permalink" href="#\([a-zA-Z0-9_]*\)"/class="Ss" id="@MAN_NAME@_\1"><a class="permalink" href="#@MAN_NAME@_\1"/g
+
+s/h2/h3/g
+
+s/h1/h2/g
+
+# Add spaces after bullet points
+s/\&\#x2022;\([a-zA-Z0-9]\)/\&\#x2022\; \1/g
