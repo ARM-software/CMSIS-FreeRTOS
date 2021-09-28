@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.3.1</span>
+   &#160;<span id="projectnumber">Version 10.4.3</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -122,9 +122,12 @@ Limitations</h1>
 <li>provide the memory for control blocks for other objects in the object's attributes structure.</li>
 </ul>
 </li>
-<li>Each timer object requires additional 8 bytes of dynamic memory.</li>
+<li>Each timer object requires additional 8 bytes of memory:<ul>
+<li>to allocate all memory statically, provide the memory for control block of size (sizeof(StaticTimer_t) + 8 bytes)</li>
+<li>otherwise, additional 8 bytes of dynamic memory will be used</li>
+</ul>
+</li>
 <li><code>osKernelSuspend</code> and <code>osKernelResume</code> are not supported.</li>
-<li><code>osKernelGetTickCount</code> is limited to a 32-bit return value.</li>
 <li><code>osThreadDetach</code>, <code>osThreadJoin()</code> and attribute <code>osThreadJoinable</code> are not supported (<code>osThreadNew</code> returns NULL when osThreadJoinable attribute is specified).</li>
 <li><code>osThreadGetStackSize</code> is not implemented.</li>
 <li>Event flags are limited to 24 bits.</li>
@@ -170,7 +173,7 @@ CMSIS-RTOS validation suite results</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Apr 30 2020 11:16:53 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Tue Sep 28 2021 12:31:55 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

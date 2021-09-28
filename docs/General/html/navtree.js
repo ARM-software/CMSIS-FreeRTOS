@@ -9,13 +9,19 @@ var NAVTREE =
     [ "Create a FreeRTOS project", "cre_freertos_proj.html", [
       [ "Create a native FreeRTOS project", "cre_freertos_proj.html#native_freertos", [
         [ "Configure FreeRTOS", "cre_freertos_proj.html#native_freertos_config", null ],
+        [ "Interrupt priority configuration", "cre_freertos_proj.html#native_freertos_config_prio", null ],
         [ "Add Event Recorder Visibility", "cre_freertos_proj.html#native_freertos_er", null ]
       ] ],
       [ "Create a CMSIS-FreeRTOS project", "cre_freertos_proj.html#cmsis_freertos", [
         [ "Configure CMSIS-FreeRTOS", "cre_freertos_proj.html#cmsis_freertos_config", null ],
         [ "Add Event Recorder Visibility", "cre_freertos_proj.html#cmsis_freertos_er", null ]
       ] ],
-      [ "Configure Event Recorder", "cre_freertos_proj.html#cmsis_freertos_evr_config", null ]
+      [ "Create a mixed-interface project", "cre_freertos_proj.html#freertos_interfaces", [
+        [ "Start the kernel using CMSIS-RTOS2 API", "cre_freertos_proj.html#freertos_interface_rtos2", null ],
+        [ "Start the kernel using native API", "cre_freertos_proj.html#freertos_interface_native", null ]
+      ] ],
+      [ "Configure Event Recorder", "cre_freertos_proj.html#cmsis_freertos_evr_config", null ],
+      [ "Debug a CMSIS-FreeRTOS project", "cre_freertos_proj.html#dbg_cmsisfreertos", null ]
     ] ],
     [ "Example projects", "examples.html", [
       [ "Blinky example using FreeRTOS natively", "examples.html#examples_native", null ],

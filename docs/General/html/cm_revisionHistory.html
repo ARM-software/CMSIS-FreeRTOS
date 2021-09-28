@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.3.1</span>
+   &#160;<span id="projectnumber">Version 10.4.3</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -112,6 +112,29 @@ $(document).ready(function(){initNavTree('cm_revisionHistory.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><table  class="cmtable" summary="Revision History">
+<tr>
+<td>10.4.3 </td><td><p class="starttd"></p>
+<p><b>FreeRTOS V10.4.3</b></p>
+<p></p>
+<p>Updates and bugfixes:</p>
+<ul>
+<li>
+Corrected timeout handling in osThreadFlagsWait (#50) </li>
+<li>
+Enable full static memory allocation for timer object (#48) </li>
+<li>
+Fix vQueueAddToRegistry function call issue when arguments are NULL (#49) </li>
+<li>
+Added workaround for xEventGroupClearBitsFromISR no yield problem </li>
+<li>
+Added FreeRTOS kernel state check to osKernelInitialize and osKernelState </li>
+<li>
+Make source code more verbose with documented limitations (#41) </li>
+<li>
+Fix osMemoryPoolNew expression use (#42) </li>
+</ul>
+<p class="endtd"></p>
+</td></tr>
 <tr>
 <td>10.3.1 </td><td><p class="starttd"></p>
 <p><b>FreeRTOS V10.3.1</b></p>
@@ -211,7 +234,7 @@ Debug event TaskIncrementTick level set to Detail </li>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Apr 30 2020 11:16:53 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Tue Sep 28 2021 12:31:55 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 
