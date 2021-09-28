@@ -12,37 +12,15 @@
       Active development:
       - Updated pack to FreeRTOS 10.4.4
     </release>
-    <release version="10.4.3-dev1">
-      Active development:
+    <release version="10.4.3" date="2021-09-28">
+      FreeRTOS 10.4.3
+      Updates and bugfixes:
       - Corrected timeout handling in osThreadFlagsWait (#50)
-    </release>
-    <release version="10.4.3-dev0">
-      Active development:
-      - Updated pack to FreeRTOS 10.4.3
-    </release>
-    <release version="10.4.1-dev2">
-      Active development:
       - Enable full static memory allocation for timer object (#48)
-    </release>
-    <release version="10.4.1-dev1">
-      Active development:
       - Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)
-    </release>
-    <release version="10.4.1-dev0">
-      Active development:
-      - Updated pack to FreeRTOS 10.4.1
-    </release>
-    <release version="10.3.2-dev2">
-      Active development:
       - Added workaround for xEventGroupClearBitsFromISR no yield problem
-    </release>
-    <release version="10.3.2-dev1">
-      Active development:
       - Added FreeRTOS kernel state check to osKernelInitialize and osKernelState
       - Make source code more verbose with documented limitations (#41)
-    </release>
-    <release version="10.3.2-dev0">
-      Active development:
       - Fix osMemoryPoolNew expression use (#42)
     </release>
     <release version="10.3.1" date="2020-04-30">
