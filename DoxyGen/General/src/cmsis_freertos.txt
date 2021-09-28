@@ -57,61 +57,17 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
-      <td>10.4.3-dev1</td>
+      <td>10.4.3</td>
       <td>
-        <p><b>Active development...</b></p>
+        <p><b>FreeRTOS V10.4.3</b></p>
+        <p>Updates and bugfixes:</p>
         <ul>
           <li>Corrected timeout handling in osThreadFlagsWait (#50)</li>
-        </ul>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td>10.4.3-dev0</td>
-      <td>
-        <p><b>Active development...</b></p>
-        <ul>
-          <li>Updated to FreeRTOS kernel 10.4.3</li>
-        </ul>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td>10.4.1-dev0</td>
-      <td>
-        <p><b>Active development...</b></p>
-        <ul>
-          <li>Updated to FreeRTOS kernel 10.4.1</li>
-        </ul>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td>10.3.2-dev2</td>
-      <td>
-        <p><b>Active development...</b></p>
-        <ul>
+          <li>Enable full static memory allocation for timer object (#48)</li>
+          <li>Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)</li>
           <li>Added workaround for xEventGroupClearBitsFromISR no yield problem</li>
-        </ul>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td>10.3.2-dev1</td>
-      <td>
-        <p><b>Active development...</b></p>
-        <ul>
           <li>Added FreeRTOS kernel state check to osKernelInitialize and osKernelState</li>
           <li>Make source code more verbose with documented limitations (#41)</li>
-        </ul>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td>10.3.2-dev0</td>
-      <td>
-        <p><b>Active development...</b></p>
-        <ul>
           <li>Fix osMemoryPoolNew expression use (#42)</li>
         </ul>
         </p>
