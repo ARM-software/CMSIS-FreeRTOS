@@ -12,37 +12,15 @@
       Active development:
       - Updated pack to FreeRTOS 10.4.4
     </release>
-    <release version="10.4.3-dev1">
-      Active development:
+    <release version="10.4.3" date="2021-09-28">
+      FreeRTOS 10.4.3
+      Updates and bugfixes:
       - Corrected timeout handling in osThreadFlagsWait (#50)
-    </release>
-    <release version="10.4.3-dev0">
-      Active development:
-      - Updated pack to FreeRTOS 10.4.3
-    </release>
-    <release version="10.4.1-dev2">
-      Active development:
       - Enable full static memory allocation for timer object (#48)
-    </release>
-    <release version="10.4.1-dev1">
-      Active development:
       - Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)
-    </release>
-    <release version="10.4.1-dev0">
-      Active development:
-      - Updated pack to FreeRTOS 10.4.1
-    </release>
-    <release version="10.3.2-dev2">
-      Active development:
       - Added workaround for xEventGroupClearBitsFromISR no yield problem
-    </release>
-    <release version="10.3.2-dev1">
-      Active development:
       - Added FreeRTOS kernel state check to osKernelInitialize and osKernelState
       - Make source code more verbose with documented limitations (#41)
-    </release>
-    <release version="10.3.2-dev0">
-      Active development:
       - Fix osMemoryPoolNew expression use (#42)
     </release>
     <release version="10.3.1" date="2020-04-30">
@@ -196,6 +174,23 @@
       <require Dtz="TZ"/>
     </condition>
 
+    <condition id="CM55">
+      <description>Cortex-M55 processor based device</description>
+      <accept Dcore="Cortex-M55"/>
+    </condition>
+
+    <condition id="CM55_NoTZ">
+      <description>Cortex-M55 processor based device without TrustZone</description>
+      <require condition="CM55"/>
+      <require Dtz="NO_TZ"/>
+    </condition>
+
+    <condition id="CM55_TZ">
+      <description>Cortex-M55 processor based device with TrustZone</description>
+      <require condition="CM55"/>
+      <require Dtz="TZ"/>
+    </condition>
+
     <condition id="CA9_DP">
       <description>Cortex-A9 processor based device using Floating Point Unit (DP)</description>
       <require Dcore="Cortex-A9" Dfpu="DP_FPU"/>
@@ -211,6 +206,7 @@
       <accept condition="CM7_FP"/>
       <accept condition="CM23"/>
       <accept condition="CM33"/>
+      <accept condition="CM55"/>
     </condition>
 
     <condition id="CoreA">
@@ -336,6 +332,22 @@
       <require condition="ARMCC6"/>
     </condition>
 
+    <condition id="CM55_ARMCC6">
+      <description>Cortex-M55 processor based device for the ARM Compiler 6</description>
+      <require condition="CM55"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM55_NoTZ_ARMCC6">
+      <description>Cortex-M55 processor based device without TrustZone for the ARM Compiler 6</description>
+      <require condition="CM55_NoTZ"/>
+      <require condition="ARMCC6"/>
+    </condition>
+    <condition id="CM55_TZ_ARMCC6">
+      <description>Cortex-M55 processor based device with TrustZone for the ARM Compiler 6</description>
+      <require condition="CM55_TZ"/>
+      <require condition="ARMCC6"/>
+    </condition>
+
     <condition id="CA9_DP_ARMCC6">
       <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the ARM Compiler 6</description>
       <require condition="CA9_DP"/>
@@ -414,6 +426,22 @@
       <require condition="GCC"/>
     </condition>
 
+    <condition id="CM55_GCC">
+      <description>Cortex-M55 processor based device for the GCC Compiler</description>
+      <require condition="CM55"/>
+      <require condition="GCC"/>
+    </condition>
+    <condition id="CM55_NoTZ_GCC">
+      <description>Cortex-M33 processor based device without TrustZone for the GCC Compiler</description>
+      <require condition="CM55_NoTZ"/>
+      <require condition="GCC"/>
+    </condition>
+    <condition id="CM55_TZ_GCC">
+      <description>Cortex-M55 processor based device with TrustZone for the GCC Compiler</description>
+      <require condition="CM55_TZ"/>
+      <require condition="GCC"/>
+    </condition>
+
     <condition id="CA9_DP_GCC">
       <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the GCC Compiler</description>
       <require condition="CA9_DP"/>
@@ -489,6 +517,22 @@
     <condition id="CM33_TZ_IAR">
       <description>Cortex-M33 processor based device with TrustZone for the IAR Compiler</description>
       <require condition="CM33_TZ"/>
+      <require condition="IAR"/>
+    </condition>
+
+    <condition id="CM55_IAR">
+      <description>Cortex-M55 processor based device for the IAR Compiler</description>
+      <require condition="CM55"/>
+      <require condition="IAR"/>
+    </condition>
+    <condition id="CM55_NoTZ_IAR">
+      <description>Cortex-M55 processor based device without TrustZone for the IAR Compiler</description>
+      <require condition="CM55_NoTZ"/>
+      <require condition="IAR"/>
+    </condition>
+    <condition id="CM55_TZ_IAR">
+      <description>Cortex-M55 processor based device with TrustZone for the IAR Compiler</description>
+      <require condition="CM55_TZ"/>
       <require condition="IAR"/>
     </condition>
 
@@ -601,6 +645,18 @@
       <accept condition="CM33_TZ_GCC"/>
       <accept condition="CM33_TZ_IAR"/>
     </condition>
+    <condition id="FreeRTOS Port Cortex-M55 NoTZ">
+      <description>Requirements for FreeRTOS port for Cortex-M55 without TrustZone</description>
+      <accept condition="CM55_NoTZ_ARMCC6"/>
+      <accept condition="CM55_NoTZ_GCC"/>
+      <accept condition="CM55_NoTZ_IAR"/>
+    </condition>
+    <condition id="FreeRTOS Port Cortex-M55 TZ">
+      <description>Requirements for FreeRTOS port for Cortex-M55 with TrustZone</description>
+      <accept condition="CM55_TZ_ARMCC6"/>
+      <accept condition="CM55_TZ_GCC"/>
+      <accept condition="CM55_TZ_IAR"/>
+    </condition>
     <condition id="FreeRTOS Port Cortex-A9 FPU DP">
       <description>Requirements for FreeRTOS port for Cortex-A9 using FPU (DP)</description>
       <accept condition="CA9_DP_ARMCC"/>
@@ -633,11 +689,14 @@
       <accept condition="FreeRTOS Port Cortex-M33"/>
       <accept condition="FreeRTOS Port Cortex-M33 NoTZ"/>
       <accept condition="FreeRTOS Port Cortex-M33 TZ"/>
+      <accept condition="FreeRTOS Port Cortex-M55 NoTZ"/>
+      <accept condition="FreeRTOS Port Cortex-M55 TZ"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M v8 TZ">
       <description>Requirements for FreeRTOS port for Cortex-M v8 with TrustZone</description>
       <accept condition="FreeRTOS Port Cortex-M23 TZ"/>
       <accept condition="FreeRTOS Port Cortex-M33 TZ"/>
+      <accept condition="FreeRTOS Port Cortex-M55 TZ"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-A">
       <description>Requirements for FreeRTOS port for Cortex-A</description>
@@ -922,6 +981,9 @@
           <file category="include"   condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
+          <file category="source"    condition="CM55_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM55_ARMCC6"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
@@ -943,6 +1005,9 @@
           <file category="include"   condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
+          <file category="source"    condition="CM55_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM55_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/"/>
           <file category="source"    condition="CM0_IAR"    name="Source/portable/IAR/ARM_CM0/port.c"/>
@@ -971,6 +1036,9 @@
           <file category="include"   condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
           <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>
+          <file category="include"   condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/"/>
+          <file category="source"    condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -1050,6 +1118,10 @@
           <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
           <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
           <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/"/>
@@ -1059,6 +1131,10 @@
           <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
           <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
           <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/"/>
@@ -1068,6 +1144,10 @@
           <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
           <file category="sourceAsm" condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
+          <file category="include"   condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -1103,6 +1183,10 @@
           <file category="include"   condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
           <file category="source"    condition="CM33_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM55_ARMCC6" name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
           <file category="include"   condition="CM23_GCC"    name="Source/portable/GCC/ARM_CM23/non_secure/"/>
@@ -1112,6 +1196,10 @@
           <file category="include"   condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
           <file category="source"    condition="CM33_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
+          <file category="include"   condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/port.c"/>
+          <file category="source"    condition="CM55_GCC"    name="Source/portable/GCC/ARM_CM33/non_secure/portasm.c"/>
 
           <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
           <file category="include"   condition="CM23_IAR"    name="Source/portable/IAR/ARM_CM23/non_secure/"/>
@@ -1121,6 +1209,10 @@
           <file category="include"   condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
           <file category="source"    condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
           <file category="sourceAsm" condition="CM33_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
+          <file category="include"   condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
+          <file category="include"   condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/"/>
+          <file category="source"    condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/port.c"/>
+          <file category="sourceAsm" condition="CM55_IAR"    name="Source/portable/IAR/ARM_CM33/non_secure/portasm.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
@@ -1321,6 +1413,12 @@
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
+          <file category="header"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
 
           <file category="header"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
@@ -1334,6 +1432,12 @@
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
+          <file category="header"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
 
           <file category="header"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
@@ -1349,6 +1453,13 @@
           <file category="sourceAsm" condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port_asm.s"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_init.c"/>
+          <file category="header"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
+          <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context.c"/>
+          <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port.c"/>
+          <file category="sourceAsm" condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port_asm.s"/>
+          <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_heap.c"/>
+          <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_init.c"/>
         </files>
       </component>
     </bundle>
