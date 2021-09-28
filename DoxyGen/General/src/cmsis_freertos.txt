@@ -57,6 +57,23 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.3</td>
+      <td>
+        <p><b>FreeRTOS V10.4.3</b></p>
+        <p>Updates and bugfixes:</p>
+        <ul>
+          <li>Corrected timeout handling in osThreadFlagsWait (#50)</li>
+          <li>Enable full static memory allocation for timer object (#48)</li>
+          <li>Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)</li>
+          <li>Added workaround for xEventGroupClearBitsFromISR no yield problem</li>
+          <li>Added FreeRTOS kernel state check to osKernelInitialize and osKernelState</li>
+          <li>Make source code more verbose with documented limitations (#41)</li>
+          <li>Fix osMemoryPoolNew expression use (#42)</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.3.1</td>
       <td>
         <p><b>FreeRTOS V10.3.1</b></p>
@@ -172,6 +189,44 @@ settings.
 \image html freertos_config_h_native.png
 
 
+\subsection native_freertos_config_prio Interrupt priority configuration
+
+FreeRTOS implements critical sections using the
+<a href="https://developer.arm.com/documentation/dui0552/a/the-cortex-m3-processor/programmers-model/core-registers?lang=en" target="_blank">BASEPRI</a>
+register (available in Armv7-M and Armv8-M architecture based devices) which masks only a subset of interrupts. This is
+configured via the \c configMAX_SYSCALL_INTERRUPT_PRIORITY setting. Therefore, it is needed to properly configure this
+setting. It is also needed to set appropriate interrupt priorities for interrupt service routines (ISR) that use RTOS
+functions. This can especially impact drivers which typically use peripheral interrupts. Normally, these use the RTOS
+directly or indirectly through registered callbacks.
+
+Arm Cortex-M cores store interrupt priority values in the most significant bits of the interrupt priority registers which
+can have a maximum of eight bits. Many implementations offer only three priority bits. These three bits are shifted up to be
+bits five, six and seven respectively. 
+\c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx00000. This results in the following table:
+
+| \c configMAX_SYSCALL_INTERRUPT_PRIORITY | Upper three bits | Priority    |
+|:---------------------------------------:|:----------------:|:-----------:|
+| 32                                      | 001              | 1 (Highest) |
+| 64                                      | 010              | 2           |
+| 96                                      | 011              | 3           |
+| 128                                     | 100              | 4           |
+| 160                                     | 101              | 5           |
+| 196                                     | 110              | 6           |
+| 224                                     | 111              | 7 (Lowest)  |
+
+\b Example
+
+If you set \c configMAX_SYSCALL_INTERRUPT_PRIORITY to 32, then the priority of an interrupt service routine that uses RTOS
+functions must then be higher or equal to 1. This ensures that this interrupt will be masked during critical a section.
+
+A WiFi driver using the SPI interface registers a callback to SPI which is executed in an interrupt context. The callback
+function in the WiFi driver uses RTOS functions. Therefore, the SPI interrupt priority must be set to a value equal or
+higher to the FreeRTOS preempt priority, for example 1.
+
+\note For a detailed description of how FreeRTOS is using Cortex-M code registers, refer to
+<a href="https://www.freertos.org/RTOS-Cortex-M3-M4.html" target="_blank">Running the RTOS on a ARM Cortex-M Core</a>.
+
+
 \subsection native_freertos_er Add Event Recorder Visibility
 - To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
 - Open \ref native_freertos_config "FreeRTOSConfig.h" and
@@ -240,6 +295,8 @@ Use daemon task startup hook   | configUSE_DAEMON_TASK_STARTUP_HOOK   | Enable c
 Use malloc failed hook         | configUSE_MALLOC_FAILED_HOOK         | Enable callback function call when out of dynamic memory.             |
 Queue registry size            | configQUEUE_REGISTRY_SIZE            | Define maximum number of queue objects registered for debug purposes. |
 
+\note Refer to \ref native_freertos_config_prio for more information on the usage of \c configMAX_SYSCALL_INTERRUPT_PRIORITY.
+
 <b> Event Recorder Configuration </b>
 
 The following settings are available (see \ref cmsis_freertos_evr_config for details):
@@ -276,6 +333,90 @@ Stream Buffer functions        | configEVR_LEVEL_STREAMBUFFER         | Define e
 - Build the application code and download it to the debug hardware or run it in simulation.
   
 Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder.</b>
+
+
+\section freertos_interfaces Create a mixed-interface project
+
+Using CMSIS-RTOS2 API and native FreeRTOS API simultaneously is possible and some projects do require using the native FreeRTOS API and the CMSIS-RTOS2 API at the same time. 
+Such project should be \ref cmsis_freertos "created as CMSIS-FreeRTOS project".
+
+Depending on the application requirements, FreeRTOS kernel can be started either by using FreeRTOS native API or by using CMSIS-RTOS2 API.
+
+\subsection freertos_interface_rtos2 Start the kernel using CMSIS-RTOS2 API
+
+\code
+/*
+  Application thread: Initialize and start the Application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+ 
+  // Initialize CMSIS-RTOS2
+  osKernelInitialize();
+ 
+  // Create application main thread
+  osThreadNew(app_main, NULL, NULL);
+ 
+  // Start the kernel and execute the first thread
+  osKernelStart();
+ 
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using CMSIS-RTOS2 API, FreeRTOS native API can be used with the following restrictions:
+- vTaskStartScheduler must not be called
+
+
+\subsection freertos_interface_native Start the kernel using native API
+
+\code
+/*
+  Application main thread: Initialize and start the application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+ 
+  // Setup the Event Recorder (optionally)
+  EvrFreeRTOSSetup(0);
+ 
+  // Create application main thread
+  xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
+ 
+  // Start the kernel and execute the first thread
+  vTaskStartScheduler();
+ 
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using FreeRTOS native API, CMSIS-RTOS2 API can be used without restrictions.
 
 \section cmsis_freertos_evr_config Configure Event Recorder
 
@@ -325,6 +466,70 @@ Value  | Description                                       |
 
 Definitions configEVR_LEVEL_x set the recording level bitmask for events generated by each function group. They are taken into account only when recording level filter setup is enabled. Default value is \token{0x05}.
 
+
+\section dbg_cmsisfreertos Debug a CMSIS-FreeRTOS project
+
+\note The following only applies when used with <a href="https://www2.keil.com/mdk5" target="_blank">Arm Keil MDK</a>. If
+you are using a different toolchain, please consult its user's manual.
+
+Apart from the debug capabilities that \ref cmsis_freertos_evr_config "Event Recorder" offers, Keil MDK also supports thread
+aware breakpoints, just like for the standard CMSIS-RTOS.
+
+\b Code \b Example
+
+\code
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA) ? 1 : 0"
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA || CURR_TID == tid_phaseD) ? 1 : 0"
+BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID == tid_phaseD) ? 1 : 0"
+\endcode
+
+\note
+- For more information on conditional breakpoints in Keil MDK, consult the
+  <a href="https://www.keil.com/support/man/docs/uv4/uv4_db_dbg_breakpnts.htm" target="_blank">user's manual</a>.
+- Enabling <a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a> is
+  required to capture register values for active running threads while executing. When turned off, only the current FreeRTOS
+  thread can be unwound after execution has been stopped.
+
+\b Caveats
+
+- You cannot specify individual breakpoints on the same address. The following is not possible:
+  \code
+  BS ThCallee, 1, "break = (CURR_TID==tid_phaseA) ? 1 : 0"
+  BS ThCallee, 1, "break = (CURR_TID==tid_phaseD) ? 1 : 0"
+  \endcode
+  Instead, use this:
+  \code
+  BS ThCallee, 1, "break= (CURR_TID==tid_phaseA || CURR_TID==tid_phaseD) ? 1 : 0"
+  \endcode
+
+- If you don't want to use
+<a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a>, obtain the
+thread and unwind information by adding a function that gets called from each thread of interest:
+\code
+_attribute_((noinline)) int FuncN1 (int n1) {
+  ...
+} 
+\endcode
+Then, specify a thread aware breakpoint using an "invalid" thread ID:
+\code
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA + 1) ? 1 : 0"
+\endcode
+<tt>'tid_phaseA'</tt> would be valid, <tt>'tid_phaseA + 1'</tt> is not but will still capture the most recent registers and
+store them to the actual thread context each time a thread aware breakpoint is checked.
+
+- Function inlining typically causes thread aware breakpoints to fail. To avoid this, prepend the <tt>'noinline'</tt>
+  attribute to the function that is used to stop when the current FreeRTOS thread id matches:
+\code
+_attribute_((noinline)) int FuncN1 (int n1) {
+  ...
+}
+\endcode
+This helps to make thread aware breakpoints far less dependent on the compiler optimization level.
+
+- Thread aware breakpoints should be setup using a
+<a href="https://www.keil.com/support/man/docs/uv4/uv4_db_scripting.htm" target="_blank">debug script</a>. Reason being
+that thread aware breakpoints are of a 'hybrid' type, that is a combined address and condition expression that works best
+when run from a debug script.
 */
 
 
@@ -412,9 +617,10 @@ The following list briefly describes the limitations and unsupported features of
   - provide the memory for control blocks and stack in the \c osThreadAttr_t structure for threads.
   - provide the memory for control blocks and message data in the \c osMessageQueueAttr_t structure for memory queues.
   - provide the memory for control blocks for other objects in the object's attributes structure.
-- Each timer object requires additional 8 bytes of dynamic memory.
+- Each timer object requires additional 8 bytes of memory:
+  - to allocate all memory statically, provide the memory for control block of size (sizeof(StaticTimer_t) + 8 bytes)
+  - otherwise, additional 8 bytes of dynamic memory will be used
 - \c osKernelSuspend and \c osKernelResume are not supported.
-- \c osKernelGetTickCount is limited to a 32-bit return value.
 - \c osThreadDetach, \c osThreadJoin() and attribute \c osThreadJoinable are not supported (\c osThreadNew returns NULL when
   osThreadJoinable attribute is specified).
 - \c osThreadGetStackSize is not implemented.
@@ -483,7 +689,7 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osKernelResume: \token{not implemented}
    - \b osKernelStart: supported
    - \b osKernelSuspend: \token{not implemented} 
-   - \b osKernelGetTickCount: limited to 32-bit return value.
+   - \b osKernelGetTickCount: supported
    - \b osKernelGetTickFreq: supported
 
 <a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>

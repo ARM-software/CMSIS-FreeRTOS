@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "D:\apps\Embedded Workbench 8.4\common\bin\cspybat" -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --backend -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --backend -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
 }
 else
 {
-& "D:\apps\Embedded Workbench 8.4\common\bin\cspybat" -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\thomasto\Projects\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.general.xcl" --debug_file=$debugfile --backend -f "D:\GitHub\ARM-software\CMSIS-FreeRTOS\CMSIS\RTOS2\FreeRTOS\Examples\Blinky_IAR\Blinky\settings\Blinky.Debug.driver.xcl" 
 }

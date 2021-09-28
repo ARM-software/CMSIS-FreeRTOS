@@ -167,52 +167,57 @@ extern void EvrFreeRTOSTasks_LowPowerIdleEnd (void);
 
 /**
   \brief  Event on indicating the current running task is about to block while waiting for notification to be non-zero (Op)
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  xTicksToWait      wait timeout in ticks.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t xTicksToWait);
+extern void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait);
 
 /**
   \brief  Event on successful task notify take (Op)
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t uxIndexToWait, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event indicating the current running task is about to block while waiting to receive notification (Op)
+  \param[in]  uxIndexToWait     task notification index
   \param[in]  xTicksToWait      wait timeout in ticks.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyWaitBlock (uint32_t xTicksToWait);
+extern void EvrFreeRTOSTasks_TaskNotifyWaitBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait);
 
 /**
   \brief  Event on successful task notify wait (Op)
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t uxIndexToWait, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful task notify (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
-  \param[in]  ulValue           notify value.
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  eAction           task notification action.
   \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotify (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotify (TCB_t xTaskToNotify, uint32_t uxIndexToWait, uint32_t eAction, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful task notify from ISR (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
-  \param[in]  ulValue           notify value.
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  eAction           task notification action.
   \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t ulValue, uint32_t eAction, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyFromIsr (TCB_t xTaskToNotify, uint32_t uxIndexToWait, uint32_t eAction, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful task notify give from ISR (Op)
   \param[in]  xTaskToNotify     pointer to task to be notified.
+  \param[in]  uxIndexToWait     task notification index.
   \param[in]  ulNotifiedValue   current state of the notification value.
 */
-extern void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (TCB_t xTaskToNotify, uint32_t ulNotifiedValue);
+extern void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (TCB_t xTaskToNotify, uint32_t uxIndexToWait, uint32_t ulNotifiedValue);
 
 /**
   \brief  Event on successful queue create (Op)
@@ -676,31 +681,31 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_BLOCK_DISABLE))
-  #define traceTASK_NOTIFY_TAKE_BLOCK()               EvrFreeRTOSTasks_TaskNotifyTakeBlock(xTicksToWait)
+  #define traceTASK_NOTIFY_TAKE_BLOCK(ux)             EvrFreeRTOSTasks_TaskNotifyTakeBlock(ux, xTicksToWait)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_DISABLE))
-  #define traceTASK_NOTIFY_TAKE()                     EvrFreeRTOSTasks_TaskNotifyTake(pxCurrentTCB->ulNotifiedValue)
+  #define traceTASK_NOTIFY_TAKE(ux)                   EvrFreeRTOSTasks_TaskNotifyTake(ux, pxCurrentTCB->ulNotifiedValue[ux])
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_BLOCK_DISABLE))
-  #define traceTASK_NOTIFY_WAIT_BLOCK()               EvrFreeRTOSTasks_TaskNotifyWaitBlock(xTicksToWait)
+  #define traceTASK_NOTIFY_WAIT_BLOCK(ux)             EvrFreeRTOSTasks_TaskNotifyWaitBlock(ux, xTicksToWait)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_DISABLE))
-  #define traceTASK_NOTIFY_WAIT()                     EvrFreeRTOSTasks_TaskNotifyWait(pxCurrentTCB->ulNotifiedValue)
+  #define traceTASK_NOTIFY_WAIT(ux)                   EvrFreeRTOSTasks_TaskNotifyWait(ux, pxCurrentTCB->ulNotifiedValue[ux])
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_DISABLE))
-  #define traceTASK_NOTIFY()                          EvrFreeRTOSTasks_TaskNotify(pxTCB, ulValue, eAction, pxTCB->ulNotifiedValue)
+  #define traceTASK_NOTIFY(ux)                        EvrFreeRTOSTasks_TaskNotify(pxTCB, ux, eAction, pxTCB->ulNotifiedValue[ux])
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_FROM_ISR_DISABLE))
-  #define traceTASK_NOTIFY_FROM_ISR()                 EvrFreeRTOSTasks_TaskNotifyFromIsr(pxTCB, ulValue, eAction, pxTCB->ulNotifiedValue)
+  #define traceTASK_NOTIFY_FROM_ISR(ux)               EvrFreeRTOSTasks_TaskNotifyFromIsr(pxTCB, ux, eAction, pxTCB->ulNotifiedValue[ux])
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_GIVE_FROM_ISR_DISABLE))
-  #define traceTASK_NOTIFY_GIVE_FROM_ISR()            EvrFreeRTOSTasks_TaskNotifyGiveFromIsr(pxTCB, pxTCB->ulNotifiedValue)
+  #define traceTASK_NOTIFY_GIVE_FROM_ISR(ux)          EvrFreeRTOSTasks_TaskNotifyGiveFromIsr(pxTCB, ux, pxTCB->ulNotifiedValue[ux])
 #endif
 
 

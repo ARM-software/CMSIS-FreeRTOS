@@ -11,9 +11,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>33</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Debug\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Debug\Exe</state>
@@ -44,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>2</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -66,15 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.42.1.23869</state>
-                </option>
-                <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
+                    <state>9.10.2.39304</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -97,27 +93,13 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
-                    <state>39</state>
+                    <version>30</version>
+                    <state>38</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -133,7 +115,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -156,7 +138,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -209,13 +191,21 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -341,10 +331,6 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$CMSIS_PACK_DEVICE_INCLUDES$</state>
                     <state>$CMSIS_PACK_INCLUDES$</state>
@@ -373,16 +359,6 @@
                 <option>
                     <name>CCOptLevelSlave</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -479,7 +455,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -637,6 +613,10 @@
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -676,12 +656,8 @@
                 <extensions></extensions>
                 <cmdline></cmdline>
                 <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -695,16 +671,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>25</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -772,11 +744,11 @@
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>${CMSIS_PACK_PATH_ARM#CMSIS#5.6.0}$.iar\config\linker\ARMCM3.icf</state>
+                    <state>$TOOLKIT_DIR$\CONFIG\generic_cortex.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1031,6 +1003,26 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1054,11 +1046,6 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
-        </settings>
     </configuration>
     <configuration>
         <name>Release</name>
@@ -1070,9 +1057,13 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>31</version>
+                <version>33</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
+                <option>
+                    <name>BrowseInfoPath</name>
+                    <state>Release\BrowseInfo</state>
+                </option>
                 <option>
                     <name>ExePath</name>
                     <state>Release\Exe</state>
@@ -1128,14 +1119,6 @@
                     <state>8.42.1.23869</state>
                 </option>
                 <option>
-                    <name>GeneralEnableMisra</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVerbose</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>OGChipSelectEditMenu</name>
                     <state></state>
                 </option>
@@ -1156,26 +1139,12 @@
                     <state>0</state>
                 </option>
                 <option>
-                    <name>GeneralMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>GeneralMisraVer</name>
-                    <state>0</state>
-                </option>
-                <option>
-                    <name>GeneralMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
-                </option>
-                <option>
                     <name>RTConfigPath2</name>
                     <state></state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>28</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1192,7 +1161,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>28</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1215,7 +1184,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>28</version>
+                    <version>30</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1268,13 +1237,21 @@
                     <version>0</version>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>OGAarch64Abi</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>OG_32_64Device</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
             <name>ICCARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>36</version>
+                <version>37</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1401,10 +1378,6 @@
                     <state></state>
                 </option>
                 <option>
-                    <name>CompilerMisraOverride</name>
-                    <state>0</state>
-                </option>
-                <option>
                     <name>CCIncludePath2</name>
                     <state>$CMSIS_PACK_DEVICE_INCLUDES$</state>
                     <state>$CMSIS_PACK_INCLUDES$</state>
@@ -1433,16 +1406,6 @@
                 <option>
                     <name>CCOptLevelSlave</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules98</name>
-                    <version>0</version>
-                    <state>1000111110110101101110011100111111101110011011000101110111101101100111111111111100110011111001110111001111111111111111111111111</state>
-                </option>
-                <option>
-                    <name>CompilerMisraRules04</name>
-                    <version>0</version>
-                    <state>111101110010111111111000110111111111111111111111111110010111101111010101111111111111111111111111101111111011111001111011111011111111111111111</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -1539,7 +1502,7 @@
             <name>AARM</name>
             <archiveVersion>2</archiveVersion>
             <data>
-                <version>10</version>
+                <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1697,6 +1660,10 @@
                     <name>AsmNoLiteralPool</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>PreInclude</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1736,12 +1703,8 @@
                 <extensions></extensions>
                 <cmdline></cmdline>
                 <hasPrio>0</hasPrio>
+                <buildSequence>inputOutputBased</buildSequence>
             </data>
-        </settings>
-        <settings>
-            <name>BICOMP</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
         </settings>
         <settings>
             <name>BUILDACTION</name>
@@ -1755,16 +1718,12 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>23</version>
+                <version>25</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
                     <name>IlinkLibIOConfig</name>
                     <state>1</state>
-                </option>
-                <option>
-                    <name>XLinkMisraHandler</name>
-                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkInputFileSlave</name>
@@ -2091,6 +2050,26 @@
                     <name>IlinkRawBinaryAlign2</name>
                     <state></state>
                 </option>
+                <option>
+                    <name>IlinkLogCrtRoutineSelection</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogFragmentInfo</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogInlining</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkLogMerging</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkDemangle</name>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2114,76 +2093,27 @@
                 </option>
             </data>
         </settings>
-        <settings>
-            <name>BILINK</name>
-            <archiveVersion>0</archiveVersion>
-            <data />
-        </settings>
     </configuration>
+    <file>
+        <name>$PROJ_DIR$\Abstract.txt</name>
+    </file>
     <file>
         <name>$PROJ_DIR$\Blinky.c</name>
     </file>
     <group>
         <name>CMSIS-Pack</name>
         <tag>CMSISPack.Component</tag>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Config.CMSIS RTOS2_10.2.1</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>$PROJ_DIR$\RTE\RTOS\FreeRTOSConfig.h</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Core.Cortex-M_10.2.1</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/list.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/portable/IAR/ARM_CM3/port.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/portable/IAR/ARM_CM3/portasm.s</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/queue.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/tasks.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Event Groups_10.2.1</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/event_groups.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Heap.Heap_4_10.2.1</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/portable/MemMang/heap_4.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Timers_10.2.1</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\Source/timers.c</name>
-            </file>
-        </group>
+        <file>
+            <name>$PROJ_DIR$\RTE\RTE_Components.h</name>
+        </file>
         <group>
             <name>CMSIS.RTOS2.FreeRTOS Cortex-M</name>
             <tag>CMSISPack.Component</tag>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</name>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</name>
             </file>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.3.1-dev0}$\CMSIS/RTOS2/FreeRTOS/Source/os_systick.c</name>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/os_systick.c</name>
             </file>
         </group>
         <group>
@@ -2196,40 +2126,90 @@
                 <name>$PROJ_DIR$\RTE\Device\ARMCM3\system_ARMCM3.c</name>
             </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\RTE\RTE_Components.h</name>
-        </file>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Timers_10.4.3</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/timers.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Heap.Heap_4_10.4.3</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/MemMang/heap_4.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Event Groups_10.4.3</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/event_groups.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Core.Cortex-M_10.4.3</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/list.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/IAR/ARM_CM3/port.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/IAR/ARM_CM3/portasm.s</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/queue.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/tasks.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Config.CMSIS RTOS2_10.4.3</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>$PROJ_DIR$\RTE\RTOS\FreeRTOSConfig.h</name>
+            </file>
+        </group>
     </group>
     <cmsisPackSettings>
         <rte>&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
 &lt;configuration xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"&gt;
   &lt;toolchain Tcompiler="IAR" Toutput="exe"/&gt;
   &lt;components&gt;
-    &lt;component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.3.0"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/&gt;
+    &lt;component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0"&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/Core/html/index.html"/&gt;
       &lt;file category="include" name="CMSIS/Core/Include/"/&gt;
+      &lt;file category="header" condition="TrustZone" name="CMSIS/Core/Include/tz_context.h"/&gt;
+      &lt;file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/main_s.c" select="Secure mode 'main' module for ARMv8-M" version="1.1.1"/&gt;
+      &lt;file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/tz_context.c" select="RTOS Context Management (TrustZone for ARMv8-M)" version="1.1.1"/&gt;
     &lt;/component&gt;
-    &lt;component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/General/html/index.html"/&gt;
       &lt;file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/&gt;
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/&gt;
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/&gt;
     &lt;/component&gt;
-    &lt;component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.0" deviceDependent="1"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/&gt;
+    &lt;component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.2" deviceDependent="1"&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
       &lt;file category="header" deviceDependent="1" name="Device/ARM/ARMCM3/Include/ARMCM3.h"/&gt;
       &lt;file attr="config" category="sourceAsm" condition="IAR" deviceDependent="1" name="Device/ARM/ARMCM3/Source/IAR/startup_ARMCM3.s" version="1.0.0"/&gt;
-      &lt;file attr="config" category="sourceC" deviceDependent="1" name="Device/ARM/ARMCM3/Source/system_ARMCM3.c" version="1.0.0"/&gt;
+      &lt;file attr="config" category="sourceC" deviceDependent="1" name="Device/ARM/ARMCM3/Source/system_ARMCM3.c" version="1.0.1"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/&gt;
-      &lt;file attr="config" category="header" condition="CoreM" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.2.0"/&gt;
+      &lt;file attr="config" category="header" condition="CoreM" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.3.0"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="include" name="Source/include/"/&gt;
       &lt;file category="header" name="Source/include/FreeRTOS.h"/&gt;
       &lt;file category="header" name="Source/include/queue.h"/&gt;
@@ -2245,31 +2225,31 @@
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/&gt;
       &lt;file category="other" name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="header" name="Source/include/event_groups.h"/&gt;
       &lt;file category="source" name="Source/event_groups.c"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="source" name="Source/portable/MemMang/heap_4.c"/&gt;
       &lt;file category="doc" name="http://www.freertos.org/a00111.html"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.3.1-dev0" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.2.1"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.3.1-dev0"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.4.3"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
       &lt;file category="header" name="Source/include/timers.h"/&gt;
       &lt;file category="source" name="Source/timers.c"/&gt;
     &lt;/component&gt;
   &lt;/components&gt;
   &lt;apis&gt;
     &lt;api Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Cvendor="ARM" Cversion="2.1.3" exclusive="1"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/RTOS2/html/index.html"/&gt;
       &lt;file category="header" name="CMSIS/RTOS2/Include/cmsis_os2.h"/&gt;
     &lt;/api&gt;
   &lt;/apis&gt;
   &lt;device Dclock="10000000" Dcore="Cortex-M3" DcoreVersion="r2p1" Dendian="Little-endian" Dfamily="ARM Cortex M3" Dfpu="NO_FPU" Dmpu="MPU" Dname="ARMCM3" Dvendor="ARM:82" info="ARM , 128 KB RAM, 256 KB ROM" url="http://www.keil.com/dd2/arm/armcm3"&gt;
-    &lt;package info="CMSIS (Cortex Microcontroller Software Interface Standard)" name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.6.0"/&gt;
+    &lt;package info="CMSIS (Cortex Microcontroller Software Interface Standard)" name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
   &lt;/device&gt;
   &lt;packages useAllLatestPacks="1"/&gt;
 &lt;/configuration&gt;

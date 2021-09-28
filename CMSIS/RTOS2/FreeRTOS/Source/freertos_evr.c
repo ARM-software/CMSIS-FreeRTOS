@@ -422,52 +422,56 @@ void EvrFreeRTOSTasks_LowPowerIdleEnd (void) {
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_BLOCK_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t xTicksToWait) {
+void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord2(EvtFreeRTOSTasks_TaskNotifyTakeBlock, xTicksToWait, 0U);
+  EventRecord2(EvtFreeRTOSTasks_TaskNotifyTakeBlock, uxIndexToWait, xTicksToWait);
 #else
+  (void)uxIndexToWait;
   (void)xTicksToWait;
 #endif
 }
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t ulNotifiedValue) {
+void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord2(EvtFreeRTOSTasks_TaskNotifyTake, ulNotifiedValue, 0U);
+  EventRecord2(EvtFreeRTOSTasks_TaskNotifyTake, uxIndexToWait, ulNotifiedValue);
 #else
+  (void)uxIndexToWait;
   (void)ulNotifiedValue;
 #endif
 }
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_BLOCK_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyWaitBlock  (uint32_t xTicksToWait) {
+void EvrFreeRTOSTasks_TaskNotifyWaitBlock  (uint32_t uxIndexToWait, uint32_t xTicksToWait) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord2(EvtFreeRTOSTasks_TaskNotifyWaitBlock, xTicksToWait, 0U);
+  EventRecord2(EvtFreeRTOSTasks_TaskNotifyWaitBlock, uxIndexToWait, xTicksToWait);
 #else
+  (void)uxIndexToWait;
   (void)xTicksToWait;
 #endif
 }
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t ulNotifiedValue) {
+void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord2(EvtFreeRTOSTasks_TaskNotifyWait, ulNotifiedValue, 0U);
+  EventRecord2(EvtFreeRTOSTasks_TaskNotifyWait, uxIndexToWait, ulNotifiedValue);
 #else
+  (void)uxIndexToWait;
   (void)ulNotifiedValue;
 #endif
 }
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_DISABLE))
-void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t ulValue, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
+void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord4(EvtFreeRTOSTasks_TaskNotify, (uint32_t)xTaskToNotify, ulValue, eAction, ulNotifiedValue);
+  EventRecord4(EvtFreeRTOSTasks_TaskNotify, (uint32_t)xTaskToNotify, uxIndexToWait, eAction, ulNotifiedValue);
 #else
   (void)xTaskToNotify;
-  (void)ulValue;
+  (void)uxIndexToWait;
   (void)eAction;
   (void)ulNotifiedValue;
 #endif
@@ -475,12 +479,12 @@ void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t ulValue
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_FROM_ISR_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t ulValue, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
+void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord4(EvtFreeRTOSTasks_TaskNotifyFromIsr, (uint32_t)xTaskToNotify, ulValue, eAction, ulNotifiedValue);
+  EventRecord4(EvtFreeRTOSTasks_TaskNotifyFromIsr, (uint32_t)xTaskToNotify, uxIndexToWait, eAction, ulNotifiedValue);
 #else
   (void)xTaskToNotify;
-  (void)ulValue;
+  (void)uxIndexToWait;
   (void)eAction;
   (void)ulNotifiedValue;
 #endif
@@ -488,11 +492,12 @@ void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t 
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_GIVE_FROM_ISR_DISABLE))
-void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t ulNotifiedValue) {
+void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
 #if defined(RTE_Compiler_EventRecorder)
-  EventRecord2(EvtFreeRTOSTasks_TaskNotifyGiveFromIsr, (uint32_t)xTaskToNotify, ulNotifiedValue);
+  EventRecord4(EvtFreeRTOSTasks_TaskNotifyGiveFromIsr, (uint32_t)xTaskToNotify, uxIndexToWait, ulNotifiedValue, 0U);
 #else
   (void)xTaskToNotify;
+  (void)uxIndexToWait;
   (void)ulNotifiedValue;
 #endif
 }

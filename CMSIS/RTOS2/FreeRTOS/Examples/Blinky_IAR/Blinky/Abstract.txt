@@ -1,5 +1,3 @@
-Adapted from the MDK Blinky example
-
 The Blinky project is a simple CMSIS RTOS2 Kernel based example
 for a simulated Cortex-M3 device.
 

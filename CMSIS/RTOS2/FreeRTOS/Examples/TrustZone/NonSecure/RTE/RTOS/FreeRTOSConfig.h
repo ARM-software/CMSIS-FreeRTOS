@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.2.0
+ * $Revision:   V10.3.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -238,7 +238,7 @@
 #define INCLUDE_xEventGroupSetBitsFromISR       1
 #define INCLUDE_xSemaphoreGetMutexHolder        1
 #define INCLUDE_vTaskDelay                      1
-#define INCLUDE_vTaskDelayUntil                 1
+#define INCLUDE_xTaskDelayUntil                 1
 #define INCLUDE_vTaskDelete                     1
 #define INCLUDE_xTaskGetCurrentTaskHandle       1
 #define INCLUDE_xTaskGetSchedulerState          1

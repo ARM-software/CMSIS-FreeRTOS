@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS-FreeRTOS" version="10.3.1"/>
+  <component name="CMSIS-FreeRTOS" version="10.4.3"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -770,13 +770,13 @@
     <event id="0xF000 + 0x10" level="Op"     property="PostMovedTaskToReadyState"                                                 value="pxTCB=%x[val1]" info=""/>
     <event id="0xF000 + 0x11" level="Op"     property="LowPowerIdleBegin"                                                         value="xExpectedIdleTime=%d[val1]" info=""/>
     <event id="0xF000 + 0x12" level="Op"     property="LowPowerIdleEnd"                                                           value="" info=""/>
-    <event id="0xF000 + 0x13" level="Op"     property="TaskNotifyTakeBlock"                                                       value="xTicksToWait=%d[val1]" info=""/>
-    <event id="0xF000 + 0x14" level="Op"     property="TaskNotifyTake"                                                            value="ulNotifiedValue=%x[val1]" info=""/>
-    <event id="0xF000 + 0x15" level="Op"     property="TaskNotifyWaitBlock"                                                       value="xTicksToWait=%d[val1]" info=""/>
-    <event id="0xF000 + 0x16" level="Op"     property="TaskNotifyWait"                                                            value="ulNotifiedValue=%x[val1]" info=""/>
-    <event id="0xF000 + 0x17" level="Op"     property="TaskNotify"                                                                value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
-    <event id="0xF000 + 0x18" level="Op"     property="TaskNotifyFromIsr"                                                         value="xTaskToNotify=%x[val1], ulValue=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
-    <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"                                                     value="xTaskToNotify=%x[val1], ulNotifiedValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0x13" level="Op"     property="TaskNotifyTakeBlock"                                                       value="uxIndexToWait=%d[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF000 + 0x14" level="Op"     property="TaskNotifyTake"                                                            value="uxIndexToWait=%d[val1], ulNotifiedValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0x15" level="Op"     property="TaskNotifyWaitBlock"                                                       value="uxIndexToWait=%d[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF000 + 0x16" level="Op"     property="TaskNotifyWait"                                                            value="uxIndexToWait=%d[val1], ulNotifiedValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0x17" level="Op"     property="TaskNotify"                                                                value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
+    <event id="0xF000 + 0x18" level="Op"     property="TaskNotifyFromIsr"                                                         value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
+    <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"                                                     value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], ulNotifiedValue=%x[val3]" info=""/>
 
     <event id="0xF100 + 0x00" level="Op"    property="QueueCreate"                   value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x01" level="Error" property="QueueCreateFailed"             value="ucQueueType=%x[val1]" info=""/>

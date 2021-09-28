@@ -16,7 +16,7 @@
  */
 #define CMSIS_device_header "ARMCM33_DSP_FP_TZ.h"
 
-/*  ARM.FreeRTOS::RTOS:TrustZone:10.2.0 */
+/* ARM.FreeRTOS::RTOS:TrustZone:10.4.3 */
 #define RTE_RTOS_FreeRTOS_TZ
 
 

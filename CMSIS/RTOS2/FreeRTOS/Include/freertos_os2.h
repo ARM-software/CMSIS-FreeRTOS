@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2020 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -133,13 +133,13 @@
   */
   #error "Definition INCLUDE_vTaskDelay must equal 1 to implement Generic Wait Functions API."
 #endif
-#if (INCLUDE_vTaskDelayUntil == 0)
+#if (INCLUDE_xTaskDelayUntil == 0)
   /*
-    CMSIS-RTOS2 function osDelayUntil uses FreeRTOS function vTaskDelayUntil. In case if
+    CMSIS-RTOS2 function osDelayUntil uses FreeRTOS function xTaskDelayUntil. In case if
     osDelayUntil is not used in the application image, compiler will optimize it away.
-    Set #define INCLUDE_vTaskDelayUntil 1 to fix this error.
+    Set #define INCLUDE_xTaskDelayUntil 1 to fix this error.
   */
-  #error "Definition INCLUDE_vTaskDelayUntil must equal 1 to implement Generic Wait Functions API."
+  #error "Definition INCLUDE_xTaskDelayUntil must equal 1 to implement Generic Wait Functions API."
 #endif
 #if (INCLUDE_vTaskDelete == 0)
   /*

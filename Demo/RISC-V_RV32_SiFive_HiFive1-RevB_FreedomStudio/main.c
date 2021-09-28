@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.3.1
+ * FreeRTOS V202104.00
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -141,10 +141,6 @@ struct metal_interrupt *pxInterruptController;
 	/* Set all interrupt enable bits to 0. */
 	mainPLIC_ENABLE_0 = 0UL;
 	mainPLIC_ENABLE_1 = 0UL;
-
-	/* Clear all pending interrupts. */
-	mainPLIC_PENDING_0 = 0UL;
-	mainPLIC_PENDING_1 = 0UL;
 }
 /*-----------------------------------------------------------*/
 
