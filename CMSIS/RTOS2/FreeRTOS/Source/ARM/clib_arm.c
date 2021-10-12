@@ -80,16 +80,10 @@ static TaskHandle_t os_libspace_id[OS_THREAD_LIBSPACE_NUM];
 
 /* OS Kernel state checking */
 static uint32_t os_kernel_is_active (void) {
-  static uint8_t os_kernel_active = 0U;
-
-  if (os_kernel_active == 0U) {
-    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
-      os_kernel_active = 1U;
-      return 1U;
-    }
-    return 0U;
-  } else {
+  if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
     return 1U;
+  } else {
+    return 0U;
   }
 }
 
