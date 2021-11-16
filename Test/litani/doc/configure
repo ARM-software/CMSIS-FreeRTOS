@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+#
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+
+import sys
+import pathlib
+
+import jinja2
+
+
+DOC_DIR = pathlib.Path(sys.path[0]).resolve()
+sys.path.insert(1, str(DOC_DIR.parent))
+
+# pylint: disable=wrong-import-position,import-error
+import lib.ninja_syntax
+
+
+OUT_DIR = DOC_DIR / "out"
+
+BIN_DIR = DOC_DIR / "bin"
+
+SRC_DIR = DOC_DIR / "src"
+
+TEMPLATE_DIR = DOC_DIR / "templates"
+TMP_DIR = DOC_DIR / "tmp"
+
+ROFF_DIR = OUT_DIR / "man"
+
+HTML_MAN_SRC_DIR = TMP_DIR / "roff_to_html"
+HTML_UNIQUE_DIR = TMP_DIR / "html_unique"
+
+
+RULES = [{
+    "name": "sc_to_roff",
+    "description": "converting ${man-name} to roff",
+    "command": "scdoc < ${in} > ${out}"
+}, {
+    "name": "voluptuous_to_roff",
+    "description": "converting ${man-name} to roff",
+    "command": f"{BIN_DIR / 'schema-to-scdoc'}"
+               f" --project-root { DOC_DIR.parent }"
+               " --page-name ${man-name}"
+               " --data-path ${data-path}"
+               " --template"
+               f" { TEMPLATE_DIR / 'voluptuous-man.jinja.scdoc' }"
+               " | scdoc > ${out}"
+}, {
+    "name": "roff_to_html",
+    "description": "converting ${man-name}.roff HTML",
+    "command": "mandoc -O fragment -Thtml < ${in} > ${out}"
+}, {
+    "name": "uniquify_header_ids",
+    "description": "Giving unique header IDs to ${man-name}.html",
+    "command": f"sed -f {BIN_DIR}/uniquify-header-ids"
+               " -e 's/@MAN_NAME@/${man-name}/g'"
+               " ${in-file}"
+               # Get rid of header and footer
+               " | tail -n +8"
+               " | tac"
+               " | tail -n +7"
+               " | tac"
+               " > ${out}"
+}, {
+    "name": "build_html_doc",
+    "description": "Building final HTML page",
+    "command": f"{BIN_DIR}/build-html-doc"
+               "  --html-manuals ${html-mans}"
+               f" --template-dir {TEMPLATE_DIR}"
+               "  --out-file ${out}"
+               "  --roff-html-dir ${roff-html-dir}"
+}]
+
+
+def make_html_unique(man, html_man, html_mans, builds):
+    html_unique = HTML_UNIQUE_DIR / f"{man.stem}.html"
+    builds.append({
+        "inputs": [html_man, BIN_DIR / "uniquify-header-ids"],
+        "outputs": [html_unique],
+        "rule": "uniquify_header_ids",
+        "variables": {
+            "man-name": man.stem,
+            "in-file": html_man,
+        }
+    })
+    html_mans.append(html_unique)
+
+
+def roff_to_html(man, roff_out, builds):
+    html_man = HTML_MAN_SRC_DIR / f"{man.stem}.html"
+    builds.append({
+        "inputs": [roff_out],
+        "outputs": [html_man],
+        "rule": "roff_to_html",
+        "variables": {
+            "man-name": man.stem,
+            "in-file": html_man,
+        }
+    })
+    return html_man
+
+
+def convert_man_dir_to_roff(src_dir, dst_dir, rule, html_mans, builds):
+    for man in (src_dir).iterdir():
+        roff_out = dst_dir / f"{man.stem}.roff"
+        builds.append({
+            "inputs": [man],
+            "outputs": [roff_out],
+            "rule": rule,
+            "variables": {
+                "man-name": man.stem,
+                "data-path": man.resolve(),
+            }
+        })
+        html_man = roff_to_html(man, roff_out, builds)
+        make_html_unique(man, html_man, html_mans, builds)
+
+
+def main():
+    builds = []
+    html_mans = []
+
+    convert_man_dir_to_roff(
+        SRC_DIR / "man", ROFF_DIR, "sc_to_roff", html_mans, builds)
+    convert_man_dir_to_roff(
+        SRC_DIR / "voluptuous-man", ROFF_DIR, "voluptuous_to_roff", html_mans,
+        builds)
+
+    builds.append({
+        "inputs": html_mans + [
+            BIN_DIR / "build-html-doc",
+            TEMPLATE_DIR / "index.jinja.html",
+        ],
+        "outputs": [DOC_DIR / "out" / "html"/ "index.html"],
+        "rule": "build_html_doc",
+        "variables": {
+            "html-mans": " ".join([str(h) for h in html_mans]),
+            "roff-html-dir": HTML_MAN_SRC_DIR,
+        }
+    })
+
+    for build in builds:
+        for k, v in build.items():
+            if isinstance(v, list):
+                build[k] = [str(s) for s in v]
+        try:
+            build["implicit"].append(str(DOC_DIR / "configure"))
+        except KeyError:
+            build["implicit"] = [str(DOC_DIR / "configure")]
+
+    with open("build.ninja", "w") as handle:
+        ninja = lib.ninja_syntax.Writer(handle)
+        for rule in RULES:
+            ninja.rule(**rule)
+        for build in builds:
+            ninja.build(**build)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,843 @@
+#!/usr/bin/env python3
+#
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+
+import argparse
+import asyncio
+import datetime
+import json
+import logging
+import os
+import pathlib
+import shlex
+import shutil
+import signal
+import sys
+import tempfile
+import threading
+import time
+import traceback
+import uuid
+
+from lib import litani, litani_report, ninja_syntax
+import lib.capabilities
+import lib.graph
+import lib.job_outcome
+import lib.output_artifact
+import lib.ninja
+import lib.pid_file
+import lib.process
+import lib.run_printer
+import lib.validation
+
+
+VALIDATE_DATA = False
+
+
+################################################################################
+# Argument parsing
+################################################################################
+
+
+def get_add_job_args():
+    return [(
+        "describing the build graph", [{
+            "flags": ["--inputs"],
+            "nargs": "+",
+            "metavar": "F",
+            "help": "list of inputs that this job depends on",
+        }, {
+            "flags": ["--command"],
+            "metavar": "C",
+            "required": True,
+            "help": "the command to run once all dependencies are satisfied",
+        }, {
+            "flags": ["--outputs"],
+            "metavar": "F",
+            "nargs": "+",
+            "help": "list of outputs that this job generates",
+        }]), (
+        "job control", [{
+            "flags": ["--pipeline-name"],
+            "required": True,
+            "metavar": "P",
+            "help": "which pipeline this job is a member of",
+        }, {
+            "flags": ["--ci-stage"],
+            "required": True,
+            "metavar": "S",
+            "help": "which CI stage this job should execute in. "
+        }, {
+            "flags": ["--cwd"],
+            "metavar": "DIR",
+            "help": "directory that this job should execute in"
+        }, {
+            "flags": ["--timeout"],
+            "metavar": "N",
+            "type": int,
+            "help": "max number of seconds this job should run for"
+        }, {
+            "flags": ["--timeout-ok"],
+            "action": "store_true",
+            "help": "if the job times out, terminate it and return success"
+        }, {
+            "flags": ["--timeout-ignore"],
+            "action": "store_true",
+            "help": "if the job times out, terminate it continue, but "
+                    "fail at the end",
+        }, {
+            "flags": ["--ignore-returns"],
+            "metavar": "RC",
+            "nargs": "+",
+            "help": "if the job exits with one of the listed return codes, "
+                    "return success"
+        }, {
+            "flags": ["--ok-returns"],
+            "metavar": "RC",
+            "nargs": "+",
+            "help": "if the job exits with one of the listed return codes, "
+                    "continue the build but fail at the end"
+        }, {
+            "flags": ["--outcome-table"],
+            "metavar": "F",
+            "help": "path to a JSON outcome table that determines the outcome "
+                    "of this job"
+        }, {
+            "flags": ["--interleave-stdout-stderr"],
+            "action": "store_true",
+            "help": "simulate '2>&1 >...'"
+        }, {
+            "flags": ["--stdout-file"],
+            "metavar": "FILE",
+            "help": "file to redirect stdout to"
+        }, {
+            "flags": ["--stderr-file"],
+            "metavar": "FILE",
+            "help": "file to redirect stderr to"
+        }, {
+            "flags": ["--pool"],
+            "metavar": "NAME",
+            "help": "pool to which this job should be added"
+        }]), (
+        "misc", [{
+            "flags": ["--description"],
+            "metavar": "DESC",
+            "help": "string to print when this job is being run",
+        }, {
+            "flags": ["--profile-memory"],
+            "action": "store_true",
+            "default": False,
+            "help": "profile the memory usage of this job"
+        }, {
+            "flags": ["--profile-memory-interval"],
+            "metavar": "N",
+            "default": 10,
+            "type": int,
+            "help": "seconds between memory profile polls"
+        }, {
+            "flags": ["--phony-outputs"],
+            "metavar": "OUT",
+            "nargs": "*",
+            "help": "do not warn if OUT does not exist upon job completion"
+        }, {
+            "flags": ["--tags"],
+            "metavar": "TAG",
+            "nargs": "+",
+            "help": "a list of tags for this job"
+        }]),
+    ]
+
+
+def get_exec_job_args():
+    exec_job_args = list(get_add_job_args())
+    exec_job_args.append((
+        "`litani exec`-specific flags", [{
+            "flags": ["--status-file"],
+            "metavar": "F",
+            "required": True,
+            "help": "JSON file to write command status to",
+    }, {
+            "flags": ["--job-id"],
+            "metavar": "ID",
+            "required": True,
+            "help": "the globally unique job ID",
+    }]))
+    return exec_job_args
+
+
+def get_args():
+    description = "Incrementally build up a dependency graph of jobs to execute"
+
+    pars = argparse.ArgumentParser(description=description)
+    subs = pars.add_subparsers(
+        title="subcommands", dest="subcommand")
+    subs.required = True
+
+    for arg in [{
+            "flags": ["-v", "--verbose"],
+            "action": "store_true",
+            "help": "verbose output",
+        }, {
+            "flags": ["-w", "--very-verbose"],
+            "action": "store_true",
+            "help": "debug output",
+        }, {
+            "flags": ["-V", "--version"],
+            "action": "version",
+            "version": litani.VERSION,
+            "help": "print data format version and exit",
+    }]:
+        flags = arg.pop("flags")
+        pars.add_argument(*flags, **arg)
+
+    init_pars = subs.add_parser("init")
+    init_pars.set_defaults(func=init)
+    for arg in [{
+            "flags": ["--project-name"],
+            "required": True,
+            "help": "project that this proof run is associated with",
+            "metavar": "NAME",
+        }, {
+            "flags": ["--pools"],
+            "help":
+                "job pools to which jobs can be added, with depth of each pool",
+            "metavar": "NAME:DEPTH",
+            "nargs": "+",
+        }, {
+            "flags": ["--output-symlink"],
+            "help": "create a symbolic link from DIR to litani's output directory",
+            "metavar": "DIR"
+        }, {
+            "flags": ["--stages"],
+            "default": litani.DEFAULT_STAGES,
+            "help": "stages that a job can be a member of. Default: %(default)s",
+            "metavar": "NAME",
+            "nargs": "+",
+    }]:
+        flags = arg.pop("flags")
+        init_pars.add_argument(*flags, **arg)
+    init_output_flags = init_pars.add_mutually_exclusive_group()
+    for arg in [{
+            "flags": ["--output-directory"],
+            "help": "write Litani output to specified directory",
+            "metavar": "DIR"
+        }, {
+            "flags": ["--output-prefix"],
+            "help": "directory prefix to write Litani output to",
+            "metavar": "DIR"
+    }]:
+        flags = arg.pop("flags")
+        init_output_flags.add_argument(*flags, **arg)
+    for arg in [{
+            "flags": ["--no-print-out-dir"],
+            "help": "do not print path to output directory",
+            "action": "store_true"
+    }]:
+        flags = arg.pop("flags")
+        init_pars.add_argument(*flags, **arg)
+
+
+    dump_run_pars = subs.add_parser("dump-run")
+    dump_run_pars.set_defaults(func=lib.run_printer.dump_run)
+    for arg in [{
+            "flags": ["-r", "--retries"],
+            "metavar": "N",
+            "type": non_negative_int,
+            "default": 10,
+            "help":
+                "how many times to retry loading the run in 1 second intervals"
+                " (Default: %(default)s)"
+    }]:
+        flags = arg.pop("flags")
+        dump_run_pars.add_argument(*flags, **arg)
+
+    graph_pars = subs.add_parser("graph")
+    graph_pars.set_defaults(func=lib.graph.print_graph)
+    for arg in [{
+            "flags": ["-p", "--pipelines"],
+            "help": "only display the graph for these pipelines (default: all)",
+            "nargs": "+",
+            "metavar": "P",
+    }]:
+        flags = arg.pop("flags")
+        graph_pars.add_argument(*flags, **arg)
+
+    caps_pars = subs.add_parser("print-capabilities",
+        help="Print out Litani's capabilities in a list")
+    caps_pars.set_defaults(func=lib.capabilities.dump)
+    for arg in [{
+            "flags": ["-r", "--human-readable"],
+            "help": "also print out capabilities with their descriptions",
+            "action": "store_true"
+    }]:
+        flags = arg.pop("flags")
+        caps_pars.add_argument(*flags, **arg)
+
+    run_build_pars = subs.add_parser("run-build")
+    run_build_pars.set_defaults(func=run_build)
+    for arg in [{
+            "flags": ["-n", "--dry-run"],
+            "help": "don't actually run jobs, just act like they succeeded",
+            "action": "store_true",
+    }, {
+            "flags": ["-j", "--parallel"],
+            "metavar": "N",
+            "help": "run N jobs in parallel. 0 means infinity, default is "
+                    "based on the number of cores on this system.",
+    }, {
+            "flags": ["-o", "--out-file"],
+            "metavar": "F",
+            "help": "periodically write JSON representation of the run"
+    }, {
+            "flags": ["--fail-on-pipeline-failure"],
+            "action": "store_true",
+            "help": "exit with a non-zero return code if some pipelines failed"
+    }, {
+            "flags": ["--no-pipeline-dep-graph"],
+            "action": "store_true",
+            "help": "do not attempt to generate pipeline dependency graph"
+    }]:
+        flags = arg.pop("flags")
+        run_build_pars.add_argument(*flags, **arg)
+    mutex = run_build_pars.add_mutually_exclusive_group()
+    for arg in [{
+            "flags": ["-p", "--pipelines"],
+            "metavar": "P",
+            "nargs": "+",
+            "help": "only run jobs that are in the specified pipelines"
+    }, {
+            "flags": ["-s", "--ci-stage"],
+            "metavar": "S",
+            "help": (
+                "only run jobs that are part of the specified ci stage. S "
+            )
+    }]:
+        flags = arg.pop("flags")
+        mutex.add_argument(*flags, **arg)
+
+    add_job_pars = subs.add_parser("add-job")
+    add_job_pars.set_defaults(func=add_job)
+    for group_name, args in get_add_job_args():
+        group = add_job_pars.add_argument_group(title=group_name)
+        for arg in args:
+            flags = arg.pop("flags")
+            group.add_argument(*flags, **arg)
+
+    exec_job_pars = subs.add_parser("exec")
+    exec_job_pars.set_defaults(func=exec_job)
+    for group_name, args in get_exec_job_args():
+        group = exec_job_pars.add_argument_group(title=group_name)
+        for arg in args:
+            flags = arg.pop("flags")
+            group.add_argument(*flags, **arg)
+
+    all_args = sys.argv[1:]
+    wrapped_command = None
+    if "--" in all_args:
+        sep_idx = all_args.index("--")
+        arg_list = all_args[0:sep_idx]
+        wrapped_command = arg_list[sep_idx+1:]
+        all_args = arg_list
+
+    args = pars.parse_args(all_args)
+    if wrapped_command is not None:
+        args.command = wrapped_command
+
+    return args
+
+
+################################################################################
+# Other utility functions
+################################################################################
+
+
+
+def continuous_render_report(
+    cache_dir, report_dir, killer, out_file, pipeline_degraph_renderer):
+    try:
+        while True:
+            run = litani_report.get_run_data(cache_dir)
+            lib.validation.validate_run(run)
+            with litani.atomic_write(cache_dir / litani.RUN_FILE) as handle:
+                print(json.dumps(run, indent=2), file=handle)
+            if out_file is not None:
+                with litani.atomic_write(out_file) as handle:
+                    print(json.dumps(run, indent=2), file=handle)
+            litani_report.render(run, report_dir, pipeline_degraph_renderer)
+            if killer.is_set():
+                break
+            time.sleep(2)
+    except BaseException as e:
+        logging.error("Continuous render function crashed")
+        logging.error(str(e))
+        traceback.print_exc()
+
+
+def set_up_logging(args):
+    if args.very_verbose:
+        level = logging.DEBUG
+    elif args.verbose:
+        level = logging.INFO
+    else:
+        level = logging.WARNING
+    logging.basicConfig(
+        format="litani: %(message)s", level=level)
+
+
+def non_negative_int(arg):
+    try:
+        ret = int(arg)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(
+            "Timeout '%s' must be an int" % arg) from e
+    if ret < 0:
+        raise argparse.ArgumentTypeError(
+            "Timeout '%d' must be >= 0" % ret) from e
+    return ret
+
+
+def list_of_ints(arg):
+    ret = []
+    for rc in arg:
+        try:
+            ret.append(int(rc))
+        except ValueError as e:
+            raise argparse.ArgumentTypeError(
+                "Return code '%s' must be an int" % arg) from e
+    return ret
+
+
+def timestamp(key, data):
+    data[key] = datetime.datetime.now(datetime.timezone.utc).strftime(
+        litani.TIME_FORMAT_W)
+
+
+def make_litani_exec_command(add_args):
+    cmd = [os.path.realpath(__file__), "exec"]
+    # strings
+    for arg in [
+            "command", "pipeline_name", "ci_stage", "cwd", "job_id",
+            "stdout_file", "stderr_file", "description", "timeout",
+            "status_file", "outcome_table", "pool",
+            "profile_memory_interval",
+    ]:
+        if arg in add_args and add_args[arg]:
+            cmd.append("--%s" % arg.replace("_", "-"))
+            cmd.append(shlex.quote(str(add_args[arg]).strip()))
+
+    # lists
+    for arg in [
+            "inputs", "outputs", "ignore_returns", "ok_returns",
+            "tags", "phony_outputs",
+    ]:
+        if arg not in add_args or add_args[arg] is None:
+            continue
+        cmd.append("--%s" % arg.replace("_", "-"))
+        for item in add_args[arg]:
+            cmd.append(shlex.quote(str(item).strip()))
+
+    # switches
+    for arg in [
+            "timeout_ignore", "timeout_ok", "interleave_stdout_stderr",
+            "profile_memory",
+    ]:
+        if arg in add_args and add_args[arg]:
+            cmd.append("--%s" % arg.replace("_", "-"))
+
+    return " ".join(cmd)
+
+
+def fill_out_ninja(cache, rules, builds, pools):
+    phonies = {
+        "pipeline_name": {},
+        "ci_stage": {},
+    }
+
+    for name, depth in cache["pools"].items():
+        pools[name] = depth
+
+    for entry in cache["jobs"]:
+        outs = entry["outputs"] or []
+        ins = entry["inputs"] or []
+
+        if "description" in entry:
+            description = entry["description"]
+        else:
+            description = f"Running {entry['command']}..."
+
+        pool_name = entry.get("pool")
+        if pool_name:
+            if pool_name not in pools:
+                logging.error(
+                    "Job '%s' was added to a pool '%s' that was not "
+                    "specified to `litani init`", description, pool_name)
+                sys.exit(1)
+            pool = {"pool": pool_name}
+        else:
+            pool = {}
+
+        rule_name = entry["job_id"]
+        rules.append({
+            "name": rule_name,
+            "description": description,
+            "command": make_litani_exec_command(entry),
+            **pool,
+        })
+        builds.append({
+            "inputs": ins,
+            "outputs": outs + [entry["status_file"]],
+            "rule": rule_name,
+            **pool,
+        })
+        if outs:
+            for phony in phonies:
+                try:
+                    phonies[phony][entry[phony]].update(outs)
+                except KeyError:
+                    phonies[phony][entry[phony]] = set(outs)
+
+    for phony, jobs in phonies.items():
+        for job_name, inputs in jobs.items():
+            ins = inputs or []
+            builds.append({
+                "inputs": sorted(list(ins)),
+                "outputs": ["__litani_%s_%s" % (phony, job_name)],
+                "rule": "phony",
+            })
+
+
+def get_pools(args):
+    ret = {}
+    if not args.pools:
+        return ret
+    for pool in args.pools:
+        pair = pool.split(":")
+        if len(pair) != 2:
+            logging.error(
+                "Cannot parse pool '%s'. The correct format is a space-"
+                "separated list of POOL_NAME:DEPTH", pool)
+            sys.exit(1)
+        name, depth = pair
+        if name in ret:
+            logging.error(
+                "Pool name '%s' given twice (pool names must be unique)", name)
+            sys.exit(1)
+        try:
+            ret[name] = int(depth)
+        except TypeError:
+            logging.error(
+                "Pool depth '%s' cannot be parsed into an int", depth)
+            sys.exit(1)
+
+        if ret[name] < 1:
+            logging.error(
+                "Pool depth cannot be less than 1 for pool '%s'", name)
+            sys.exit(1)
+
+    return ret
+
+
+################################################################################
+# Entry points
+# ``````````````````````````````````````````````````````````````````````````````
+# Each litani subcommand invokes one of these functions.
+################################################################################
+
+
+async def init(args):
+    try:
+        run_id = os.environ["LITANI_RUN_ID"]
+    except KeyError:
+        run_id = str(uuid.uuid4())
+
+    if args.output_directory:
+        cache_dir = pathlib.Path(args.output_directory).resolve()
+    else:
+        if args.output_prefix:
+            output_prefix = pathlib.Path(args.output_prefix).resolve()
+        else:
+            output_prefix = pathlib.Path(tempfile.gettempdir())
+        cache_dir = output_prefix / "litani" / "runs" / run_id
+
+    try:
+        cache_dir.mkdir(parents=True)
+    except FileExistsError:
+        logging.error("Output directory '%s' already exists", cache_dir)
+        sys.exit(1)
+
+    if args.output_symlink:
+        latest_symlink = pathlib.Path(args.output_symlink).absolute()
+    else:
+        latest_symlink = cache_dir.parent / ("latest")
+    temp_symlink = latest_symlink.with_name(
+        f"{latest_symlink.name}-{str(uuid.uuid4())}")
+    os.symlink(cache_dir, temp_symlink, target_is_directory=True)
+    os.rename(temp_symlink, latest_symlink)
+
+    if not args.no_print_out_dir:
+        print(
+            "Report will be rendered at "
+            f"file://{str(latest_symlink)}/html/index.html")
+
+    now = datetime.datetime.now(datetime.timezone.utc).strftime(
+        litani.TIME_FORMAT_W)
+
+    with litani.atomic_write(cache_dir / litani.CACHE_FILE) as handle:
+        print(json.dumps({
+            "aux": {},
+            "project": args.project_name,
+            "version": litani.VERSION,
+            "version_major": litani.VERSION_MAJOR,
+            "version_minor": litani.VERSION_MINOR,
+            "version_patch": litani.VERSION_PATCH,
+            "release_candidate": litani.RC,
+            "run_id": run_id,
+            "stages": args.stages,
+            "start_time": now,
+            "status": "in_progress",
+            "pools": get_pools(args),
+            "jobs": [],
+            "parallelism": {},
+            "latest_symlink": str(latest_symlink),
+        }, indent=2), file=handle)
+
+    logging.info("cache dir is at: %s", cache_dir)
+
+    with litani.atomic_write(litani.CACHE_POINTER) as handle:
+        print(str(cache_dir), file=handle)
+
+
+async def add_job(args):
+    cache_file = litani.get_cache_dir() / litani.CACHE_FILE
+    with open(cache_file) as handle:
+        cache_contents = json.load(handle)
+    if args.ci_stage not in cache_contents["stages"]:
+        valid_stages = "', '".join(cache_contents["stages"])
+        logging.error(
+            "Invalid stage name '%s' was provided, possible "
+            "stage names are: '%s'", args.ci_stage, valid_stages)
+        sys.exit(1)
+
+    jobs_dir = litani.get_cache_dir() / litani.JOBS_DIR
+    jobs_dir.mkdir(exist_ok=True, parents=True)
+
+    if args.phony_outputs:
+        if not args.outputs:
+            args.outputs = args.phony_outputs
+        else:
+            for phony_output in args.phony_outputs:
+                if phony_output not in args.outputs:
+                    args.outputs.append(phony_output)
+
+    job = vars(args)
+    job.pop("func")
+
+    job_id = str(uuid.uuid4())
+    job["job_id"] = job_id
+    job["status_file"] = str(
+        litani.get_status_dir() / ("%s.json" % job_id))
+
+    logging.debug("Adding job: %s", json.dumps(job, indent=2))
+
+    with litani.atomic_write(jobs_dir / ("%s.json" % job_id)) as handle:
+        print(json.dumps(job, indent=2), file=handle)
+
+
+async def run_build(args):
+    artifacts_dir = litani.get_artifacts_dir()
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    cache_dir = litani.get_cache_dir()
+    litani.add_jobs_to_cache()
+
+    with open(cache_dir / litani.CACHE_FILE) as handle:
+        cache = json.load(handle)
+
+    rules = []
+    builds = []
+    pools = {}
+    fill_out_ninja(cache, rules, builds, pools)
+
+    ninja_file = cache_dir / "litani.ninja"
+    with litani.atomic_write(ninja_file) as handle:
+        ninja = ninja_syntax.Writer(handle, width=70)
+        for name, depth in pools.items():
+            logging.debug("pool %s: %d", name, depth)
+            ninja.pool(name, depth)
+        for rule in rules:
+            logging.debug(rule)
+            ninja.rule(**rule)
+        for build in builds:
+            logging.debug(build)
+            ninja.build(**build)
+    report_dir = litani.get_report_dir()
+    run = litani_report.get_run_data(cache_dir)
+    lib.validation.validate_run(run)
+    pipeline_degraph_renderer = litani_report.PipelineDepgraphRenderer(
+        should_render=not args.no_pipeline_dep_graph)
+    litani_report.render(run, report_dir, pipeline_degraph_renderer)
+    killer = threading.Event()
+    render_thread = threading.Thread(
+        group=None, target=continuous_render_report,
+        args=(cache_dir, report_dir, killer, args.out_file,
+        pipeline_degraph_renderer))
+    render_thread.start()
+
+    runner = lib.ninja.Runner(
+        ninja_file, args.dry_run, args.parallel, args.pipelines,
+        args.ci_stage)
+
+    lib.pid_file.write()
+    sig_handler = lib.run_printer.DumpRunSignalHandler(cache_dir)
+    signal.signal(lib.run_printer.DUMP_SIGNAL, sig_handler)
+    runner.run()
+
+    now = datetime.datetime.now(datetime.timezone.utc).strftime(
+        litani.TIME_FORMAT_W)
+
+    with open(cache_dir / litani.CACHE_FILE) as handle:
+        run_info = json.load(handle)
+    run_info["end_time"] = now
+    run_info["parallelism"] = runner.get_parallelism_graph()
+
+    success = True
+    for root, _, files in os.walk(litani.get_status_dir()):
+        for fyle in files:
+            if not fyle.endswith(".json"):
+                continue
+            with open(os.path.join(root, fyle)) as handle:
+                job_status = json.load(handle)
+            if job_status["outcome"] != "success":
+                success = False
+    run_info["status"] = "success" if success else "failure"
+
+    with litani.atomic_write(cache_dir / litani.CACHE_FILE) as handle:
+        print(json.dumps(run_info, indent=2), file=handle)
+
+    killer.set()
+    render_thread.join()
+    run = litani_report.get_run_data(cache_dir)
+    lib.validation.validate_run(run)
+    litani_report.render(run, report_dir, pipeline_degraph_renderer)
+
+    with litani.atomic_write(cache_dir / litani.RUN_FILE) as handle:
+        print(json.dumps(run, indent=2), file=handle)
+    if args.out_file:
+        with litani.atomic_write(args.out_file) as handle:
+            print(json.dumps(run, indent=2), file=handle)
+
+    # Print the path to the complete report at the end of 'litani run-build'.
+    # The same path was printed at the start of 'litani init'.
+    if 'latest_symlink' in run_info:
+        print("Report was rendered at "
+              f"file://{run_info['latest_symlink']}/html/index.html")
+
+    if args.fail_on_pipeline_failure:
+        sys.exit(0 if runner.was_successful() else 1)
+
+    sys.exit(0)
+
+
+async def exec_job(args):
+    args_dict = vars(args)
+    args_dict.pop("func")
+    out_data = {
+        "wrapper_arguments": args_dict,
+        "complete": False,
+    }
+    timestamp("start_time", out_data)
+    with litani.atomic_write(args.status_file) as handle:
+        print(json.dumps(out_data, indent=2), file=handle)
+
+    run = lib.process.Runner(
+        args.command, args.interleave_stdout_stderr, args.cwd,
+        args.timeout, args.profile_memory, args.profile_memory_interval,
+        args_dict["job_id"])
+    await run()
+    lib.job_outcome.fill_in_result(run, out_data, args)
+
+    for out_field, proc_pipe, arg_file in [
+        ("stdout", run.get_stdout(), args.stdout_file),
+        ("stderr", run.get_stderr(), args.stderr_file)
+    ]:
+        if proc_pipe:
+            out_data[out_field] = proc_pipe.splitlines()
+        else:
+            out_data[out_field] = []
+
+        if arg_file:
+            out_str = proc_pipe if proc_pipe else ""
+            with litani.atomic_write(arg_file) as handle:
+                print(out_str, file=handle)
+
+    timestamp("end_time", out_data)
+    out_str = json.dumps(out_data, indent=2)
+    logging.debug("run status: %s", out_str)
+    with litani.atomic_write(args.status_file) as handle:
+        print(out_str, file=handle)
+
+    artifacts_dir = (litani.get_artifacts_dir() /
+         out_data["wrapper_arguments"]["pipeline_name"] /
+         out_data["wrapper_arguments"]["ci_stage"])
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    copier = lib.output_artifact.Copier(
+        artifacts_dir, out_data["wrapper_arguments"])
+    for fyle in out_data["wrapper_arguments"]["outputs"] or []:
+        try:
+            copier.copy_output_artifact(fyle)
+        except lib.output_artifact.MissingOutput:
+            logging.warning(
+                "Output file '%s' of pipeline '%s' did not exist upon job "
+                "completion. Not copying to artifacts directory. "
+                "If this job is not supposed to emit the file, pass "
+                "`--phony-outputs %s` to suppress this warning", fyle,
+                out_data["wrapper_arguments"]["pipeline_name"], fyle)
+        except IsADirectoryError:
+            artifact_src = pathlib.Path(fyle)
+            try:
+                shutil.copytree(
+                    fyle, str(artifacts_dir / artifact_src.name))
+            except FileExistsError:
+                logging.warning(
+                    "Multiple files with same name in artifacts directory")
+
+    sys.exit(out_data["wrapper_return_code"])
+
+
+async def main():
+    # pylint: disable=global-statement
+    global VALIDATE_DATA
+
+    args = get_args()
+    set_up_logging(args)
+
+    try:
+        # pylint: disable=unused-import
+        import voluptuous
+        import voluptuous.humanize
+        VALIDATE_DATA = True
+    except ImportError:
+        logging.debug(
+            "Litani requires the python module 'voluptuous' to be installed "
+            "to validate data. Installing voluptuous with pip or your "
+            "system package manager is recommended. Continuing without data "
+            "validation.")
+
+    await args.func(args)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

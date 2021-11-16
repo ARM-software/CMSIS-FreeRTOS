@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+#
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+
+import argparse
+import importlib
+import json
+import logging
+import os
+import pathlib
+import re
+import subprocess
+import sys
+
+
+DESCRIPTION = "Execute a single Litani run and test the resulting run.json"
+EPILOG = "See test/e2e/README for the organization of this test suite"
+
+
+def get_args():
+    pars = argparse.ArgumentParser(description=DESCRIPTION, epilog=EPILOG)
+    for arg in [{
+            "flags": ["--test-file"],
+            "required": True,
+            "type": pathlib.Path,
+            "help": "file under test/e2e/tests containing test definition",
+    }, {
+            "flags": ["--litani"],
+            "required": True,
+            "type": pathlib.Path,
+            "help": "path to Litani under test",
+    }, {
+            "flags": ["--run-dir"],
+            "required": True,
+            "type": pathlib.Path,
+            "help": "a fresh directory in which Litani will be run",
+    }, {
+            "flags": ["--operation"],
+            "required": True,
+            "choices": ["init", "add-jobs", "run-build", "check-run"],
+    }]:
+        flags = arg.pop("flags")
+        pars.add_argument(*flags, **arg)
+    return pars.parse_args()
+
+
+def run_cmd(cmd):
+    cmd_list = [str(c) for c in cmd]
+    print(" ".join(cmd_list))
+    try:
+        subprocess.run(cmd_list, check=True)
+    except subprocess.CalledProcessError:
+        logging.error("Invocation failed")
+        sys.exit(1)
+    except FileNotFoundError:
+        logging.error("Executable not found")
+        sys.exit(1)
+
+
+def run_litani(litani, subcommand, *args, **kwargs):
+    cmd = [litani, subcommand]
+    for arg in args:
+        switch = re.sub("_", "-", arg)
+        cmd.append(f"--{switch}")
+    for arg, value in kwargs.items():
+        switch = re.sub("_", "-", arg)
+        cmd.append(f"--{switch}")
+        if isinstance(value, list):
+            cmd.extend(value)
+        else:
+            cmd.append(value)
+    run_cmd(cmd)
+
+
+def get_test_module(module_file):
+    sys.path.insert(1, str(module_file.parent))
+    return importlib.import_module(str(module_file.stem))
+
+
+def check_run(_, run_dir, mod):
+    os.chdir(run_dir)
+    with open(run_dir / "output" / "run.json") as handle:
+        run = json.load(handle)
+    print(json.dumps(run, indent=2))
+    if not mod.check_run(run):
+        sys.exit(1)
+
+
+def add_jobs(litani, run_dir, mod):
+    os.chdir(run_dir)
+    jobs = mod.get_jobs()
+    for job in jobs:
+        run_litani(
+            litani, "add-job", *job.get("args", []), **job.get("kwargs", {}))
+
+
+def run_build(litani, run_dir, mod):
+    os.chdir(run_dir)
+    args = mod.get_run_build_args()
+    run_litani(
+        litani, "run-build", *args.get("args", []), **args.get("kwargs", {}))
+
+
+def init(litani, run_dir, mod):
+    os.chdir(run_dir)
+    args = mod.get_init_args()
+
+    kwargs = args.get("kwargs", {})
+    kwargs.pop("output-directory", None)
+    kwargs.pop("output-prefix", None)
+    kwargs.pop("output-symlink", None)
+    kwargs["output-directory"] = run_dir / "output"
+
+    run_litani(
+        litani, "init", *args.get("args", []), **kwargs)
+
+
+def add_global_context(args):
+    os.environ["LITANI_E2E_LITANI_PATH"] = str(args.litani.resolve())
+
+
+def main():
+    args = get_args()
+    logging.basicConfig(format="run-tests: %(message)s")
+
+    add_global_context(args)
+
+    mod = get_test_module(args.test_file)
+
+    {
+        "init": init,
+        "add-jobs": add_jobs,
+        "run-build": run_build,
+        "check-run": check_run,
+    }[args.operation](args.litani, args.run_dir, mod)
+
+
+if __name__ == "__main__":
+    main()

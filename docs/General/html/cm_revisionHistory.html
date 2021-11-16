@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.4.3</span>
+   &#160;<span id="projectnumber">Version 10.4.6</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -112,6 +112,21 @@ $(document).ready(function(){initNavTree('cm_revisionHistory.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><table  class="cmtable" summary="Revision History">
+<tr>
+<td>10.4.6 </td><td><p class="starttd"></p>
+<p><b>FreeRTOS V10.4.6</b></p>
+<p></p>
+<p>Updates and bugfixes:</p>
+<ul>
+<li>
+Updated osSemaphoreGetCount to use uxSemaphoreGetCountFromISR instead of uxQueueMessagesWaitingFromISR </li>
+<li>
+Correct typecasting of argument usStackDepth for xTaskCreate in function osThreadNew (#51) </li>
+<li>
+Fix mutex allocation for Arm Standard C library and allow it only when the kernel is running </li>
+</ul>
+<p class="endtd"></p>
+</td></tr>
 <tr>
 <td>10.4.3 </td><td><p class="starttd"></p>
 <p><b>FreeRTOS V10.4.3</b></p>
@@ -234,7 +249,7 @@ Debug event TaskIncrementTick level set to Detail </li>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Sep 28 2021 12:31:55 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Tue Nov 16 2021 09:08:40 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

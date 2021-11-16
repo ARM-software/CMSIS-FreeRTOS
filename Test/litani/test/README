@@ -1,0 +1,6 @@
+                          Litani Test Suite
+                          =================
+
+The `run` script uses litani to run a variety of unit and system tests.
+The dashboard showing the output of the latest test run will always be
+symlinked from test/output/latest/html/index.html.

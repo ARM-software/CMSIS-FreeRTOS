@@ -1,0 +1,90 @@
+litani(7) "" "Litani Build System"
+
+; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+; Licensed under the Apache License, Version 2.0 (the "License").
+; You may not use this file except in compliance with the License.
+; A copy of the License is located at
+
+;     http://www.apache.org/licenses/LICENSE-2.0
+
+; or in the "license" file accompanying this file. This file is distributed
+; on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+; express or implied. See the License for the specific language governing
+; permissions and limitations under the License.
+
+
+Litani allows you to build up a graph of commands to execute in
+dependency order. You might find it more convenient than other
+meta-build systems for the following reasons:
+
+- Litani maintains a JSON-formatted record of the current run, which can
+  be printed at any time by running *litani dump-run*. This record
+  includes various metadata about each of the commands in the build,
+  including their return codes, run times, stdout and stderr, and more.
+  See *litani-run.json(5)* for the schema.
+
+- Litani generates (and constantly updates) an HTML dashboard from this
+  JSON file while running your build. The dashboard is convenient for
+  watching the progress of your build and investigating failures
+  afterward.
+
+- For builds where some of the commands might fail, Litani provides
+  fine-grained control over its behaviour.  For each job, you can decide
+  whether to proceed with dependent jobs upon failure, independently of
+  whether the build as a whole is considered to have passed.
+
+- Litani is invoked entirely as a command-line tool, rather than using a
+  domain-specific language like *make(1)* or *cmake(1)*. This means that
+  you can create and run your Litani build by shelling out from a
+  script, or even by invoking Litani from a Makefile. This allows you to
+  replicate the build of an existing Makefile while gaining the HTML
+  dashboard and other Litani features.
+
+
+# LITANI WORKFLOW
+
+The process of defining and running a Litani build proceeds as follows:
+
+. Run *litani init*, usually in the root of your source tree. This touches a file (similar to *git-init(1)*) so that you can run subsequent Litani commands anywhere else in your source tree.
+. Run *litani add-job* once for every command you wish to add to the build graph. *litani-add-job(1)* accepts a variety of options for controlling how the command is executed.
+. Run *litani run-build* to execute all jobs in dependency order.  *litani-run-build(1)* accumulates all the jobs that you added and generates a Ninja build, which Litani subsequently runs with *ninja(1)*.
+
+You may then periodically reload the HTML dashboard while the build is
+running, and use the _run.json_ file during or after the build to gain
+insight into the build outcome.
+
+
+# COMMAND LINE INTERFACE
+
+The following is a synopsis of Litani's subcommands:
+
+*litani init*
+	Create a new Litani build, allowing you to add jobs and subsequently
+	run them.
+
+*litani add-job*
+	Add a job to the build. A 'job' is a command that will be executed as
+	part of the build, possibly with inputs and outputs that describe its
+	place in the dependency graph, and other attributes.
+
+*litani run-build*
+	Execute all jobs that have been added to the build since the last time
+	you ran *litani init*.
+
+*litani dump-run*
+	Print a JSON representation of the run so far to stdout while the
+	build is running.
+
+*litani graph*
+	Print the dependency graph of the build in Graphviz format, ready to
+	be rendered into an image using *dot(1)*.
+
+*litani print-capabilities*
+	Print a list of features that this version of Litani supports. This
+	can be used as an alternative to checking the version string.
+
+
+# SEE ALSO
+
+- *ninja(1)*, which Litani uses to actually run the build: _https://ninja-build.org_

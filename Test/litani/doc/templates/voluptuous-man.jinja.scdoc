@@ -1,0 +1,26 @@
+{{ page_name }}(5) "" "Litani Build System"
+
+{{ page["header"] }}
+
+# SUMMARY
+
+{% for frag in fragments -%}
+## {{ frag["title"] }}
+{% for item in frag["body"] -%}
+{{ item.print_compact() }}
+{% endfor %}{# item in frag["body"] #}
+{% endfor %}{# frag in fragments #}
+
+
+# DETAILED DOCUMENTATION
+
+{% for frag in fragments -%}
+## {{ frag["title"] }}
+{% for item in frag["body"] -%}
+{{ item.print_full() }}
+{% endfor %}{# item in frag["body"] #}
+{% endfor %}{# frag in fragments #}
+
+
+
+{{ page["footer"] }}

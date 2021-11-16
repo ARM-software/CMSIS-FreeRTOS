@@ -57,6 +57,19 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.6</td>
+      <td>
+        <p><b>FreeRTOS V10.4.6</b></p>
+        <p>Updates and bugfixes:</p>
+        <ul>
+          <li>Updated osSemaphoreGetCount to use uxSemaphoreGetCountFromISR instead of uxQueueMessagesWaitingFromISR</li>
+          <li>Correct typecasting of argument usStackDepth for xTaskCreate in function osThreadNew (#51)</li>
+          <li>Fix mutex allocation for Arm Standard C library and allow it only when the kernel is running</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.4.3</td>
       <td>
         <p><b>FreeRTOS V10.4.3</b></p>

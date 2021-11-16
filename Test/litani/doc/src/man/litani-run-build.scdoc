@@ -1,0 +1,82 @@
+litani-run-build(1) "" "Litani Build System"
+
+; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+; Licensed under the Apache License, Version 2.0 (the "License").
+; You may not use this file except in compliance with the License.
+; A copy of the License is located at
+
+;     http://www.apache.org/licenses/LICENSE-2.0
+
+; or in the "license" file accompanying this file. This file is distributed
+; on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+; express or implied. See the License for the specific language governing
+; permissions and limitations under the License.
+
+
+# NAME
+
+litani run-build - Start a Litani run
+
+# SYNOPSIS
+
+*litani run-build*
+	\[*-n*/*--dry-run*]
+	\[*-j*/*--parallel* _N_]
+	\[*-o*/*--out-file* _F_]
+	\[*--fail-on-pipeline-failure*]
+	\[*--no-pipeline-dep-graph*]
+	\[*-p*/*--pipelines* _P_ [_P_ ...]]
+	\[*-s*/*--ci-stage* _S_]
+
+# DESCRIPTION
+
+This program executes a Litani run. The run must have been created using
+*litani init* and had jobs added to it using *litani add-job*.
+
+
+# MULTIPROCESS SAFETY
+
+It is *NOT SAFE* to run multiple invocations of *litani run-build* in
+parallel.
+
+
+# OPTIONS
+
+*-n*, *--dry-run*
+	Passes the *-n* flag directly to *ninja(1)*. This makes *ninja* parse
+	and run the build graph in dry-run mode, acting as if all the commands
+	succeeded.
+
+*-j* _N_, *--parallel* _N_
+	Run _N_ jobs in parallel. This passes the *-j* flag directly to
+	*ninja(1)*. Ninja's default is calculated based on the number of cores
+	in the system; run *ninja -h* to see the default. _N_=_0_ means do not
+	restrict parallelism.
+
+*-o* _F_, *--out-file* _F_
+	Periodically write the _run.json_ file to _F_.
+
+*--fail-on-pipeline-failure*
+	Return _0_ only if all pipelines were successful. See *RETURN CODE*
+	below.
+
+*--no-pipeline-dep-graph*
+	Do not render dependency graphs for each pipeline onto the HTML individual
+	pipeline pages. Pipeline graphs will also not be rendered if Graphviz is
+	not installed.
+
+*-p* _P_ [_P_ ...], *--pipelines* _P_ [_P_ ...]
+	Only run jobs that are part of the specified pipelines.
+
+*-s* _S_, *--ci-stage* _S_
+	Only run jobs that are part of the specified CI stage. Currently _S_
+	must be one of _build_, _test_, or _report_.
+
+
+# RETURN CODE
+
+Unless there was a crash, this program should return _0_ upon exit
+unless the *--fail-on-pipeline-failure* flag was supplied. In that case,
+this program will return _0_ if all pipelines were successful and _1_
+otherwise.

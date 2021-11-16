@@ -574,7 +574,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     else {
       if (mem == 0) {
         #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-          if (xTaskCreate ((TaskFunction_t)func, name, (uint16_t)stack, argument, prio, &hTask) != pdPASS) {
+          if (xTaskCreate ((TaskFunction_t)func, name, (configSTACK_DEPTH_TYPE)stack, argument, prio, &hTask) != pdPASS) {
             hTask = NULL;
           }
         #endif
@@ -1980,7 +1980,7 @@ uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id) {
     count = 0U;
   }
   else if (IRQ_Context() != 0U) {
-    count = uxQueueMessagesWaitingFromISR (hSemaphore);
+    count = (uint32_t)uxSemaphoreGetCountFromISR (hSemaphore);
   } else {
     count = (uint32_t)uxSemaphoreGetCount (hSemaphore);
   }

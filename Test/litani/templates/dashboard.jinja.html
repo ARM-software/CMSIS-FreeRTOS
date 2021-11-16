@@ -1,0 +1,500 @@
+{#-
+ # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License").
+ # You may not use this file except in compliance with the License.
+ # A copy of the License is located at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # or in the "license" file accompanying this file. This file is
+ # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+ # ANY KIND, either express or implied. See the License for the specific
+ # language governing permissions and limitations under the License.
+-#}
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {{ run["project"] }} Proof Results&mdash;{{ run["run_id"] }}
+  </title>
+<style>
+.footer {
+  margin-top: 4em;
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#title{
+  background-color: #ec407a;
+  color: white;
+  padding: 2em;
+}
+h1 {
+  margin-bottom: 0em;
+}
+#subtitle {
+  font-variant: small-caps;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+}
+.run-info ul {
+  list-style: none;
+}
+.run-info ul li {
+  display: inline;
+  margin-right: 6em;
+  margin-left: -3em;
+  text-transform: uppercase;
+  font-size: small;
+  color: #ec407a;
+}
+#content {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 2em;
+  padding-bottom: 2em;
+  color: #263238;
+  font-family: Helvetica, sans-serif;
+}
+p {
+  margin: 0;
+}
+#pipeline-table {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6em;
+}
+.pipeline-row {
+  display: flex;
+  align-content: stretch;
+  background-color: #eceff1;
+  margin-bottom: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  border-radius: 5px;
+}
+.first-row {
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+  border-radius: 10px;
+  background-color: #cfd8dc;
+  margin-top: 2em;
+}
+.downloads-header {
+  color: #263238;
+}
+.downloads {
+  background-color: #eceff1;
+  margin-bottom: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  border-radius: 5px;
+  line-height: 1.5;
+}
+.downloads a {
+  color: #3f51b5;
+}
+.downloads a:hover {
+  color: #ec407a;
+}
+.downloads a:active {
+  color: #ffeb3b;
+}
+.pipeline-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 1%;
+  width: 20em;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.pipeline-stage {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+}
+
+.stage-bar .progress {
+  height: 1em;
+  border-radius: 5px;
+}
+
+.stage-bar {
+  height: 1em;
+  border-radius: 5px;
+  border: 1px solid #cfd8dc;
+}
+
+.fail_ignored .stage-bar .progress:active{ background-color: #ffeb3b; }
+.fail_ignored .stage-bar .progress:hover{ background-color: #e65100; }
+.fail_ignored .stage-bar .progress {
+  background-color: #ff9800;
+}
+
+.fail .stage-bar .progress:active{ background-color: #ffeb3b; }
+.fail .stage-bar .progress:hover{ background-color: #b61c1c; }
+.fail .stage-bar .progress {
+  background-color: #f44336;
+}
+
+.success .stage-bar .progress:active{ background-color: #ffeb3b; }
+.success .stage-bar .progress:hover{ background-color: #1a237e; }
+.success .stage-bar .progress {
+  background-color: #3f51b5;
+}
+
+.status-icon-cross {
+  fill: #f44336;
+    width: 16px;
+    height: 16px;
+    padding-left: 0.5em;
+}
+.status-icon-tick {
+  fill: #3f51b5;
+  stroke: #ffffff77;
+  stroke-width: 1px;
+  width: 16px;
+  height: 16px;
+  padding-left: 0.5em;
+}
+
+.status-icon-in-progress {
+  fill: #333;
+  width: 16px;
+  height: 16px;
+  padding-left: 0.5em;
+}
+
+.status-icon-in-progress circle {
+  stroke: #333;
+  stroke-width: 2px;
+  fill: none
+}
+
+.pipeline-icon {
+  fill: #29b6f6;
+}
+.pipeline-icon:hover {
+  fill: #ec407a;
+}
+
+.pipeline-icon:active {
+  fill: #ffeb3b;
+}
+
+.pipeline-name p{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pipeline-name {
+  align-self: center;
+  text-align: end;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+}
+.pipeline-link {
+  justify-self: center;
+  align-self: center;
+  color: #29b6f6;
+  padding-left: 0.2em;
+}
+.pipeline-header {
+  justify-content: space-around;
+  font-weight: bold;
+  font-variant: small-caps;
+  text-transform: lowercase;
+  font-style: italic;
+  font-size: larger;
+  color: #26323899;
+  width: 18em;
+}
+
+.graphs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.graph {
+  margin-bottom: 6em;
+}
+
+#pipeline-stats-container {
+  display: flex;
+  margin-left 3em;
+  justify-content: space-evenly;
+}
+.pipeline-single-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pipeline-single-top {
+  display: flex;
+}
+.pipeline-single-bottom {
+  display: flex;
+  font-size: small;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
+@media (max-width: 640px){
+  .pipeline-progress {
+    width: 10em;
+  }
+  #build-title:after  { content: 'B'; visibility: visible; margin-left: -1.5em}
+  #test-title:after   { content: 'T'; visibility: visible; margin-left: -2.5em}
+  #report-title:after { content: 'R'; visibility: visible; margin-left: -3.5em}
+  #build-title        { visibility: hidden; }
+  #test-title         { visibility: hidden; }
+  #report-title       { visibility: hidden; }
+}
+@media (prefers-color-scheme: dark){
+  .status-icon-in-progress { fill: #ddd; }
+  .status-icon-in-progress circle { stroke: #ddd; }
+
+  .pipeline-header {
+    color: #eceff1;
+  }
+  .downloads-header {
+    color: #eceff1;
+  }
+  .downloads {
+    color: #eceff1;
+    background-color: #37474f;
+  }
+  .downloads a {
+    color: #29b6f6;
+  }
+  .pipeline-row {
+    color: #eceff1;
+    background-color: #37474f;
+  }
+  body {
+    color: #babdbe;
+    background-color: #263238;
+  }
+  p {
+    color: #babdbe;
+  }
+  #subtitle {
+    color: #fff;
+  }
+  /* SVG graphs */
+  path {
+    stroke: #eceff1;
+  }
+  g {
+    stroke: #fff0;
+  }
+  g text {
+    fill: #eceff1;
+    stroke: #fff0;
+  }
+  circle {
+    stroke: #eceff1;
+  }
+}
+</style>
+</head>
+<body>
+<div id="content">
+
+  <div id="title">
+    <h1>
+      {{ run["project"] }} Proof Results
+    </h1>
+    <p id="subtitle">
+      Litani CI Dashboard
+    </p>
+  </div><!-- id="title" -->
+
+  <div class=run-info>
+    <ul>
+      <li>{{ run["status"] }}</li>
+      <li>{{ run["start_time"] }}</li>
+      <li>{{ run["run_id"] }}</li>
+    </ul>
+  </div><!-- class=run-info -->
+
+  <div id="pipeline-table">
+
+    <div class="pipeline-row first-row">
+      <div class="pipeline-link" style="padding-left: 0em">
+      </div><!-- class="pipeline-link" -->
+
+      <div class="pipeline-name">
+        <div id="pipeline-stats-container">
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["fail"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>failed</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["in_progress"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>in progress</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["success"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>succeeded</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["total"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>total</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+        </div><!-- id="pipeline-stats-container" -->
+      </div><!-- class="pipeline-name" -->
+
+      <div class="pipeline-progress pipeline-header">
+        {% for stage in run["stages"] %}
+        <p>{{ stage }}</p>
+        {% endfor %}{# stage in run["stages"] #}
+      </div><!-- class="pipeline-progress" -->
+    </div><!-- class="pipeline-row" -->
+
+    {% for pipe in run["pipelines"] %}
+    <div class="pipeline-row">
+
+      <div class="pipeline-link">
+            <svg height="16px" width="32px" class="pipeline-icon">
+              <a href="{{ pipe['url'] }}/index.html">
+                <polygon points="0,0 0,16 16,32 32,0"
+                         style="fill:#ffffff01"></polygon>
+                <polygon points="
+                  0,6 0,14 2,14 2,13 30,13 30,14 32,14 32,6 30,6 30,7 19,7
+                  19,6 17,6 17,4 19,4 19,3 20,3 20,2 13,2 13,3 14,3 14,4
+                  16,4 16,6 14,6 14,7 2,7 2,6 0,6">
+                </polygon>
+              </a>
+            </svg>
+      </div><!-- class="pipeline-link" -->
+
+      <div class="pipeline-name">
+        <p>{{ pipe["name"] }}</p>
+      </div><!-- class="pipeline-name" -->
+
+      <div class="pipeline-progress">
+        {% for stage in pipe["ci_stages"] %}
+        <div class="pipeline-stage">
+
+          <a class="stage-artifacts-link {{ stage['status'] }}"
+             href="{{ stage['url'] }}/index.html">
+            <div class="stage-bar">
+              <div class="progress" style="width: {{ stage['progress'] }}%">
+              </div><!-- class="progress" -->
+            </div><!-- class="stage-bar" -->
+          </a>
+
+        </div><!-- class="pipeline-stage" -->
+        {% endfor %}{# stage in pipe["stages"] #}
+
+      </div><!-- class="pipeline-progress" -->
+
+      <div class="pipeline-status-icon">
+        {% if pipe["status"] == "fail" %}
+        <svg height="16px" width="16px" class="status-icon-cross">
+          <polygon points="
+              1,3 7,8 1,13 3,15 8,9 13,15 15,13 9,8 15,3 13,1 8,7 3,1">
+          </polygon>
+        </svg>
+
+        {% elif pipe["status"] == "success" %}
+        <svg height="16px" class="status-icon-tick">
+          <polygon points="1,11 6,15 15,3 13,1 6,12 3,8"></polygon>
+        </svg>
+
+        {% elif pipe["status"] == "in_progress" %}
+        <svg height="16px" width="16px" class="status-icon-in-progress">
+          <polygon points="7,8 8,9 9,8 8,1"> </polygon>
+          <polygon points="8,8 8,9 11,11 9,8"> </polygon>
+          <circle cx="8" cy="8" r="7"></circle>
+        </svg>
+        {% endif %}{# pipe["status"] == "in_progress" #}
+
+      </div><!-- class="pipeline-status-icon" -->
+
+    </div><!-- class="pipeline-row" -->
+    {% endfor %}{# pipe in run["pipelines"] #}
+  </div><!-- id="pipeline-table" -->
+
+
+  {% for title, svg_list in svgs.items() %}
+    {% if svg_list %}
+      <h2 class="downloads-header">{{ title }}</h2>
+      <div class="graphs">
+      {% for svg in svg_list %}
+        <div class="graph">
+          {% for line in svg -%}
+          {{ line }}
+          {% endfor %}{# line in svg #}
+        </div><!-- class="graph" -->
+      {% endfor %}{# svg in svg_list #}
+      </div><!-- class="graphs" -->
+    {% endif %}{# svg_list #}
+  {% endfor -%}{# title, svg_list in svgs #}
+
+
+  <h2 class="downloads-header">Downloads</h2>
+  <div class="downloads">
+    <ul>
+      <li>
+        <p>
+          Raw data for this run: <code><a
+          href="run.json">run.json</a></code>
+        </p>
+      </li>
+      {% if litani_report_archive_path is not none %}
+      <li>
+        <p>HTML report: <code><a
+          href="{{ litani_report_archive_path }}" download>
+          {{ litani_report_archive_path }}</a></code>
+        </p>
+      </li>
+      {% endif %}{# litani_report_archive_path is not none #}
+    </ul>
+  </div>
+
+  <div class="footer">
+    <div class="footer-cell">
+      <p>
+        Report generated with
+        <a href="https://github.com/awslabs/aws-build-accumulator">Litani</a>
+        {{ litani_version }}
+        {% if litani_hash is not none %}
+        (<code>{{ litani_hash }}</code>)
+        {% endif %}{# litani_hash is not none #}
+      </p>
+    </div><!-- class="footer-cell" -->
+  </div><!-- class="footer" -->
+
+</div><!-- id="content" -->
+</body>
+</html>

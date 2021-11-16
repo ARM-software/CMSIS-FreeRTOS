@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Litani Documentation">
+  <meta name="robots" content="noimageindex">
+  <meta name="googlebot" content="noimageindex">
+  <title>Litani Documentation</title>
+  <style>
+  .manual-text{
+    margin-bottom: 3em;
+  }
+  .manual-text b {
+    color: #cb4b16;
+  }
+  .manual-text i {
+    color: #859900;
+  }
+  .Pp {
+    margin-top: 1.5em;
+    margin-bottom: 0em;
+  }
+  .Bd-indent {
+    margin-left: 2em;
+  }
+  .tbl td{
+    margin-right: 1em;
+  }
+  .navL1 a {
+    display: block;
+  }
+  .navL2 a {
+    display: block;
+  }
+  a:visited:hover li {
+    background-color: #6c71c4;
+  }
+  a:hover li {
+    background-color: #268bd2;
+  }
+  a:active li {
+    background-color: #859900;
+  }
+  a:visited:active li {
+    background-color: #859900;
+  }
+  a:link.navCurrent, a:visited.navCurrent, a:hover.navCurrent,
+  a:visited:hover.navCurrent {
+    background-color: #657b83; color: #fdf6e3; pointer-events: none; cursor: default;
+  }
+  .nobot {
+    display: none;
+  }
+  ul, ol {
+    padding-left: 1em;
+  }
+  body {
+		line-height: 24pt;
+    margin: 0;
+    font-family: Roboto Mono, Menlo,monospace;
+    font-size: 16pt;
+    color: #3d4d53;
+    background-color: #fdf6e3;
+    letter-spacing: 1px;
+  }
+  a {
+    text-decoration: none;
+  }
+  a:link {
+    color: #268bd2;
+  }
+  a:visited {
+    color: #6c71c4;
+  }
+  a:visited:hover {
+    background-color: #6c71c4; color: #fdf6e3;
+  }
+  a:hover {
+    color: #fdf6e3; background-color: #268bd2;
+  }
+  a:active {
+    color: #fdf6e3; background-color: #859900;
+  }
+  a:visited:active {
+    color: #fdf6e3; background-color: #859900;
+  }
+  code {
+    font-size: 13pt;
+  }
+  li {
+    padding-left: 0em;
+  }
+  ul {
+    list-style: none;
+  }
+  li::marker {
+    content: none;
+  }
+  .overall {
+    margin: 0;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+  }
+  p {
+    margin-top: 0pt;
+  }
+  .left-column {
+    order: -1;
+    width: 100%;
+    padding-bottom: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .left-header {
+    order: -1;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding-left: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 2em;
+  }
+  #corner-email {
+    font-family: Helvetica;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+    font-size: 28pt;
+    line-height: 28pt;
+		text-align: right;
+    font-variant: small-caps;
+    text-transform: lowercase;
+    width: 95%;
+    order: 0;
+    color: #fdf6e3;
+    background-color: #d33682;
+    padding-bottom: 4px;
+    padding-left: 0.4em;
+  }
+  #corner-name {
+    margin: 0;
+    font-size: 24pt;
+    line-height: 24pt;
+    font-weight: bold;
+    order: -1;
+    color: #d33682;
+    font-family: f-reg
+  }
+  .left-menu {
+    flex-grow: 1;
+    padding: 0;
+    display: flex;
+    order: 0;
+  }
+  .navList {
+    margin-top: 0;
+  }
+  .nav-title {
+    text-transform: lowercase;
+    font-variant: small-caps;
+  }
+  .navL1 a {
+    padding-left: 1em;
+  }
+  .left-scroll {
+    padding: 0;
+    padding-top: 2em;
+    order: 0; width: 100%;
+  }
+  .right-column {
+    order: 0;
+    padding-left: 2vw;
+    padding-bottom: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .content-body {
+    order: 0;
+    max-width: 50em;
+  }
+  .content {
+    display: flex;
+		flex-direction: column;
+		padding-right: 2em;
+  }
+  .content-title {
+    display: flex;
+    align-items: flex-end;
+    align-content: flex-end;
+		font-family: Helvetica;
+  }
+  h1 {
+    letter-spacing: 6pt;
+    font-size: 24pt;
+    line-height: 28pt;
+    font-variant: small-caps;
+    text-transform: lowercase;
+    margin: 0px;
+    width: 100%;
+    padding-bottom: 0.2em;
+    padding-top: 0.2em;
+    padding-left: 5vw;
+    margin-left: -2vw;
+    vertical-align: bottom;
+    background-color: #d33682;
+    color: #fdf6e3;
+  }
+  .toc-menu {
+    order: 2;
+    flex-grow: 1;
+    height: 100vh;
+    width: 20em;
+    background-color: #000000;
+    display: none;
+  }
+  h2 {
+    text-align: left;
+    margin-top: 2em;
+		font-size: 16pt;
+  }
+  h3 {
+    text-align: left;
+    margin-top: 1em;
+		font-size: 16pt;
+  }
+  .detail-list li {
+    display: inline; list-style: none; margin-right: 2em; font-size: smaller;
+  }
+  .detail-list {
+    padding-left: 0em; margin-top: -0.3em; margin-bottom: 0.7em;
+  }
+  .top-p {
+    margin-bottom: -0.8em;
+  }
+  .details-link {
+    font-size: smaller; font-style: italic;
+  }
+  .margin-link {
+    margin-bottom: 1em;
+  }
+  .margin-link a {
+    margin-bottom: 1em;
+    padding-left: 0em;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    a:link.navCurrent, a:visited.navCurrent, a:hover.navCurrent,
+    a:visited:hover.navCurrent {
+      background-color: #93a1a1;
+      color: #002b36;
+    }
+    body {
+      color: #93a1a1;
+      background-color: #002b36;
+    }
+    a:visited:hover {
+      color: #002b36;
+    }
+    a:hover {
+      color: #002b36;
+    }
+    a:active {
+      color: #002b36;
+    }
+    a:visited:active {
+      color: #002b36;
+    }
+    #corner-email {
+      color: #fff;
+      text-shadow: 0pt 1pt #fff4, 0pt -1pt #0004;
+      border-top: solid 1pt #fff4;
+      border-bottom: solid 1pt #0004;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 0pt 1pt #fff4, 0pt -1pt #0004;
+      border-top: solid 1pt #fff4;
+      border-bottom: solid 1pt #0004;
+    }
+    .toc-menu {
+      background-color: #073642;
+    }
+  }
+
+  @media (min-width: 768px) {
+  .overall {
+    flex-direction: row;
+  }
+  .left-column {
+    width: 20em;
+  }
+  .left-header {
+    height: 7em;
+  }
+  #corner-email {
+    padding-left: 5%;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+  }
+  #corner-name {
+    font-weight: normal;
+    margin-top: 0.3em;
+    font-size: 48pt;
+    line-height: 48pt;
+  }
+  .left-menu {
+    height: 7em;
+  }
+  .navList li::marker {
+    content: none;
+  }
+  .navList li {
+    margin-right: 0px;
+    display: list-item;
+  }
+  .navL1 li::marker {
+    content: none;
+  }
+  .navL1 li {
+    margin-right: 0px;
+    display: list-item;
+  }
+  .left-scroll {
+    overflow-y: auto;
+  }
+  .right-column {
+    width: 100%;
+    overflow-y: auto;
+  }
+  .content-title {
+    height: 7em;
+    max-width: 50em;
+    margin-bottom: 2em;
+  }
+  #page-title{
+    padding-top: 0.0em;
+  }
+  h1 {
+    font-size: 48pt;
+    line-height: 48pt;
+    text-align: center;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="overall">
+    <main class="right-column">
+      <div class="content">
+        <div id="." class="content-body">
+          {% for man in manuals %}
+            <div class="content-title" id="litani-man_{{ man["anchor"] }}">
+              <h1>{{ man["title"] }}</h1>
+            </div>
+            <div class="man-body">
+            {% for line in man["body"] %}
+{{ line }}
+            {%- endfor %}{# line in man["body"] #}
+          </div>
+          {% endfor %}{# man in manuals #}
+        </div>
+
+      </div>
+    </main>
+
+
+    <div class="left-column">
+      <div class="left-header">
+        <p id="corner-email">Litani Documentation</p>
+      </div>
+      <div class="left-menu">
+        <div class="left-scroll">
+          <ul class="navList">
+            <li class="navL1 margin-link">
+              <a href="https://github.com/awslabs/aws-build-accumulator">GitHub
+                repository</a>
+            </li>
+            <li class="nav-title">
+              Manual Pages
+            </li>
+            {% for man in manuals %}
+              <li class="navL1">
+								<a
+                  href="#litani-man_{{ man["anchor"] }}"
+                  >{{ man["title"] }}({{ man["chapter"] }})</a>
+              </li>
+            {% endfor %}{# man in manuals #}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body></html>
