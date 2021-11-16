@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.4
+ * FreeRTOS Kernel V10.4.6
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -67,6 +67,12 @@
  */
 #define secureportSET_PSP( pucCurrentStackPointer ) \
     __asm volatile ( "msr psp, %0" : : "r" ( pucCurrentStackPointer ) )
+
+/**
+ * @brief Read the PSPLIM value in the given variable.
+ */
+#define secureportREAD_PSPLIM( pucOutStackLimit ) \
+    __asm volatile ( "mrs %0, psplim"  : "=r" ( pucOutStackLimit ) )
 
 /**
  * @brief Set the PSPLIM to the given value.

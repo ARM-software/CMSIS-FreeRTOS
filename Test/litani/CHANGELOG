@@ -1,6 +1,63 @@
                               CHANGELOG
                               `````````
 
+Version 1.15.0 -- 2021-10-29
+----------------------------
+
+This is a bugfix release. It changes how Litani spawns commands so that it can
+correctly terminate the command and all descendant processes if the job has an
+associated timeout.
+
+
+Version 1.14.0 -- 2021-10-21
+----------------------------
+
+- This release introduces custom stage names to Litani. It also improves the
+  user experience by showcasing better synopses for jobs in the pipeline graphs
+  as well as a pipeline summary at the top of the dashboard. Finally, this
+  release also contains other QoL changes.
+
+
+
+Version 1.13.0 -- 2021-09-29
+----------------------------
+
+- This version fixes a bug where artefact directories were not being
+  copied correctly
+
+
+
+Version 1.12.0 -- 2021-08-24
+----------------------------
+
+- The --phony-outputs flag now has a slightly changed semantic
+    Outputs passed to --phony-outputs no longer need to be also passed
+    to --outputs to be considered an output. That is, the set of outputs
+    of a job is the union of the outputs and the phony outputs. This is
+    a backward-compatible change that should make configure scripts
+    shorter.
+
+- The `dump-run` command is more reliable when being run in parallel
+
+
+
+Version 1.11.1 -- 2021-08-16
+----------------------------
+
+- Make dependency on graphviz optional
+
+
+
+Version 1.11.0 -- 2021-08-13
+----------------------------
+
+- Added --phony-outputs flag to litani add-job
+- Added litani dump-run command
+- Added auto-generated documentation for run.json schema
+- Added more documentation
+
+
+
 Version 1.10.0 -- 2021-07-11
 ----------------------------
 

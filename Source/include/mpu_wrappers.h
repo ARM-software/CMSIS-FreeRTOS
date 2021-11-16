@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.4
+ * FreeRTOS Kernel V10.4.6
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -77,6 +77,7 @@
         #define vTaskList                              MPU_vTaskList
         #define vTaskGetRunTimeStats                   MPU_vTaskGetRunTimeStats
         #define ulTaskGetIdleRunTimeCounter            MPU_ulTaskGetIdleRunTimeCounter
+        #define ulTaskGetIdleRunTimePercent            MPU_ulTaskGetIdleRunTimePercent
         #define xTaskGenericNotify                     MPU_xTaskGenericNotify
         #define xTaskGenericNotifyWait                 MPU_xTaskGenericNotifyWait
         #define ulTaskGenericNotifyTake                MPU_ulTaskGenericNotifyTake
@@ -167,10 +168,40 @@
 
     #else /* MPU_WRAPPERS_INCLUDED_FROM_API_FILE */
 
-/* Ensure API functions go in the privileged execution section. */
+        /* Ensure API functions go in the privileged execution section. */
         #define PRIVILEGED_FUNCTION     __attribute__( ( section( "privileged_functions" ) ) )
         #define PRIVILEGED_DATA         __attribute__( ( section( "privileged_data" ) ) )
         #define FREERTOS_SYSTEM_CALL    __attribute__( ( section( "freertos_system_calls" ) ) )
+
+        /**
+         * @brief Calls the port specific code to raise the privilege.
+         *
+         * Sets xRunningPrivileged to pdFALSE if privilege was raised, else sets
+         * it to pdTRUE.
+         */
+        #define xPortRaisePrivilege( xRunningPrivileged )                      \
+        {                                                                      \
+            /* Check whether the processor is already privileged. */           \
+            xRunningPrivileged = portIS_PRIVILEGED();                          \
+                                                                               \
+            /* If the processor is not already privileged, raise privilege. */ \
+            if( xRunningPrivileged == pdFALSE )                                \
+            {                                                                  \
+                portRAISE_PRIVILEGE();                                         \
+            }                                                                  \
+        }
+
+        /**
+         * @brief If xRunningPrivileged is not pdTRUE, calls the port specific
+         * code to reset the privilege, otherwise does nothing.
+         */
+        #define vPortResetPrivilege( xRunningPrivileged )   \
+        {                                                   \
+            if( xRunningPrivileged == pdFALSE )             \
+            {                                               \
+                portRESET_PRIVILEGE();                      \
+            }                                               \
+        }
 
     #endif /* MPU_WRAPPERS_INCLUDED_FROM_API_FILE */
 

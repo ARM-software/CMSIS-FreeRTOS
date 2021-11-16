@@ -16,6 +16,7 @@ import dataclasses
 import os
 import pathlib
 import re
+import textwrap
 
 import lib.litani
 import lib.litani_report
@@ -34,9 +35,22 @@ class Node:
         return string
 
 
+    def html_escape(string):
+        for match, repl in [(
+            '&', '&amp;'
+        ), (
+            '"', '&quot;'
+        ), (
+            '<', '&lt;'
+        ), (
+            '>', '&gt;'
+        )]:
+            string = re.sub(match, repl, string)
+        return string
+
 
 class DependencyNode(Node):
-    def __init__(self, fyle, truncate=30, **style):
+    def __init__(self, fyle, line_width=40, **style):
         self.file = fyle
         self.id = hash(fyle)
 
@@ -45,10 +59,8 @@ class DependencyNode(Node):
 
         self.style = style
 
-        if len(path.name) + len(ext) > truncate:
-            self.style["label"] = path.name[:(truncate - 1 - len(ext))] + "…" + ext
-        else:
-            self.style["label"] = path.name
+        path_name = "\n".join(textwrap.wrap(path.name, width=line_width))
+        self.style["label"] = f"{path_name}{ext}"
 
 
     def __hash__(self):
@@ -68,16 +80,22 @@ class DependencyNode(Node):
 
 
 class CommandNode(Node):
-    def __init__(self, command, truncate=30, **style):
-        self.command = command
+    def __init__(
+            self, pipeline_name, description, command, line_width=40, **style):
         self.id = hash(command)
+        self.pipeline_name = '<BR/>'.join(
+            textwrap.wrap(Node.html_escape(pipeline_name), width=line_width))
+        if description:
+            self.description = '<BR/>'.join(
+                textwrap.wrap(Node.html_escape(description), width=line_width))
+        else:
+            self.description = ""
+        self.command = '<BR/>'.join(
+            textwrap.wrap(Node.html_escape(command), width=line_width))
         self.style = style
 
-        if len(command) > truncate:
-            self.style["label"] = command[:truncate-1] + "…"
-        else:
-            self.style["label"] = command
-        self.style["shape"] = "box"
+        self.style["shape"] = "plain"
+
 
 
     def __hash__(self):
@@ -89,11 +107,25 @@ class CommandNode(Node):
 
 
     def __str__(self):
-        return '"{id}" [{style}];'.format(
-            id=self.id, style=",".join([
-                f'{key}="{Node.escape(value)}"'
-                for key, value in self.style.items()
-            ]))
+        if self.description:
+            desc_cell = f"\n<TD><B>{self.description}</B></TD>"
+        else:
+            desc_cell = ""
+        return '''"{id}" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+                <TR>
+                    <TD><B>{pipeline_name}</B></TD>{desc_cell}
+                </TR>
+                <TR>
+                    <TD COLSPAN="2">{command}</TD>
+                </TR>
+            </TABLE>> {style}];'''.format(
+                id=self.id, command=self.command,
+                desc_cell=desc_cell,
+                pipeline_name=self.pipeline_name,
+                style=",".join([
+                    f'{key}="{Node.escape(value)}"'
+                    for key, value in self.style.items()]))
 
 
 
@@ -135,11 +167,9 @@ class SinglePipelineGraph:
     def build(self):
         for job in self.iter_jobs():
             args = job["wrapper_arguments"]
-            cmd_label = args.get("description", args["command"])
-            if not cmd_label:
-                cmd_label = args["command"]
             cmd_node = self._make_cmd_node(
-                job["complete"], job.get("outcome", None), cmd_label)
+                job["complete"], job.get("outcome", None),
+                args["pipeline_name"], args["description"], args["command"])
             self.nodes.add(cmd_node)
 
             for inputt in args.get("inputs") or []:
@@ -154,7 +184,7 @@ class SinglePipelineGraph:
 
 
     @staticmethod
-    def _make_cmd_node(complete, outcome, command):
+    def _make_cmd_node(complete, outcome, pipeline_name, description, command):
         cmd_style = {"style": "filled"}
         if complete and outcome == "success":
             cmd_style["fillcolor"] = "#90caf9"
@@ -166,7 +196,8 @@ class SinglePipelineGraph:
             raise RuntimeError("Unknown outcome '%s'" % outcome)
         else:
             cmd_style["fillcolor"] = "#eceff1"
-        return lib.graph.CommandNode(command, **cmd_style)
+        return lib.graph.CommandNode(
+            pipeline_name, description, command, **cmd_style)
 
 
     def as_dot(self):
@@ -219,12 +250,8 @@ class Graph:
 
         for job in self.iter_jobs():
             args = job["wrapper_arguments"]
-
-            cmd_label = args.get("description", args["command"])
-            if not cmd_label:
-                cmd_label = args["command"]
-
-            cmd_node = CommandNode(cmd_label)
+            cmd_node = CommandNode(
+                args["pipeline_name"], args["description"], args["command"])
             nodes.add(cmd_node)
             if args["outputs"]:
                 for output in args["outputs"]:

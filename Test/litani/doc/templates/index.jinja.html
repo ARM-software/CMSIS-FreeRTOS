@@ -62,6 +62,7 @@
     font-size: 16pt;
     color: #3d4d53;
     background-color: #fdf6e3;
+    letter-spacing: 1px;
   }
   a {
     text-decoration: none;
@@ -109,9 +110,7 @@
   .left-column {
     order: -1;
     width: 100%;
-    padding-top: 1vh;
     padding-bottom: 1vh;
-    height: 98vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -128,7 +127,8 @@
     min-height: 2em;
   }
   #corner-email {
-    font-family: Helvtica;
+    font-family: Helvetica;
+    font-weight: bold;
     letter-spacing: 2px;
     margin: 0;
     font-size: 28pt;
@@ -170,15 +170,13 @@
   }
   .left-scroll {
     padding: 0;
-    padding-top: 5vh;
+    padding-top: 2em;
     order: 0; width: 100%;
   }
   .right-column {
     order: 0;
     padding-left: 2vw;
-    padding-top: 1vh;
     padding-bottom: 1vh;
-    height: 98vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -243,6 +241,13 @@
   }
   .details-link {
     font-size: smaller; font-style: italic;
+  }
+  .margin-link {
+    margin-bottom: 1em;
+  }
+  .margin-link a {
+    margin-bottom: 1em;
+    padding-left: 0em;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -332,7 +337,6 @@
   .content-title {
     height: 7em;
     max-width: 50em;
-    padding-top: 0.5em;
     margin-bottom: 2em;
   }
   #page-title{
@@ -350,10 +354,6 @@
   <div class="overall">
     <main class="right-column">
       <div class="content">
-        <div id="page-title" class="content-title">
-          <h1>Litani</h1>
-        </div>
-
         <div id="." class="content-body">
           {% for man in manuals %}
             <div class="content-title" id="litani-man_{{ man["anchor"] }}">
@@ -378,12 +378,18 @@
       <div class="left-menu">
         <div class="left-scroll">
           <ul class="navList">
+            <li class="navL1 margin-link">
+              <a href="https://github.com/awslabs/aws-build-accumulator">GitHub
+                repository</a>
+            </li>
             <li class="nav-title">
               Manual Pages
             </li>
             {% for man in manuals %}
               <li class="navL1">
-								<a href="#litani-man_{{ man["anchor"] }}">{{ man["title"] }}</a>
+								<a
+                  href="#litani-man_{{ man["anchor"] }}"
+                  >{{ man["title"] }}({{ man["chapter"] }})</a>
               </li>
             {% endfor %}{# man in manuals #}
           </ul>

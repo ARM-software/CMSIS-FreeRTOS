@@ -20,18 +20,25 @@ import os
 import pathlib
 import shutil
 import sys
+import uuid
 
 
 CACHE_FILE = "cache.json"
 CACHE_POINTER = ".litani_cache_dir"
-CI_STAGES = ["build", "test", "report"]
+DEFAULT_STAGES = ["build", "test", "report"]
+ENV_VAR_JOB_ID = "LITANI_JOB_ID"
 JOBS_DIR = "jobs"
 RUN_FILE = "run.json"
 TIME_FORMAT_R = "%Y-%m-%dT%H:%M:%SZ"
 TIME_FORMAT_W = "%Y-%m-%dT%H:%M:%SZ"
 TIME_FORMAT_MS = "%Y-%m-%dT%H:%M:%S.%fZ"
-VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH = 1, 10, 0
-VERSION = "%d.%d.%d" % (VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+VERSION_MAJOR = 1
+VERSION_MINOR = 15
+VERSION_PATCH = 0
+RC = False
+
+RC_STR = "-rc" if RC else ""
+VERSION = "%d.%d.%d%s" % (VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, RC_STR)
 
 
 
@@ -207,7 +214,7 @@ def atomic_write(path, mode="w"):
     try:
         parent = pathlib.Path(path).parent
         parent.mkdir(exist_ok=True, parents=True)
-        tmp = "%s~" % path
+        tmp = "%s~%s" % (path, str(uuid.uuid4()))
         # pylint: disable=consider-using-with
         handle = open(tmp, mode)
         yield handle

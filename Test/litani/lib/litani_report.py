@@ -74,28 +74,37 @@ class Gnuplot:
 # ______________________________________________________________________________
 
 
-@dataclasses.dataclass
 class PipelineDepgraphRenderer:
-    pipe: dict
+    def __init__(self, should_render=True):
+        is_graphviz_installed = shutil.which("dot") is not None
+        if not is_graphviz_installed:
+            logging.info(
+                "Graphviz is not installed; pipeline dependency "
+                "graph cannot be rendered")
+        self.should_render = should_render and is_graphviz_installed
 
 
-    def render_to_file(self, out_file):
-        dot_graph = lib.graph.SinglePipelineGraph.render(self.pipe)
+    def render_to_file(self, out_file, pipe):
+        dot_graph = lib.graph.SinglePipelineGraph.render(pipe)
         out_file.parent.mkdir(exist_ok=True, parents=True)
         with open(out_file, "w") as handle:
             with subprocess.Popen(
                     ["dot", "-Tsvg"], text=True, stdin=subprocess.PIPE,
                     stdout=handle) as proc:
                 proc.communicate(input=dot_graph)
-        return not proc.returncode
+            if proc.returncode:
+                logging.error("Failed to run dot. Graph: ")
+                logging.error(dot_graph)
+                sys.exit(1)
+        return True
 
 
-    @staticmethod
-    def render(render_root, pipe_url, pipe):
-        pdr = PipelineDepgraphRenderer(pipe)
+    def render(self, render_root, pipe_url, pipe):
+        if not self.should_render:
+            return
         out_rel = pipe_url / "dependencies.svg"
         out_file = render_root / out_rel
-        success = pdr.render_to_file(out_file=out_file)
+        success = self.render_to_file(out_file=out_file, pipe=pipe)
         if success:
             pipe["dependencies_url"] = "dependencies.svg"
 
@@ -438,7 +447,7 @@ def sort_run(run):
     js = functools.cmp_to_key(job_sorter)
     for pipe in run["pipelines"].values():
         stages = []
-        for stage in litani.CI_STAGES:
+        for stage in run["stages"]:
             try:
                 pipeline_stage = pipe["ci_stages"][stage]
             except KeyError:
@@ -508,7 +517,20 @@ def get_git_hash():
         return None
 
 
-def render(run, report_dir):
+def get_summary(run):
+    ret = {
+        "in_progress": 0,
+        "success": 0,
+        "total": 0,
+        "fail": 0,
+    }
+    for pipe in run["pipelines"]:
+        ret["total"] += 1
+        ret[pipe["status"]] += 1
+    return ret
+
+
+def render(run, report_dir, pipeline_depgraph_renderer):
     temporary_report_dir = litani.get_report_data_dir() / str(uuid.uuid4())
     temporary_report_dir.mkdir(parents=True)
     old_report_dir_path = litani.get_report_dir().resolve()
@@ -535,7 +557,8 @@ def render(run, report_dir):
     page = dash_templ.render(
         run=run, svgs=svgs, litani_hash=get_git_hash(),
         litani_version=litani.VERSION,
-        litani_report_archive_path=litani_report_archive_path)
+        litani_report_archive_path=litani_report_archive_path,
+        summary=get_summary(run))
     with litani.atomic_write(temporary_report_dir / "index.html") as handle:
         print(page, file=handle)
 
@@ -544,7 +567,7 @@ def render(run, report_dir):
 
     pipe_templ = env.get_template("pipeline.jinja.html")
     for pipe in run["pipelines"]:
-        PipelineDepgraphRenderer.render(
+        pipeline_depgraph_renderer.render(
             render_root=temporary_report_dir,
             pipe_url=pathlib.Path(pipe["url"]), pipe=pipe)
         for stage in pipe["ci_stages"]:

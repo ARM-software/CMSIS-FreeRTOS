@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.4
+ * FreeRTOS Kernel V10.4.6
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -302,7 +302,7 @@ uint32_t ulAPSR;
 		value. */
 		*pucFirstUserPriorityRegister = ulOriginalPriority;
 	}
-	#endif /* conifgASSERT_DEFINED */
+	#endif /* configASSERT_DEFINED */
 
 
 	/* At the time of writing, the BSP only supports EL3. */

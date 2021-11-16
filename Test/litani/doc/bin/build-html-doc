@@ -21,11 +21,19 @@ import re
 import jinja2
 
 
+CHAPTER_PAT_STR = r'.+"head-ltitle"\>[-\.\w]+\((?P<chap>\d)\)'
+CHAPTER_PAT = re.compile(CHAPTER_PAT_STR)
+
+
 def get_args():
     pars = argparse.ArgumentParser()
     for arg in [{
             "flags": ["--html-manuals"],
             "nargs": "+",
+            "required": True,
+            "type": pathlib.Path,
+    }, {
+            "flags": ["--roff-html-dir"],
             "required": True,
             "type": pathlib.Path,
     }, {
@@ -42,18 +50,34 @@ def get_args():
     return pars.parse_args()
 
 
-def get_manuals(html_manuals):
+def get_manual(man, roff_html_dir):
+    record = {
+        "title": re.sub("litani-", "litani ", man.stem),
+        "anchor": man.stem,
+        "body": [],
+        "chapter": get_chapter(roff_html_dir / man.name),
+    }
+    with open(man) as handle:
+        for line in handle:
+            record["body"].append(line.rstrip())
+    return record
+
+
+def get_chapter(man_html):
+    with open(man_html) as handle:
+        for line in handle:
+            m = CHAPTER_PAT.match(line)
+            if m:
+                return int(m["chap"])
+    raise UserWarning(
+        f"No line of roff html output '{man_html}' matched chapter pattern "
+        f"'{CHAPTER_PAT_STR}'")
+
+
+def get_manuals(html_manuals, roff_html_dir):
     ret = []
     for man in html_manuals:
-        record = {
-            "title": re.sub("litani-", "litani ", man.stem),
-            "anchor": man.stem,
-            "body": [],
-        }
-        with open(man) as handle:
-            for line in handle:
-                record["body"].append(line.rstrip())
-        ret.append(record)
+        ret.append(get_manual(man, roff_html_dir))
     return ret
 
 
@@ -64,7 +88,7 @@ def main():
         autoescape=jinja2.select_autoescape(
             enabled_extensions=('html'),
             default_for_string=True))
-    manuals = get_manuals(args.html_manuals)
+    manuals = get_manuals(args.html_manuals, args.roff_html_dir)
 
     templ = env.get_template("index.jinja.html")
     page = templ.render(manuals=manuals)

@@ -1980,7 +1980,7 @@ uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id) {
     count = 0U;
   }
   else if (IRQ_Context() != 0U) {
-    count = uxQueueMessagesWaitingFromISR (hSemaphore);
+    count = (uint32_t)uxSemaphoreGetCountFromISR (hSemaphore);
   } else {
     count = (uint32_t)uxSemaphoreGetCount (hSemaphore);
   }

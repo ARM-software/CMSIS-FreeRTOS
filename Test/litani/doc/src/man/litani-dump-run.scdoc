@@ -1,0 +1,74 @@
+litani-dump-run(1) "" "Litani Build System"
+
+; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+; Licensed under the Apache License, Version 2.0 (the "License").
+; You may not use this file except in compliance with the License.
+; A copy of the License is located at
+
+;     http://www.apache.org/licenses/LICENSE-2.0
+
+; or in the "license" file accompanying this file. This file is distributed
+; on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+; express or implied. See the License for the specific language governing
+; permissions and limitations under the License.
+
+
+# NAME
+
+litani dump-run - Print the current run as a JSON document to stdout
+
+
+# SYNOPSIS
+
+*litani dump-run*
+	\[*--retries* _N_]
+
+
+# DESCRIPTION
+
+This program prints the _run.json_ file for an in-progress Litani run to stdout.
+The JSON file's schema is documented in *litani-run.json(5)*.
+
+This program is intended to be used while an invocation of *litani-run-build(1)*
+is running. After the *run-build* process has terminated, this program will not
+work (though this may change in future versions). Instead, you can access the
+_run.json_ file in the run's output directory.
+
+This program may be run as a Litani job, and it may be run as a subprocess from
+a command that is part of a Litani job. This allows commands to 'introspect' on
+a Litani run so far. It is guaranteed that if a single Litani job runs *litani
+dump-run*, all of the reverse-dependencies of that job will have the
+_"complete"_ key set to *True* in the printed _run.json_ file. That is, any job
+that runs *litani dump-run* will always see the most up-to-date state of the
+build with respect to its own reverse dependencies.
+
+
+# MULTIPROCESS SAFETY
+
+It is safe to run multiple invocations of *litani dump-run* in parallel.
+However, if you do so, the printed result may be slightly out-of-date.
+
+If you run *litani dump-run* from a Litani job, Litani will attempt to ensure
+that the printed run is up-to-date with respect to that job. In particular,
+Litani will try to re-load the run until all the reverse dependencies have their
+_"complete"_ field set to *true*.
+
+
+# OPTIONS
+
+*-r* _N_, *--retries* _N_
+	How many times to retry loading the run file if the *litani run-build* process
+	doesn't emit it immediately. *litani dump-run* will retry loading the run once
+	every second up to the limit given in this flag. If _N_ is *0*, this program
+	will retry indefinitely---this is not recommended.
+
+
+# OUTPUT
+
+A JSON document printed to stdout. This will be either *null* (if this program was not able to load the run after a certain number of tries), or a document whose schema matches the one in *litani-run.json(5)*.
+
+
+# RETURN CODE
+
+Zero unless the program crashed.

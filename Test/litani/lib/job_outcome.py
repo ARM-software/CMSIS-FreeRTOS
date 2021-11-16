@@ -17,6 +17,7 @@ import json
 import logging
 import os
 
+import lib.validation
 
 ################################################################################
 # Decider classes
@@ -143,37 +144,6 @@ def _get_default_outcome_dict(args):
     return {"outcomes": outcomes}
 
 
-def validate_outcome_table(table):
-    try:
-        import voluptuous
-    except ImportError:
-        logging.debug("Skipping outcome table validation as voluptuous is not installed")
-        return
-
-    actions = voluptuous.Any("success", "fail", "fail_ignored")
-    schema = voluptuous.Schema({
-        # A description of the outcome table as a whole.
-        voluptuous.Optional("comment"): str,
-
-        # We use the first item in this list that matches the job
-        "outcomes": [voluptuous.Any({
-            "type": "return-code",
-            "value": int,
-            "action": actions,
-            voluptuous.Optional("comment"): str,
-        }, {
-            "type": "timeout",
-            "action": actions,
-            voluptuous.Optional("comment"): str,
-        }, {
-            "type": "wildcard",
-            "action": actions,
-            voluptuous.Optional("comment"): str,
-        })]
-    }, required=True)
-    voluptuous.humanize.validate_with_humanized_errors(table, schema)
-
-
 def _get_outcome_table_job_decider(args, return_code, timeout_reached):
     if args.outcome_table:
         _, ext = os.path.splitext(args.outcome_table)
@@ -191,7 +161,7 @@ def _get_outcome_table_job_decider(args, return_code, timeout_reached):
         outcome_table = _get_default_outcome_dict(args)
 
     logging.debug("Using outcome table: %s", json.dumps(outcome_table, indent=2))
-    validate_outcome_table(outcome_table)
+    lib.validation.validate_outcome_table(outcome_table)
 
     return OutcomeTableDecider(
         outcome_table, return_code, timeout_reached,

@@ -1,17 +1,45 @@
 litani-run-build(1) "" "Litani Build System"
 
+; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+; Licensed under the Apache License, Version 2.0 (the "License").
+; You may not use this file except in compliance with the License.
+; A copy of the License is located at
+
+;     http://www.apache.org/licenses/LICENSE-2.0
+
+; or in the "license" file accompanying this file. This file is distributed
+; on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+; express or implied. See the License for the specific language governing
+; permissions and limitations under the License.
+
+
 # NAME
 
 litani run-build - Start a Litani run
 
 # SYNOPSIS
 
-litani run-build [OPTION...]
+*litani run-build*
+	\[*-n*/*--dry-run*]
+	\[*-j*/*--parallel* _N_]
+	\[*-o*/*--out-file* _F_]
+	\[*--fail-on-pipeline-failure*]
+	\[*--no-pipeline-dep-graph*]
+	\[*-p*/*--pipelines* _P_ [_P_ ...]]
+	\[*-s*/*--ci-stage* _S_]
 
 # DESCRIPTION
 
 This program executes a Litani run. The run must have been created using
 *litani init* and had jobs added to it using *litani add-job*.
+
+
+# MULTIPROCESS SAFETY
+
+It is *NOT SAFE* to run multiple invocations of *litani run-build* in
+parallel.
+
 
 # OPTIONS
 
@@ -33,7 +61,12 @@ This program executes a Litani run. The run must have been created using
 	Return _0_ only if all pipelines were successful. See *RETURN CODE*
 	below.
 
-*-p* _P_ _[P ...]_, *--pipelines* _P_ _[P ...]_
+*--no-pipeline-dep-graph*
+	Do not render dependency graphs for each pipeline onto the HTML individual
+	pipeline pages. Pipeline graphs will also not be rendered if Graphviz is
+	not installed.
+
+*-p* _P_ [_P_ ...], *--pipelines* _P_ [_P_ ...]
 	Only run jobs that are part of the specified pipelines.
 
 *-s* _S_, *--ci-stage* _S_

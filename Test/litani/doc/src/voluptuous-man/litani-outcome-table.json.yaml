@@ -1,0 +1,24 @@
+header: > 
+  # SYNOPSIS
+
+  _outcome-table.json_: user-provided table to decide the outcome of a job
+
+
+  # DESCRIPTION
+
+  By default, Litani jobs' outcome is set to _success_ if their command
+  returns 0, and _fail_ on other return codes or if the command timed
+  out. This can be customized to some extent using the _--_..._-ok_ and
+  _--_..._-ignore_ flags of *litani-add-job(1)*.  For more advanced use
+  cases, users can pass a JSON file called an 'outcome table' to the
+  _--outcome-table_ flag of *litani-add-job(1)*. This allows, for
+  example, to cause an outcome other than success for a return code of
+  0, for negative tests.
+
+  This manual describes the schema for the JSON file that users should
+  pass to *litani-add-job(1)*.
+
+footer: > 
+  # SEE ALSO
+
+  *litani-add-job(1)*

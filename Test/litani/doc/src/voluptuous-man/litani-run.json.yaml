@@ -1,0 +1,21 @@
+header: > 
+  # SYNOPSIS
+
+  _run.json_: description of a single Litani run
+
+
+  # DESCRIPTION
+
+  Litani writes a _run.json_ file to its cache directory when the user
+  invokes *litani-run-build(1)*. This file contains everything needed to
+  generate the HTML dashboard, with the notable exception of any
+  artefacts that the jobs might emit. (However, Litani does capture
+  jobs' stdout and stderr; any output will be available in _run.json_.)
+  This manual page describes _run.json_ 's format.
+
+
+  *outcome_*, *status_*, and *single_job_schema_* are sub-schemata that
+  are referenced multiple times within this schema, and so are defined
+  separately below. All timestamps are in ISO-8601.
+
+footer: ""

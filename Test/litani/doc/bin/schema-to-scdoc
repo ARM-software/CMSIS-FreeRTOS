@@ -1,0 +1,244 @@
+#!/usr/bin/env python3
+#
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+
+import argparse
+import json
+import os
+import pathlib
+import re
+import sys
+
+import jinja2
+import yaml
+
+
+_DESCRIPTION = "Convert a series of commented voluptuous schemas into groff"
+_EPILOG = """
+This program is used to automatically generate documentation for Litani's
+voluptuous schemata. The codebase contains schemata in methods that are preceded
+by the following magic comment:
+
+# doc-gen
+# {
+#   "page": "PAGE_NAME",
+#   "order": N,
+#   "title": "TITLE",
+# }
+
+When this script is run with --page-name PAGE_NAME, it reads all the python
+files in the codebase looking for such blocks with an equal PAGE_NAME. It then
+converts the schema and associated documentation into scdoc format, ready to be
+converted into groff and read in a manual pager.
+"""
+
+
+
+class Comment:
+    def __init__(self, lines):
+        indent_pat = re.compile(r"(?P<indentation>\s*)")
+        match = indent_pat.match(lines[0])
+        self.indent = int(len(match["indentation"]) / 4) - 1
+        self.lines = lines
+
+
+    def print_full(self):
+        return "\n{indentation}{comment}".format(
+            indentation=("\t" * self.indent),
+            comment=" ".join([string.strip()[2:] for string in self.lines]))
+
+
+    def print_compact(self):
+        return ""
+
+
+
+class Code:
+    def __init__(self, line):
+        indent_pat = re.compile(r"^(?P<indentation>\s*)")
+        match = indent_pat.match(line)
+        self.indent = int(len(match["indentation"]) / 4) - 1
+        self.line = self.format_line(line)
+
+
+    def format_line(self, line):
+        line = line.strip()
+        line = re.sub(r"voluptuous\.", "", line)
+        line = re.sub(r"^return\s+", "", line)
+        pat = re.compile(r"(?P<key>.+?):\s+(?P<value>.*?)(?P<end>[^\w]+)$")
+        m = pat.match(line)
+        if m:
+            return "{indentation}{key}: {value} {end}".format(
+                indentation="\t" * self.indent,
+                key=f"*{m['key']}*",
+                value=f"_{m['value']}_" if m['value'] else '',
+                end=m['end'])
+        return "{indentation}{line}".format(
+            indentation="\t" * self.indent,
+            line=line)
+
+
+    def print_compact(self):
+        return self.line
+
+
+    def print_full(self):
+        return self.line
+
+
+
+class Blank:
+    def print_compact(self):
+        return ""
+
+
+    def print_full(self):
+        return "\n"
+
+
+
+def next_line(iterator):
+    try:
+        return next(iterator).rstrip()
+    except StopIteration:
+        return None
+
+
+def get_args():
+    pars = argparse.ArgumentParser(description=_DESCRIPTION, epilog=_EPILOG)
+    for arg in [{
+            "flags": ["--page-name"],
+            "required": True,
+    }, {
+            "flags": ["--project-root"],
+            "required": True,
+    }, {
+            "flags": ["--data-path"],
+            "required": True,
+    }, {
+            "flags": ["--template"],
+            "required": True,
+            "type": pathlib.Path,
+    }]:
+        flags = arg.pop("flags")
+        pars.add_argument(*flags, **arg)
+    return pars.parse_args()
+
+
+def parse_schema(iterator):
+    comment_buf = []
+    ret = []
+
+    line = next_line(iterator)
+    while not (
+            line is None or \
+            line.startswith("def") or \
+            line.startswith("# end-doc-gen")):
+        if line.strip().startswith("# "):
+            comment_buf.append(line)
+        else:
+            if comment_buf:
+                ret.append(Comment(comment_buf))
+                comment_buf = []
+            if not line:
+                ret.append(Blank())
+            else:
+                ret.append(Code(line))
+        line = next_line(iterator)
+    return ret
+
+
+def parse_fun_def(iterator):
+    """Skip the first few lines of a schema function and return the schema"""
+    line = next_line(iterator)
+    while line:
+        line = next_line(iterator)
+    return parse_schema(iterator)
+
+
+def parse_header(iterator, page_name):
+    """Parse the JSON at the top of a single documentation fragment"""
+
+    line = next_line(iterator)
+    buf = []
+    while line is not None:
+        buf.append(line)
+        line = next_line(iterator)
+
+        # { <----- to avoid confusing syntax highlighting
+        if line != "# }":
+            continue
+        buf.append(line)
+        header_str = "\n".join([string[2:] for string in buf])
+        try:
+            header_d = json.loads(header_str)
+        except json.decoder.JSONDecodeError:
+            print(
+                "Could not parse JSON fragment %s" % header_str,
+                file=sys.stderr)
+            sys.exit(1)
+        if header_d["page"] != page_name:
+            return []
+        return [{
+            **header_d,
+            "body": parse_fun_def(iterator)
+        }]
+    return []
+
+
+def parse_file(iterator, page_name):
+    """Return a list of all documentation fragments in a single file"""
+
+    ret = []
+    line = next_line(iterator)
+    while line is not None:
+        if line == "# doc-gen":
+            ret.extend(parse_header(iterator, page_name))
+        line = next_line(iterator)
+    return ret
+
+
+def get_page_fragments(project_root, page_name):
+    ret = []
+    for root, _, fyles in os.walk(project_root):
+        root = pathlib.Path(root)
+        for fyle in fyles:
+            if not fyle.endswith(".py"):
+                continue
+            with open(root / fyle) as handle:
+                ret.extend(parse_file(iter(handle), page_name))
+    return ret
+
+
+def main():
+    args = get_args()
+    fragments = get_page_fragments(args.project_root, args.page_name)
+    fragments.sort(key=lambda x: x["order"])
+
+    with open(args.data_path) as handle:
+        page = yaml.safe_load(handle)
+
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(str(args.template.parent)),
+        autoescape=jinja2.select_autoescape(
+            enabled_extensions=('html'),
+            default_for_string=True))
+    templ = env.get_template(args.template.name)
+    out = templ.render(page=page, fragments=fragments, page_name=args.page_name)
+    print(out)
+
+
+if __name__ == "__main__":
+    main()

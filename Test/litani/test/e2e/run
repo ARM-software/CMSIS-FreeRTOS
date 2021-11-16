@@ -26,7 +26,7 @@ import sys
 
 
 DESCRIPTION = "Execute a single Litani run and test the resulting run.json"
-EPILOG = "See test/e2e/run/README for the organization of this test suite"
+EPILOG = "See test/e2e/README for the organization of this test suite"
 
 
 def get_args():
@@ -127,9 +127,15 @@ def init(litani, run_dir, mod):
         litani, "init", *args.get("args", []), **kwargs)
 
 
+def add_global_context(args):
+    os.environ["LITANI_E2E_LITANI_PATH"] = str(args.litani.resolve())
+
+
 def main():
     args = get_args()
     logging.basicConfig(format="run-tests: %(message)s")
+
+    add_global_context(args)
 
     mod = get_test_module(args.test_file)
 

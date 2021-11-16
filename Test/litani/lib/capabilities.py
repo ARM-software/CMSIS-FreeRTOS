@@ -26,6 +26,8 @@ _CAPABILITIES = {
     "memory_profile": "Litani can measure the memory usage of specific jobs",
     "aux": "Run contains an aux field for custom user data",
     "parallelism_metric": "Run contains process parallelism measurements",
+    "phony_outputs": "The --phony-outputs flag is supported",
+    "dump_run": "The dump-run command is supported",
 }
 
 

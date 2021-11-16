@@ -230,6 +230,27 @@ p {
 .graph {
   margin-bottom: 6em;
 }
+
+#pipeline-stats-container {
+  display: flex;
+  margin-left 3em;
+  justify-content: space-evenly;
+}
+.pipeline-single-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pipeline-single-top {
+  display: flex;
+}
+.pipeline-single-bottom {
+  display: flex;
+  font-size: small;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
 @media (max-width: 640px){
   .pipeline-progress {
     width: 10em;
@@ -316,12 +337,46 @@ p {
       </div><!-- class="pipeline-link" -->
 
       <div class="pipeline-name">
+        <div id="pipeline-stats-container">
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["fail"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>failed</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["in_progress"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>in progress</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["success"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>succeeded</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+          <div class="pipeline-single-stat">
+            <div class="pipeline-single-top">
+              <p>{{ summary["total"] }}</p>
+            </div><!-- class="pipeline-single-top" -->
+            <div class="pipeline-single-bottom">
+              <p>total</p>
+            </div><!-- class="pipeline-single-top" -->
+          </div><!-- class="pipeline-single-stat" -->
+        </div><!-- id="pipeline-stats-container" -->
       </div><!-- class="pipeline-name" -->
 
       <div class="pipeline-progress pipeline-header">
-        <p id="build-title">Build</p>
-        <p id="test-title">Test</p>
-        <p id="report-title">Report</p>
+        {% for stage in run["stages"] %}
+        <p>{{ stage }}</p>
+        {% endfor %}{# stage in run["stages"] #}
       </div><!-- class="pipeline-progress" -->
     </div><!-- class="pipeline-row" -->
 

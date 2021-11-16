@@ -47,6 +47,16 @@ RULES = [{
     "description": "converting ${man-name} to roff",
     "command": "scdoc < ${in} > ${out}"
 }, {
+    "name": "voluptuous_to_roff",
+    "description": "converting ${man-name} to roff",
+    "command": f"{BIN_DIR / 'schema-to-scdoc'}"
+               f" --project-root { DOC_DIR.parent }"
+               " --page-name ${man-name}"
+               " --data-path ${data-path}"
+               " --template"
+               f" { TEMPLATE_DIR / 'voluptuous-man.jinja.scdoc' }"
+               " | scdoc > ${out}"
+}, {
     "name": "roff_to_html",
     "description": "converting ${man-name}.roff HTML",
     "command": "mandoc -O fragment -Thtml < ${in} > ${out}"
@@ -54,61 +64,78 @@ RULES = [{
     "name": "uniquify_header_ids",
     "description": "Giving unique header IDs to ${man-name}.html",
     "command": f"sed -f {BIN_DIR}/uniquify-header-ids"
-                    " -e 's/@MAN_NAME@/${man-name}/g'"
-                    " ${in-file}"
-                    # Get rid of header and footer
-                    " | tail -n +8"
-                    " | tac"
-                    " | tail -n +7"
-                    " | tac"
-                    " > ${out}"
+               " -e 's/@MAN_NAME@/${man-name}/g'"
+               " ${in-file}"
+               # Get rid of header and footer
+               " | tail -n +8"
+               " | tac"
+               " | tail -n +7"
+               " | tac"
+               " > ${out}"
 }, {
     "name": "build_html_doc",
     "description": "Building final HTML page",
     "command": f"{BIN_DIR}/build-html-doc"
-                    "  --html-manuals ${html-mans}"
-                    f" --template-dir {TEMPLATE_DIR}"
-                    "  --out-file ${out}"
+               "  --html-manuals ${html-mans}"
+               f" --template-dir {TEMPLATE_DIR}"
+               "  --out-file ${out}"
+               "  --roff-html-dir ${roff-html-dir}"
 }]
+
+
+def make_html_unique(man, html_man, html_mans, builds):
+    html_unique = HTML_UNIQUE_DIR / f"{man.stem}.html"
+    builds.append({
+        "inputs": [html_man, BIN_DIR / "uniquify-header-ids"],
+        "outputs": [html_unique],
+        "rule": "uniquify_header_ids",
+        "variables": {
+            "man-name": man.stem,
+            "in-file": html_man,
+        }
+    })
+    html_mans.append(html_unique)
+
+
+def roff_to_html(man, roff_out, builds):
+    html_man = HTML_MAN_SRC_DIR / f"{man.stem}.html"
+    builds.append({
+        "inputs": [roff_out],
+        "outputs": [html_man],
+        "rule": "roff_to_html",
+        "variables": {
+            "man-name": man.stem,
+            "in-file": html_man,
+        }
+    })
+    return html_man
+
+
+def convert_man_dir_to_roff(src_dir, dst_dir, rule, html_mans, builds):
+    for man in (src_dir).iterdir():
+        roff_out = dst_dir / f"{man.stem}.roff"
+        builds.append({
+            "inputs": [man],
+            "outputs": [roff_out],
+            "rule": rule,
+            "variables": {
+                "man-name": man.stem,
+                "data-path": man.resolve(),
+            }
+        })
+        html_man = roff_to_html(man, roff_out, builds)
+        make_html_unique(man, html_man, html_mans, builds)
 
 
 def main():
     builds = []
-
     html_mans = []
-    for man in (SRC_DIR / "man").iterdir():
-        roff_out = ROFF_DIR / f"{man.stem}.roff"
-        builds.append({
-            "inputs": [man],
-            "outputs": [roff_out],
-            "rule": "sc_to_roff",
-            "variables": {
-                "man-name": man.stem,
-            }
-        })
 
-        html_man = HTML_MAN_SRC_DIR / f"{man.stem}.html"
-        builds.append({
-            "inputs": [roff_out],
-            "outputs": [html_man],
-            "rule": "roff_to_html",
-            "variables": {
-                "man-name": man.stem,
-            }
-        })
-
-        html_unique = HTML_UNIQUE_DIR / f"{man.stem}.html"
-        builds.append({
-            "inputs": [html_man, BIN_DIR / "uniquify-header-ids"],
-            "outputs": [html_unique],
-            "rule": "uniquify_header_ids",
-            "variables": {
-                "man-name": man.stem,
-                "in-file": html_man,
-            }
-        })
-
-        html_mans.append(html_unique)
+    convert_man_dir_to_roff(
+        SRC_DIR / "man", ROFF_DIR, "sc_to_roff", html_mans, builds)
+    convert_man_dir_to_roff(
+        SRC_DIR / "voluptuous-man", ROFF_DIR, "voluptuous_to_roff", html_mans,
+        builds)
 
     builds.append({
         "inputs": html_mans + [
@@ -119,6 +146,7 @@ def main():
         "rule": "build_html_doc",
         "variables": {
             "html-mans": " ".join([str(h) for h in html_mans]),
+            "roff-html-dir": HTML_MAN_SRC_DIR,
         }
     })
 

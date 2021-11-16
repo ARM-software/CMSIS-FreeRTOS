@@ -8,9 +8,12 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.4.4-dev0">
-      Active development:
-      - Updated pack to FreeRTOS 10.4.4
+    <release version="10.4.6" date="2021-11-16">
+      FreeRTOS 10.4.3
+      Updates and bugfixes:
+      - Updated osSemaphoreGetCount to use uxSemaphoreGetCountFromISR instead of uxQueueMessagesWaitingFromISR
+      - Correct typecasting of argument usStackDepth for xTaskCreate in function osThreadNew (#51)
+      - Fix mutex allocation for Arm Standard C library and allow it only when the kernel is running
     </release>
     <release version="10.4.3" date="2021-09-28">
       FreeRTOS 10.4.3
@@ -878,7 +881,7 @@
 
   <components>
     <!-- CMSIS-RTOS FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="10.4.4" Capiversion="1.0.0" condition="CMSIS RTOS FreeRTOS">
+    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="10.4.6" Capiversion="1.0.0" condition="CMSIS RTOS FreeRTOS">
       <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
@@ -891,7 +894,7 @@
     </component>
 
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="10.4.4" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="10.4.6" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -908,7 +911,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="10.4.4" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="10.4.6" Capiversion="2.1.3" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -925,7 +928,7 @@
       </files>
     </component>
 
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.4.4">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="10.4.6">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/Documentation/FreeRTOS_Reference_Manual_V10.0.0.pdf</doc>
 
@@ -1442,21 +1445,18 @@
           <file category="header"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
           <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context.c"/>
-          <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context_port.c"/>
           <file category="sourceAsm" condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_context_port_asm.s"/>
           <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_heap.c"/>
           <file category="source"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_init.c"/>
           <file category="header"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context.c"/>
-          <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port.c"/>
           <file category="sourceAsm" condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port_asm.s"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_init.c"/>
           <file category="header"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/"/>
           <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context.c"/>
-          <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port.c"/>
           <file category="sourceAsm" condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_context_port_asm.s"/>
           <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM55_TZ_IAR"    name="Source/portable/IAR/ARM_CM33/secure/secure_init.c"/>

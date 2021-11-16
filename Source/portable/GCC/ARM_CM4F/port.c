@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.4
+ * FreeRTOS Kernel V10.4.6
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -363,7 +363,7 @@ BaseType_t xPortStartScheduler( void )
              * value. */
             *pucFirstUserPriorityRegister = ulOriginalPriority;
         }
-    #endif /* conifgASSERT_DEFINED */
+    #endif /* configASSERT_DEFINED */
 
     /* Make PendSV and SysTick the lowest priority interrupts. */
     portNVIC_SHPR3_REG |= portNVIC_PENDSV_PRI;

@@ -1,12 +1,32 @@
 litani-init(1) "" "Litani Build System"
 
+; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+; Licensed under the Apache License, Version 2.0 (the "License").
+; You may not use this file except in compliance with the License.
+; A copy of the License is located at
+
+;     http://www.apache.org/licenses/LICENSE-2.0
+
+; or in the "license" file accompanying this file. This file is distributed
+; on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+; express or implied. See the License for the specific language governing
+; permissions and limitations under the License.
+
+
 # NAME
 
 litani init - Set up a new Litani run
 
 # SYNOPSIS
 
-litani init --project-name NAME [OPTION...]
+*litani init --project-name* _NAME_
+	\[*--stages* _NAME_ [_NAME_ ...]]
+	\[*--pools* _NAME:DEPTH_ [_NAME:DEPTH_ ...]]
+	\[*--output-directory* _DIR_]
+	\[*--output-prefix* _DIR_]
+	\[*--output-symlink* _DIR_]
+	\[*--no-print-out-dir*]
 
 # DESCRIPTION
 
@@ -25,6 +45,14 @@ find the output directory. Litani will search the following locations for the fi
 
 This allows you to run *litani init* in the 'root' of a project, and subsequently run *litani add-job* further down in the project.
 
+
+# MULTIPROCESS SAFETY
+
+It is safe but pointless to run *litani init* more than once in
+parallel. One of the invocations will 'win', and subsequent invocations
+of *litani add-job* will add jobs to a single run.
+
+
 # OPTIONS
 
 *--project-name* _NAME_
@@ -32,7 +60,12 @@ This allows you to run *litani init* in the 'root' of a project, and subsequentl
 	at the top of the HTML report. The project name is also included in the
 	_run.json_ file to help find all the runs for a particular project.
 
-*--pools* _NAME:DEPTH_ _[NAME:DEPTH...]_
+*--stages* _NAME_ [_NAME_ ...]
+	The stages that this run is composed of. At least one stage has to be
+	provided. If this flag is not specified, the default stages _build_, _test_
+	and _report_ are used.
+
+*--pools* _NAME:DEPTH_ [_NAME:DEPTH_ ...]
 	The job pools that you will subsequently add jobs into using the *--pool* flag
 	of *litani add-job*. Each argument to this flag 'declares' the named pool with
 	a particular depth, where the depth is an integer greater than zero. If you
