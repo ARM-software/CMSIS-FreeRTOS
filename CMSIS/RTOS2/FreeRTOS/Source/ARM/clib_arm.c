@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -146,15 +146,19 @@ int _mutex_initialize(mutex *m) {
 
       /* Return mutex id */
       *m = clib_mutex_id[i];
-
-      return 1;
+      break;
     }
   }
 #endif
-  if (os_kernel_is_active()) {
+  if ((*m == NULL) && (os_kernel_is_active())) {
     /* Create mutex using dynamic memory */
     *m = xSemaphoreCreateMutex();
   }
+
+  /* FreeRTOS disables interrupts when its API is called before the kernel is started. */
+  /* This is pre-main context and since interrupts shall not happen before reaching    */
+  /* main we can re-enable interrupts and have consistent state when main gets called. */
+  portENABLE_INTERRUPTS();
 
   if (*m == NULL) {
     return 0;
