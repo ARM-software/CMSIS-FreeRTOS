@@ -8,6 +8,14 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.7-dev0">
+      Active development...
+      Updates and bugfixes:
+      - Corrected osEventFlagsSet return value when called from ISR
+      - Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout
+      - Corrected osTimerStart to return osErrorParameter when ticks argument equals zero
+      - Re-enable interrupts after mutex create in C lib stream protection initialization
+    </release>
     <release version="10.4.6" date="2021-11-16">
       FreeRTOS 10.4.3
       Updates and bugfixes:

@@ -57,6 +57,20 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.7-dev0</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <p>Updates and bugfixes:</p>
+        <ul>
+          <li>Corrected osEventFlagsSet return value when called from ISR</li>
+          <li>Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout</li>
+          <li>Corrected osTimerStart to return osErrorParameter when ticks argument equals zero</li>
+          <li>Re-enable interrupts after mutex create in C lib stream protection initialization</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.4.6</td>
       <td>
         <p><b>FreeRTOS V10.4.6</b></p>
