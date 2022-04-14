@@ -57,6 +57,17 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.7-dev1</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <p>Updates and bugfixes:</p>
+        <ul>
+          <li>Corrected osThreadGetState to return osThreadError when called for a thread previously terminated with osThreadTerminate</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.4.7-dev0</td>
       <td>
         <p><b>Active development...</b></p>

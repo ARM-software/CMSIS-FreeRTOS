@@ -631,7 +631,7 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
       case eReady:     state = osThreadReady;      break;
       case eBlocked:
       case eSuspended: state = osThreadBlocked;    break;
-      case eDeleted:   state = osThreadTerminated; break;
+      case eDeleted:
       case eInvalid:
       default:         state = osThreadError;      break;
     }

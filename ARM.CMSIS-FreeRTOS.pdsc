@@ -8,6 +8,11 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.7-dev1">
+      Active development...
+      Updates and bugfixes:
+      - Corrected osThreadGetState to return osThreadError when called for a thread previously terminated with osThreadTerminate
+    </release>
     <release version="10.4.7-dev0">
       Active development...
       Updates and bugfixes:
