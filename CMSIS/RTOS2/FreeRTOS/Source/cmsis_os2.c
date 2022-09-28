@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -169,9 +169,9 @@ void SysTick_Handler (void) {
 */
 __STATIC_INLINE void SVC_Setup (void) {
 #if (__ARM_ARCH_7A__ == 0U)
-  /* Service Call interrupt might be configured before kernel start     */
-  /* and when its priority is lower or equal to BASEPRI, svc intruction */
-  /* causes a Hard Fault.                                               */
+  /* Service Call interrupt might be configured before kernel start      */
+  /* and when its priority is lower or equal to BASEPRI, svc instruction */
+  /* causes a Hard Fault.                                                */
   NVIC_SetPriority (SVCall_IRQn, 0U);
 #endif
 }
@@ -631,7 +631,7 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
       case eReady:     state = osThreadReady;      break;
       case eBlocked:
       case eSuspended: state = osThreadBlocked;    break;
-      case eDeleted:   state = osThreadTerminated; break;
+      case eDeleted:
       case eInvalid:
       default:         state = osThreadError;      break;
     }
@@ -1236,7 +1236,7 @@ osStatus_t osTimerStart (osTimerId_t timer_id, uint32_t ticks) {
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
-  else if (hTimer == NULL) {
+  else if ((hTimer == NULL) || (ticks == 0U)) {
     stat = osErrorParameter;
   }
   else {
@@ -1421,7 +1421,9 @@ uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
     if (xEventGroupSetBitsFromISR (hEventGroup, (EventBits_t)flags, &yield) == pdFAIL) {
       rflags = (uint32_t)osErrorResource;
     } else {
-      rflags = flags;
+      /* Retrieve bits that are already set and add flags to be set in current call */
+      rflags  = xEventGroupGetBitsFromISR (hEventGroup);
+      rflags |= flags;
       portYIELD_FROM_ISR (yield);
     }
   #endif
@@ -1514,7 +1516,13 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
     rflags = (uint32_t)osErrorParameter;
   }
   else if (IRQ_Context() != 0U) {
-    rflags = (uint32_t)osErrorISR;
+    if (timeout == 0U) {
+      /* Try semantic is not supported */
+      rflags = (uint32_t)osErrorISR;
+    } else {
+      /* Calling osEventFlagsWait from ISR with non-zero timeout is invalid */
+      rflags = (uint32_t)osFlagsErrorParameter;
+    }
   }
   else {
     if (options & osFlagsWaitAll) {

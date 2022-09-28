@@ -4,10 +4,28 @@
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
-  <url>http://www.keil.com/pack/</url>
+  <url>https://www.keil.com/pack/</url>
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.7-dev2">
+      Active development...
+      Updates and bugfixes:
+      - Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt
+    </release>
+    <release version="10.4.7-dev1">
+      Active development...
+      Updates and bugfixes:
+      - Corrected osThreadGetState to return osThreadError when called for a thread previously terminated with osThreadTerminate
+    </release>
+    <release version="10.4.7-dev0">
+      Active development...
+      Updates and bugfixes:
+      - Corrected osEventFlagsSet return value when called from ISR
+      - Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout
+      - Corrected osTimerStart to return osErrorParameter when ticks argument equals zero
+      - Re-enable interrupts after mutex create in C lib stream protection initialization
+    </release>
     <release version="10.4.6" date="2021-11-16">
       FreeRTOS 10.4.3
       Updates and bugfixes:

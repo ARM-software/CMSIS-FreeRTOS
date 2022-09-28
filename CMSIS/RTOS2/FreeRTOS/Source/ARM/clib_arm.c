@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -87,6 +87,15 @@ static uint32_t os_kernel_is_active (void) {
   }
 }
 
+/* Check if processor is in Thread or Handler mode */
+static uint32_t is_thread_mode (void) {
+  if (__get_IPSR() == 0U) {
+    return 1U; /* Thread mode  */
+  } else {
+    return 0U; /* Handler mode */
+  }
+}
+
 /* Provide libspace for current thread */
 void *__user_perthread_libspace (void);
 void *__user_perthread_libspace (void) {
@@ -146,15 +155,19 @@ int _mutex_initialize(mutex *m) {
 
       /* Return mutex id */
       *m = clib_mutex_id[i];
-
-      return 1;
+      break;
     }
   }
 #endif
-  if (os_kernel_is_active()) {
+  if ((*m == NULL) && (os_kernel_is_active())) {
     /* Create mutex using dynamic memory */
     *m = xSemaphoreCreateMutex();
   }
+
+  /* FreeRTOS disables interrupts when its API is called before the kernel is started. */
+  /* This is pre-main context and since interrupts shall not happen before reaching    */
+  /* main we can re-enable interrupts and have consistent state when main gets called. */
+  portENABLE_INTERRUPTS();
 
   if (*m == NULL) {
     return 0;
@@ -164,8 +177,10 @@ int _mutex_initialize(mutex *m) {
 
 /* Acquire mutex */
 void _mutex_acquire(mutex *m) {
-
-  if (os_kernel_is_active()) {
+  /* Don't allow mutex operations when the kernel is not switching tasks and also   */
+  /* block protection when in interrupt. Using stdio streams in interrupt is bad    */
+  /* practice, but some applications call printf as last resort for debug purposes. */
+  if (os_kernel_is_active() && is_thread_mode()) {
     xSemaphoreTake(*m, portMAX_DELAY);
   }
 }
@@ -173,7 +188,7 @@ void _mutex_acquire(mutex *m) {
 /* Release mutex */
 void _mutex_release(mutex *m) {
 
-  if (os_kernel_is_active()) {
+  if (os_kernel_is_active() && is_thread_mode()) {
     xSemaphoreGive(*m);
   }
 }
