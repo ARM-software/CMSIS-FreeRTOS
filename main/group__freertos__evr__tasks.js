@@ -1,0 +1,28 @@
+var group__freertos__evr__tasks =
+[
+    [ "EvrFreeRTOSTasks_IncreaseTickCount", "group__freertos__evr__tasks.html#gaa9acfc9821eb634cd0d5e6ba3d39bd1f", null ],
+    [ "EvrFreeRTOSTasks_LowPowerIdleBegin", "group__freertos__evr__tasks.html#ga64aab4227114f20284635414403ee339", null ],
+    [ "EvrFreeRTOSTasks_LowPowerIdleEnd", "group__freertos__evr__tasks.html#gaf1a3520a0f9f01aa1f023fea606fe6de", null ],
+    [ "EvrFreeRTOSTasks_MovedTaskToReadyState", "group__freertos__evr__tasks.html#ga186fa5006319bf3419f0f88e566adae2", null ],
+    [ "EvrFreeRTOSTasks_PostMovedTaskToReadyState", "group__freertos__evr__tasks.html#ga1c7d8dcb5f8b13225a9bebc84be91975", null ],
+    [ "EvrFreeRTOSTasks_TaskCreate", "group__freertos__evr__tasks.html#gabec29cbe3077fb990b084cf6f6a28a31", null ],
+    [ "EvrFreeRTOSTasks_TaskCreateFailed", "group__freertos__evr__tasks.html#ga55d96d08eda4d5e6c48603b445d9a406", null ],
+    [ "EvrFreeRTOSTasks_TaskDelay", "group__freertos__evr__tasks.html#ga905a96b63815c854e8591a9847078222", null ],
+    [ "EvrFreeRTOSTasks_TaskDelayUntil", "group__freertos__evr__tasks.html#gaec614bbc615499e8cf1beab9f8c09d93", null ],
+    [ "EvrFreeRTOSTasks_TaskDelete", "group__freertos__evr__tasks.html#ga4d86d10bf850ce8be0e76440a6d07796", null ],
+    [ "EvrFreeRTOSTasks_TaskIncrementTick", "group__freertos__evr__tasks.html#gab84eb7f4e89c509875fec02884e53e18", null ],
+    [ "EvrFreeRTOSTasks_TaskNotify", "group__freertos__evr__tasks.html#ga677af46abe7759d3a42f10ab2c067246", null ],
+    [ "EvrFreeRTOSTasks_TaskNotifyFromIsr", "group__freertos__evr__tasks.html#gaf20cf8c1b327c99c1d3a1a60b6b1ff70", null ],
+    [ "EvrFreeRTOSTasks_TaskNotifyTake", "group__freertos__evr__tasks.html#ga95d7345859ab1f40ae6e9fb1b9cba3a0", null ],
+    [ "EvrFreeRTOSTasks_TaskNotifyTakeBlock", "group__freertos__evr__tasks.html#ga14ce38e4c85bbc9298cdfb5a6c668318", null ],
+    [ "EvrFreeRTOSTasks_TaskNotifyWait", "group__freertos__evr__tasks.html#ga782dafeee5d0f8a843211f9018c13632", null ],
+    [ "EvrFreeRTOSTasks_TaskNotifyWaitBlock", "group__freertos__evr__tasks.html#ga268f632b5a0402d1a8b5252700174cd2", null ],
+    [ "EvrFreeRTOSTasks_TaskPriorityDisinherit", "group__freertos__evr__tasks.html#gae6c42ec4e676714cca3033704ec31499", null ],
+    [ "EvrFreeRTOSTasks_TaskPriorityInherit", "group__freertos__evr__tasks.html#ga347df20eb0c55ba7e1d9e12f26aea8ee", null ],
+    [ "EvrFreeRTOSTasks_TaskPrioritySet", "group__freertos__evr__tasks.html#gaa86ea1a3e27efad234277416e74517c1", null ],
+    [ "EvrFreeRTOSTasks_TaskResume", "group__freertos__evr__tasks.html#ga4a6a29255b3eed78e46d2f62a256c276", null ],
+    [ "EvrFreeRTOSTasks_TaskResumeFromIsr", "group__freertos__evr__tasks.html#ga58d992016f2b90088799f6660f9ca32f", null ],
+    [ "EvrFreeRTOSTasks_TaskSuspend", "group__freertos__evr__tasks.html#ga66b413a39b35410288ffc23289133699", null ],
+    [ "EvrFreeRTOSTasks_TaskSwitchedIn", "group__freertos__evr__tasks.html#ga11992540052ae77a84ead533d9762db2", null ],
+    [ "EvrFreeRTOSTasks_TaskSwitchedOut", "group__freertos__evr__tasks.html#ga5663d867b946832c6e5c3852b7969e6b", null ]
+];
