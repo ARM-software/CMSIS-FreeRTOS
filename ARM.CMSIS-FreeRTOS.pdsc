@@ -8,6 +8,11 @@
   <license>License/license.txt</license>
 
   <releases>
+    <release version="10.4.7-dev2">
+      Active development...
+      Updates and bugfixes:
+      - Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt
+    </release>
     <release version="10.4.7-dev1">
       Active development...
       Updates and bugfixes:

@@ -57,6 +57,17 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.4.7-dev2</td>
+      <td>
+        <p><b>Active development...</b></p>
+        <p>Updates and bugfixes:</p>
+        <ul>
+          <li>Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt</li>
+        </ul>
+        </p>
+      </td>
+    </tr>
+    <tr>
       <td>10.4.7-dev1</td>
       <td>
         <p><b>Active development...</b></p>

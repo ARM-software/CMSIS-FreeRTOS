@@ -87,6 +87,15 @@ static uint32_t os_kernel_is_active (void) {
   }
 }
 
+/* Check if processor is in Thread or Handler mode */
+static uint32_t is_thread_mode (void) {
+  if (__get_IPSR() == 0U) {
+    return 1U; /* Thread mode  */
+  } else {
+    return 0U; /* Handler mode */
+  }
+}
+
 /* Provide libspace for current thread */
 void *__user_perthread_libspace (void);
 void *__user_perthread_libspace (void) {
@@ -168,8 +177,10 @@ int _mutex_initialize(mutex *m) {
 
 /* Acquire mutex */
 void _mutex_acquire(mutex *m) {
-
-  if (os_kernel_is_active()) {
+  /* Don't allow mutex operations when the kernel is not switching tasks and also   */
+  /* block protection when in interrupt. Using stdio streams in interrupt is bad    */
+  /* practice, but some applications call printf as last resort for debug purposes. */
+  if (os_kernel_is_active() && is_thread_mode()) {
     xSemaphoreTake(*m, portMAX_DELAY);
   }
 }
@@ -177,7 +188,7 @@ void _mutex_acquire(mutex *m) {
 /* Release mutex */
 void _mutex_release(mutex *m) {
 
-  if (os_kernel_is_active()) {
+  if (os_kernel_is_active() && is_thread_mode()) {
     xSemaphoreGive(*m);
   }
 }
