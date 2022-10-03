@@ -1,9 +1,12 @@
 # CMSIS-FreeRTOS
-The branch *master* of this GitHub repository contains the CMSIS-RTOS adoption of [FreeRTOS Version 10.4.6](https://github.com/FreeRTOS/FreeRTOS/releases/download/202111.00/FreeRTOSv202111.00.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html) is available under https://arm-software.github.io/CMSIS-FreeRTOS/General/html/index.html.
+
+This repository contains the CMSIS-RTOS adoption of [FreeRTOS Version 10.4.6](https://github.com/FreeRTOS/FreeRTOS/releases/download/202111.00/FreeRTOSv202111.00.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
 
 Use *Issues* to provide feedback and report problems for CMSIS FreeRTOS implementation.
 
-Note: The *branch* develop of this GitHub repository reflects our current state of development and is constantly updated. It gives our users and partners contiguous access to the development. It allows you to review the work and provide feedback or create pull requests for contributions.
+Use *main* branch for pull-requests.
+
+Note: Branches *develop* and *master* will be deprecated. Please update your fork and switch to branch *main* to track the latest state of development.
 
 ## Directory Structure
 
