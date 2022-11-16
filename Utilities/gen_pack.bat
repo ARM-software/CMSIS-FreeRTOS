@@ -46,19 +46,11 @@ COPY .\..\ARM.CMSIS-FreeRTOS.pdsc %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc
 
 :: Copy LICENSE file
 XCOPY /Q /S /Y .\..\License\*.* %RELEASE_PATH%\License\*.*
-
-:: Copy various root files
-COPY .\..\readme.txt %RELEASE_PATH%\readme.txt
-COPY .\..\links_to_doc_pages_for_the_demo_projects.url %RELEASE_PATH%\links_to_doc_pages_for_the_demo_projects.url
-
 :: Copy CMSIS folder
 XCOPY /Q /S /Y .\..\CMSIS\*.* %RELEASE_PATH%\CMSIS\*.*
 
 :: Copy Config folder
 XCOPY /Q /S /Y .\..\Config\*.* %RELEASE_PATH%\Config\*.*
-
-:: Copy Demo folder
-XCOPY /Q /S /Y .\..\Demo\*.* %RELEASE_PATH%\Demo\*.*
 
 :: Copy Source folder
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
@@ -95,8 +87,6 @@ EXIT /b
 ECHO Removing temporary files and folders
 PUSHD %RELEASE_PATH%
 FOR %%A IN (CMSIS Config Demo License Source) DO IF EXIST %%A (RMDIR /S /Q %%A)
-DEL links_to_doc_pages_for_the_demo_projects.url
-DEL readme.txt
 DEL zip.log
 POPD
 
