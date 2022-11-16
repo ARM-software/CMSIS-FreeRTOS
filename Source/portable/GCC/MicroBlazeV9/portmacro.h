@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.6
+ * FreeRTOS Kernel V10.5.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -150,6 +150,11 @@ extern volatile uint32_t ulTaskSwitchRequested;
 #define portSTACK_GROWTH			( -1 )
 #define portTICK_PERIOD_MS			( ( TickType_t ) 1000 / configTICK_RATE_HZ )
 #define portNOP()					asm volatile ( "NOP" )
+/*-----------------------------------------------------------*/
+
+#if( XPAR_MICROBLAZE_USE_STACK_PROTECTION )
+#define portHAS_STACK_OVERFLOW_CHECKING	1
+#endif
 /*-----------------------------------------------------------*/
 
 /* Task function macros as described on the FreeRTOS.org WEB site. */
