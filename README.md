@@ -1,6 +1,6 @@
 # CMSIS-FreeRTOS
 
-This repository contains the CMSIS-RTOS adoption of [FreeRTOS Version 10.4.6](https://github.com/FreeRTOS/FreeRTOS/releases/download/202111.00/FreeRTOSv202111.00.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
+This repository contains the CMSIS-RTOS adoption of [FreeRTOS-Kernel Version 10.5.1](https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V10.5.1/FreeRTOS-KernelV10.5.1.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
 
 Use *Issues* to provide feedback and report problems for CMSIS FreeRTOS implementation.
 
@@ -17,7 +17,6 @@ Note: Branches *develop* and *master* will be deprecated. Please update your for
 | CMSIS/RTOS2/FreeRTOS/Examples | CMSIS-FreeRTOS example projects    |
 | CMSIS/RTOS2/FreeRTOS/Source   | CMSIS-FreeRTOS source code         |
 | Config                        | FreeRTOS Kernel configuration file |
-| Demo                          | FreeRTOS demo projects             |
 | DoxyGen                       | Source of the documentation        |
 | License                       | FreeRTOS Kernel license text file  |
 | Source                        | FreeRTOS Kernel source code        |
