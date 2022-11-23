@@ -15,8 +15,8 @@
 ;   <o1> Flash Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define __ROM_BASE      0x00200000
-#define __ROM_SIZE      0x00200000
+#define __ROM_BASE      0x00008000
+#define __ROM_SIZE      0x00040000
 
 /*--------------------- Embedded RAM Configuration ---------------------------
 ; <h> RAM Configuration
@@ -24,9 +24,17 @@
 ;   <o1> RAM Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
  *----------------------------------------------------------------------------*/
-#define __RAM_BASE      0x20200000
-#define __RAM_SIZE      0x00020000
-#define __RAM_SIZE_NOINIT    0x800
+#define __RAM_BASE      0x20008000
+#define __RAM_SIZE      0x00040000
+
+/*--------------------- Event Recorder Configuration -------------------------
+; <h> Event Recorder Configuration
+;   <o> Event Recorder RAM Size (in Bytes) <0x0-0xFFFFFFFF:16>
+;   <i> Memory requirement = 256 + (16 x Number_of_Records) 
+;   <i> (defined by EVENT_RECORD_COUNT in EventRecorderConf.h)
+; </h>
+ *----------------------------------------------------------------------------*/
+#define __RAM_EVR_SIZE  0x00000800
 
 /*--------------------- Stack / Heap Configuration ---------------------------
 ; <h> Stack / Heap Configuration
@@ -37,9 +45,9 @@
 #define __STACK_SIZE    0x00000200
 #define __HEAP_SIZE     0x00000C00
 
-/*--------------------- CMSE Venner Configuration ---------------------------
-; <h> CMSE Venner Configuration
-;   <o0>  CMSE Venner Size (in Bytes) <0x0-0xFFFFFFFF:32>
+/*--------------------- CMSE Veneer Configuration ---------------------------
+; <h> CMSE Veneer Configuration
+;   <o0>  CMSE Veneer Size (in Bytes) <0x0-0xFFFFFFFF:32>
 ; </h>
  *----------------------------------------------------------------------------*/
 #define __CMSEVENEER_SIZE    0x200
@@ -53,7 +61,14 @@
   User Stack & Heap boundary definition
  *----------------------------------------------------------------------------*/
 #define __STACK_TOP    (__RAM_BASE + __RAM_SIZE - __STACKSEAL_SIZE) /* starts at end of RAM - 8 byte stack seal */
-#define __HEAP_BASE    (AlignExpr(+0, 8))                           /* starts after RW_RAM section, 8 byte aligned */
+#define __HEAP_BASE    (AlignExpr(+0, 8))                           /* starts after previous section, 8 byte aligned */
+
+
+/*----------------------------------------------------------------------------
+  RW noinit definition
+ *----------------------------------------------------------------------------*/
+#define __RW_NOINIT_BASE (AlignExpr(+0, 4))                         /* starts after previous section, 4 byte aligned */
+#define __RW_NOINIT_SIZE (__RAM_EVR_SIZE)
 
 /* ----------------------------------------------------------------------------
   Stack seal size definition
@@ -75,11 +90,11 @@
 #define __CV_SIZE          ( 0 )
 #endif
 
-#define __RO_BASE          ( __ROM_BASE )
-#define __RO_SIZE          ( __ROM_SIZE - __CV_SIZE )
+#define __RO_BASE          (__ROM_BASE)
+#define __RO_SIZE          (__ROM_SIZE - __CV_SIZE)
 
-#define __RW_BASE          ( __RAM_BASE )
-#define __RW_SIZE          ( __RAM_SIZE - __RAM_SIZE_NOINIT - __STACK_SIZE - __HEAP_SIZE )
+#define __RW_BASE          (__RAM_BASE)
+#define __RW_SIZE          (__RAM_SIZE - __RW_NOINIT_SIZE - __HEAP_SIZE - __STACK_SIZE)
 
 
 /*----------------------------------------------------------------------------
@@ -97,7 +112,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
    .ANY (+RW +ZI)
   }
 
-  RW_NOINIT +0 UNINIT {                             ; RW uninitialized data
+  RW_NOINIT __RW_NOINIT_BASE UNINIT __RW_NOINIT_SIZE { ; RW uninitialized data
     * (.bss.noinit)
   }
 
@@ -116,7 +131,7 @@ LR_ROM __RO_BASE __RO_SIZE  {                       ; load region size_region
 }
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-LR_CMSE_VENEER __CV_BASE ALIGN 32 __CV_SIZE  {      ; own load/execution region for CMSE Venners
+LR_CMSE_VENEER __CV_BASE ALIGN 32 __CV_SIZE  {      ; own load/execution region for CMSE Veneers
   ER_CMSE_VENEER __CV_BASE __CV_SIZE  {
    *(Veneer$$CMSE)
   }

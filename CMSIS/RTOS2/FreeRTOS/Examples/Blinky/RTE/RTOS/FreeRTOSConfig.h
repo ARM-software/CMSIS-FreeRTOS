@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.3.0
+ * $Revision:   V10.4.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -191,6 +191,12 @@
 //  <i> Enable FPU when application uses floating point operations.
 //  <i> Default: 1
 #define configENABLE_FPU                      1
+
+//  <q>Use M-Profile Vector Extension
+//  <i> Using M-Profile Vector Extension (MVE) affects context handling.
+//  <i> Enable MVE when application uses signal processing and ML algorithms.
+//  <i> Default: 0
+#define configENABLE_MVE                      0
 
 //  <q>Use Memory Protection Unit
 //  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
