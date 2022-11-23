@@ -659,10 +659,10 @@ The following list briefly describes the limitations and unsupported features of
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
 
-\section td_validation CMSIS-RTOS2 validation suite results
+\section td_validation Validation suite results
 
 CMSIS provides a
-<a target="_blank" href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html">validation suite</a> that can
+<a target="_blank" href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
 be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the
 CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).
 
