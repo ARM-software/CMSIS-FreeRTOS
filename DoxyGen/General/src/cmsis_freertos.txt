@@ -880,7 +880,30 @@ The following table explains the exceptions:
     </tr>
 </table>
 
+\section td_troubleshooting Troubleshooting
 
+Users looking for help shall check <a href="https://freertos.org/FAQHelp.html">subsection of the full FreeRTOS FAQ</a>.
+It contains many useful information that also apply when using FreeRTOS in context of CMSIS-FreeRTOS.
+
+Additionally, please take a look at the following:
+
+<ol>
+<li>
+    <b>Interrupts are disabled when main is called or before the kernel is started</b>
+    <br>
+    Before the FreeRTOS kernel is started, threads (i.e. tasks) may be created together with other objects like
+    mutexes, semaphores, message queues etc. When functions like xTaskCreate, xSemaphoreCreateMutex, xQueueCreate and
+    others get called, they prevent interrupt handlers from calling FreeRTOS API functions in order to keep FreeRTOS kernel
+    variables and state machine consistent
+    (see also here <a href="https://freertos.org/FAQHelp.html">Interrupts are not executing</a>).
+    <br>    
+    In cases when interrupts may be executed after object creation and before the FreeRTOS kernel is started they can be re-enabled:
+    \code{.c}
+        portENABLE_INTERRUPTS();
+    \endcode
+    Make sure that the interrupts you execute in such case do not call FreeRTOS API.
+</li>
+</ol>
 
 */
 
