@@ -65,6 +65,7 @@ File/Directory             |Content
           <li>Corrected osEventFlagsSet return value when called from ISR</li>
           <li>Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout</li>
           <li>Corrected osTimerStart to return osErrorParameter when ticks argument equals zero</li>
+          <li>Corrected SysTick_Handler and osKernelGetSysTimerCount to cope with tickless idle implementation</li>
           <li>Re-enable interrupts after mutex create in C lib stream protection initialization (#55)</li>
         </ul>
       </td>

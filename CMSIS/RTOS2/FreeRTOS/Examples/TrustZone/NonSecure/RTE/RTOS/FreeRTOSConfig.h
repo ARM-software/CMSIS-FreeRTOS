@@ -88,6 +88,12 @@
 //  <i> Default: 1
 #define configUSE_TIME_SLICING                  1
 
+//  <q>Use tickless idle
+//  <i> Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
+//  <i> disable it to keep the tick interrupt running at all times.
+//  <i> Default: 0
+#define configUSE_TICKLESS_IDLE                 0
+
 //  <q>Idle should yield
 //  <i> Control Yield behaviour of the idle task.
 //  <i> Default: 1

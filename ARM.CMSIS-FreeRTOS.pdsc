@@ -16,6 +16,7 @@
       - Corrected osEventFlagsSet return value when called from ISR
       - Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout
       - Corrected osTimerStart to return osErrorParameter when ticks argument equals zero
+      - Corrected SysTick_Handler and osKernelGetSysTimerCount to cope with tickless idle implementation
       - Re-enable interrupts after mutex create in C lib stream protection initialization
     </release>
     <release version="10.4.6" date="2021-11-16">
