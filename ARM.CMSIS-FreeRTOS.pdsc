@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.5.1-rc0">
+    <release version="10.5.1-rc1">
       FreeRTOS 10.5.1
       Updates and bugfixes:
       - Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt
