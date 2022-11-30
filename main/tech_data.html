@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.4.6</span>
+   &#160;<span id="projectnumber">Version 10.5.1</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -141,39 +141,83 @@ Limitations</h1>
 <li><code>osMessageQueuePut</code> and <code>osMessageQueueGet</code> always ignore message priority.</li>
 </ul>
 <h1><a class="anchor" id="td_validation"></a>
-CMSIS-RTOS validation suite results</h1>
-<p>CMSIS provides a <a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html" target="_blank">validation suite</a> that can be used to test a real-time operating system for compliance to the standard. The test suite has been run successfully on the CMSIS-FreeRTOS implementation with the following exceptions:</p>
-<p><b>TC_ThreadParam:</b> </p>
-<ul>
-<li>Reason: unsupported feature</li>
-<li>Test attempts to test <code>osThreadJoin</code> and <code>osThreadDetach</code> functions for invalid parameter input. These two functions are not implemented.</li>
-</ul>
-<p><b>TC_ThreadInterrupts:</b> </p>
-<ul>
-<li>Reason: unsupported feature</li>
-<li>Test attempts to call <code>osThreadJoin</code> and <code>osThreadDetach</code> from the ISR. These two functions are not implemented.</li>
-</ul>
-<p><b>TC_EventFlagsInterrupts:</b> </p>
-<ul>
-<li>Reason: unsupported feature</li>
-<li>Test attempts to call <code>osEventFlagsWait</code> from the ISR. Wrapper implementation does not allow function <code>osEventFlagsWait</code> to be called from interrupts.</li>
-</ul>
-<p><b>TC_MutexRobust:</b> </p>
-<ul>
-<li>Reason: unsupported feature</li>
-<li>Test attempts to create robust mutex. FreeRTOS implementation does not support robust mutexes.</li>
-</ul>
-<p><b>TC_MutexOwnership:</b> </p>
-<ul>
-<li>Reason: unsupported feature</li>
-<li>Test attempts to release a mutex from a thread which is not the mutex owner. Test fails, because FreeRTOS implementation does not verify ownership on mutex release. </li>
-</ul>
+Validation suite results</h1>
+<p>CMSIS provides a <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html" target="_blank">CMSIS-RTOS2 validation suite</a> that can be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).</p>
+<p>The following table explains the exceptions:</p>
+<table  class="doxtable" summary="Validation Exceptions">
+<tr>
+<th>Test Case </th><th>Result </th><th>Reason </th><th>Summary  </th></tr>
+<tr>
+<td>TC_osKernelGetState_2 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to call <code>osKernelGetState</code> after a <code>osKernelSuspend</code> call. osKernelSuspend is not implemented.   </td></tr>
+<tr>
+<td>TC_osKernelLock_2 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to call <code>osKernelLock</code> after a <code>osKernelSuspend</code> call. <code>osKernelSuspend</code> is not implemented.   </td></tr>
+<tr>
+<td>TC_osKernelUnlock_2 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to call <code>osKernelUnlock</code> after a <code>osKernelSuspend</code> call. <code>osKernelSuspend</code> is not implemented.   </td></tr>
+<tr>
+<td>TC_osKernelSuspend_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osKernelSuspend</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osKernelResume_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osKernelResume</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadNew_3 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to create joinable thread using <code>osThreadJoinable</code> attribute. FreeRTOS does not support joinable threads.   </td></tr>
+<tr>
+<td>TC_osThreadGetName_1 </td><td>failed </td><td>deviation </td><td>Test attempt to retrieve a name on an unnamed thread. An empty string is returned instead of NULL pointer.   </td></tr>
+<tr>
+<td>TC_osThreadGetState_3 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to retrieve a state of a terminated joinable thread. FreeRTOS does not support joinable threads.   </td></tr>
+<tr>
+<td>TC_osThreadDetach_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadDetach</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadDetach_2 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadDetach</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadJoin_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadJoin</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadJoin_2 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadJoin</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadJoin_3 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadJoin</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osThreadGetStackSize_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osThreadGetStackSize</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_ThreadReturn </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to terminate a thread by just returning from a thread. FreeRTOS threads may not return.   </td></tr>
+<tr>
+<td>TC_osEventFlagsSet_1 </td><td>failed </td><td>deviation </td><td>Test attempts to set event flags by calling <code>osEventFlagsSet</code> multiple times without leaving ISR handler.<br/>
+ To process ISR requests, FreeRTOS uses timer deamon which wakes-up after ISR execution.   </td></tr>
+<tr>
+<td>TC_osEventFlagsClear_1 </td><td>failed </td><td>deviation </td><td>Test attempts to clear event flags by calling <code>osEventFlagsClear</code> multiple times without leaving ISR handler.<br/>
+ To process ISR requests, FreeRTOS uses timer deamon which wakes-up after ISR execution.   </td></tr>
+<tr>
+<td>TC_osEventFlagsWait_1 </td><td>failed </td><td>unsupported feature </td><td>Test attempts to wait for flags from ISR with zero timeout (try-semantic). FreeRTOS does not support such operation.   </td></tr>
+<tr>
+<td>TC_osEventFlagsGetName_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osEventFlagsGetName</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osMutexNew_4 </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to create a robust mutex. FreeRTOS implementation does not support robust mutexes.   </td></tr>
+<tr>
+<td>TC_osMutexGetName_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osMutexGetName</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_MutexRobust </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to validate robust mutex behavior. FreeRTOS implementation does not support robust mutexes.   </td></tr>
+<tr>
+<td>TC_MutexOwnership </td><td>not executed </td><td>unsupported feature </td><td>Test attempts to release a mutex from a thread which is not the mutex owner.<br/>
+ FreeRTOS implementation does not verify ownership on mutex release.   </td></tr>
+<tr>
+<td>TC_osSemaphoreGetName_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osSemaphoreGetName</code> which is not implemented.   </td></tr>
+<tr>
+<td>TC_osMessageQueueGetName_1 </td><td>not executed </td><td>unsupported feature </td><td>Test validates <code>osMessageQueueGetName</code> which is not implemented.   </td></tr>
+</table>
+<h1><a class="anchor" id="td_troubleshooting"></a>
+Troubleshooting</h1>
+<p>Users looking for help shall check <a href="https://freertos.org/FAQHelp.html">subsection of the full FreeRTOS FAQ</a>. It contains many useful information that also apply when using FreeRTOS in context of CMSIS-FreeRTOS.</p>
+<p>Additionally, please take a look at the following:</p>
+<ol>
+<li>
+<b>Interrupts are disabled when main is called or before the kernel is started</b> <br/>
+ Before the FreeRTOS kernel is started, threads (i.e. tasks) may be created together with other objects like mutexes, semaphores, message queues etc. When functions like xTaskCreate, xSemaphoreCreateMutex, xQueueCreate and others get called, they prevent interrupt handlers from calling FreeRTOS API functions in order to keep FreeRTOS kernel variables and state machine consistent (see also here <a href="https://freertos.org/FAQHelp.html">Interrupts are not executing</a>). <br/>
+ In cases when interrupts may be executed after object creation and before the FreeRTOS kernel is started they can be re-enabled: <div class="fragment"><div class="line">portENABLE_INTERRUPTS();</div>
+</div><!-- fragment --> Make sure that the interrupts you execute in such case do not call FreeRTOS API.  </li>
+</ol>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Nov 16 2021 09:08:40 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Wed Nov 30 2022 08:50:34 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

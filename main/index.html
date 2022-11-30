@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.4.6</span>
+   &#160;<span id="projectnumber">Version 10.5.1</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -111,9 +111,9 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="title">Introduction </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="http://www.freertos.org/" target="_blank">FreeRTOS</a> is one of the market leading real-time operating systems (RTOS) for embedded microcontrollers. It is professionally developed, <a href="http://www.freertos.org/FreeRTOS-Coding-Standard-and-Style-Guide.html" target="_blank">strictly quality controlled</a>, robust, <a href="http://www.freertos.org/FreeRTOS_Support_Forum_Archive/freertos_support_forum_archive_index.html" target="_blank">supported</a>, free to <a href="http://www.freertos.org/a00114.html" target="_blank">use in commercial products</a> without a requirement to expose proprietary source code, and has <a href="http://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html" target="_blank">no IP infringement</a> risk.</p>
+<div class="textblock"><p><a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> is one of the market leading real-time operating systems (RTOS) for embedded microcontrollers. It is professionally developed, <a href="https://www.freertos.org/FreeRTOS-Coding-Standard-and-Style-Guide.html" target="_blank">strictly quality controlled</a>, robust, <a href="https://forums.freertos.org/" target="_blank">supported</a> <a href="https://www.freertos.org/FreeRTOS_Support_Forum_Archive/freertos_support_forum_archive_index.html/" target="_blank">(archive)</a>, free to <a href="https://www.freertos.org/a00114.html" target="_blank">use in commercial products</a> without a requirement to expose proprietary source code, and has <a href="https://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html" target="_blank">no IP infringement</a> risk.</p>
 <p><a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for multi-core systems, and has a binary compatible interface across ABI compliant compilers.</p>
-<p>Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application code to be used with different RTOS kernels (for example <a href="http://www.keil.com/mdk5/cmsis/rtx" class="el">Keil RTX5</a>).</p>
+<p>Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application code to be used with different RTOS kernels (for example <a href="https://www2.keil.com/mdk5/cmsis/rtx/" class="el">Keil RTX5</a>).</p>
 <p>This documentation shows you:</p>
 <ul>
 <li>how to <a class="el" href="cre_freertos_proj.html">create a new microcontroller project</a> using FreeRTOS from scratch.</li>
@@ -130,30 +130,24 @@ ARM::CMSIS-FreeRTOS Pack</h1>
 <tr>
 <th align="left">File/Directory </th><th align="left">Content  </th></tr>
 <tr>
-<td align="left"><b>ARM.CMSIS-FreeRTOS.pdsc</b> </td><td align="left">Package description file in CMSIS-Pack format. </td></tr>
+<td align="left"><b>CMSIS/Documentation</b> </td><td align="left">This documentation. </td></tr>
 <tr>
-<td align="left"><b>License</b> </td><td align="left">FreeRTOS license agreement. </td></tr>
-<tr>
-<td align="left"><b>CMSIS</b> </td><td align="left">CMSIS-RTOS2 compliant implementation of FreeRTOS. </td></tr>
+<td align="left"><b>CMSIS/RTOS2</b> </td><td align="left">CMSIS-RTOS2 compliant implementation of FreeRTOS. </td></tr>
 <tr>
 <td align="left"><b>Config</b> </td><td align="left">FreeRTOS configuration header file. </td></tr>
 <tr>
-<td align="left"><b>Demo</b> </td><td align="left">FreeRTOS demo projects. </td></tr>
+<td align="left"><b>License</b> </td><td align="left">FreeRTOS license agreement. </td></tr>
 <tr>
-<td align="left"><b>Documentation</b> </td><td align="left">This documentation. </td></tr>
+<td align="left"><b>Source</b> </td><td align="left">FreeRTOS kernel source code. </td></tr>
 <tr>
-<td align="left"><b>DoxyGen</b> </td><td align="left">Source of the documentation. </td></tr>
-<tr>
-<td align="left"><b>Source</b> </td><td align="left">FreeRTOS source code. </td></tr>
-<tr>
-<td align="left"><b>Utilities</b> </td><td align="left">Utilities to build the pack. </td></tr>
+<td align="left"><b>ARM.CMSIS-FreeRTOS.pdsc</b> </td><td align="left">Package description file in CMSIS-Pack format. </td></tr>
 </table>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Nov 16 2021 09:08:40 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Wed Nov 30 2022 08:50:34 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

@@ -30,7 +30,8 @@ var NAVTREE =
     ] ],
     [ "Technical data and limitations", "tech_data.html", [
       [ "Limitations", "tech_data.html#td_limitations", null ],
-      [ "CMSIS-RTOS validation suite results", "tech_data.html#td_validation", null ]
+      [ "Validation suite results", "tech_data.html#td_validation", null ],
+      [ "Troubleshooting", "tech_data.html#td_troubleshooting", null ]
     ] ],
     [ "Function Overview", "functionOverview.html", [
       [ "CMSIS-RTOS2 API", "functionOverview.html#rtos_api2", null ]

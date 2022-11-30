@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-FreeRTOS
-   &#160;<span id="projectnumber">Version 10.4.6</span>
+   &#160;<span id="projectnumber">Version 10.5.1</span>
    </div>
    <div id="projectbrief">CMSIS-RTOS2 compliant FreeRTOS Implementation</div>
   </td>
@@ -113,6 +113,28 @@ $(document).ready(function(){initNavTree('cm_revisionHistory.html','');});
 <div class="contents">
 <div class="textblock"><table  class="cmtable" summary="Revision History">
 <tr>
+<td>10.5.1 </td><td><p class="starttd"></p>
+<p><b>FreeRTOS V10.5.1</b></p>
+<p></p>
+<p>Updates and bugfixes:</p>
+<ul>
+<li>
+Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt </li>
+<li>
+Corrected osThreadGetState to return osThreadError when called for a thread previously terminated with osThreadTerminate </li>
+<li>
+Corrected osEventFlagsSet return value when called from ISR </li>
+<li>
+Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout </li>
+<li>
+Corrected osTimerStart to return osErrorParameter when ticks argument equals zero </li>
+<li>
+Corrected SysTick_Handler and osKernelGetSysTimerCount to cope with tickless idle implementation </li>
+<li>
+Re-enable interrupts after mutex create in C lib stream protection initialization (#55) </li>
+</ul>
+</td></tr>
+<tr>
 <td>10.4.6 </td><td><p class="starttd"></p>
 <p><b>FreeRTOS V10.4.6</b></p>
 <p></p>
@@ -125,7 +147,6 @@ Correct typecasting of argument usStackDepth for xTaskCreate in function osThrea
 <li>
 Fix mutex allocation for Arm Standard C library and allow it only when the kernel is running </li>
 </ul>
-<p class="endtd"></p>
 </td></tr>
 <tr>
 <td>10.4.3 </td><td><p class="starttd"></p>
@@ -148,7 +169,6 @@ Make source code more verbose with documented limitations (#41) </li>
 <li>
 Fix osMemoryPoolNew expression use (#42) </li>
 </ul>
-<p class="endtd"></p>
 </td></tr>
 <tr>
 <td>10.3.1 </td><td><p class="starttd"></p>
@@ -249,7 +269,7 @@ Debug event TaskIncrementTick level set to Detail </li>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Nov 16 2021 09:08:40 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Wed Nov 30 2022 08:50:34 for CMSIS-FreeRTOS by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 
