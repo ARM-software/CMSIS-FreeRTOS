@@ -8,7 +8,7 @@
   <license>License/license.txt</license>
 
   <releases>
-    <release version="10.5.1-rc2">
+    <release version="10.5.1-rc3">
       FreeRTOS 10.5.1
       Updates and bugfixes:
       - Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt
@@ -1485,12 +1485,18 @@
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
-          <file category="header"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
-          <file category="include"   condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
-          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
-          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
-          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
+          <file category="header"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/secure_context.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/secure_heap.c"/>
+          <file category="source"    condition="CM55_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM55/secure/secure_init.c"/>
+          <file category="header"    condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/"/>
+          <file category="source"    condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/secure_context.c"/>
+          <file category="source"    condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/secure_heap.c"/>
+          <file category="source"    condition="CM85_TZ_ARMCC6" name="Source/portable/GCC/ARM_CM85/secure/secure_init.c"/>
 
           <file category="header"    condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_GCC"    name="Source/portable/GCC/ARM_CM23/secure/"/>
@@ -1504,12 +1510,18 @@
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
           <file category="source"    condition="CM33_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
-          <file category="header"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_port_macros.h"/>
-          <file category="include"   condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/"/>
-          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context.c"/>
-          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_context_port.c"/>
-          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_heap.c"/>
-          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM33/secure/secure_init.c"/>
+          <file category="header"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/secure_context.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/secure_heap.c"/>
+          <file category="source"    condition="CM55_TZ_GCC"    name="Source/portable/GCC/ARM_CM55/secure/secure_init.c"/>
+          <file category="header"    condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/secure_port_macros.h"/>
+          <file category="include"   condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/"/>
+          <file category="source"    condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/secure_context.c"/>
+          <file category="source"    condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/secure_context_port.c"/>
+          <file category="source"    condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/secure_heap.c"/>
+          <file category="source"    condition="CM85_TZ_GCC"    name="Source/portable/GCC/ARM_CM85/secure/secure_init.c"/>
 
           <file category="header"    condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_IAR"    name="Source/portable/IAR/ARM_CM23/secure/"/>
