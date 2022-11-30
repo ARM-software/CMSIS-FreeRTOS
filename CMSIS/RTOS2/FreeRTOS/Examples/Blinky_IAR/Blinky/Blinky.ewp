@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>33</version>
+                <version>34</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -48,7 +48,7 @@
                 </option>
                 <option>
                     <name>OGCoreOrChip</name>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>GRuntimeLibSelect</name>
@@ -70,7 +70,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>9.10.2.39304</state>
+                    <state>9.20.4.46976</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -98,7 +98,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -115,7 +115,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -138,7 +138,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -198,6 +198,10 @@
                 <option>
                     <name>OG_32_64Device</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Debug</state>
                 </option>
             </data>
         </settings>
@@ -671,7 +675,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>25</version>
+                <version>26</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -1023,6 +1027,14 @@
                     <name>IlinkDemangle</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -1057,7 +1069,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>33</version>
+                <version>34</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1144,7 +1156,7 @@
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1161,7 +1173,7 @@
                 </option>
                 <option>
                     <name>CoreVariant</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1184,7 +1196,7 @@
                 </option>
                 <option>
                     <name>GFPUCoreSlave2</name>
-                    <version>30</version>
+                    <version>31</version>
                     <state>38</state>
                 </option>
                 <option>
@@ -1244,6 +1256,10 @@
                 <option>
                     <name>OG_32_64Device</name>
                     <state>0</state>
+                </option>
+                <option>
+                    <name>BuildFilesPath</name>
+                    <state>Release</state>
                 </option>
             </data>
         </settings>
@@ -1718,7 +1734,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>25</version>
+                <version>26</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -2070,6 +2086,14 @@
                     <name>IlinkDemangle</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>IlinkWrapperFileEnable</name>
+                    <state>0</state>
+                </option>
+                <option>
+                    <name>IlinkWrapperFile</name>
+                    <state></state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -2107,13 +2131,53 @@
             <name>$PROJ_DIR$\RTE\RTE_Components.h</name>
         </file>
         <group>
-            <name>CMSIS.RTOS2.FreeRTOS Cortex-M</name>
+            <name>ARM FreeRTOS _RTOS.Config.CMSIS RTOS2_10.4.6</name>
             <tag>CMSISPack.Component</tag>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</name>
+                <name>$PROJ_DIR$\RTE\RTOS\FreeRTOSConfig.h</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Core.Cortex-M_10.4.6</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</name>
             </file>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/os_systick.c</name>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/list.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/portable/IAR/ARM_CM3/port.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/portable/IAR/ARM_CM3/portasm.s</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/queue.c</name>
+            </file>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/tasks.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Event Groups_10.4.6</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/event_groups.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Heap.Heap_4_10.4.6</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/portable/MemMang/heap_4.c</name>
+            </file>
+        </group>
+        <group>
+            <name>ARM FreeRTOS _RTOS.Timers_10.4.6</name>
+            <tag>CMSISPack.Component</tag>
+            <file>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\Source/timers.c</name>
             </file>
         </group>
         <group>
@@ -2127,53 +2191,13 @@
             </file>
         </group>
         <group>
-            <name>ARM FreeRTOS _RTOS.Timers_10.4.3</name>
+            <name>CMSIS.RTOS2.FreeRTOS Cortex-M</name>
             <tag>CMSISPack.Component</tag>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/timers.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Heap.Heap_4_10.4.3</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/MemMang/heap_4.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Event Groups_10.4.3</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/event_groups.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Core.Cortex-M_10.4.3</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c</name>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c</name>
             </file>
             <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/list.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/IAR/ARM_CM3/port.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/portable/IAR/ARM_CM3/portasm.s</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/queue.c</name>
-            </file>
-            <file>
-                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.3}$\Source/tasks.c</name>
-            </file>
-        </group>
-        <group>
-            <name>ARM FreeRTOS _RTOS.Config.CMSIS RTOS2_10.4.3</name>
-            <tag>CMSISPack.Component</tag>
-            <file>
-                <name>$PROJ_DIR$\RTE\RTOS\FreeRTOSConfig.h</name>
+                <name>${CMSIS_PACK_PATH_ARM#CMSIS-FreeRTOS#10.4.6}$\CMSIS/RTOS2/FreeRTOS/Source/os_systick.c</name>
             </file>
         </group>
     </group>
@@ -2182,34 +2206,34 @@
 &lt;configuration xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"&gt;
   &lt;toolchain Tcompiler="IAR" Toutput="exe"/&gt;
   &lt;components&gt;
-    &lt;component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
+    &lt;component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0"&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/Core/html/index.html"/&gt;
       &lt;file category="include" name="CMSIS/Core/Include/"/&gt;
       &lt;file category="header" condition="TrustZone" name="CMSIS/Core/Include/tz_context.h"/&gt;
       &lt;file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/main_s.c" select="Secure mode 'main' module for ARMv8-M" version="1.1.1"/&gt;
       &lt;file attr="template" category="sourceC" condition="TZ Secure" name="CMSIS/Core/Template/ARMv8-M/tz_context.c" select="RTOS Context Management (TrustZone for ARMv8-M)" version="1.1.1"/&gt;
     &lt;/component&gt;
-    &lt;component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/General/html/index.html"/&gt;
       &lt;file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/&gt;
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/&gt;
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/&gt;
     &lt;/component&gt;
     &lt;component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.2" deviceDependent="1"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/&gt;
       &lt;file category="header" deviceDependent="1" name="Device/ARM/ARMCM3/Include/ARMCM3.h"/&gt;
       &lt;file attr="config" category="sourceAsm" condition="IAR" deviceDependent="1" name="Device/ARM/ARMCM3/Source/IAR/startup_ARMCM3.s" version="1.0.0"/&gt;
       &lt;file attr="config" category="sourceC" deviceDependent="1" name="Device/ARM/ARMCM3/Source/system_ARMCM3.c" version="1.0.1"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.6" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/General/html/cre_freertos_proj.html#cmsis_freertos_config"/&gt;
       &lt;file attr="config" category="header" condition="CoreM" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.3.0"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.6" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="include" name="Source/include/"/&gt;
       &lt;file category="header" name="Source/include/FreeRTOS.h"/&gt;
       &lt;file category="header" name="Source/include/queue.h"/&gt;
@@ -2225,31 +2249,31 @@
       &lt;file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/&gt;
       &lt;file category="other" name="CMSIS/RTOS2/FreeRTOS/FreeRTOS.scvd"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.6" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="header" name="Source/include/event_groups.h"/&gt;
       &lt;file category="source" name="Source/event_groups.c"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.6" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="source" name="Source/portable/MemMang/heap_4.c"/&gt;
       &lt;file category="doc" name="http://www.freertos.org/a00111.html"/&gt;
     &lt;/component&gt;
-    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.3" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.4.3"&gt;
-      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/&gt;
+    &lt;component Cbundle="FreeRTOS" Cbundleversion="10.4.6" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.4.6"&gt;
+      &lt;package name="CMSIS-FreeRTOS" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/&gt;
       &lt;file category="header" name="Source/include/timers.h"/&gt;
       &lt;file category="source" name="Source/timers.c"/&gt;
     &lt;/component&gt;
   &lt;/components&gt;
   &lt;apis&gt;
     &lt;api Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Cvendor="ARM" Cversion="2.1.3" exclusive="1"&gt;
-      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
+      &lt;package name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/&gt;
       &lt;file category="doc" name="CMSIS/Documentation/RTOS2/html/index.html"/&gt;
       &lt;file category="header" name="CMSIS/RTOS2/Include/cmsis_os2.h"/&gt;
     &lt;/api&gt;
   &lt;/apis&gt;
-  &lt;device Dclock="10000000" Dcore="Cortex-M3" DcoreVersion="r2p1" Dendian="Little-endian" Dfamily="ARM Cortex M3" Dfpu="NO_FPU" Dmpu="MPU" Dname="ARMCM3" Dvendor="ARM:82" info="ARM , 128 KB RAM, 256 KB ROM" url="http://www.keil.com/dd2/arm/armcm3"&gt;
-    &lt;package info="CMSIS (Cortex Microcontroller Software Interface Standard)" name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/&gt;
+  &lt;device Dclock="10000000" Dcore="Cortex-M3" DcoreVersion="r2p1" Dendian="Little-endian" Dfamily="ARM Cortex M3" Dfpu="NO_FPU" Dmpu="MPU" Dname="ARMCM3" Dvendor="ARM:82" info="ARM , 128 KB RAM, 256 KB ROM" url="https://www.keil.com/dd2/arm/armcm3"&gt;
+    &lt;package info="CMSIS (Common Microcontroller Software Interface Standard)" name="CMSIS" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/&gt;
   &lt;/device&gt;
   &lt;packages useAllLatestPacks="1"/&gt;
 &lt;/configuration&gt;
