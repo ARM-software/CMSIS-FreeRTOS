@@ -55,6 +55,12 @@ File/Directory             |Content
 
 <table class="cmtable" summary="Revision History">
     <tr>
+      <td>10.5.2-dev0</td>
+      <td>
+        <p><b>Active development...</b></p>
+      </td>
+    </tr>
+    <tr>
       <td>10.5.1</td>
       <td>
         <p><b>FreeRTOS V10.5.1</b></p>
