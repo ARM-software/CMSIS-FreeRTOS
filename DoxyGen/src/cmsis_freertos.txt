@@ -1,6 +1,8 @@
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
 /**
-\mainpage Introduction
+\mainpage
+
+\section Introduction
 
 <a target="_blank" href="https://www.freertos.org/">FreeRTOS</a> is one of the market leading real-time operating systems
 (RTOS) for embedded microcontrollers. It is professionally developed,
@@ -27,14 +29,17 @@ This documentation shows you:
 - how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
 - Various \ref examples show you the usage of FreeRTOS in native and CMSIS-RTOS2 mode.
 - the \ref tech_data of this implementation.
+- \subpage rev_hist
 
 
-\section License License
+License
+-------
 
 The CMSIS-FreeRTOS implementation is provided free of charge by Arm under the <a href="license.txt">FreeRTOS license</a>.
 
 
-\section CMFR_Pack_Content ARM::CMSIS-FreeRTOS Pack
+ARM::CMSIS-FreeRTOS Pack
+------------------------
 
 The <b>ARM::CMSIS-FreeRTOS</b> pack contains the following:
 
