@@ -103,7 +103,7 @@ can have a maximum of eight bits. Many implementations offer only three priority
 bits five, six and seven respectively.
 \c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx00000. This results in the following table:
 
-| \c configMAX_SYSCALL_INTERRUPT_PRIORITY | Upper three bits | Priority    |
+| configMAX_SYSCALL_INTERRUPT_PRIORITY    | Upper three bits | Priority    |
 |:---------------------------------------:|:----------------:|:-----------:|
 | 32                                      | 001              | 1 (Highest) |
 | 64                                      | 010              | 2           |
@@ -319,7 +319,7 @@ After the kernel is started using FreeRTOS native API, CMSIS-RTOS2 API can be us
 
 \section cmsis_freertos_evr_config Configure Event Recorder
 
-This section describes the configuration settings for the <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank">Event Recorder</a>
+This section describes the configuration settings for the <a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank">Event Recorder</a>
 annotations. For more information refer to section \ref native_freertos_er "Add Event Recorder Visibility to native FreeRTOS project" or
 \ref cmsis_freertos_er "Add Event Recorder Visibility to CMSIS-FreeRTOS project".
 
@@ -473,9 +473,9 @@ where you want to copy the project to and press OK. µVision opens.
 \section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9
 
 This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an Arm
-Cortex-A9 code. This example only works in <a href="http://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
+Cortex-A9 code. This example only works in <a href="https://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
 development environment from Arm. For information on setting up the target connection, please refer to
-<a href="http://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
+<a href="https://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
 
 \note you need to have the i.MX6 device family pack installed to see the example in the \b Examples tab of Pack Installer.
 
@@ -792,7 +792,7 @@ Additionally, please take a look at the following:
 
 Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS.
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">Kernel Information and Control</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">Kernel Information and Control</a>
 ------------------------------
    - \b osKernelGetInfo: supported
    - \b osKernelGetState: supported
@@ -808,7 +808,7 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osKernelGetTickCount: supported
    - \b osKernelGetTickFreq: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>
 -----------------
    - \b osThreadDetach: \token{not implemented}
    - \b osThreadEnumerate: supported
@@ -828,14 +828,14 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osThreadTerminate: supported
    - \b osThreadYield: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">Thread Flags</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">Thread Flags</a>
 ------------
    - \b osThreadFlagsSet: supported
    - \b osThreadFlagsClear: supported
    - \b osThreadFlagsGet: supported
    - \b osThreadFlagsWait: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">Event Flags</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">Event Flags</a>
 -----------
 All event flags are limited to 24 bits.
    - \b osEventFlagsGetName: \token{not implemented}
@@ -846,12 +846,12 @@ All event flags are limited to 24 bits.
    - \b osEventFlagsGet: supported
    - \b osEventFlagsWait: cannot be called from an ISR.
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">Generic Wait Functions</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">Generic Wait Functions</a>
 ----------------------
    - \b osDelay: supported
    - \b osDelayUntil: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">Timer Management</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">Timer Management</a>
 ----------------
    - \b osTimerDelete: supported
    - \b osTimerGetName: supported
@@ -860,7 +860,7 @@ All event flags are limited to 24 bits.
    - \b osTimerStart: supported
    - \b osTimerStop: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">Mutex Management</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">Mutex Management</a>
 ----------------
 Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
 and ignores osMutexPrioInherit attribute when specified).\n
@@ -872,7 +872,7 @@ Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobu
    - \b osMutexNew: supported
    - \b osMutexRelease: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">Semaphores</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">Semaphores</a>
 ----------
    - \b osSemaphoreAcquire: supported
    - \b osSemaphoreDelete: supported
@@ -881,7 +881,7 @@ Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobu
    - \b osSemaphoreNew: supported
    - \b osSemaphoreRelease: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">Memory Pool</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">Memory Pool</a>
 -----------
 Memory Pool functions are not implemented and will always return with error.
    - \b osMemoryPoolAlloc: supported
@@ -894,7 +894,7 @@ Memory Pool functions are not implemented and will always return with error.
    - \b osMemoryPoolGetSpace: supported
    - \b osMemoryPoolNew: supported
 
-<a href="http://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">Message Queue</a>
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">Message Queue</a>
 -------------
    - \b osMessageQueueDelete: supported
    - \b osMessageQueueGet: ignores message priority.
@@ -915,7 +915,7 @@ Memory Pool functions are not implemented and will always return with error.
 \brief This section describes CMSIS-FreeRTOS specifics.
 \details
 CMSIS-FreeRTOS interfaces to the
-<a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a>
+<a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a>
 to provide event information which helps you to understand and analyze the operation. Refer to \ref freertos_evr for more
 information.
 */
