@@ -24,7 +24,7 @@ SET RELEASE_PATH=..\Local_Release
 
 :: !!!!!!!!!!!!!!!!!
 :: DO NOT EDIT BELOW
-:: !!!!!!!!!!!!!!!!! 
+:: !!!!!!!!!!!!!!!!!
 
 :: Remove previous build
 IF EXIST %RELEASE_PATH% (
@@ -32,9 +32,9 @@ IF EXIST %RELEASE_PATH% (
   RMDIR /Q /S  %RELEASE_PATH%
 )
 
-:: Generate Documentation 
+:: Generate Documentation
 PUSHD ..\DoxyGen
-CALL genDoc.bat
+bash gen_doc.sh
 POPD
 
 
@@ -46,6 +46,7 @@ COPY .\..\ARM.CMSIS-FreeRTOS.pdsc %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc
 
 :: Copy LICENSE file
 XCOPY /Q /S /Y .\..\License\*.* %RELEASE_PATH%\License\*.*
+
 :: Copy CMSIS folder
 XCOPY /Q /S /Y .\..\CMSIS\*.* %RELEASE_PATH%\CMSIS\*.*
 
@@ -55,17 +56,17 @@ XCOPY /Q /S /Y .\..\Config\*.* %RELEASE_PATH%\Config\*.*
 :: Copy Source folder
 XCOPY /Q /S /Y .\..\Source\*.* %RELEASE_PATH%\Source\*.*
 
-:: Remove generated doxygen files
-RMDIR /S /Q ..\CMSIS\Documentation
+:: Copy Documentation folder
+XCOPY /Q /S /Y .\..\Documentation\*.* %RELEASE_PATH%\Documentation\*.*
 
-:: Checking 
+:: Checking
 :: Silencing warnings that are irrelevant in the context (M324, M382, M363)
 Win32\PackChk.exe %RELEASE_PATH%\ARM.CMSIS-FreeRTOS.pdsc -n %RELEASE_PATH%\PackName.txt -x M324 -x M382 -x M363 -x M362
 
 :: --Check if PackChk.exe has completed successfully
 IF %errorlevel% neq 0 GOTO ErrPackChk
 
-:: Packing 
+:: Packing
 PUSHD %RELEASE_PATH%
 
 :: -- Pipe Pack's Name into Variable

@@ -886,7 +886,7 @@
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Stream Buffer"/>
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
-    
+
     <condition id="CMSIS RTOS FreeRTOS">
       <description>Components required for CMSIS RTOS API on top of FreeRTOS</description>
       <require condition="FreeRTOS Port"/>
@@ -940,7 +940,7 @@
         #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
       </RTE_Components_h>
       <files>
-        <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
@@ -957,7 +957,7 @@
         #define RTE_CMSIS_RTOS2_FreeRTOS        /* CMSIS-RTOS2 FreeRTOS */
       </RTE_Components_h>
       <files>
-        <file category="doc"    name="CMSIS/Documentation/General/html/index.html"/>
+        <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
