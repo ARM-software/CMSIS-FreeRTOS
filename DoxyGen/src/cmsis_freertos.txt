@@ -792,8 +792,9 @@ Additionally, please take a look at the following:
 
 Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS.
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">Kernel Information and Control</a>
+Kernel Information and Control
 ------------------------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">API reference</a> for details about Kernel Information and Control functions.
    - \b osKernelGetInfo: supported
    - \b osKernelGetState: supported
    - \b osKernelGetSysTimerCount: supported
@@ -808,8 +809,10 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osKernelGetTickCount: supported
    - \b osKernelGetTickFreq: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">Thread Management</a>
+
+Thread Management
 -----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">API reference</a> for details about Thread Management functions.
    - \b osThreadDetach: \token{not implemented}
    - \b osThreadEnumerate: supported
    - \b osThreadExit: supported
@@ -828,15 +831,17 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
    - \b osThreadTerminate: supported
    - \b osThreadYield: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">Thread Flags</a>
+Thread Flags
 ------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">API reference</a> for details about Thread Flags functions.
    - \b osThreadFlagsSet: supported
    - \b osThreadFlagsClear: supported
    - \b osThreadFlagsGet: supported
    - \b osThreadFlagsWait: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">Event Flags</a>
+Event Flags
 -----------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">API reference</a> for details about Event Flags functions.
 All event flags are limited to 24 bits.
    - \b osEventFlagsGetName: \token{not implemented}
    - \b osEventFlagsNew: supported
@@ -846,13 +851,15 @@ All event flags are limited to 24 bits.
    - \b osEventFlagsGet: supported
    - \b osEventFlagsWait: cannot be called from an ISR.
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">Generic Wait Functions</a>
+Generic Wait Functions
 ----------------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">API reference</a> for details about Generic Wait functions.
    - \b osDelay: supported
    - \b osDelayUntil: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">Timer Management</a>
+Timer Management
 ----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">API reference</a> for details about Timer Management functions.</a>
    - \b osTimerDelete: supported
    - \b osTimerGetName: supported
    - \b osTimerIsRunning: supported
@@ -860,11 +867,12 @@ All event flags are limited to 24 bits.
    - \b osTimerStart: supported
    - \b osTimerStop: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">Mutex Management</a>
+Mutex Management
 ----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">API reference</a> for details about Mutex Management functions.\n
 Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
 and ignores osMutexPrioInherit attribute when specified).\n
-Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).
+Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).\n
    - \b osMutexAcquire: supported
    - \b osMutexDelete: supported
    - \b osMutexGetName: \token{not implemented}
@@ -872,8 +880,9 @@ Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobu
    - \b osMutexNew: supported
    - \b osMutexRelease: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">Semaphores</a>
+Semaphores
 ----------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">API reference</a> for details about Semaphore functions.
    - \b osSemaphoreAcquire: supported
    - \b osSemaphoreDelete: supported
    - \b osSemaphoreGetCount: supported
@@ -881,9 +890,9 @@ Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobu
    - \b osSemaphoreNew: supported
    - \b osSemaphoreRelease: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">Memory Pool</a>
+Memory Pool
 -----------
-Memory Pool functions are not implemented and will always return with error.
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">API reference</a> for details about Memory Pool functions.
    - \b osMemoryPoolAlloc: supported
    - \b osMemoryPoolDelete: supported
    - \b osMemoryPoolFree: supported
@@ -894,8 +903,9 @@ Memory Pool functions are not implemented and will always return with error.
    - \b osMemoryPoolGetSpace: supported
    - \b osMemoryPoolNew: supported
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">Message Queue</a>
+Message Queue
 -------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">API reference</a> for details about Message Queue functions.
    - \b osMessageQueueDelete: supported
    - \b osMessageQueueGet: ignores message priority.
    - \b osMessageQueueGetCapacity: supported
