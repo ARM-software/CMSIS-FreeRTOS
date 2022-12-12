@@ -1,7 +1,7 @@
 #!/bin/bash
-# Version: 2.0
-# Date: 2022-08-30
-# This bash script generates CMSIS-View documentation
+# Version: 1.0
+# Date: 2022-12-12
+# This bash script generates CMSIS-FreeRTOS documentation
 #
 # Pre-requisites:
 # - bash shell (for Windows: install git for Windows)
