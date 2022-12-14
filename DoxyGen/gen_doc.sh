@@ -1,6 +1,6 @@
 #!/bin/bash
 # Version: 1.0
-# Date: 2022-12-12
+# Date: 2022-12-14
 # This bash script generates CMSIS-FreeRTOS documentation
 #
 # Pre-requisites:
