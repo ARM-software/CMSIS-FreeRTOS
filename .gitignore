@@ -1,3 +1,5 @@
 # list files that shall be ignored by git
-CMSIS/Documentation/General/
+Documentation/html/
+DoxyGen/freertos.dxy
+DoxyGen/src/history.txt
 Local_Release
