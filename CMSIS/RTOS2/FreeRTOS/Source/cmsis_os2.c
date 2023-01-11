@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -488,7 +488,9 @@ uint32_t osKernelGetSysTimerCount (void) {
   val0 = OS_Tick_GetCount();
 #endif
 
-  __disable_irq();
+  if (irqmask == 0U) {
+    __disable_irq();
+  }
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
