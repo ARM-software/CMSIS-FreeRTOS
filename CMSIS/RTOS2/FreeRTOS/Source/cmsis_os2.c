@@ -19,6 +19,7 @@
  *      Purpose: CMSIS RTOS2 wrapper for FreeRTOS
  *
  *---------------------------------------------------------------------------*/
+// clang-format off
 
 #include <string.h>
 
@@ -825,7 +826,7 @@ uint32_t osThreadGetCount (void) {
 */
 uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
   uint32_t i, count;
-  TaskStatus_t *task;
+  TaskStatus_t * task;
 
   if ((IRQ_Context() != 0U) || (thread_array == NULL) || (array_items == 0U)) {
     count = 0U;
@@ -834,7 +835,13 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 
     /* Allocate memory on heap to temporarily store TaskStatus_t information */
     count = uxTaskGetNumberOfTasks();
+
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     task  = pvPortMalloc (count * sizeof(TaskStatus_t));
+#else
+    TaskStatus_t task_on_stack;
+    task = &task_on_stack;
+#endif
 
     if (task != NULL) {
       /* Retrieve task status information */
@@ -848,7 +855,9 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
     }
     (void)xTaskResumeAll();
 
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     vPortFree (task);
+#endif
   }
 
   /* Return number of enumerated threads */
@@ -2394,7 +2403,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     }
 
     if (mem_cb == 0) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
       mp = pvPortMalloc (sizeof(MemPool_t));
+#endif
     } else {
       mp = attr->cb_mem;
     }
@@ -2412,7 +2423,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
       if (mp->sem != NULL) {
         /* Setup memory array */
         if (mem_mp == 0) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
           mp->mem_arr = pvPortMalloc (sz);
+#endif
         } else {
           mp->mem_arr = attr->mp_mem;
         }
@@ -2443,8 +2456,10 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     else {
       /* Memory pool cannot be created, release allocated resources */
       if ((mem_cb == 0) && (mp != NULL)) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
         /* Free control block memory */
         vPortFree (mp);
+#endif
       }
       mp = NULL;
     }

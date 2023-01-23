@@ -39,7 +39,7 @@
  * Version 1.02
  *    Control functions for short timeouts in microsecond resolution:
  *    Added: osKernelSysTick, osKernelSysTickFrequency, osKernelSysTickMicroSec
- *    Removed: osSignalGet 
+ *    Removed: osSignalGet
  * Version 2.0.0
  *    OS objects creation without macros (dynamic creation and resource allocation):
  *     - added: osXxxxNew functions which replace osXxxxCreate
@@ -67,7 +67,7 @@
  *     - added: osThreadSuspend, osThreadResume
  *     - added: osThreadJoin, osThreadDetach, osThreadExit
  *     - added: osThreadGetCount, osThreadEnumerate
- *     - added: Thread Flags (moved from Signals) 
+ *     - added: Thread Flags (moved from Signals)
  *    Signals:
  *     - renamed osSignals to osThreadFlags (moved to Thread Flags)
  *     - changed return value of Set/Clear/Wait functions
@@ -110,7 +110,7 @@
  *     - added: osMessageQueueGetCapacity, osMessageQueueGetMsgSize
  *     - added: osMessageQueueGetCount, osMessageQueueGetSpace
  *     - added: osMessageQueueReset, osMessageQueueDelete
- *    Mail Queue: 
+ *    Mail Queue:
  *     - deprecated (superseded by extended Message Queue functionality)
  * Version 2.1.0
  *    Support for critical and uncritical sections (nesting safe):
@@ -119,7 +119,8 @@
  *    Updated Thread and Event Flags:
  *    - changed flags parameter and return type from int32_t to uint32_t
  *---------------------------------------------------------------------------*/
- 
+
+// clang-format off
 #ifndef CMSIS_OS_H_
 #define CMSIS_OS_H_
 
@@ -153,7 +154,8 @@
 #endif
  
 #include "cmsis_os2.h"
- 
+#include "freertos_os2_control_blocks.h"
+
 #ifdef  __cplusplus
 extern "C"
 {
