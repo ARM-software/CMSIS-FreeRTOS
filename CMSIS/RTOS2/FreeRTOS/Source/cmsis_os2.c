@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -155,8 +155,10 @@ extern void xPortSysTickHandler (void);
   SysTick handler implementation that also clears overflow flag.
 */
 void SysTick_Handler (void) {
+#if (configUSE_TICKLESS_IDLE == 0)
   /* Clear overflow flag */
   SysTick->CTRL;
+#endif
 
   if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
     /* Call tick handler */
@@ -475,17 +477,37 @@ uint32_t osKernelGetSysTimerCount (void) {
   uint32_t irqmask = IS_IRQ_MASKED();
   TickType_t ticks;
   uint32_t val;
+#if (configUSE_TICKLESS_IDLE != 0)
+  uint32_t val0;
 
-  __disable_irq();
+  /* Low Power Tickless Idle controls timer overflow flag and therefore      */
+  /* OS_Tick_GetOverflow may be non-functional. As a workaround a reference  */
+  /* time is measured here before disabling interrupts. Timer value overflow */
+  /* is then checked by comparing reference against latest time measurement. */
+  /* Timer count value returned by this method is less accurate but if an    */
+  /* overflow is missed, an invalid timer count would be returned.           */
+  val0 = OS_Tick_GetCount();
+#endif
+
+  if (irqmask == 0U) {
+    __disable_irq();
+  }
 
   ticks = xTaskGetTickCount();
   val   = OS_Tick_GetCount();
 
   /* Update tick count and timer value when timer overflows */
+#if (configUSE_TICKLESS_IDLE != 0)
+  if (val < val0) {
+    ticks++;
+  }
+#else
   if (OS_Tick_GetOverflow() != 0U) {
     val = OS_Tick_GetCount();
     ticks++;
   }
+#endif
+
   val += ticks * OS_Tick_GetInterval();
 
   if (irqmask == 0U) {

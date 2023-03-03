@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.8.0</PackID>
+          <PackID>ARM.CMSIS.5.9.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -186,6 +186,7 @@
             <RvdsVP>0</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -426,56 +427,56 @@
       </api>
     </apis>
     <components>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.4.3" condition="FreeRTOS Config CMSIS RTOS2">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Config CMSIS RTOS2">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3" condition="FreeRTOS Core CM">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Core" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Core CM">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.4.3" condition="FreeRTOS Event Groups">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Event Groups" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Event Groups">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.4.3" condition="FreeRTOS Heap">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Heap" Cvariant="Heap_4" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Heap">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.4.3" condition="FreeRTOS Timers">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Timers" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Timers">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
+        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.4.3" condition="CMSIS RTOS2 FreeRTOS CortexM">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.3"/>
+      <component Capiversion="2.1.3" Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cvendor="ARM" Cversion="10.5.1" condition="CMSIS RTOS2 FreeRTOS CortexM">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
       <component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.2" condition="ARMCM3 CMSIS">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
+        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </component>
-      <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.4.0" condition="Cortex-M Device">
-        <package name="ARM_Compiler" schemaVersion="1.6.3" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.3"/>
+      <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.5.1" condition="Cortex-M Device">
+        <package name="ARM_Compiler" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="Keil" version="1.7.2"/>
         <targetInfos>
           <targetInfo name="Simulation">
             <mem>
@@ -488,8 +489,8 @@
     <files>
       <file attr="config" category="header" name="Config\EventRecorderConf.h" version="1.1.0">
         <instance index="0">RTE\Compiler\EventRecorderConf.h</instance>
-        <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.4.0" condition="Cortex-M Device"/>
-        <package name="ARM_Compiler" schemaVersion="1.6.3" url="http://www.keil.com/pack/" vendor="Keil" version="1.6.3"/>
+        <component Cbundle="ARM Compiler" Cclass="Compiler" Cgroup="Event Recorder" Cvariant="DAP" Cvendor="Keil" Cversion="1.5.1" condition="Cortex-M Device"/>
+        <package name="ARM_Compiler" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="Keil" version="1.7.2"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
@@ -497,7 +498,7 @@
       <file attr="config" category="sourceAsm" condition="ARMCC" name="Device\ARM\ARMCM3\Source\ARM\startup_ARMCM3.s" version="1.0.1">
         <instance index="0">RTE\Device\ARMCM3\startup_ARMCM3.s</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.2" condition="ARMCM3 CMSIS"/>
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
+        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
@@ -505,15 +506,15 @@
       <file attr="config" category="sourceC" name="Device\ARM\ARMCM3\Source\system_ARMCM3.c" version="1.0.1">
         <instance index="0">RTE\Device\ARMCM3\system_ARMCM3.c</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="ARM" Cversion="1.2.2" condition="ARMCM3 CMSIS"/>
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.8.0"/>
+        <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>
       </file>
-      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="10.3.0">
+      <file attr="config" category="header" condition="CoreM" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM\FreeRTOSConfig.h" version="10.4.0">
         <instance index="0">RTE\RTOS\FreeRTOSConfig.h</instance>
-        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.4.6" condition="FreeRTOS Config CMSIS RTOS2"/>
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.4.6"/>
+        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="CMSIS RTOS2" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS Config CMSIS RTOS2"/>
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Simulation"/>
         </targetInfos>

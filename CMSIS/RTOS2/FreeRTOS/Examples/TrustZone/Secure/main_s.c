@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -26,7 +26,7 @@
 
 /* Start address of non-secure application */
 #ifndef NS_APP_START_ADDRESS
-#define NS_APP_START_ADDRESS (0x200000U)
+#define NS_APP_START_ADDRESS (0x00008000)
 #endif
 
 /* Non-secure function pointer type */

@@ -1,6 +1,6 @@
 # CMSIS-FreeRTOS
 
-This repository contains the CMSIS-RTOS adoption of [FreeRTOS Version 10.4.6](https://github.com/FreeRTOS/FreeRTOS/releases/download/202111.00/FreeRTOSv202111.00.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
+This repository contains the CMSIS-RTOS adoption of [FreeRTOS-Kernel Version 10.5.1](https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V10.5.1/FreeRTOS-KernelV10.5.1.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
 
 Use *Issues* to provide feedback and report problems for CMSIS FreeRTOS implementation.
 
@@ -10,35 +10,33 @@ Note: Branches *develop* and *master* will be deprecated. Please update your for
 
 ## Directory Structure
 
-| Directory                     | Content                            |                
-| ----------------------------- | -----------------------------------|
-| CMSIS                         | CMSIS-FreeRTOS related files       |
-| CMSIS/RTOS2/FreeRTOS/Config   | CMSIS-FreeRTOS configuration file  |
-| CMSIS/RTOS2/FreeRTOS/Examples | CMSIS-FreeRTOS example projects    |
-| CMSIS/RTOS2/FreeRTOS/Source   | CMSIS-FreeRTOS source code         |
-| Config                        | FreeRTOS Kernel configuration file |
-| Demo                          | FreeRTOS demo projects             |
-| DoxyGen                       | Source of the documentation        |
-| License                       | FreeRTOS Kernel license text file  |
-| Source                        | FreeRTOS Kernel source code        |
-| Utilities                     | Utility programs                   |
+| Directory                     | Content                             |                
+| ----------------------------- | ------------------------------------|
+| CMSIS                         | CMSIS-FreeRTOS related files        |
+| CMSIS/RTOS2/FreeRTOS/Config   | CMSIS-FreeRTOS configuration file   |
+| CMSIS/RTOS2/FreeRTOS/Examples | CMSIS-FreeRTOS example projects     |
+| CMSIS/RTOS2/FreeRTOS/Source   | CMSIS-FreeRTOS source code          |
+| Config                        | FreeRTOS Kernel configuration file  |
+| Documentation                 | Generated documentation placeholder |
+| DoxyGen                       | Source of the documentation         |
+| License                       | FreeRTOS Kernel license text file   |
+| Source                        | FreeRTOS Kernel source code         |
 
 ## Generate CMSIS Pack for Release
 
 This GitHub development repository contains all the sources you need to successfully build the pack.
 
-To build the complete pack for installation, the following additional tools are required:
- - **doxygen.exe**    Version: 1.8.6 (Documentation Generator)
- - **mscgen.exe**     Version: 0.20  (Message Sequence Chart Converter)
- - **7z.exe (7-Zip)** Version: 16.04 (File Archiver)
-  
-Using these tools, you can generate on a Windows PC:
- - **CMSIS-FreeRTOS software pack** using the batch file **gen_pack.bat** (located in ./Utilities). This batch file also
-   generates the documentation.
-  
- - **CMSIS-FreeRTOS documentation** using the batch file **genDoc.bat** (located in ./Doxygen). 
+To build the complete pack for installation use the **gen_pack.sh** bash script. This script file also
+generates the documentation.
 
-The file ./DoxyGen/How2Doc.txt describes the rules for creating API documentation.
+Documentation may be generated separately using the bash script **gen_doc.sh** (located in ./DoxyGen).
+
+**_NOTE_**
+> Repository tags have to be updated to successfully generate the pack. To update them, use: </br>
+> ```$ git fetch -f --prune --prune-tags origin```</br>
+> When working with an existing fork replace 'origin' with the parent repository URL</br>
+> ```$ git fetch -f --prune --prune-tags https://github.com/ARM-software/CMSIS-FreeRTOS.git```</br>
+
 
 ## License
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.6
+ * FreeRTOS Kernel V10.5.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -61,6 +61,8 @@
     #define portTIMSK                   TIMSK0
     #define portTIFR                    TIFR0
 
+#else
+    #error "No Timer defined for scheduler"
 #endif
 
 /*-----------------------------------------------------------*/

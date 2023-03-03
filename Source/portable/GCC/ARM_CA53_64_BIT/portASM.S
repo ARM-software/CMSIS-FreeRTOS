@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.6
+ * FreeRTOS Kernel V10.5.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -416,11 +416,11 @@ ullPortTaskHasFPUContextConst: .dword ullPortTaskHasFPUContext
 
 ullICCPMRConst: .dword ullICCPMR
 ullMaxAPIPriorityMaskConst: .dword ullMaxAPIPriorityMask
-vApplicationIRQHandlerConst: .word vApplicationIRQHandler
 ullPortInterruptNestingConst: .dword ullPortInterruptNesting
 ullPortYieldRequiredConst: .dword ullPortYieldRequired
 ullICCIARConst:	.dword ullICCIAR
 ullICCEOIRConst: .dword ullICCEOIR
+vApplicationIRQHandlerConst: .word vApplicationIRQHandler
 
 
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.6
+ * FreeRTOS Kernel V10.5.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -67,7 +67,8 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
 #endif
 {
-    StackType_t * sp, * tp;
+    StackType_t * sp;
+    StackType_t * tp;
     XtExcFrame * frame;
 
     #if XCHAL_CP_NUM > 0

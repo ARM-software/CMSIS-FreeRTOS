@@ -71,12 +71,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START0     0x00000000      /* start address of SAU region 0 */
+#define SAU_INIT_START0     0x10000000      /* start address of SAU region 0 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END0       0x001FFFFF      /* end address of SAU region 0 */
+#define SAU_INIT_END0       0x10007FFF      /* end address of SAU region 0 */
 
 /*
 //     <o>Region is
@@ -97,12 +97,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START1     0x00200000
+#define SAU_INIT_START1     0x00008000
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END1       0x003FFFFF
+#define SAU_INIT_END1       0x00047FFF
 
 /*
 //     <o>Region is
@@ -123,12 +123,12 @@
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START2     0x20200000
+#define SAU_INIT_START2     0x20008000
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END2       0x203FFFFF
+#define SAU_INIT_END2       0x20047FFF
 
 /*
 //     <o>Region is
@@ -309,7 +309,7 @@
 //     <1=> Non-Secure state
 //   <i> Value for SCB->AIRCR register bit BFHFNMINS
 */
-#define SCB_AIRCR_BFHFNMINS_VAL 0
+#define SCB_AIRCR_BFHFNMINS_VAL 1
 
 /*
 // </e>

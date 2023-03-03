@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.3.0
+ * FreeRTOS Kernel V10.4.0
  * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -95,6 +95,7 @@ extern uint32_t SystemCoreClock;
 /* Port specific configuration. */
 #define configENABLE_MPU                      0
 #define configENABLE_FPU                      1
+#define configENABLE_MVE                      0
 #define configENABLE_TRUSTZONE                1
 #define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)1024)
 #define configRUN_FREERTOS_SECURE_ONLY        0

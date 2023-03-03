@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2021 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.3.0
+ * $Revision:   V10.4.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -87,6 +87,12 @@
 //  <i> Enable setting to use timeslicing.
 //  <i> Default: 1
 #define configUSE_TIME_SLICING                  1
+
+//  <q>Use tickless idle
+//  <i> Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
+//  <i> disable it to keep the tick interrupt running at all times.
+//  <i> Default: 0
+#define configUSE_TICKLESS_IDLE                 0
 
 //  <q>Idle should yield
 //  <i> Control Yield behaviour of the idle task.
@@ -191,6 +197,12 @@
 //  <i> Enable FPU when application uses floating point operations.
 //  <i> Default: 1
 #define configENABLE_FPU                      1
+
+//  <q>Use M-Profile Vector Extension
+//  <i> Using M-Profile Vector Extension (MVE) affects context handling.
+//  <i> Enable MVE when application uses signal processing and ML algorithms.
+//  <i> Default: 0
+#define configENABLE_MVE                      0
 
 //  <q>Use Memory Protection Unit
 //  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.

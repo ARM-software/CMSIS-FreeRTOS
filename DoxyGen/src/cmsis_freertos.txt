@@ -1,0 +1,931 @@
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\mainpage
+
+\section Introduction
+
+<a target="_blank" href="https://www.freertos.org/">FreeRTOS</a> is one of the market leading real-time operating systems
+(RTOS) for embedded microcontrollers. It is professionally developed,
+<a target="_blank" href="https://www.freertos.org/FreeRTOS-Coding-Standard-and-Style-Guide.html">strictly quality controlled</a>,
+robust,
+<a target="_blank" href="https://forums.freertos.org/">supported</a>
+<a target="_blank" href="https://www.freertos.org/FreeRTOS_Support_Forum_Archive/freertos_support_forum_archive_index.html/">(archive)</a>,
+free to <a target="_blank" href="https://www.freertos.org/a00114.html">use in commercial products</a> without a requirement to
+expose proprietary source code, and has
+<a target="_blank" href="https://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html">no IP infringement</a>
+risk.
+
+<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
+operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
+components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for
+multi-core systems, and has a binary compatible interface across ABI compliant compilers.
+
+Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
+CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application
+code to be used with different RTOS kernels (for example
+<a class="el" href="https://www2.keil.com/mdk5/cmsis/rtx/">Keil RTX5</a>).
+
+This documentation shows you:
+- how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
+- Various \ref examples show you the usage of FreeRTOS in native and CMSIS-RTOS2 mode.
+- the \ref tech_data of this implementation.
+- \subpage rev_hist
+
+
+License
+-------
+
+The CMSIS-FreeRTOS implementation is provided free of charge by Arm under the <a href="license.txt">FreeRTOS license</a>.
+
+
+ARM::CMSIS-FreeRTOS Pack
+------------------------
+
+The <b>ARM::CMSIS-FreeRTOS</b> pack contains the following:
+
+File/Directory             |Content
+:--------------------------|:---------------------------------------------------------------------------------
+\b CMSIS/Documentation     | This documentation.
+\b CMSIS/RTOS2             | CMSIS-RTOS2 compliant implementation of FreeRTOS.
+\b Config                  | FreeRTOS configuration header file.
+\b License                 | FreeRTOS license agreement.
+\b Source                  | FreeRTOS kernel source code.
+\b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
+*/
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page cre_freertos_proj Create a FreeRTOS project
+
+You can basically choose between two option when creating a FreeRTOS project:
+-# \ref native_freertos using the FreeRTOS API and kernel.
+-# \ref cmsis_freertos using the CMSIS-RTOS2 API with an underlying FreeRTOS kernel.
+
+\section native_freertos Create a native FreeRTOS project
+
+The steps to create a microcontroller application using FreeRTOS are:
+- Create a new project and select a microcontroller device.
+- In the Manage Run-Time Environment window, select <b>\::Device:Startup</b>, <b>\::RTOS:CORE</b> and
+  <b>\::RTOS:Config</b> in the \b FreeRTOS variant and an applicable <b>\::RTOS:Heap</b> scheme (for more
+  information on the heap schemes, visit the FreeRTOS documentation):
+
+  \image html manage_rte_freertos_native.png
+
+  \n
+- If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
+- Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
+  \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
+
+  \image html project_window_freertos_native.png
+
+\subsection native_freertos_config Configure FreeRTOS
+
+When you have created the native FreeRTOS project, you can configure the real-time operating system using the
+\b FreeRTOSConfig.h file. Please refer to the
+<a href="https://www.freertos.org/a00110.html" target="_blank">FreeRTOS documentation</a> for more information on the specific
+settings.
+
+\image html freertos_config_h_native.png
+
+
+\subsection native_freertos_config_prio Interrupt priority configuration
+
+FreeRTOS implements critical sections using the
+<a href="https://developer.arm.com/documentation/dui0552/a/the-cortex-m3-processor/programmers-model/core-registers?lang=en" target="_blank">BASEPRI</a>
+register (available in Armv7-M and Armv8-M architecture based devices) which masks only a subset of interrupts. This is
+configured via the \c configMAX_SYSCALL_INTERRUPT_PRIORITY setting. Therefore, it is needed to properly configure this
+setting. It is also needed to set appropriate interrupt priorities for interrupt service routines (ISR) that use RTOS
+functions. This can especially impact drivers which typically use peripheral interrupts. Normally, these use the RTOS
+directly or indirectly through registered callbacks.
+
+Arm Cortex-M cores store interrupt priority values in the most significant bits of the interrupt priority registers which
+can have a maximum of eight bits. Many implementations offer only three priority bits. These three bits are shifted up to be
+bits five, six and seven respectively.
+\c configMAX_SYSCALL_INTERRUPT_PRIORITY must not be 0 and can be xxx00000. This results in the following table:
+
+| configMAX_SYSCALL_INTERRUPT_PRIORITY    | Upper three bits | Priority    |
+|:---------------------------------------:|:----------------:|:-----------:|
+| 32                                      | 001              | 1 (Highest) |
+| 64                                      | 010              | 2           |
+| 96                                      | 011              | 3           |
+| 128                                     | 100              | 4           |
+| 160                                     | 101              | 5           |
+| 196                                     | 110              | 6           |
+| 224                                     | 111              | 7 (Lowest)  |
+
+\b Example
+
+If you set \c configMAX_SYSCALL_INTERRUPT_PRIORITY to 32, then the priority of an interrupt service routine that uses RTOS
+functions must then be higher or equal to 1. This ensures that this interrupt will be masked during critical a section.
+
+A WiFi driver using the SPI interface registers a callback to SPI which is executed in an interrupt context. The callback
+function in the WiFi driver uses RTOS functions. Therefore, the SPI interrupt priority must be set to a value equal or
+higher to the FreeRTOS preempt priority, for example 1.
+
+\note For a detailed description of how FreeRTOS is using Cortex-M code registers, refer to
+<a href="https://www.freertos.org/RTOS-Cortex-M3-M4.html" target="_blank">Running the RTOS on a ARM Cortex-M Core</a>.
+
+
+\subsection native_freertos_er Add Event Recorder Visibility
+- To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
+- Open \ref native_freertos_config "FreeRTOSConfig.h" and
+  - verify the header file \b freertos_evr.h is included
+  - add Event Recorder configuration definitions (see \ref cmsis_freertos_evr_config)
+- Call <b>EvrFreeRTOSSetup()</b> in your application code (ideally in \c main()).
+- If you are using simulation mode, add an initialization file with the following content:
+  \code
+  MAP 0xE0001000, 0xE0001007 READ WRITE
+  signal void DWT_CYCCNT (void) {
+  while (1) {
+    rwatch(0xE0001004);
+    _WWORD(0xE0001004, states);
+    }
+  }
+  DWT_CYCCNT()
+  \endcode
+- Build the application code and download it to the debug hardware or run it in simulation.
+
+Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder</b>.
+
+
+\section cmsis_freertos Create a CMSIS-FreeRTOS project
+
+The steps to create a microcontroller application using CMSIS-FreeRTOS are:
+- Create a new project and select a microcontroller device.
+- In the Manage Run-Time Environment window, select <b>\::Device:Startup</b>, <b>\::CMSIS::RTOS2 (API)\::FreeRTOS</b>,
+  <b>\::RTOS:CORE</b> in the \b FreeRTOS variant, <b>\::RTOS:Config</b> in the \b CMSIS \b RTOS2 variant,
+  <b>\::RTOS:Timers</b>, <b>\::RTOS:Event Groups</b>, and an applicable <b>\::RTOS:Heap</b>
+  scheme (for more information on the heap schemes, visit the FreeRTOS documentation):
+
+  \image html manage_rte_freertos_rtos2.png
+
+  \n
+- If the <b>Validation Output</b> requires other components to be present, try to use the \b Resolve button.
+- Click \b OK. In the \b Project window, you will see the files that have been automatically added to you project, such as
+  \b %FreeRTOSConfig.h, the source code files, as well as the system and startup files:
+
+  \image html project_window_freertos_rtos2.png
+
+
+\subsection cmsis_freertos_config Configure CMSIS-FreeRTOS
+
+When you have created the CMSIS-FreeRTOS project, you can configure the real-time operating system using the
+\b FreeRTOSConfig.h file. It can be opened using the Configuration Wizard view:
+
+\image html freertos_config_h_cmsis_rtos.png
+
+The following settings are available:
+
+Name                           | \#define                             | Description                                                           |
+-------------------------------|--------------------------------------|-----------------------------------------------------------------------|
+Minimal stack size [words]     | configMINIMAL_STACK_SIZE             | Stack for idle task and default task stack in words.                  |
+Total heap size [bytes]        | configTOTAL_HEAP_SIZE                | Heap memory size in bytes.                                            |
+Kernel tick frequency [Hz]     | configTICK_RATE_HZ                   | Kernel tick rate in Hz.                                               |
+Timer task stack depth [words] | configTIMER_TASK_STACK_DEPTH         | Stack for timer task in words.                                        |
+Timer task priority            | configTIMER_TASK_PRIORITY            | Timer task priority.                                                  |
+Timer queue length             | configTIMER_QUEUE_LENGTH             | Timer command queue length.                                           |
+Preemption interrupt priority  | configMAX_SYSCALL_INTERRUPT_PRIORITY | Maximum priority of interrupts that are safe to call FreeRTOS API.    |
+Use time slicing               | configUSE_TIME_SLICING               | Enable setting to use time slicing.                                   |
+Idle should yield              | configIDLE_SHOULD_YIELD              | Control Yield behavior of the idle task.                              |
+Check for stack overflow       | configCHECK_FOR_STACK_OVERFLOW       | Enable or disable stack overflow checking.                            |
+Use idle hook                  | configUSE_IDLE_HOOK                  | Enable callback function call on each idle task iteration.            |
+Use tick hook                  | configUSE_TICK_HOOK                  | Enable callback function call during each tick interrupt.             |
+Use daemon task startup hook   | configUSE_DAEMON_TASK_STARTUP_HOOK   | Enable callback function call when timer service starts.              |
+Use malloc failed hook         | configUSE_MALLOC_FAILED_HOOK         | Enable callback function call when out of dynamic memory.             |
+Queue registry size            | configQUEUE_REGISTRY_SIZE            | Define maximum number of queue objects registered for debug purposes. |
+
+\note Refer to \ref native_freertos_config_prio for more information on the usage of \c configMAX_SYSCALL_INTERRUPT_PRIORITY.
+
+<b> Event Recorder Configuration </b>
+
+The following settings are available (see \ref cmsis_freertos_evr_config for details):
+
+Name                           | \#define                             | Description                                                                             |
+-------------------------------|--------------------------------------|-----------------------------------------------------------------------------------------|
+Initialize Event Recorder      | configEVR_INITIALIZE                 | Initialize Event Recorder before FreeRTOS kernel start.                                 |
+Setup recording level filter   | configEVR_SETUP_LEVEL                | Enable configuration of FreeRTOS events recording level.                                |
+Task functions                 | configEVR_LEVEL_TASKS                | Define event recording level bitmask for events generated from Tasks functions.         |
+Queue functions                | configEVR_LEVEL_QUEUE                | Define event recording level bitmask for events generated from Queue functions.         |
+Timer functions                | configEVR_LEVEL_TIMERS               | Define event recording level bitmask for events generated from Timer functions.         |
+Event Groups functions         | configEVR_LEVEL_EVENTGROUPS          | Define event recording level bitmask for events generated from Event Groups functions.  |
+Heap functions                 | configEVR_LEVEL_HEAP                 | Define event recording level bitmask for events generated from Heap functions.          |
+Stream Buffer functions        | configEVR_LEVEL_STREAMBUFFER         | Define event recording level bitmask for events generated from Stream Buffer functions. |
+
+
+\subsection cmsis_freertos_er Add Event Recorder Visibility
+- To use the Event Recorder together with FreeRTOS, add the software component <b>\::Compiler:Event Recorder</b> to your project.
+- Open \ref native_freertos_config "FreeRTOSConfig.h" and
+  - verify the header file \b freertos_evr.h is included
+  - modify Event Recorder configuration definitions (see \ref cmsis_freertos_evr_config) to change default configuration
+- Call <b>osKernelInitialize()</b> in your application code (ideally in \c main()) to setup Event Recorder according to configuration settings.
+- If you are using simulation mode, add an initialization file with the following content:
+  \code
+  MAP 0xE0001000, 0xE0001007 READ WRITE
+  signal void DWT_CYCCNT (void) {
+  while (1) {
+    rwatch(0xE0001004);
+    _WWORD(0xE0001004, states);
+    }
+  }
+  DWT_CYCCNT()
+  \endcode
+- Build the application code and download it to the debug hardware or run it in simulation.
+
+Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder.</b>
+
+
+\section freertos_interfaces Create a mixed-interface project
+
+Using CMSIS-RTOS2 API and native FreeRTOS API simultaneously is possible and some projects do require using the native FreeRTOS API and the CMSIS-RTOS2 API at the same time.
+Such project should be \ref cmsis_freertos "created as CMSIS-FreeRTOS project".
+
+Depending on the application requirements, FreeRTOS kernel can be started either by using FreeRTOS native API or by using CMSIS-RTOS2 API.
+
+\subsection freertos_interface_rtos2 Start the kernel using CMSIS-RTOS2 API
+
+\code
+/*
+  Application thread: Initialize and start the Application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+
+  // Initialize CMSIS-RTOS2
+  osKernelInitialize();
+
+  // Create application main thread
+  osThreadNew(app_main, NULL, NULL);
+
+  // Start the kernel and execute the first thread
+  osKernelStart();
+
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using CMSIS-RTOS2 API, FreeRTOS native API can be used with the following restrictions:
+- vTaskStartScheduler must not be called
+
+
+\subsection freertos_interface_native Start the kernel using native API
+
+\code
+/*
+  Application main thread: Initialize and start the application
+*/
+void app_main (void *argument) {
+
+  while(1) {
+    // Application code
+    // ...
+  }
+}
+
+/*
+  Main function: Initialize and start the kernel
+*/
+int main (void) {
+  SystemCoreClockUpdate();
+
+  // Setup the Event Recorder (optionally)
+  EvrFreeRTOSSetup(0);
+
+  // Create application main thread
+  xTaskCreate (app_main, "app_main", 64, NULL, tskIDLE_PRIORITY+1, NULL);
+
+  // Start the kernel and execute the first thread
+  vTaskStartScheduler();
+
+  while(1);
+}
+\endcode
+
+\b Restrictions
+
+After the kernel is started using FreeRTOS native API, CMSIS-RTOS2 API can be used without restrictions.
+
+\section cmsis_freertos_evr_config Configure Event Recorder
+
+This section describes the configuration settings for the <a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank">Event Recorder</a>
+annotations. For more information refer to section \ref native_freertos_er "Add Event Recorder Visibility to native FreeRTOS project" or
+\ref cmsis_freertos_er "Add Event Recorder Visibility to CMSIS-FreeRTOS project".
+
+Use below definitions to configure Event Recorder initialization and recording level filter setup.
+
+\code
+#define configEVR_INITIALIZE
+\endcode
+
+Value  | Description                           |
+-------|---------------------------------------|
+0      | Disable Event Recorder initialization |
+1      | Enable Event Recorder initialization  |
+
+Definition configEVR_INITIALIZE enables Event Recorder initialization during execution of function \ref EvrFreeRTOSSetup. Default value is \token{1}.
+
+\code
+#define configEVR_SETUP_LEVEL
+\endcode
+
+Value  | Description                           |
+-------|---------------------------------------|
+0      | Disable recording level filter setup  |
+1      | Enable recording level filter setup   |
+
+Definition configEVR_SETUP_LEVEL enables setup of recording level filter for events generated by FreeRTOS. Recording level is configured during execution of function \ref EvrFreeRTOSSetup. Default value is \token{1}.
+
+\code
+#define configEVR_LEVEL_TASKS
+#define configEVR_LEVEL_QUEUE
+#define configEVR_LEVEL_TIMERS
+#define configEVR_LEVEL_EVENTGROUPS
+#define configEVR_LEVEL_HEAP
+#define configEVR_LEVEL_STREAMBUFFER
+\endcode
+
+Value  | Description                                       |
+-------|---------------------------------------------------|
+0x00   | Disable event generation                          |
+0x01   | Enable generation of error events                 |
+0x05   | Enable generation of error and operational events |
+0x0F   | Enable generation of all events                   |
+
+Definitions configEVR_LEVEL_x set the recording level bitmask for events generated by each function group. They are taken into account only when recording level filter setup is enabled. Default value is \token{0x05}.
+
+
+\section dbg_cmsisfreertos Debug a CMSIS-FreeRTOS project
+
+\note The following only applies when used with <a href="https://www2.keil.com/mdk5" target="_blank">Arm Keil MDK</a>. If
+you are using a different toolchain, please consult its user's manual.
+
+Apart from the debug capabilities that \ref cmsis_freertos_evr_config "Event Recorder" offers, Keil MDK also supports thread
+aware breakpoints, just like for the standard CMSIS-RTOS.
+
+\b Code \b Example
+
+\code
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA) ? 1 : 0"
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA || CURR_TID == tid_phaseD) ? 1 : 0"
+BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID == tid_phaseD) ? 1 : 0"
+\endcode
+
+\note
+- For more information on conditional breakpoints in Keil MDK, consult the
+  <a href="https://www.keil.com/support/man/docs/uv4/uv4_db_dbg_breakpnts.htm" target="_blank">user's manual</a>.
+- Enabling <a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a> is
+  required to capture register values for active running threads while executing. When turned off, only the current FreeRTOS
+  thread can be unwound after execution has been stopped.
+
+\b Caveats
+
+- You cannot specify individual breakpoints on the same address. The following is not possible:
+  \code
+  BS ThCallee, 1, "break = (CURR_TID==tid_phaseA) ? 1 : 0"
+  BS ThCallee, 1, "break = (CURR_TID==tid_phaseD) ? 1 : 0"
+  \endcode
+  Instead, use this:
+  \code
+  BS ThCallee, 1, "break= (CURR_TID==tid_phaseA || CURR_TID==tid_phaseD) ? 1 : 0"
+  \endcode
+
+- If you don't want to use
+<a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a>, obtain the
+thread and unwind information by adding a function that gets called from each thread of interest:
+\code
+_attribute_((noinline)) int FuncN1 (int n1) {
+  ...
+}
+\endcode
+Then, specify a thread aware breakpoint using an "invalid" thread ID:
+\code
+BS FuncN1, 1, "break = (CURR_TID == tid_phaseA + 1) ? 1 : 0"
+\endcode
+<tt>'tid_phaseA'</tt> would be valid, <tt>'tid_phaseA + 1'</tt> is not but will still capture the most recent registers and
+store them to the actual thread context each time a thread aware breakpoint is checked.
+
+- Function inlining typically causes thread aware breakpoints to fail. To avoid this, prepend the <tt>'noinline'</tt>
+  attribute to the function that is used to stop when the current FreeRTOS thread id matches:
+\code
+_attribute_((noinline)) int FuncN1 (int n1) {
+  ...
+}
+\endcode
+This helps to make thread aware breakpoints far less dependent on the compiler optimization level.
+
+- Thread aware breakpoints should be setup using a
+<a href="https://www.keil.com/support/man/docs/uv4/uv4_db_scripting.htm" target="_blank">debug script</a>. Reason being
+that thread aware breakpoints are of a 'hybrid' type, that is a combined address and condition expression that works best
+when run from a debug script.
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page examples Example projects
+
+This pack contains two example projects:
+ - \ref examples_native
+ - \ref examples_cmsis
+
+The first example shows how to use FreeRTOS standalone, whereas the second example shows how to use the CMSIS-RTOS2 API with
+an underlying FreeRTOS.
+
+The examples simulate a step-motor driver. Four phase variables are simulating the activation of the four output driver
+stages. The state changes are shown in the Watch window variable \c g_phases. All four phases are displayed in the Logic
+Analyzer:
+
+\image html blinky_example_simu.png
+
+
+\section examples_native Blinky example using FreeRTOS natively
+
+This example shows how to use FreeRTOS natively in a µVision project. This makes your code portable and you can
+choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
+
+To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
+<b>Native FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
+where you want to copy the project to and press OK. µVision opens.
+
+
+\section examples_cmsis Blinky example using CMSIS-FreeRTOS
+
+This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS. This makes your code portable and you can
+choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
+
+To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
+<b>CMSIS-RTOS2 FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
+where you want to copy the project to and press OK. µVision opens.
+
+
+\section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9
+
+This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an Arm
+Cortex-A9 code. This example only works in <a href="https://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
+development environment from Arm. For information on setting up the target connection, please refer to
+<a href="https://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
+
+\note you need to have the i.MX6 device family pack installed to see the example in the \b Examples tab of Pack Installer.
+
+To open the example, open the Pack Installer perspective, select \b NXP in the \b Devices tab, and click on \b Copy next to
+the <b>CMSIS-RTOS2 FreeRTOS Blinky CA9 (MCIMX6SX-SABRE)</b> project on the \b Examples tab.
+
+\image html copy_a9_example.png
+
+Confirm the default location in the Eclipse Workspace by pressing Copy.
+
+\image html copy_a9_example_ws.png
+
+Right-click on the project and select \b Build \b Project. Then, right-click on the project and select \b Debug \b As and
+then \b Debug \b Configurations. The Debug Configurations dialog opens:
+
+\image html dbg_conf.png
+
+The project is already set up for running from the SDRAM of the i.MX6 SABRE board. Press \b Debug. DS-MDK will switch to the
+debug perspective. After a successful connection to the target, press \b F8 to run the application. In the \b App \b Console
+you will see the output of the phases:
+
+\image html dbg_output.png
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page tech_data Technical data and limitations
+
+This lists the technical data of CMSIS-FreeRTOS.
+
+
+\section td_limitations Limitations
+
+The following list briefly describes the limitations and unsupported features of the CMSIS-RTOS2 wrapper for FreeRTOS:
+- Static memory allocation will only work if \a all memory (from attributes structure) is provided statically. In order to
+  allocate object memory statically, you need to:
+  - provide the memory for control blocks and stack in the \c osThreadAttr_t structure for threads.
+  - provide the memory for control blocks and message data in the \c osMessageQueueAttr_t structure for memory queues.
+  - provide the memory for control blocks for other objects in the object's attributes structure.
+- Each timer object requires additional 8 bytes of memory:
+  - to allocate all memory statically, provide the memory for control block of size (sizeof(StaticTimer_t) + 8 bytes)
+  - otherwise, additional 8 bytes of dynamic memory will be used
+- \c osKernelSuspend and \c osKernelResume are not supported.
+- \c osThreadDetach, \c osThreadJoin() and attribute \c osThreadJoinable are not supported (\c osThreadNew returns NULL when
+  osThreadJoinable attribute is specified).
+- \c osThreadGetStackSize is not implemented.
+- Event flags are limited to 24 bits.
+- \c osEventFlagsGetName is not implemented.
+- \c osEventFlagsWait cannot be called from an ISR.
+- Priority inherit protocol is used as default mutex behavior (\c osMutexNew creates priority inherit mutex object by default
+  and ignores \c osMutexPrioInherit attribute when specified).
+- Robust mutex objects are not supported (\c osMutexNew returns NULL when \c osMutexRobust attribute is specified).
+- \c osMutexGetName is not implemented and always returns NULL.
+- \c osSemaphoreGetName is not implemented and always returns NULL.
+- \c osMessageQueueGetName is not implemented and always returns NULL.
+- \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
+
+\section td_validation Validation suite results
+
+CMSIS provides a
+<a target="_blank" href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
+be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the
+CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).
+
+The following table explains the exceptions:
+
+<table class="doxtable" summary="Validation Exceptions">
+    <tr>
+      <th>Test Case</th>
+      <th>Result</th>
+      <th>Reason</th>
+      <th>Summary</th>
+    </tr>
+    <tr>
+      <td>TC_osKernelGetState_2</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to call \c osKernelGetState after a \c osKernelSuspend call. osKernelSuspend is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osKernelLock_2</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to call \c osKernelLock after a \c osKernelSuspend call. \c osKernelSuspend is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osKernelUnlock_2</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to call \c osKernelUnlock after a \c osKernelSuspend call. \c osKernelSuspend is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osKernelSuspend_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osKernelSuspend which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osKernelResume_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osKernelResume which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadNew_3</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to create joinable thread using \c osThreadJoinable attribute. FreeRTOS does not support joinable threads.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadGetName_1</td>
+      <td>failed</td>
+      <td>deviation</td>
+      <td>
+        Test attempt to retrieve a name on an unnamed thread. An empty string is returned instead of NULL pointer.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadGetState_3</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to retrieve a state of a terminated joinable thread. FreeRTOS does not support joinable threads.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadDetach_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadDetach which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadDetach_2</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadDetach which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadJoin_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadJoin which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadJoin_2</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadJoin which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadJoin_3</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadJoin which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osThreadGetStackSize_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osThreadGetStackSize which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_ThreadReturn</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to terminate a thread by just returning from a thread. FreeRTOS threads may not return.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osEventFlagsSet_1</td>
+      <td>failed</td>
+      <td>deviation</td>
+      <td>
+        Test attempts to set event flags by calling \c osEventFlagsSet multiple times without leaving ISR handler.<br>
+        To process ISR requests, FreeRTOS uses timer deamon which wakes-up after ISR execution.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osEventFlagsClear_1</td>
+      <td>failed</td>
+      <td>deviation</td>
+      <td>
+        Test attempts to clear event flags by calling \c osEventFlagsClear multiple times without leaving ISR handler.<br>
+        To process ISR requests, FreeRTOS uses timer deamon which wakes-up after ISR execution.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osEventFlagsWait_1</td>
+      <td>failed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to wait for flags from ISR with zero timeout (try-semantic). FreeRTOS does not support such operation.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osEventFlagsGetName_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osEventFlagsGetName which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osMutexNew_4</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to create a robust mutex. FreeRTOS implementation does not support robust mutexes.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osMutexGetName_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osMutexGetName which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_MutexRobust</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to validate robust mutex behavior. FreeRTOS implementation does not support robust mutexes.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_MutexOwnership</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test attempts to release a mutex from a thread which is not the mutex owner.<br>
+        FreeRTOS implementation does not verify ownership on mutex release.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osSemaphoreGetName_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osSemaphoreGetName which is not implemented.
+      </td>
+    </tr>
+    <tr>
+      <td>TC_osMessageQueueGetName_1</td>
+      <td>not executed</td>
+      <td>unsupported feature</td>
+      <td>
+        Test validates \c osMessageQueueGetName which is not implemented.
+      </td>
+    </tr>
+</table>
+
+\section td_troubleshooting Troubleshooting
+
+Users looking for help shall check <a href="https://freertos.org/FAQHelp.html">subsection of the full FreeRTOS FAQ</a>.
+It contains many useful information that also apply when using FreeRTOS in context of CMSIS-FreeRTOS.
+
+Additionally, please take a look at the following:
+
+<ol>
+<li>
+    <b>Interrupts are disabled when main is called or before the kernel is started</b>
+    <br>
+    Before the FreeRTOS kernel is started, threads (i.e. tasks) may be created together with other objects like
+    mutexes, semaphores, message queues etc. When functions like xTaskCreate, xSemaphoreCreateMutex, xQueueCreate and
+    others get called, they prevent interrupt handlers from calling FreeRTOS API functions in order to keep FreeRTOS kernel
+    variables and state machine consistent
+    (see also here <a href="https://freertos.org/FAQHelp.html">Interrupts are not executing</a>).
+    <br>
+    In cases when interrupts may be executed after object creation and before the FreeRTOS kernel is started they can be re-enabled:
+    \code{.c}
+        portENABLE_INTERRUPTS();
+    \endcode
+    Make sure that the interrupts you execute in such case do not call FreeRTOS API.
+</li>
+</ol>
+
+*/
+
+
+/*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
+/**
+\page functionOverview Function Overview
+
+
+\section rtos_api2 CMSIS-RTOS2 API
+
+Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS.
+
+Kernel Information and Control
+------------------------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">API reference</a> for details about Kernel Information and Control functions.
+   - \b osKernelGetInfo: supported
+   - \b osKernelGetState: supported
+   - \b osKernelGetSysTimerCount: supported
+   - \b osKernelGetSysTimerFreq: supported
+   - \b osKernelInitialize: supported
+   - \b osKernelLock: supported
+   - \b osKernelUnlock: supported
+   - \b osKernelRestoreLock: supported
+   - \b osKernelResume: \token{not implemented}
+   - \b osKernelStart: supported
+   - \b osKernelSuspend: \token{not implemented}
+   - \b osKernelGetTickCount: supported
+   - \b osKernelGetTickFreq: supported
+
+
+Thread Management
+-----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">API reference</a> for details about Thread Management functions.
+   - \b osThreadDetach: \token{not implemented}
+   - \b osThreadEnumerate: supported
+   - \b osThreadExit: supported
+   - \b osThreadGetCount: supported
+   - \b osThreadGetId: supported
+   - \b osThreadGetName: supported
+   - \b osThreadGetPriority: supported
+   - \b osThreadGetStackSize: \token{not implemented}
+   - \b osThreadGetStackSpace: supported
+   - \b osThreadGetState: supported
+   - \b osThreadJoin: \token{not implemented}
+   - \b osThreadNew: supported
+   - \b osThreadResume: supported
+   - \b osThreadSetPriority: supported
+   - \b osThreadSuspend: supported
+   - \b osThreadTerminate: supported
+   - \b osThreadYield: supported
+
+Thread Flags
+------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">API reference</a> for details about Thread Flags functions.
+   - \b osThreadFlagsSet: supported
+   - \b osThreadFlagsClear: supported
+   - \b osThreadFlagsGet: supported
+   - \b osThreadFlagsWait: supported
+
+Event Flags
+-----------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">API reference</a> for details about Event Flags functions.
+All event flags are limited to 24 bits.
+   - \b osEventFlagsGetName: \token{not implemented}
+   - \b osEventFlagsNew: supported
+   - \b osEventFlagsDelete: supported
+   - \b osEventFlagsSet: supported
+   - \b osEventFlagsClear: supported
+   - \b osEventFlagsGet: supported
+   - \b osEventFlagsWait: cannot be called from an ISR.
+
+Generic Wait Functions
+----------------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">API reference</a> for details about Generic Wait functions.
+   - \b osDelay: supported
+   - \b osDelayUntil: supported
+
+Timer Management
+----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">API reference</a> for details about Timer Management functions.</a>
+   - \b osTimerDelete: supported
+   - \b osTimerGetName: supported
+   - \b osTimerIsRunning: supported
+   - \b osTimerNew: supported
+   - \b osTimerStart: supported
+   - \b osTimerStop: supported
+
+Mutex Management
+----------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">API reference</a> for details about Mutex Management functions.\n
+Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
+and ignores osMutexPrioInherit attribute when specified).\n
+Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).\n
+   - \b osMutexAcquire: supported
+   - \b osMutexDelete: supported
+   - \b osMutexGetName: \token{not implemented}
+   - \b osMutexGetOwner: supported
+   - \b osMutexNew: supported
+   - \b osMutexRelease: supported
+
+Semaphores
+----------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">API reference</a> for details about Semaphore functions.
+   - \b osSemaphoreAcquire: supported
+   - \b osSemaphoreDelete: supported
+   - \b osSemaphoreGetCount: supported
+   - \b osSemaphoreGetName: \token{not implemented}
+   - \b osSemaphoreNew: supported
+   - \b osSemaphoreRelease: supported
+
+Memory Pool
+-----------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">API reference</a> for details about Memory Pool functions.
+   - \b osMemoryPoolAlloc: supported
+   - \b osMemoryPoolDelete: supported
+   - \b osMemoryPoolFree: supported
+   - \b osMemoryPoolGetBlockSize: supported
+   - \b osMemoryPoolGetCapacity: supported
+   - \b osMemoryPoolGetCount: supported
+   - \b osMemoryPoolGetName: supported
+   - \b osMemoryPoolGetSpace: supported
+   - \b osMemoryPoolNew: supported
+
+Message Queue
+-------------
+See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">API reference</a> for details about Message Queue functions.
+   - \b osMessageQueueDelete: supported
+   - \b osMessageQueueGet: ignores message priority.
+   - \b osMessageQueueGetCapacity: supported
+   - \b osMessageQueueGetCount: supported
+   - \b osMessageQueueGetMsgSize: supported
+   - \b osMessageQueueGetName: \token{not implemented}
+   - \b osMessageQueueGetSpace: supported
+   - \b osMessageQueueNew: supported
+   - \b osMessageQueuePut: ignores message priority.
+   - \b osMessageQueueReset: supported
+*/
+
+/* ======================================================================================================================== */
+// Group creation for Reference
+/**
+\addtogroup freertos_specific CMSIS-FreeRTOS Specifics
+\brief This section describes CMSIS-FreeRTOS specifics.
+\details
+CMSIS-FreeRTOS interfaces to the
+<a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a>
+to provide event information which helps you to understand and analyze the operation. Refer to \ref freertos_evr for more
+information.
+*/
