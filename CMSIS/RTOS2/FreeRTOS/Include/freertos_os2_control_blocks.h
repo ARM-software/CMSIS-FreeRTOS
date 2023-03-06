@@ -28,3 +28,4 @@ struct TimerControlBlock {
 };
 
 typedef StaticSemaphore_t MutexControlBlock;
+typedef StaticSemaphore_t SemaphoreControlBlock;
