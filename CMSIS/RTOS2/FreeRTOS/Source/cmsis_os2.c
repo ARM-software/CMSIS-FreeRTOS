@@ -861,8 +861,8 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     task  = pvPortMalloc (count * sizeof(TaskStatus_t));
 #else
-    TaskStatus_t task_on_stack;
-    task = &task_on_stack;
+    TaskStatus_t task_on_stack[count];
+    task = &task_on_stack[0];
 #endif
 
     if (task != NULL) {
