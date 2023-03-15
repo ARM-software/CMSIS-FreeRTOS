@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.15)
 # using heap_4.c.
 
 # Absolute path to FreeRTOS config file directory
-set(FREERTOS_CONFIG_FILE_DIRECTORY "" CACHE STRING "Absolute path to the directory with FreeRTOSConfig.h")
+#set(FREERTOS_CONFIG_FILE_DIRECTORY "" CACHE STRING "Absolute path to the directory with FreeRTOSConfig.h")
 
 if(NOT FREERTOS_CONFIG_FILE_DIRECTORY)
     message(FATAL_ERROR " FreeRTOSConfig.h file directory not specified. Please specify absolute path to it from top-level CMake file:\n"
@@ -26,10 +26,10 @@ elseif(NOT EXISTS ${FREERTOS_CONFIG_FILE_DIRECTORY}/FreeRTOSConfig.h)
 endif()
 
 # Heap number or absolute path to custom heap implementation provided by user
-set(FREERTOS_HEAP "4" CACHE STRING "FreeRTOS heap model number. 1 .. 5. Or absolute path to custom heap source file")
+#set(FREERTOS_HEAP "4" CACHE STRING "FreeRTOS heap model number. 1 .. 5. Or absolute path to custom heap source file")
 
 # FreeRTOS port option
-set(FREERTOS_PORT "" CACHE STRING "FreeRTOS port name")
+#set(FREERTOS_PORT "" CACHE STRING "FreeRTOS port name")
 
 if(NOT FREERTOS_PORT)
     message(FATAL_ERROR " FREERTOS_PORT is not set. Please specify it from top-level CMake file (example):\n"
