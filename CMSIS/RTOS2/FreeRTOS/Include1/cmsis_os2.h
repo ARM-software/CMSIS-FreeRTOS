@@ -378,6 +378,16 @@ osThreadId_t osThreadGetId(void);
 /// \return current thread state of the specified thread.
 osThreadState_t osThreadGetState(osThreadId_t thread_id);
 
+/// Get start address of a thread stack.
+/// \param[in]     thread_id     thread ID obtained by \ref osThreadNew or \ref osThreadGetId.
+/// \return start address.
+uint32_t osThreadStackGetStartAddress(osThreadId_t thread_id);
+
+/// Get end address of a thread stack.
+/// \param[in]     thread_id     thread ID obtained by \ref osThreadNew or \ref osThreadGetId.
+/// \return end address.
+uint32_t osThreadStackGetEndAddress(osThreadId_t thread_id);
+
 /// Get stack size of a thread.
 /// \param[in]     thread_id     thread ID obtained by \ref osThreadNew or \ref osThreadGetId.
 /// \return stack size in bytes.

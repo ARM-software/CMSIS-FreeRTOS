@@ -1509,6 +1509,10 @@ char * pcTaskGetName( TaskHandle_t xTaskToQuery ) PRIVILEGED_FUNCTION; /*lint !e
  */
 TaskHandle_t xTaskGetHandle( const char * pcNameToQuery ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
+UBaseType_t uxTaskStackGetStartAddress( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+
+UBaseType_t uxTaskStackGetEndAddress( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
+
 UBaseType_t uxTaskGetStackSize( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
 
 /**

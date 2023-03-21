@@ -3944,6 +3944,28 @@ static void prvCheckTasksWaitingTermination( void )
 #endif /* INCLUDE_uxTaskGetStackHighWaterMark */
 /*-----------------------------------------------------------*/
 
+UBaseType_t uxTaskStackGetStartAddress( TaskHandle_t xTask )
+{
+    TCB_t * pxTCB;
+    UBaseType_t uxReturn;
+
+    pxTCB = prvGetTCBFromHandle( xTask );
+    uxReturn = ( UBaseType_t ) pxTCB->pxStack;
+
+    return uxReturn;
+}
+
+UBaseType_t uxTaskStackGetEndAddress( TaskHandle_t xTask )
+{
+    TCB_t * pxTCB;
+    UBaseType_t uxReturn;
+
+    pxTCB = prvGetTCBFromHandle( xTask );
+    uxReturn = ( UBaseType_t ) pxTCB->pxTopOfStack;
+
+    return uxReturn;
+}
+
 UBaseType_t uxTaskGetStackSize( TaskHandle_t xTask )
 {
     TCB_t * pxTCB;
