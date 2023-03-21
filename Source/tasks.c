@@ -264,6 +264,7 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     ListItem_t xEventListItem;                  /*< Used to reference a task from an event list. */
     UBaseType_t uxPriority;                     /*< The priority of the task.  0 is the lowest priority. */
     StackType_t * pxStack;                      /*< Points to the start of the stack. */
+    StackType_t xStackSize;                     /*< The stack size. */
     char pcTaskName[ configMAX_TASK_NAME_LEN ]; /*< Descriptive name given to the task when created.  Facilitates debugging only. */ /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
     #if ( ( portSTACK_GROWTH > 0 ) || ( configRECORD_STACK_HIGH_ADDRESS == 1 ) )
@@ -847,6 +848,8 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
         ( void ) memset( pxNewTCB->pxStack, ( int ) tskSTACK_FILL_BYTE, ( size_t ) ulStackDepth * sizeof( StackType_t ) );
     }
     #endif /* tskSET_NEW_STACKS_TO_KNOWN_VALUE */
+
+    pxNewTCB->xStackSize = ulStackDepth;
 
     /* Calculate the top of stack address.  This depends on whether the stack
      * grows from high memory to low (as per the 80x86) or vice versa.
@@ -3940,6 +3943,17 @@ static void prvCheckTasksWaitingTermination( void )
 
 #endif /* INCLUDE_uxTaskGetStackHighWaterMark */
 /*-----------------------------------------------------------*/
+
+UBaseType_t uxTaskGetStackSize( TaskHandle_t xTask )
+{
+    TCB_t * pxTCB;
+    UBaseType_t uxReturn;
+
+    pxTCB = prvGetTCBFromHandle( xTask );
+    uxReturn = ( UBaseType_t ) pxTCB->xStackSize;
+
+    return uxReturn;
+}
 
 #if ( INCLUDE_vTaskDelete == 1 )
 

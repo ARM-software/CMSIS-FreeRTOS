@@ -665,6 +665,23 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
 }
 
 /*
+  Get stack size of a thread.
+*/
+uint32_t osThreadGetStackSize (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  uint32_t ss;
+
+  if ((IRQ_Context() != 0U) || (hTask == NULL)) {
+    ss = 0U;
+  } else {
+    ss = (uint32_t)(uxTaskGetStackSize(hTask) * sizeof(StackType_t));
+  }
+
+  /* Return stack size in bytes */
+  return (ss);
+}
+
+/*
   Get available stack space of a thread based on stack watermark recording during execution.
 */
 uint32_t osThreadGetStackSpace (osThreadId_t thread_id) {
