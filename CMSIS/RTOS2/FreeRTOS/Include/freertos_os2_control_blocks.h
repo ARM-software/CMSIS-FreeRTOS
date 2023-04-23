@@ -14,6 +14,7 @@
 #include "freertos_mpool.h"
 #include "semphr.h"
 
+#define osTickRateHz (configTICK_RATE_HZ)
 #define osMaxDelayTicks (portMAX_DELAY)
 
 typedef MemPool_t MemoryPoolControlBlock;
