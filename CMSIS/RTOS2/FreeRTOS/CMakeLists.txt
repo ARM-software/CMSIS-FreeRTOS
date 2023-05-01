@@ -3,8 +3,7 @@
 add_library(FW3_CMSIS_TARGET)
 target_sources(
   FW3_CMSIS_TARGET
-  PRIVATE ${FW3_CMSIS_DIR}/Source/cmsis_os1.c
-          ${FW3_CMSIS_DIR}/Source/cmsis_os2.c
+  PRIVATE ${FW3_CMSIS_DIR}/Source/cmsis_os2.c
           ${FW3_CMSIS_DIR}/Source/freertos_evr.c
           ${FW3_CMSIS_DIR}/Source/os_systick.c
           ${FW3_CMSIS_DIR}/Source/ARM/clib_arm.c)
