@@ -30,7 +30,7 @@
 
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 
-#include "freertos_os2_control_blocks.h"
+#include "os2_control_blocks.h"
 
 #if defined(_RTE_)
 #include "RTE_Components.h"             // Component selection

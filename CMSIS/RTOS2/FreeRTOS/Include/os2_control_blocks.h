@@ -10,7 +10,7 @@
 #pragma once
 
 #include "FreeRTOS.h"
-#include "cmsis_os.h"
+#include "cmsis_os2.h"
 #include "freertos_mpool.h"
 #include "semphr.h"
 

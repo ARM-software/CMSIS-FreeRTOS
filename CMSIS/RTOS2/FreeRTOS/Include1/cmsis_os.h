@@ -154,7 +154,6 @@
 #endif
  
 #include "cmsis_os2.h"
-#include "freertos_os2_control_blocks.h"
 
 #ifdef  __cplusplus
 extern "C"
