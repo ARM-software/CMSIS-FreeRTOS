@@ -854,9 +854,15 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
   } else {
     vTaskSuspendAll();
 
-    /* Allocate memory on heap to temporarily store TaskStatus_t information */
+    /* Allocate memory on heap or stack to temporarily store TaskStatus_t information */
     count = uxTaskGetNumberOfTasks();
+
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     task  = pvPortMalloc (count * sizeof(TaskStatus_t));
+#else
+    TaskStatus_t task_on_stack[count];
+    task = &task_on_stack[0];
+#endif
 
     if (task != NULL) {
       /* Retrieve task status information */
@@ -870,7 +876,9 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
     }
     (void)xTaskResumeAll();
 
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
     vPortFree (task);
+#endif
   }
 
   /* Return number of enumerated threads */
@@ -2416,7 +2424,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     }
 
     if (mem_cb == 0) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
       mp = pvPortMalloc (sizeof(MemPool_t));
+#endif
     } else {
       mp = attr->cb_mem;
     }
@@ -2434,7 +2444,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
       if (mp->sem != NULL) {
         /* Setup memory array */
         if (mem_mp == 0) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
           mp->mem_arr = pvPortMalloc (sz);
+#endif
         } else {
           mp->mem_arr = attr->mp_mem;
         }
@@ -2465,8 +2477,10 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     else {
       /* Memory pool cannot be created, release allocated resources */
       if ((mem_cb == 0) && (mp != NULL)) {
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
         /* Free control block memory */
         vPortFree (mp);
+#endif
       }
       mp = NULL;
     }
