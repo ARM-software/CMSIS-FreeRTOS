@@ -2366,7 +2366,7 @@ static void *CreateBlock (MemPool_t *mp);
 /*
   Create and Initialize a Memory Pool object.
 */
-osMemoryPoolId_t git w (uint32_t block_count, uint32_t block_size, const osMemoryPoolAttr_t *attr) {
+osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, const osMemoryPoolAttr_t *attr) {
   MemPool_t *mp;
   const char *name;
   int32_t mem_cb, mem_mp;
