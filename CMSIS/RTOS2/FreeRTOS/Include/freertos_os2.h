@@ -23,10 +23,14 @@
 #ifndef FREERTOS_OS2_H_
 #define FREERTOS_OS2_H_
 
+// clang-format off
+
 #include <string.h>
 #include <stdint.h>
 
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
+
+#include "os2_control_blocks.h"
 
 #if defined(_RTE_)
 #include "RTE_Components.h"             // Component selection

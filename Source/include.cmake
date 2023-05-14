@@ -6,4 +6,3 @@ set(FREERTOS_CONFIG_FILE_DIRECTORY
 set(FREERTOS_HEAP
     ${FW3_COMPONENTS_DIR}/Source/no_heap.c
     CACHE STRING "")
-                    

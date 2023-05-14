@@ -19,6 +19,7 @@
  *      Purpose: CMSIS RTOS2 wrapper for FreeRTOS
  *
  *---------------------------------------------------------------------------*/
+// clang-format off
 
 #include <string.h>
 
@@ -664,6 +665,57 @@ osThreadState_t osThreadGetState (osThreadId_t thread_id) {
 }
 
 /*
+  Get start address of a thread stack.
+*/
+uint32_t osThreadStackGetStartAddress (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  uint32_t start_address;
+
+  if ((IRQ_Context() != 0U) || (hTask == NULL)) {
+    start_address = 0U;
+  } else {
+    start_address = (uint32_t)(uxTaskStackGetStartAddress(hTask));
+  }
+
+  /* Return start address */
+  return (start_address);
+}
+
+/*
+  Get end address of a thread stack.
+*/
+uint32_t osThreadStackGetEndAddress (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  uint32_t end_address;
+
+  if ((IRQ_Context() != 0U) || (hTask == NULL)) {
+    end_address = 0U;
+  } else {
+    end_address = (uint32_t)(uxTaskStackGetEndAddress(hTask));
+  }
+
+  /* Return end address */
+  return (end_address);
+}
+
+/*
+  Get stack size of a thread.
+*/
+uint32_t osThreadGetStackSize (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  uint32_t ss;
+
+  if ((IRQ_Context() != 0U) || (hTask == NULL)) {
+    ss = 0U;
+  } else {
+    ss = (uint32_t)(uxTaskGetStackSize(hTask) * sizeof(StackType_t));
+  }
+
+  /* Return stack size in bytes */
+  return (ss);
+}
+
+/*
   Get available stack space of a thread based on stack watermark recording during execution.
 */
 uint32_t osThreadGetStackSpace (osThreadId_t thread_id) {
@@ -847,7 +899,7 @@ uint32_t osThreadGetCount (void) {
 */
 uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
   uint32_t i, count;
-  TaskStatus_t *task;
+  TaskStatus_t * task;
 
   if ((IRQ_Context() != 0U) || (thread_array == NULL) || (array_items == 0U)) {
     count = 0U;
