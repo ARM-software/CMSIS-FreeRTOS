@@ -906,7 +906,7 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
   } else {
     vTaskSuspendAll();
 
-    /* Allocate memory on heap to temporarily store TaskStatus_t information */
+    /* Allocate memory on heap or stack to temporarily store TaskStatus_t information */
     count = uxTaskGetNumberOfTasks();
 
 #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
