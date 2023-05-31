@@ -439,7 +439,7 @@ void SVC_Handler( void ) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */
 }
 /*-----------------------------------------------------------*/
 
-void vPortAllocateSecureContext( uint32_t ulSecureStackSize ) /* __attribute__ (( naked )) */
+void vPortAllocateSecureContext( __attribute__( ( unused ) ) uint32_t ulSecureStackSize ) /* __attribute__ (( naked )) */
 {
     __asm volatile
     (
@@ -452,7 +452,7 @@ void vPortAllocateSecureContext( uint32_t ulSecureStackSize ) /* __attribute__ (
 }
 /*-----------------------------------------------------------*/
 
-void vPortFreeSecureContext( uint32_t * pulTCB ) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */
+void vPortFreeSecureContext( __attribute__( ( unused ) ) uint32_t * pulTCB ) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */
 {
     __asm volatile
     (
