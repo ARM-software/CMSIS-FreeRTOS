@@ -1,0 +1,6 @@
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence
+# Note: all code owners match the pattern in ONE line
+#
+# These owners will be the default owners for everything in the repo.
+*    @spanio/FW3 @patrick-dojofive @jperrin-dojofive @zhixuenlai @minh-anderson-dojofive
