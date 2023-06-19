@@ -1,4 +1,7 @@
+SPDX-License-Identifier: Apache-2.0 AND MIT
+
 =============================================================================
+
 CMSIS-FreeRTOS software pack contains software components licensed under the
 following licenses:
 
@@ -6,6 +9,7 @@ following licenses:
 - FreeRTOS kernel is licensed under MIT license
 
 The full license text of applicable licenses is provided below.
+
 =============================================================================
 License Text for the CMSIS extensions:
 
