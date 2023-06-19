@@ -35,7 +35,8 @@ This documentation shows you:
 License
 -------
 
-The CMSIS-FreeRTOS implementation is provided free of charge by Arm under the <a href="license.txt">FreeRTOS license</a>.
+The CMSIS-FreeRTOS implementation is provided free of charge by Arm under the <a href="LICENSE">Apache 2.0 license</a>.<br/>
+The FreeRTOS kernel source files are released under the <a href="LICENSE.md">MIT open source license</a>.
 
 
 ARM::CMSIS-FreeRTOS Pack

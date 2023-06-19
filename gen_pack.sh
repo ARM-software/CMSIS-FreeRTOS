@@ -23,12 +23,12 @@ PACK_DIRS="
   CMSIS
   Config
   Documentation
-  License
   Source
 "
 
 # Specify file names to be added to pack base directory
 PACK_BASE_FILES="
+  LICENSE
 "
 
 # Specify file names to be deleted from pack build directory

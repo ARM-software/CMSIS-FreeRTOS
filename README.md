@@ -40,4 +40,5 @@ Documentation may be generated separately using the bash script **gen_doc.sh** (
 
 ## License
 
-The FreeRTOS kernel is released under the MIT open source license (see License/license.txt).
+The FreeRTOS kernel source files are released under the MIT open source license (read [LICENSE.md](./Source/LICENSE.md)).
+The rest of the repository content is covered by Apache 2.0 license (read [LICENSE](./LICENSE)).
