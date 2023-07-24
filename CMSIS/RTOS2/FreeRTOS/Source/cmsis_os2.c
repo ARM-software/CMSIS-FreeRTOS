@@ -765,6 +765,7 @@ osStatus_t osThreadSuspend (osThreadId_t thread_id) {
 osStatus_t osThreadResume (osThreadId_t thread_id) {
   TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
+  eTaskState tstate;
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
@@ -773,8 +774,22 @@ osStatus_t osThreadResume (osThreadId_t thread_id) {
     stat = osErrorParameter;
   }
   else {
-    stat = osOK;
-    vTaskResume (hTask);
+    tstate = eTaskGetState (hTask);
+
+    if (tstate == eSuspended) {
+      /* Thread is suspended */
+      stat = osOK;
+      vTaskResume (hTask);
+    } else {
+      /* Not suspended, might be blocked */
+      if (xTaskAbortDelay(hTask) == pdPASS) {
+        /* Thread was unblocked */
+        stat = osOK;
+      } else {
+        /* Thread was not blocked */
+        stat = osErrorResource;
+      }
+    }
   }
 
   /* Return execution status */
