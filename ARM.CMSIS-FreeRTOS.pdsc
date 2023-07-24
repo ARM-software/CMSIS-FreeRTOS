@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<package schemaVersion="1.7.7" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.7/schema/PACK.xsd">
+<package schemaVersion="1.7.27" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.27/schema/PACK.xsd">
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
@@ -28,7 +28,8 @@
       <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
     </condition>
     <condition id="GCC">
-      <require Tcompiler="GCC"/>
+      <accept Tcompiler="GCC"/>
+      <accept Tcompiler="CLANG"/>
     </condition>
     <condition id="IAR">
       <require Tcompiler="IAR"/>
