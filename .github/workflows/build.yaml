@@ -31,4 +31,4 @@ jobs:
           gen-pack-script: ./gen_pack.sh --no-preprocess          # skipped by default
           gen-pack-output: ./output                               # skipped by default
           gh-pages-branch: gh-pages                               # default
-          gh-pages-deploy:                                        # disable
+          gh-pages-deploy: gh-pages.yml                           # default, use gh-pages.yml
