@@ -2229,14 +2229,13 @@ osStatus_t osMessageQueueGet (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *
   Get maximum number of messages in a Message Queue.
 */
 uint32_t osMessageQueueGetCapacity (osMessageQueueId_t mq_id) {
-  StaticQueue_t *mq = (StaticQueue_t *)mq_id;
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   uint32_t capacity;
 
-  if (mq == NULL) {
+  if (hQueue == NULL) {
     capacity = 0U;
   } else {
-    /* capacity = pxQueue->uxLength */
-    capacity = mq->uxDummy4[1];
+    capacity = uxQueueGetQueueLength (hQueue);
   }
 
   /* Return maximum number of messages */
@@ -2247,14 +2246,13 @@ uint32_t osMessageQueueGetCapacity (osMessageQueueId_t mq_id) {
   Get maximum message size in a Message Queue.
 */
 uint32_t osMessageQueueGetMsgSize (osMessageQueueId_t mq_id) {
-  StaticQueue_t *mq = (StaticQueue_t *)mq_id;
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   uint32_t size;
 
-  if (mq == NULL) {
+  if (hQueue == NULL) {
     size = 0U;
   } else {
-    /* size = pxQueue->uxItemSize */
-    size = mq->uxDummy4[2];
+    size = uxQueueGetQueueItemSize (hQueue);
   }
 
   /* Return maximum message size */
@@ -2286,23 +2284,22 @@ uint32_t osMessageQueueGetCount (osMessageQueueId_t mq_id) {
   Get number of available slots for messages in a Message Queue.
 */
 uint32_t osMessageQueueGetSpace (osMessageQueueId_t mq_id) {
-  StaticQueue_t *mq = (StaticQueue_t *)mq_id;
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   uint32_t space;
   uint32_t isrm;
 
-  if (mq == NULL) {
+  if (hQueue == NULL) {
     space = 0U;
   }
   else if (IRQ_Context() != 0U) {
     isrm = taskENTER_CRITICAL_FROM_ISR();
 
-    /* space = pxQueue->uxLength - pxQueue->uxMessagesWaiting; */
-    space = mq->uxDummy4[1] - mq->uxDummy4[0];
+    space = uxQueueGetQueueLength (hQueue) - uxQueueMessagesWaiting (hQueue);
 
     taskEXIT_CRITICAL_FROM_ISR(isrm);
   }
   else {
-    space = (uint32_t)uxQueueSpacesAvailable ((QueueHandle_t)mq);
+    space = (uint32_t)uxQueueSpacesAvailable (hQueue);
   }
 
   /* Return number of available slots */
