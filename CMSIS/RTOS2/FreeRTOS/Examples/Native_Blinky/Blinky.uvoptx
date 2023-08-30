@@ -162,8 +162,8 @@
         </Ww>
       </WatchWindow1>
       <ScvdPack>
-        <Filename>C:\Arm\Packs\ARM\CMSIS-FreeRTOS\10.5.1\CMSIS\RTOS2\FreeRTOS\FreeRTOS.scvd</Filename>
-        <Type>ARM.CMSIS-FreeRTOS.10.5.1</Type>
+        <Filename>C:\Arm\Packs\ARM\CMSIS-FreeRTOS\10.6.1\CMSIS\RTOS2\FreeRTOS\FreeRTOS.scvd</Filename>
+        <Type>ARM.CMSIS-FreeRTOS.10.6.1</Type>
         <SubType>1</SubType>
       </ScvdPack>
       <ScvdPack>

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.4.0
+ * $Revision:   V10.5.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -259,6 +259,7 @@
 #define INCLUDE_vTaskPrioritySet                1
 #define INCLUDE_eTaskGetState                   1
 #define INCLUDE_vTaskSuspend                    1
+#define INCLUDE_xTaskAbortDelay                 1
 #define INCLUDE_xTimerPendFunctionCall          1
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
