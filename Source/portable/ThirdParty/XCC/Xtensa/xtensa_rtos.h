@@ -1,5 +1,5 @@
  /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -236,4 +236,3 @@ Xtensa Port Version.
 #define XTENSA_PORT_VERSION_STRING      "1.7"
 
 #endif /* XTENSA_RTOS_H */
-

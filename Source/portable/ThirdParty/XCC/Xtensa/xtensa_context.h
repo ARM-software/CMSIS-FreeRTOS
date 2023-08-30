@@ -1,5 +1,5 @@
  /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -353,4 +353,3 @@ STRUCT_END(XtSolFrame)
 
 
 #endif /* XTENSA_CONTEXT_H */
-

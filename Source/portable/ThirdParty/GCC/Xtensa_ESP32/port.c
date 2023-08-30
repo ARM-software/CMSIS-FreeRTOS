@@ -7,7 +7,7 @@
  * SPDX-FileContributor: 2016-2022 Espressif Systems (Shanghai) CO LTD
  */
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -176,13 +176,13 @@ void _xt_user_exit( void );
 
     /* Explicitly initialize certain saved registers */
     #if CONFIG_FREERTOS_TASK_FUNCTION_WRAPPER
-        frame->pc = ( UBaseType_t ) vPortTaskWrapper; /* task wrapper						*/
+        frame->pc = ( UBaseType_t ) vPortTaskWrapper; /* task wrapper                       */
     #else
-        frame->pc = ( UBaseType_t ) pxCode;           /* task entrypoint					*/
+        frame->pc = ( UBaseType_t ) pxCode;           /* task entrypoint                    */
     #endif
-    frame->a0 = 0;                                    /* to terminate GDB backtrace		*/
-    frame->a1 = ( UBaseType_t ) sp + XT_STK_FRMSZ;    /* physical top of stack frame		*/
-    frame->exit = ( UBaseType_t ) _xt_user_exit;      /* user exception exit dispatcher	*/
+    frame->a0 = 0;                                    /* to terminate GDB backtrace     */
+    frame->a1 = ( UBaseType_t ) sp + XT_STK_FRMSZ;    /* physical top of stack frame        */
+    frame->exit = ( UBaseType_t ) _xt_user_exit;      /* user exception exit dispatcher */
 
     /* Set initial PS to int level 0, EXCM disabled ('rfe' will enable), user mode. */
     /* Also set entry point argument parameter. */

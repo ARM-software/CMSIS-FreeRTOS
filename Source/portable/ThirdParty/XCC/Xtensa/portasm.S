@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -598,4 +598,3 @@ _frxt_task_coproc_state:
 2:  ret
 
 #endif /* XCHAL_CP_NUM > 0 */
-

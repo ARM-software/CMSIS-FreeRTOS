@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -32,9 +32,11 @@
 
 #include "intrinsics.h"
 
+/* *INDENT-OFF* */
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
+/* *INDENT-ON* */
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -82,7 +84,11 @@ typedef portUBASE_TYPE TickType_t;
 /* Architecture specifics. */
 #define portSTACK_GROWTH            ( -1 )
 #define portTICK_PERIOD_MS          ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
-#define portBYTE_ALIGNMENT          16
+#ifdef __riscv_32e
+    #define portBYTE_ALIGNMENT          8   /* RV32E uses RISC-V EABI with reduced stack alignment requirements. */
+#else
+    #define portBYTE_ALIGNMENT          16
+#endif
 /*-----------------------------------------------------------*/
 
 /* Scheduler utilities. */
@@ -172,8 +178,10 @@ extern size_t xCriticalNesting;
     #error configMTIME_BASE_ADDRESS and configMTIMECMP_BASE_ADDRESS must be defined in FreeRTOSConfig.h.  Set them to zero if there is no MTIME (machine time) clock.  See https://www.FreeRTOS.org/Using-FreeRTOS-on-RISC-V.html
 #endif
 
+/* *INDENT-OFF* */
 #ifdef __cplusplus
-}
+    }
 #endif
+/* *INDENT-ON* */
 
 #endif /* PORTMACRO_H */

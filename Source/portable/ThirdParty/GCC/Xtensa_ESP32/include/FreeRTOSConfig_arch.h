@@ -6,7 +6,7 @@
  * SPDX-FileContributor: 2016-2022 Espressif Systems (Shanghai) CO LTD
  */
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -107,7 +107,7 @@ int xt_clock_freq(void) __attribute__((deprecated));
 /* The maximum interrupt priority from which FreeRTOS.org API functions can
    be called.  Only API functions that end in ...FromISR() can be used within
    interrupts. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY	XCHAL_EXCM_LEVEL
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    XCHAL_EXCM_LEVEL
 
 /* Stack alignment, architecture specifc. Must be a power of two. */
 #define configSTACK_ALIGNMENT                           16
