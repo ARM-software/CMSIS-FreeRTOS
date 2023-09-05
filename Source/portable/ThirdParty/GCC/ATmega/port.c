@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -622,7 +622,7 @@ BaseType_t xPortStartScheduler( void )
 
 void vPortEndScheduler( void )
 {
-	/* It is unlikely that the ATmega port will get stopped. */
+    /* It is unlikely that the ATmega port will get stopped. */
 }
 /*-----------------------------------------------------------*/
 
@@ -764,5 +764,3 @@ uint8_t ucLowByte;
         xTaskIncrementTick();
     }
 #endif
-
-

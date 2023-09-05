@@ -1,5 +1,5 @@
  /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -125,4 +125,3 @@ static inline void xt_set_intclear(unsigned int arg)
 
 
 #endif /* __XTENSA_API_H__ */
-

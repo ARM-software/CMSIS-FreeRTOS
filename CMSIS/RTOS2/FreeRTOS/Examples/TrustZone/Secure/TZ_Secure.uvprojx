@@ -417,12 +417,6 @@
   <RTE>
     <apis/>
     <components>
-      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="TrustZone" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS TrustZone">
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
-        <targetInfos>
-          <targetInfo name="Virtual Hardware Target"/>
-        </targetInfos>
-      </component>
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
@@ -431,6 +425,12 @@
       </component>
       <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="ARM" Cversion="2.1.0" condition="ARMCM33 CMSIS">
         <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
+        <targetInfos>
+          <targetInfo name="Virtual Hardware Target"/>
+        </targetInfos>
+      </component>
+      <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="TrustZone" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS TrustZone">
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
         <targetInfos>
           <targetInfo name="Virtual Hardware Target"/>
         </targetInfos>
@@ -471,8 +471,8 @@
       </file>
       <file attr="config" category="header" name="CMSIS\RTOS2\FreeRTOS\Config\ARMCM_TZ\FreeRTOSConfig.h" version="10.2.0">
         <instance index="0">RTE\RTOS\FreeRTOSConfig.h</instance>
-        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="TrustZone" Cvendor="ARM" Cversion="10.5.1" condition="FreeRTOS TrustZone"/>
-        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="10.5.1"/>
+        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="TrustZone" Cvendor="ARM" Cversion="10.6.1" condition="FreeRTOS TrustZone"/>
+        <package name="CMSIS-FreeRTOS" schemaVersion="1.7.27" url="https://www.keil.com/pack/" vendor="ARM" version="10.6.1"/>
         <targetInfos>
           <targetInfo name="Virtual Hardware Target"/>
         </targetInfos>

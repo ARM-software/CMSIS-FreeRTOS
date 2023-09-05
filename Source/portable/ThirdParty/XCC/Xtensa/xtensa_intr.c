@@ -1,5 +1,5 @@
  /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -135,4 +135,3 @@ xt_handler xt_set_interrupt_handler(int n, xt_handler f, void * arg)
 
 
 #endif /* XCHAL_HAVE_INTERRUPTS */
-

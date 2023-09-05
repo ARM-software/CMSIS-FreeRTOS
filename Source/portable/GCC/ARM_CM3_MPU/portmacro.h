@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.5.1
+ * FreeRTOS Kernel V10.6.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -28,11 +28,13 @@
 
 
 #ifndef PORTMACRO_H
-    #define PORTMACRO_H
+#define PORTMACRO_H
 
-    #ifdef __cplusplus
-        extern "C" {
-    #endif
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    extern "C" {
+#endif
+/* *INDENT-ON* */
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -57,16 +59,18 @@
     typedef long             BaseType_t;
     typedef unsigned long    UBaseType_t;
 
-    #if ( configUSE_16_BIT_TICKS == 1 )
+    #if ( configTICK_TYPE_WIDTH_IN_BITS == TICK_TYPE_WIDTH_16_BITS )
         typedef uint16_t     TickType_t;
         #define portMAX_DELAY              ( TickType_t ) 0xffff
-    #else
+    #elif ( configTICK_TYPE_WIDTH_IN_BITS == TICK_TYPE_WIDTH_32_BITS )
         typedef uint32_t     TickType_t;
         #define portMAX_DELAY              ( TickType_t ) 0xffffffffUL
 
 /* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
  * not need to be guarded with a critical section. */
         #define portTICK_TYPE_IS_ATOMIC    1
+    #else
+        #error configTICK_TYPE_WIDTH_IN_BITS set to unsupported tick type width.
     #endif
 /*-----------------------------------------------------------*/
 
@@ -100,10 +104,45 @@
         uint32_t ulRegionAttribute;
     } xMPU_REGION_REGISTERS;
 
-/* Plus 1 to create space for the stack region. */
+    typedef struct MPU_REGION_SETTINGS
+    {
+        uint32_t ulRegionStartAddress;
+        uint32_t ulRegionEndAddress;
+        uint32_t ulRegionPermissions;
+    } xMPU_REGION_SETTINGS;
+
+    #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
+
+        #ifndef configSYSTEM_CALL_STACK_SIZE
+            #error configSYSTEM_CALL_STACK_SIZE must be defined to the desired size of the system call stack in words for using MPU wrappers v2.
+        #endif
+
+        typedef struct SYSTEM_CALL_STACK_INFO
+        {
+            uint32_t ulSystemCallStackBuffer[ configSYSTEM_CALL_STACK_SIZE ];
+            uint32_t * pulSystemCallStack;
+            uint32_t * pulTaskStack;
+            uint32_t ulLinkRegisterAtSystemCallEntry;
+        } xSYSTEM_CALL_STACK_INFO;
+
+    #endif /* #if ( configUSE_MPU_WRAPPERS_V1 == 0 ) */
+
+    #define MAX_CONTEXT_SIZE 20
+
+    /* Flags used for xMPU_SETTINGS.ulTaskFlags member. */
+    #define portSTACK_FRAME_HAS_PADDING_FLAG     ( 1UL << 0UL )
+    #define portTASK_IS_PRIVILEGED_FLAG          ( 1UL << 1UL )
+
     typedef struct MPU_SETTINGS
     {
         xMPU_REGION_REGISTERS xRegion[ portTOTAL_NUM_REGIONS_IN_TCB ];
+        xMPU_REGION_SETTINGS xRegionSettings[ portTOTAL_NUM_REGIONS_IN_TCB ];
+        uint32_t ulContext[ MAX_CONTEXT_SIZE ];
+        uint32_t ulTaskFlags;
+
+        #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
+            xSYSTEM_CALL_STACK_INFO xSystemCallStackInfo;
+        #endif
     } xMPU_SETTINGS;
 
 /* Architecture specifics. */
@@ -114,13 +153,16 @@
 /*-----------------------------------------------------------*/
 
 /* SVC numbers for various services. */
-    #define portSVC_START_SCHEDULER    0
-    #define portSVC_YIELD              1
-    #define portSVC_RAISE_PRIVILEGE    2
+    #define portSVC_START_SCHEDULER     0
+    #define portSVC_YIELD               1
+    #define portSVC_RAISE_PRIVILEGE     2
+    #define portSVC_SYSTEM_CALL_ENTER   3   /* System calls with upto 4 parameters. */
+    #define portSVC_SYSTEM_CALL_ENTER_1 4   /* System calls with 5 parameters. */
+    #define portSVC_SYSTEM_CALL_EXIT    5
 
 /* Scheduler utilities. */
 
-    #define portYIELD()    __asm volatile ( "	SVC	%0	\n"::"i" ( portSVC_YIELD ) : "memory" )
+    #define portYIELD()    __asm volatile ( "   SVC %0  \n"::"i" ( portSVC_YIELD ) : "memory" )
     #define portYIELD_WITHIN_API()                      \
     {                                                   \
         /* Set a PendSV to request a context switch. */ \
@@ -228,6 +270,16 @@
     #define portRESET_PRIVILEGE()    vResetPrivilege()
 /*-----------------------------------------------------------*/
 
+    extern BaseType_t xPortIsTaskPrivileged( void );
+
+/**
+ * @brief Checks whether or not the calling task is privileged.
+ *
+ * @return pdTRUE if the calling task is privileged, pdFALSE otherwise.
+ */
+    #define portIS_TASK_PRIVILEGED()      xPortIsTaskPrivileged()
+/*-----------------------------------------------------------*/
+
     portFORCE_INLINE static BaseType_t xPortIsInsideInterrupt( void )
     {
         uint32_t ulCurrentInterrupt;
@@ -256,10 +308,10 @@
 
         __asm volatile
         (
-            "	mov %0, %1												\n"\
-            "	msr basepri, %0											\n"\
-            "	isb														\n"\
-            "	dsb														\n"\
+            "   mov %0, %1                                              \n"\
+            "   msr basepri, %0                                         \n"\
+            "   isb                                                     \n"\
+            "   dsb                                                     \n"\
             : "=r" ( ulNewBASEPRI ) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY ) : "memory"
         );
     }
@@ -272,11 +324,11 @@
 
         __asm volatile
         (
-            "	mrs %0, basepri											\n"\
-            "	mov %1, %2												\n"\
-            "	msr basepri, %1											\n"\
-            "	isb														\n"\
-            "	dsb														\n"\
+            "   mrs %0, basepri                                         \n"\
+            "   mov %1, %2                                              \n"\
+            "   msr basepri, %1                                         \n"\
+            "   isb                                                     \n"\
+            "   dsb                                                     \n"\
             : "=r" ( ulOriginalBASEPRI ), "=r" ( ulNewBASEPRI ) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY ) : "memory"
         );
 
@@ -290,7 +342,7 @@
     {
         __asm volatile
         (
-            "	msr basepri, %0	"::"r" ( ulNewMaskValue ) : "memory"
+            "   msr basepri, %0 "::"r" ( ulNewMaskValue ) : "memory"
         );
     }
 /*-----------------------------------------------------------*/
@@ -298,12 +350,15 @@
     #define portMEMORY_BARRIER()    __asm volatile ( "" ::: "memory" )
 
     #ifndef configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY
-        #warning "configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY is not defined. We recommend defining it to 1 in FreeRTOSConfig.h for better security. https://www.FreeRTOS.org/FreeRTOS-V10.3.x.html"
+        #warning "configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY is not defined. We recommend defining it to 1 in FreeRTOSConfig.h for better security. *www.FreeRTOS.org/FreeRTOS-V10.3.x.html"
         #define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY    0
     #endif
 /*-----------------------------------------------------------*/
-    #ifdef __cplusplus
-        }
-    #endif
+
+/* *INDENT-OFF* */
+#ifdef __cplusplus
+    }
+#endif
+/* *INDENT-ON* */
 
 #endif /* PORTMACRO_H */

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.4.0
+ * $Revision:   V10.5.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -196,7 +196,7 @@
 //  <i> Using Floating Point Unit (FPU) affects context handling.
 //  <i> Enable FPU when application uses floating point operations.
 //  <i> Default: 1
-#define configENABLE_FPU                      0
+#define configENABLE_FPU                      1
 
 //  <q>Use M-Profile Vector Extension
 //  <i> Using M-Profile Vector Extension (MVE) affects context handling.
@@ -259,6 +259,7 @@
 #define INCLUDE_vTaskPrioritySet                1
 #define INCLUDE_eTaskGetState                   1
 #define INCLUDE_vTaskSuspend                    1
+#define INCLUDE_xTaskAbortDelay                 1
 #define INCLUDE_xTimerPendFunctionCall          1
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */

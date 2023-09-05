@@ -1,5 +1,5 @@
 ;/*
-; * FreeRTOS Kernel V10.5.1
+; * FreeRTOS Kernel V10.6.1
 ; * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 ; *
 ; * SPDX-License-Identifier: MIT
@@ -25,18 +25,15 @@
 ; * https://github.com/FreeRTOS
 ; *
 ; */
-		.GLB	_vSoftwareInterruptISR
+        .GLB    _vSoftwareInterruptISR
                 .GLB    _vSoftwareInterruptEntry
 
-		.SECTION   P,CODE
+        .SECTION   P,CODE
 
 _vSoftwareInterruptEntry:
 
-	BRA	_vSoftwareInterruptISR
+    BRA _vSoftwareInterruptISR
 
-		.RVECTOR	27, _vSoftwareInterruptEntry
+        .RVECTOR    27, _vSoftwareInterruptEntry
 
-		.END
-
-
-
+        .END
