@@ -34,7 +34,7 @@
 #define EvtFreeRTOSHeapNo               (0xF4U)
 #define EvtFreeRTOSStreamBufNo          (0xF5U)
 
-#ifdef RTE_Compiler_EventRecorder
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
 
 #include "EventRecorder.h"
 
@@ -233,7 +233,7 @@ void EvrFreeRTOSSetup (uint32_t reset) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_CREATE_DISABLE))
 void EvrFreeRTOSTasks_TaskCreate (/*TCB_t*/void *pxNewTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskCreate, (uint32_t)pxNewTCB, 0U);
 #else
   (void)pxNewTCB;
@@ -243,7 +243,7 @@ void EvrFreeRTOSTasks_TaskCreate (/*TCB_t*/void *pxNewTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_CREATE_FAILED_DISABLE))
 void EvrFreeRTOSTasks_TaskCreateFailed (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskCreateFailed, 0U, 0U);
 #endif
 }
@@ -251,7 +251,7 @@ void EvrFreeRTOSTasks_TaskCreateFailed (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_DELETE_DISABLE))
 void EvrFreeRTOSTasks_TaskDelete (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskDelete, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -261,7 +261,7 @@ void EvrFreeRTOSTasks_TaskDelete (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_DELAY_UNTIL_DISABLE))
 void EvrFreeRTOSTasks_TaskDelayUntil (uint32_t xTimeToWake) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskDelayUntil, xTimeToWake, 0U);
 #else
   (void)xTimeToWake;
@@ -271,7 +271,7 @@ void EvrFreeRTOSTasks_TaskDelayUntil (uint32_t xTimeToWake) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_DELAY_DISABLE))
 void EvrFreeRTOSTasks_TaskDelay (uint32_t xTicksToDelay) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskDelay, xTicksToDelay, 0U);
 #else
   (void)xTicksToDelay;
@@ -281,7 +281,7 @@ void EvrFreeRTOSTasks_TaskDelay (uint32_t xTicksToDelay) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_PRIORITY_SET_DISABLE))
 void EvrFreeRTOSTasks_TaskPrioritySet (/*TCB_t*/void *pxTCB, uint32_t uxNewPriority) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskPrioritySet, (uint32_t)pxTCB, uxNewPriority);
 #else
   (void)pxTCB;
@@ -292,7 +292,7 @@ void EvrFreeRTOSTasks_TaskPrioritySet (/*TCB_t*/void *pxTCB, uint32_t uxNewPrior
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_SUSPEND_DISABLE))
 void EvrFreeRTOSTasks_TaskSuspend (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskSuspend, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -302,7 +302,7 @@ void EvrFreeRTOSTasks_TaskSuspend (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_RESUME_DISABLE))
 void EvrFreeRTOSTasks_TaskResume (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskResume, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -312,7 +312,7 @@ void EvrFreeRTOSTasks_TaskResume (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_RESUME_FROM_ISR_DISABLE))
 void EvrFreeRTOSTasks_TaskResumeFromIsr (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskResumeFromIsr, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -322,7 +322,7 @@ void EvrFreeRTOSTasks_TaskResumeFromIsr (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_INCREMENT_TICK_DISABLE))
 void EvrFreeRTOSTasks_TaskIncrementTick (uint32_t xTickCount) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskIncrementTick, xTickCount, 0U);
 #else
   (void)xTickCount;
@@ -332,7 +332,7 @@ void EvrFreeRTOSTasks_TaskIncrementTick (uint32_t xTickCount) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceINCREASE_TICK_COUNT_DISABLE))
 void EvrFreeRTOSTasks_IncreaseTickCount (uint32_t xTicksToJump) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_IncreaseTickCount, xTicksToJump, 0U);
 #else
   (void)xTicksToJump;
@@ -342,7 +342,7 @@ void EvrFreeRTOSTasks_IncreaseTickCount (uint32_t xTicksToJump) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_SWITCHED_OUT_DISABLE))
 void EvrFreeRTOSTasks_TaskSwitchedOut (/*TCB_t*/void *pxCurrentTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskSwitchedOut, (uint32_t)pxCurrentTCB, 0U);
 #else
   (void)pxCurrentTCB;
@@ -352,7 +352,7 @@ void EvrFreeRTOSTasks_TaskSwitchedOut (/*TCB_t*/void *pxCurrentTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_SWITCHED_IN_DISABLE))
 void EvrFreeRTOSTasks_TaskSwitchedIn (/*TCB_t*/void *pxCurrentTCB, uint32_t uxTopPriority) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskSwitchedIn, (uint32_t)pxCurrentTCB, uxTopPriority);
 #else
   (void)pxCurrentTCB;
@@ -363,7 +363,7 @@ void EvrFreeRTOSTasks_TaskSwitchedIn (/*TCB_t*/void *pxCurrentTCB, uint32_t uxTo
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_PRIORITY_INHERIT_DISABLE))
 void EvrFreeRTOSTasks_TaskPriorityInherit (/*TCB_t*/void *pxTCBOfMutexHolder, uint32_t uxInheritedPriority) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskPriorityInherit, (uint32_t)pxTCBOfMutexHolder, (uint32_t)uxInheritedPriority);
 #else
   (void)pxTCBOfMutexHolder;
@@ -374,7 +374,7 @@ void EvrFreeRTOSTasks_TaskPriorityInherit (/*TCB_t*/void *pxTCBOfMutexHolder, ui
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_PRIORITY_DISINHERIT_DISABLE))
 void EvrFreeRTOSTasks_TaskPriorityDisinherit (/*TCB_t*/void *pxTCBOfMutexHolder, uint32_t uxOriginalPriority) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskPriorityDisinherit, (uint32_t)pxTCBOfMutexHolder, (uint32_t)uxOriginalPriority);
 #else
   (void)pxTCBOfMutexHolder;
@@ -385,7 +385,7 @@ void EvrFreeRTOSTasks_TaskPriorityDisinherit (/*TCB_t*/void *pxTCBOfMutexHolder,
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceMOVED_TASK_TO_READY_STATE_DISABLE))
 void EvrFreeRTOSTasks_MovedTaskToReadyState (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_MovedTaskToReadyState, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -395,7 +395,7 @@ void EvrFreeRTOSTasks_MovedTaskToReadyState (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePOST_MOVED_TASK_TO_READY_STATE_DISABLE))
 void EvrFreeRTOSTasks_PostMovedTaskToReadyState (/*TCB_t*/void *pxTCB) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_PostMovedTaskToReadyState, (uint32_t)pxTCB, 0U);
 #else
   (void)pxTCB;
@@ -405,7 +405,7 @@ void EvrFreeRTOSTasks_PostMovedTaskToReadyState (/*TCB_t*/void *pxTCB) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceLOW_POWER_IDLE_BEGIN_DISABLE))
 void EvrFreeRTOSTasks_LowPowerIdleBegin (uint32_t xExpectedIdleTime) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_LowPowerIdleBegin, xExpectedIdleTime, 0U);
 #else
   (void)xExpectedIdleTime;
@@ -415,7 +415,7 @@ void EvrFreeRTOSTasks_LowPowerIdleBegin (uint32_t xExpectedIdleTime) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceLOW_POWER_IDLE_END_DISABLE))
 void EvrFreeRTOSTasks_LowPowerIdleEnd (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_LowPowerIdleEnd, 0U, 0U);
 #endif
 }
@@ -423,7 +423,7 @@ void EvrFreeRTOSTasks_LowPowerIdleEnd (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_BLOCK_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t uxIndexToWait, uint32_t xTicksToWait) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskNotifyTakeBlock, uxIndexToWait, xTicksToWait);
 #else
   (void)uxIndexToWait;
@@ -434,7 +434,7 @@ void EvrFreeRTOSTasks_TaskNotifyTakeBlock (uint32_t uxIndexToWait, uint32_t xTic
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_TAKE_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskNotifyTake, uxIndexToWait, ulNotifiedValue);
 #else
   (void)uxIndexToWait;
@@ -445,7 +445,7 @@ void EvrFreeRTOSTasks_TaskNotifyTake (uint32_t uxIndexToWait, uint32_t ulNotifie
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_BLOCK_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyWaitBlock  (uint32_t uxIndexToWait, uint32_t xTicksToWait) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskNotifyWaitBlock, uxIndexToWait, xTicksToWait);
 #else
   (void)uxIndexToWait;
@@ -456,7 +456,7 @@ void EvrFreeRTOSTasks_TaskNotifyWaitBlock  (uint32_t uxIndexToWait, uint32_t xTi
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_WAIT_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTasks_TaskNotifyWait, uxIndexToWait, ulNotifiedValue);
 #else
   (void)uxIndexToWait;
@@ -467,7 +467,7 @@ void EvrFreeRTOSTasks_TaskNotifyWait (uint32_t uxIndexToWait, uint32_t ulNotifie
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_DISABLE))
 void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTasks_TaskNotify, (uint32_t)xTaskToNotify, uxIndexToWait, eAction, ulNotifiedValue);
 #else
   (void)xTaskToNotify;
@@ -480,7 +480,7 @@ void EvrFreeRTOSTasks_TaskNotify (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndex
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_FROM_ISR_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, /*eNotifyAction*/uint32_t eAction, uint32_t ulNotifiedValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTasks_TaskNotifyFromIsr, (uint32_t)xTaskToNotify, uxIndexToWait, eAction, ulNotifiedValue);
 #else
   (void)xTaskToNotify;
@@ -493,7 +493,7 @@ void EvrFreeRTOSTasks_TaskNotifyFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t 
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTASK_NOTIFY_GIVE_FROM_ISR_DISABLE))
 void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint32_t uxIndexToWait, uint32_t ulNotifiedValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTasks_TaskNotifyGiveFromIsr, (uint32_t)xTaskToNotify, uxIndexToWait, ulNotifiedValue, 0U);
 #else
   (void)xTaskToNotify;
@@ -508,7 +508,7 @@ void EvrFreeRTOSTasks_TaskNotifyGiveFromIsr (/*TCB_t*/void *xTaskToNotify, uint3
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_CREATE_DISABLE))
 void EvrFreeRTOSQueue_QueueCreate (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueCreate, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -518,7 +518,7 @@ void EvrFreeRTOSQueue_QueueCreate (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_CREATE_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueueCreateFailed (uint32_t ucQueueType) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueCreateFailed, ucQueueType, 0U);
 #else
   (void)ucQueueType;
@@ -528,7 +528,7 @@ void EvrFreeRTOSQueue_QueueCreateFailed (uint32_t ucQueueType) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceCREATE_MUTEX_DISABLE))
 void EvrFreeRTOSQueue_CreateMutex (/*Queue_t*/void *pxNewQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_CreateMutex, (uint32_t)pxNewQueue, 0U);
 #else
   (void)pxNewQueue;
@@ -538,7 +538,7 @@ void EvrFreeRTOSQueue_CreateMutex (/*Queue_t*/void *pxNewQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceCREATE_MUTEX_FAILED_DISABLE))
 void EvrFreeRTOSQueue_CreateMutexFailed (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_CreateMutexFailed, 0U, 0U);
 #endif
 }
@@ -546,7 +546,7 @@ void EvrFreeRTOSQueue_CreateMutexFailed (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceGIVE_MUTEX_RECURSIVE_DISABLE))
 void EvrFreeRTOSQueue_GiveMutexRecursive (/*Queue_t*/void *pxMutex) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_GiveMutexRecursive, (uint32_t)pxMutex, 0U);
 #else
   (void)pxMutex;
@@ -556,7 +556,7 @@ void EvrFreeRTOSQueue_GiveMutexRecursive (/*Queue_t*/void *pxMutex) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceGIVE_MUTEX_RECURSIVE_FAILED_DISABLE))
 void EvrFreeRTOSQueue_GiveMutexRecursiveFailed (/*Queue_t*/void *pxMutex) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_GiveMutexRecursiveFailed, (uint32_t)pxMutex, 0U);
 #else
   (void)pxMutex;
@@ -566,7 +566,7 @@ void EvrFreeRTOSQueue_GiveMutexRecursiveFailed (/*Queue_t*/void *pxMutex) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTAKE_MUTEX_RECURSIVE_DISABLE))
 void EvrFreeRTOSQueue_TakeMutexRecursive (/*Queue_t*/void *pxMutex) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_TakeMutexRecursive, (uint32_t)pxMutex, 0U);
 #else
   (void)pxMutex;
@@ -576,7 +576,7 @@ void EvrFreeRTOSQueue_TakeMutexRecursive (/*Queue_t*/void *pxMutex) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTAKE_MUTEX_RECURSIVE_FAILED_DISABLE))
 void EvrFreeRTOSQueue_TakeMutexRecursiveFailed (/*Queue_t*/void *pxMutex) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_TakeMutexRecursiveFailed, (uint32_t)pxMutex, 0U);
 #else
   (void)pxMutex;
@@ -586,7 +586,7 @@ void EvrFreeRTOSQueue_TakeMutexRecursiveFailed (/*Queue_t*/void *pxMutex) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceCREATE_COUNTING_SEMAPHORE_DISABLE))
 void EvrFreeRTOSQueue_CreateCountingSemaphore (/*Queue_t*/void *xHandle) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_CreateCountingSemaphore, (uint32_t)xHandle, 0U);
 #else
   (void)xHandle;
@@ -596,7 +596,7 @@ void EvrFreeRTOSQueue_CreateCountingSemaphore (/*Queue_t*/void *xHandle) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceCREATE_COUNTING_SEMAPHORE_FAILED_DISABLE))
 void EvrFreeRTOSQueue_CreateCountingSemaphoreFailed (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_CreateCountingSemaphoreFailed, 0U, 0U);
 #endif
 }
@@ -604,7 +604,7 @@ void EvrFreeRTOSQueue_CreateCountingSemaphoreFailed (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_SEND_DISABLE))
 void EvrFreeRTOSQueue_QueueSend (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueSend, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -614,7 +614,7 @@ void EvrFreeRTOSQueue_QueueSend (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_SEND_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueueSendFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueSendFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -624,7 +624,7 @@ void EvrFreeRTOSQueue_QueueSendFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_RECEIVE_DISABLE))
 void EvrFreeRTOSQueue_QueueReceive (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueReceive, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -634,7 +634,7 @@ void EvrFreeRTOSQueue_QueueReceive (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_DISABLE))
 void EvrFreeRTOSQueue_QueuePeek (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueuePeek, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -644,7 +644,7 @@ void EvrFreeRTOSQueue_QueuePeek (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueuePeekFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueuePeekFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -654,7 +654,7 @@ void EvrFreeRTOSQueue_QueuePeekFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FROM_ISR_DISABLE))
 void EvrFreeRTOSQueue_QueuePeekFromIsr (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueuePeekFromIsr, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -664,7 +664,7 @@ void EvrFreeRTOSQueue_QueuePeekFromIsr (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_RECEIVE_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueueReceiveFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueReceiveFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -674,7 +674,7 @@ void EvrFreeRTOSQueue_QueueReceiveFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_SEND_FROM_ISR_DISABLE))
 void EvrFreeRTOSQueue_QueueSendFromIsr (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueSendFromIsr, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -684,7 +684,7 @@ void EvrFreeRTOSQueue_QueueSendFromIsr (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_SEND_FROM_ISR_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueueSendFromIsrFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueSendFromIsrFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -694,7 +694,7 @@ void EvrFreeRTOSQueue_QueueSendFromIsrFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_RECEIVE_FROM_ISR_DISABLE))
 void EvrFreeRTOSQueue_QueueReceiveFromIsr (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueReceiveFromIsr, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -704,7 +704,7 @@ void EvrFreeRTOSQueue_QueueReceiveFromIsr (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_RECEIVE_FROM_ISR_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueueReceiveFromIsrFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueReceiveFromIsrFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -714,7 +714,7 @@ void EvrFreeRTOSQueue_QueueReceiveFromIsrFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_PEEK_FROM_ISR_FAILED_DISABLE))
 void EvrFreeRTOSQueue_QueuePeekFromIsrFailed (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueuePeekFromIsrFailed, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -724,7 +724,7 @@ void EvrFreeRTOSQueue_QueuePeekFromIsrFailed (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_DELETE_DISABLE))
 void EvrFreeRTOSQueue_QueueDelete (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueDelete, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -734,7 +734,7 @@ void EvrFreeRTOSQueue_QueueDelete (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceQUEUE_REGISTRY_ADD_DISABLE))
 void EvrFreeRTOSQueue_QueueRegistryAdd (/*Queue_t*/void *pxQueue, const char *pcQueueName) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_QueueRegistryAdd, (uint32_t)pxQueue, (uint32_t)pcQueueName);
 #else
   (void)pxQueue;
@@ -745,7 +745,7 @@ void EvrFreeRTOSQueue_QueueRegistryAdd (/*Queue_t*/void *pxQueue, const char *pc
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_QUEUE_RECEIVE_DISABLE))
 void EvrFreeRTOSQueue_BlockingOnQueueReceive (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_BlockingOnQueueReceive, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -755,7 +755,7 @@ void EvrFreeRTOSQueue_BlockingOnQueueReceive (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_QUEUE_SEND_DISABLE))
 void EvrFreeRTOSQueue_BlockingOnQueueSend (/*Queue_t*/void *pxQueue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSQueue_BlockingOnQueueSend, (uint32_t)pxQueue, 0U);
 #else
   (void)pxQueue;
@@ -768,7 +768,7 @@ void EvrFreeRTOSQueue_BlockingOnQueueSend (/*Queue_t*/void *pxQueue) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_CREATE_DISABLE))
 void EvrFreeRTOSTimers_TimerCreate (/*Timer_t*/void *pxNewTimer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTimers_TimerCreate, (uint32_t)pxNewTimer, 0U);
 #else
   (void)pxNewTimer;
@@ -778,7 +778,7 @@ void EvrFreeRTOSTimers_TimerCreate (/*Timer_t*/void *pxNewTimer) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_CREATE_FAILED_DISABLE))
 void EvrFreeRTOSTimers_TimerCreateFailed (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTimers_TimerCreateFailed, 0U, 0U);
 #endif
 }
@@ -786,7 +786,7 @@ void EvrFreeRTOSTimers_TimerCreateFailed (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_COMMAND_SEND_DISABLE))
 void EvrFreeRTOSTimers_TimerCommandSend (/*Timer_t*/void *pxTimer, uint32_t xCommandID, uint32_t xOptionalValue, uint32_t xReturn) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTimers_TimerCommandSend, (uint32_t)pxTimer, xCommandID, xOptionalValue, xReturn);
 #else
   (void)pxTimer;
@@ -799,7 +799,7 @@ void EvrFreeRTOSTimers_TimerCommandSend (/*Timer_t*/void *pxTimer, uint32_t xCom
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_COMMAND_RECEIVED_DISABLE))
 void EvrFreeRTOSTimers_TimerCommandReceived (/*Timer_t*/void *pxTimer, uint32_t xCommandID, uint32_t xOptionalValue) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTimers_TimerCommandReceived, (uint32_t)pxTimer, xCommandID, xOptionalValue, 0U);
 #else
   (void)pxTimer;
@@ -811,7 +811,7 @@ void EvrFreeRTOSTimers_TimerCommandReceived (/*Timer_t*/void *pxTimer, uint32_t 
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceTIMER_EXPIRED_DISABLE))
 void EvrFreeRTOSTimers_TimerExpired (/*Timer_t*/void *pxTimer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSTimers_TimerExpired, (uint32_t)pxTimer, 0U);
 #else
   (void)pxTimer;
@@ -821,7 +821,7 @@ void EvrFreeRTOSTimers_TimerExpired (/*Timer_t*/void *pxTimer) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_DISABLE))
 void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTimers_PendFuncCall, (uint32_t)pxFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
 #else
   (void)pxFunctionToPend;
@@ -834,7 +834,7 @@ void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunctionToPend,
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_FROM_ISR_DISABLE))
 void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSTimers_PendFuncCallFromIsr, (uint32_t)pxFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
 #else
   (void)pxFunctionToPend;
@@ -850,7 +850,7 @@ void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *pxFunction
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CREATE_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupCreate (/*EventGroup_t*/void *pxEventGroup) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupCreate, (uint32_t)pxEventGroup, 0U);
 #else
   (void)pxEventGroup;
@@ -860,7 +860,7 @@ void EvrFreeRTOSEventGroups_EventGroupCreate (/*EventGroup_t*/void *pxEventGroup
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CREATE_FAILED_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupCreateFailed (void) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupCreateFailed, 0U, 0U);
 #endif
 }
@@ -868,7 +868,7 @@ void EvrFreeRTOSEventGroups_EventGroupCreateFailed (void) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_SYNC_BLOCK_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupSyncBlock (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSEventGroups_EventGroupSyncBlock, (uint32_t)pxEventGroup, uxBitsToSet, uxBitsToWaitFor, 0U);
 #else
   (void)pxEventGroup;
@@ -880,7 +880,7 @@ void EvrFreeRTOSEventGroups_EventGroupSyncBlock (/*EventGroup_t*/void *pxEventGr
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_SYNC_END_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupSyncEnd (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSEventGroups_EventGroupSyncEnd, (uint32_t)pxEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred);
 #else
   (void)pxEventGroup;
@@ -893,7 +893,7 @@ void EvrFreeRTOSEventGroups_EventGroupSyncEnd (/*EventGroup_t*/void *pxEventGrou
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_WAIT_BITS_BLOCK_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupWaitBitsBlock (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToWaitFor) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupWaitBitsBlock, (uint32_t)pxEventGroup, uxBitsToWaitFor);
 #else
   (void)pxEventGroup;
@@ -904,7 +904,7 @@ void EvrFreeRTOSEventGroups_EventGroupWaitBitsBlock (/*EventGroup_t*/void *pxEve
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_WAIT_BITS_END_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupWaitBitsEnd (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToWaitFor, uint32_t xTimeoutOccurred) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord4(EvtFreeRTOSEventGroups_EventGroupWaitBitsEnd, (uint32_t)pxEventGroup, uxBitsToWaitFor, xTimeoutOccurred, 0U);
 #else
   (void)pxEventGroup;
@@ -916,7 +916,7 @@ void EvrFreeRTOSEventGroups_EventGroupWaitBitsEnd (/*EventGroup_t*/void *pxEvent
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CLEAR_BITS_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupClearBits (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToClear) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupClearBits, (uint32_t)pxEventGroup, uxBitsToClear);
 #else
   (void)pxEventGroup;
@@ -927,7 +927,7 @@ void EvrFreeRTOSEventGroups_EventGroupClearBits (/*EventGroup_t*/void *pxEventGr
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_CLEAR_BITS_FROM_ISR_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupClearBitsFromIsr (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToClear) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupClearBitsFromIsr, (uint32_t)pxEventGroup, uxBitsToClear);
 #else
   (void)pxEventGroup;
@@ -938,7 +938,7 @@ void EvrFreeRTOSEventGroups_EventGroupClearBitsFromIsr (/*EventGroup_t*/void *px
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_SET_BITS_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupSetBits (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupSetBits, (uint32_t)pxEventGroup, uxBitsToSet);
 #else
   (void)pxEventGroup;
@@ -949,7 +949,7 @@ void EvrFreeRTOSEventGroups_EventGroupSetBits (/*EventGroup_t*/void *pxEventGrou
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_SET_BITS_FROM_ISR_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupSetBitsFromIsr (/*EventGroup_t*/void *pxEventGroup, uint32_t uxBitsToSet) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupSetBitsFromIsr, (uint32_t)pxEventGroup, uxBitsToSet);
 #else
   (void)pxEventGroup;
@@ -960,7 +960,7 @@ void EvrFreeRTOSEventGroups_EventGroupSetBitsFromIsr (/*EventGroup_t*/void *pxEv
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceEVENT_GROUP_DELETE_DISABLE))
 void EvrFreeRTOSEventGroups_EventGroupDelete (/*EventGroup_t*/void *pxEventGroup) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSEventGroups_EventGroupDelete, (uint32_t)pxEventGroup, 0U);
 #else
   (void)pxEventGroup;
@@ -973,7 +973,7 @@ void EvrFreeRTOSEventGroups_EventGroupDelete (/*EventGroup_t*/void *pxEventGroup
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_FAILED_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateFailed, (uint32_t)uxIsMessageBuffer, 0U);
 #else
   (void)uxIsMessageBuffer;
@@ -983,7 +983,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferCreateFailed (uint32_t uxIsMessageBuffer) 
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_STATIC_FAILED_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t uxIsMessageBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreateStaticFailed, (uint32_t)pxStreamBuffer, uxIsMessageBuffer);
 #else
   (void)pxStreamBuffer;
@@ -994,7 +994,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed (/*StreamBuffer_t*/void
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferCreate (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t uxIsMessageBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferCreate, (uint32_t)pxStreamBuffer, uxIsMessageBuffer);
 #else
   (void)pxStreamBuffer;
@@ -1005,7 +1005,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferCreate (/*StreamBuffer_t*/void *pxStreamBu
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_DELETE_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferDelete (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferDelete, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1015,7 +1015,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferDelete (/*StreamBuffer_t*/void *pxStreamBu
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RESET_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferReset (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReset, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1025,7 +1025,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReset (/*StreamBuffer_t*/void *pxStreamBuf
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_SEND_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferBlockingOnSend, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1035,7 +1035,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnSend (/*StreamBuffer_t*/void *px
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferSend (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xBytesSent) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSend, (uint32_t)pxStreamBuffer, xBytesSent);
 #else
   (void)pxStreamBuffer;
@@ -1046,7 +1046,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferSend (/*StreamBuffer_t*/void *pxStreamBuff
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FAILED_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferSendFailed (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSendFailed, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1056,7 +1056,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferSendFailed (/*StreamBuffer_t*/void *pxStre
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_SEND_FROM_ISR_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferSendFromIsr (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xBytesSent) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferSendFromIsr, (uint32_t)pxStreamBuffer, xBytesSent);
 #else
   (void)pxStreamBuffer;
@@ -1067,7 +1067,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferSendFromIsr (/*StreamBuffer_t*/void *pxStr
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceBLOCKING_ON_STREAM_BUFFER_RECEIVE_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferBlockingOnReceive, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1077,7 +1077,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferBlockingOnReceive (/*StreamBuffer_t*/void 
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferReceive (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xReceivedLength) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceive, (uint32_t)pxStreamBuffer, xReceivedLength);
 #else
   (void)pxStreamBuffer;
@@ -1088,7 +1088,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReceive (/*StreamBuffer_t*/void *pxStreamB
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FAILED_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferReceiveFailed (/*StreamBuffer_t*/void *pxStreamBuffer) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceiveFailed, (uint32_t)pxStreamBuffer, 0U);
 #else
   (void)pxStreamBuffer;
@@ -1098,7 +1098,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReceiveFailed (/*StreamBuffer_t*/void *pxS
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_RECEIVE_FROM_ISR_DISABLE))
 void EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr (/*StreamBuffer_t*/void *pxStreamBuffer, uint32_t xReceivedLength) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSStreamBuf_StreamBufferReceiveFromIsr, (uint32_t)pxStreamBuffer, xReceivedLength);
 #else
   (void)pxStreamBuffer;
@@ -1112,7 +1112,7 @@ void EvrFreeRTOSStreamBuf_StreamBufferReceiveFromIsr (/*StreamBuffer_t*/void *px
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceMALLOC_DISABLE))
 void EvrFreeRTOSHeap_Malloc (void *pvAddress, uint32_t uiSize) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSHeap_Malloc, (uint32_t)pvAddress, uiSize);
 #else
   (void)pvAddress;
@@ -1123,7 +1123,7 @@ void EvrFreeRTOSHeap_Malloc (void *pvAddress, uint32_t uiSize) {
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceFREE_DISABLE))
 void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize) {
-#if defined(RTE_Compiler_EventRecorder)
+#if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   EventRecord2(EvtFreeRTOSHeap_Free, (uint32_t)pvAddress, uiSize);
 #else
   (void)pvAddress;
