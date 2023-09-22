@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -28,7 +28,7 @@
 
 #include "RTE_Components.h"
 
-#if !defined(RTE_Compiler_EventRecorder)
+#if !defined(RTE_Compiler_EventRecorder) && !defined(RTE_CMSIS_View_EventRecorder)
   /* Disable debug events if Event Recorder is not used */
   #ifndef EVR_FREERTOS_DISABLE
     #define EVR_FREERTOS_DISABLE
