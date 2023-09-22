@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2022 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -47,7 +47,7 @@ __WEAK
 void _platform_post_stackheap_init (void);
 void _platform_post_stackheap_init (void) {
   /* Initialize OS, memory, etc. */
-  #if defined(RTE_Compiler_EventRecorder)
+  #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
     EvrFreeRTOSSetup(0);
   #endif
 }
@@ -58,7 +58,7 @@ __WEAK
 void software_init_hook (void);
 void software_init_hook (void) {
   /* Initialize OS, memory, etc. */
-  #if defined(RTE_Compiler_EventRecorder)
+  #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
     EvrFreeRTOSSetup(0);
   #endif
 }

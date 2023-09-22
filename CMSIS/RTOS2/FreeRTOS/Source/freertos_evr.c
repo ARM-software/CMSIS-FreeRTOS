@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -227,7 +227,7 @@ void EvrFreeRTOSSetup (uint32_t reset) {
 #endif
 }
 
-#endif /* RTE_Compiler_EventRecorder */
+#endif /* defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder) */
 
 /* Tasks */
 
