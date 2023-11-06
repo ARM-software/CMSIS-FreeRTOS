@@ -15,7 +15,7 @@ expose proprietary source code, and has
 <a target="_blank" href="https://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html">no IP infringement</a>
 risk.
 
-<a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
+<a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
 operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
 components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for
 multi-core systems, and has a binary compatible interface across ABI compliant compilers.
@@ -320,7 +320,7 @@ After the kernel is started using FreeRTOS native API, CMSIS-RTOS2 API can be us
 
 \section cmsis_freertos_evr_config Configure Event Recorder
 
-This section describes the configuration settings for the <a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank">Event Recorder</a>
+This section describes the configuration settings for the <a href="https://arm-software.github.io/CMSIS-View/latest/evr.html" target="_blank">Event Recorder</a>
 annotations. For more information refer to section \ref native_freertos_er "Add Event Recorder Visibility to native FreeRTOS project" or
 \ref cmsis_freertos_er "Add Event Recorder Visibility to CMSIS-FreeRTOS project".
 
@@ -534,11 +534,12 @@ The following list briefly describes the limitations and unsupported features of
 - \c osSemaphoreGetName is not implemented and always returns NULL.
 - \c osMessageQueueGetName is not implemented and always returns NULL.
 - \c osMessageQueuePut and \c osMessageQueueGet always ignore message priority.
+- <tt>Process Isolation (Functional Safety)</tt> functions are not implemented.
 
 \section td_validation Validation suite results
 
 CMSIS provides a
-<a target="_blank" href="https://arm-software.github.io/CMSIS_5/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
+<a target="_blank" href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
 be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the
 CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).
 
@@ -795,128 +796,136 @@ Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-Free
 
 Kernel Information and Control
 ------------------------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">API reference</a> for details about Kernel Information and Control functions.
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__KernelCtrl.html">API reference</a> for details about Kernel Information and Control functions.
+   - \b osKernelInitialize: supported
    - \b osKernelGetInfo: supported
    - \b osKernelGetState: supported
-   - \b osKernelGetSysTimerCount: supported
-   - \b osKernelGetSysTimerFreq: supported
-   - \b osKernelInitialize: supported
+   - \b osKernelStart: supported
    - \b osKernelLock: supported
    - \b osKernelUnlock: supported
    - \b osKernelRestoreLock: supported
-   - \b osKernelResume: \token{not implemented}
-   - \b osKernelStart: supported
    - \b osKernelSuspend: \token{not implemented}
+   - \b osKernelResume: \token{not implemented}
+   - \b osKernelProtect: \token{not implemented}
+   - \b osKernelDestroyClass: \token{not implemented}
    - \b osKernelGetTickCount: supported
    - \b osKernelGetTickFreq: supported
-
+   - \b osKernelGetSysTimerCount: supported
+   - \b osKernelGetSysTimerFreq: supported
 
 Thread Management
 -----------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">API reference</a> for details about Thread Management functions.
-   - \b osThreadDetach: \token{not implemented}
-   - \b osThreadEnumerate: supported
-   - \b osThreadExit: supported
-   - \b osThreadGetCount: supported
-   - \b osThreadGetId: supported
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__ThreadMgmt.html">API reference</a> for details about Thread Management functions.
+   - \b osThreadNew: supported
    - \b osThreadGetName: supported
-   - \b osThreadGetPriority: supported
+   - \b osThreadGetClass: \token{not implemented}
+   - \b osThreadGetZone: \token{not implemented}
+   - \b osThreadGetId: supported
+   - \b osThreadGetState: supported
    - \b osThreadGetStackSize: \token{not implemented}
    - \b osThreadGetStackSpace: supported
-   - \b osThreadGetState: supported
-   - \b osThreadJoin: \token{not implemented}
-   - \b osThreadNew: supported
-   - \b osThreadResume: supported
    - \b osThreadSetPriority: supported
-   - \b osThreadSuspend: supported
-   - \b osThreadTerminate: supported
+   - \b osThreadGetPriority: supported
    - \b osThreadYield: supported
+   - \b osThreadSuspend: supported
+   - \b osThreadResume: supported
+   - \b osThreadDetach: \token{not implemented}
+   - \b osThreadJoin: \token{not implemented}
+   - \b osThreadExit: supported
+   - \b osThreadTerminate: supported
+   - \b osThreadFeedWatchdog: \token{not implemented}
+   - \b osThreadProtectPrivileged: \token{not implemented}
+   - \b osThreadSuspendClass: \token{not implemented}
+   - \b osThreadResumeClass: \token{not implemented}
+   - \b osThreadTerminateZone: \token{not implemented}
+   - \b osThreadGetCount: supported
+   - \b osThreadEnumerate: supported
 
 Thread Flags
 ------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">API reference</a> for details about Thread Flags functions.
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__ThreadFlagsMgmt.html">API reference</a> for details about Thread Flags functions.
    - \b osThreadFlagsSet: supported
    - \b osThreadFlagsClear: supported
    - \b osThreadFlagsGet: supported
    - \b osThreadFlagsWait: supported
 
-Event Flags
------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">API reference</a> for details about Event Flags functions.
-All event flags are limited to 24 bits.
-   - \b osEventFlagsGetName: \token{not implemented}
-   - \b osEventFlagsNew: supported
-   - \b osEventFlagsDelete: supported
-   - \b osEventFlagsSet: supported
-   - \b osEventFlagsClear: supported
-   - \b osEventFlagsGet: supported
-   - \b osEventFlagsWait: cannot be called from an ISR.
-
 Generic Wait Functions
 ----------------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Wait.html">API reference</a> for details about Generic Wait functions.
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__Wait.html">API reference</a> for details about Generic Wait functions.
    - \b osDelay: supported
    - \b osDelayUntil: supported
 
 Timer Management
 ----------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">API reference</a> for details about Timer Management functions.</a>
-   - \b osTimerDelete: supported
-   - \b osTimerGetName: supported
-   - \b osTimerIsRunning: supported
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__TimerMgmt.html">API reference</a> for details about Timer Management functions.</a>
    - \b osTimerNew: supported
+   - \b osTimerGetName: supported
    - \b osTimerStart: supported
    - \b osTimerStop: supported
+   - \b osTimerIsRunning: supported
+   - \b osTimerDelete: supported
+
+Event Flags
+-----------
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__EventFlags.html">API reference</a> for details about Event Flags functions.
+All event flags are limited to 24 bits.
+   - \b osEventFlagsNew: supported
+   - \b osEventFlagsGetName: \token{not implemented}
+   - \b osEventFlagsSet: supported
+   - \b osEventFlagsClear: supported
+   - \b osEventFlagsGet: supported
+   - \b osEventFlagsWait: cannot be called from an ISR.
+   - \b osEventFlagsDelete: supported
 
 Mutex Management
 ----------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">API reference</a> for details about Mutex Management functions.\n
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__MutexMgmt.html">API reference</a> for details about Mutex Management functions.\n
 Priority inherit protocol is used as default mutex behavior (osMutexNew creates priority inherit mutex object by default
 and ignores osMutexPrioInherit attribute when specified).\n
 Robust mutex objects are not supported (osMutexNew returns NULL when osMutexRobust attribute is specified).\n
-   - \b osMutexAcquire: supported
-   - \b osMutexDelete: supported
-   - \b osMutexGetName: \token{not implemented}
-   - \b osMutexGetOwner: supported
    - \b osMutexNew: supported
+   - \b osMutexGetName: \token{not implemented}
+   - \b osMutexAcquire: supported
    - \b osMutexRelease: supported
+   - \b osMutexGetOwner: supported
+   - \b osMutexDelete: supported
 
 Semaphores
 ----------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">API reference</a> for details about Semaphore functions.
-   - \b osSemaphoreAcquire: supported
-   - \b osSemaphoreDelete: supported
-   - \b osSemaphoreGetCount: supported
-   - \b osSemaphoreGetName: \token{not implemented}
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__SemaphoreMgmt.html">API reference</a> for details about Semaphore functions.
    - \b osSemaphoreNew: supported
+   - \b osSemaphoreGetName: \token{not implemented}
+   - \b osSemaphoreAcquire: supported
    - \b osSemaphoreRelease: supported
+   - \b osSemaphoreGetCount: supported
+   - \b osSemaphoreDelete: supported
 
 Memory Pool
 -----------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">API reference</a> for details about Memory Pool functions.
-   - \b osMemoryPoolAlloc: supported
-   - \b osMemoryPoolDelete: supported
-   - \b osMemoryPoolFree: supported
-   - \b osMemoryPoolGetBlockSize: supported
-   - \b osMemoryPoolGetCapacity: supported
-   - \b osMemoryPoolGetCount: supported
-   - \b osMemoryPoolGetName: supported
-   - \b osMemoryPoolGetSpace: supported
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__PoolMgmt.html">API reference</a> for details about Memory Pool functions.
    - \b osMemoryPoolNew: supported
+   - \b osMemoryPoolGetName: supported
+   - \b osMemoryPoolAlloc: supported
+   - \b osMemoryPoolFree: supported
+   - \b osMemoryPoolGetCapacity: supported
+   - \b osMemoryPoolGetBlockSize: supported
+   - \b osMemoryPoolGetCount: supported
+   - \b osMemoryPoolGetSpace: supported
+   - \b osMemoryPoolDelete: supported
 
 Message Queue
 -------------
-See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTOS__Message.html">API reference</a> for details about Message Queue functions.
-   - \b osMessageQueueDelete: supported
+See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/group__CMSIS__RTOS__Message.html">API reference</a> for details about Message Queue functions.
+   - \b osMessageQueueNew: supported
+   - \b osMessageQueueGetName: \token{not implemented}
+   - \b osMessageQueuePut: ignores message priority.
    - \b osMessageQueueGet: ignores message priority.
    - \b osMessageQueueGetCapacity: supported
-   - \b osMessageQueueGetCount: supported
    - \b osMessageQueueGetMsgSize: supported
-   - \b osMessageQueueGetName: \token{not implemented}
+   - \b osMessageQueueGetCount: supported
    - \b osMessageQueueGetSpace: supported
-   - \b osMessageQueueNew: supported
-   - \b osMessageQueuePut: ignores message priority.
    - \b osMessageQueueReset: supported
+   - \b osMessageQueueDelete: supported
 */
 
 /* ======================================================================================================================== */
@@ -926,7 +935,7 @@ See <a href="https://arm-software.github.io/CMSIS_5/RTOS2/html/group__CMSIS__RTO
 \brief This section describes CMSIS-FreeRTOS specifics.
 \details
 CMSIS-FreeRTOS interfaces to the
-<a href="https://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a>
+<a href="https://arm-software.github.io/CMSIS-View/latest/evr.html" target="_blank"><b>Event Recorder</b></a>
 to provide event information which helps you to understand and analyze the operation. Refer to \ref freertos_evr for more
 information.
 */
