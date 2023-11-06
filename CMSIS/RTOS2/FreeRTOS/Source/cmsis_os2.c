@@ -615,9 +615,15 @@ const char *osThreadGetName (osThreadId_t thread_id) {
   TaskHandle_t hTask = (TaskHandle_t)thread_id;
   const char *name;
 
-  if ((IRQ_Context() != 0U) || (hTask == NULL)) {
+  if (hTask == NULL) {
     name = NULL;
-  } else {
+  }
+  else if (IRQ_Context() != 0U) {
+    /* Retrieve the name even though the function is not allowed to be called from ISR */
+    /* Function implementation allows this therefore we make an exception.             */
+    name = pcTaskGetName (hTask);
+  }
+  else {
     name = pcTaskGetName (hTask);
   }
 
@@ -1253,9 +1259,15 @@ const char *osTimerGetName (osTimerId_t timer_id) {
   TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   const char *p;
 
-  if ((IRQ_Context() != 0U) || (hTimer == NULL)) {
+  if (hTimer == NULL) {
     p = NULL;
-  } else {
+  }
+  else if (IRQ_Context() != 0U) {
+    /* Retrieve the name even though the function is not allowed to be called from ISR */
+    /* Function implementation allows this therefore we make an exception.             */
+    p = pcTimerGetName (hTimer);
+  }
+  else {
     p = pcTimerGetName (hTimer);
   }
 
@@ -2495,11 +2507,11 @@ const char *osMemoryPoolGetName (osMemoryPoolId_t mp_id) {
   MemPool_t *mp = (osMemoryPoolId_t)mp_id;
   const char *p;
 
-  if (IRQ_Context() != 0U) {
+  if (mp_id == NULL) {
     p = NULL;
   }
-  else if (mp_id == NULL) {
-    p = NULL;
+  else if (IRQ_Context() != 0U) {
+    p = mp->name;
   }
   else {
     p = mp->name;
