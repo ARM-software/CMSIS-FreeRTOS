@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V10.6.2
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -49,6 +49,10 @@
 /*-----------------------------------------------------------*/
 
 #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 1 ) )
+
+    #if ( configENABLE_ACCESS_CONTROL_LIST == 1 )
+        #error Access control list is not available with this MPU wrapper. Please set configENABLE_ACCESS_CONTROL_LIST to 0.
+    #endif
 
     #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
         BaseType_t MPU_xTaskCreate( TaskFunction_t pvTaskCode,
@@ -1817,7 +1821,7 @@
 
     #if ( configUSE_TIMERS == 1 )
         void MPU_vTimerSetReloadMode( TimerHandle_t xTimer,
-                                      const UBaseType_t uxAutoReload ) /* FREERTOS_SYSTEM_CALL */
+                                      const BaseType_t uxAutoReload ) /* FREERTOS_SYSTEM_CALL */
         {
             if( portIS_PRIVILEGED() == pdFALSE )
             {
