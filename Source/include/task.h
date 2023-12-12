@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V10.6.2
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -53,10 +53,10 @@
  * The tskKERNEL_VERSION_MAJOR, tskKERNEL_VERSION_MINOR, tskKERNEL_VERSION_BUILD
  * values will reflect the last released version number.
  */
-#define tskKERNEL_VERSION_NUMBER       "V10.6.1"
+#define tskKERNEL_VERSION_NUMBER       "V10.6.2"
 #define tskKERNEL_VERSION_MAJOR        10
 #define tskKERNEL_VERSION_MINOR        6
-#define tskKERNEL_VERSION_BUILD        1
+#define tskKERNEL_VERSION_BUILD        2
 
 /* MPU region parameters passed in ulParameters
  * of MemoryRegion_t struct. */
@@ -3205,6 +3205,27 @@ void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNC
     xMPU_SETTINGS * xTaskGetMPUSettings( TaskHandle_t xTask ) PRIVILEGED_FUNCTION;
 
 #endif /* portUSING_MPU_WRAPPERS */
+
+
+#if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) && ( configENABLE_ACCESS_CONTROL_LIST == 1 ) )
+
+/*
+ * For internal use only.  Grant/Revoke a task's access to a kernel object.
+ */
+    void vGrantAccessToKernelObject( TaskHandle_t xExternalTaskHandle,
+                                     int32_t lExternalKernelObjectHandle ) PRIVILEGED_FUNCTION;
+    void vRevokeAccessToKernelObject( TaskHandle_t xExternalTaskHandle,
+                                      int32_t lExternalKernelObjectHandle ) PRIVILEGED_FUNCTION;
+
+/*
+ * For internal use only.  Grant/Revoke a task's access to a kernel object.
+ */
+    void vPortGrantAccessToKernelObject( TaskHandle_t xInternalTaskHandle,
+                                         int32_t lInternalIndexOfKernelObject ) PRIVILEGED_FUNCTION;
+    void vPortRevokeAccessToKernelObject( TaskHandle_t xInternalTaskHandle,
+                                          int32_t lInternalIndexOfKernelObject ) PRIVILEGED_FUNCTION;
+
+#endif /* #if ( ( portUSING_MPU_WRAPPERS == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) && ( configENABLE_ACCESS_CONTROL_LIST == 1 ) ) */
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

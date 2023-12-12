@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V10.6.2
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -84,6 +84,11 @@
 /* Set configUSE_MPU_WRAPPERS_V1 to 1 to use MPU wrappers v1. */
 #ifndef configUSE_MPU_WRAPPERS_V1
     #define configUSE_MPU_WRAPPERS_V1    0
+#endif
+
+/* Set configENABLE_ACCESS_CONTROL_LIST to 1 to enable access control list support. */
+#ifndef configENABLE_ACCESS_CONTROL_LIST
+    #define configENABLE_ACCESS_CONTROL_LIST    0
 #endif
 
 /* Basic FreeRTOS definitions. */

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.1
+ * FreeRTOS Kernel V10.6.2
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -216,7 +216,10 @@ typedef struct MPU_REGION_SETTINGS
 
 #endif /* #if ( configUSE_MPU_WRAPPERS_V1 == 0 ) */
 
-#define MAX_CONTEXT_SIZE 52
+#define MAX_CONTEXT_SIZE                    ( 52 )
+
+/* Size of an Access Control List (ACL) entry in bits. */
+#define portACL_ENTRY_SIZE_BITS             ( 32U )
 
 /* Flags used for xMPU_SETTINGS.ulTaskFlags member. */
 #define portSTACK_FRAME_HAS_PADDING_FLAG     ( 1UL << 0UL )
@@ -231,6 +234,9 @@ typedef struct MPU_SETTINGS
 
     #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
         xSYSTEM_CALL_STACK_INFO xSystemCallStackInfo;
+        #if ( configENABLE_ACCESS_CONTROL_LIST == 1 )
+            uint32_t ulAccessControlList[ ( configPROTECTED_KERNEL_OBJECT_POOL_SIZE / portACL_ENTRY_SIZE_BITS ) + 1 ];
+        #endif
     #endif
 } xMPU_SETTINGS;
 
@@ -245,12 +251,10 @@ typedef struct MPU_SETTINGS
 /*-----------------------------------------------------------*/
 
 /* SVC numbers for various services. */
-#define portSVC_START_SCHEDULER     0
-#define portSVC_YIELD               1
-#define portSVC_RAISE_PRIVILEGE     2
-#define portSVC_SYSTEM_CALL_ENTER   3   /* System calls with upto 4 parameters. */
-#define portSVC_SYSTEM_CALL_ENTER_1 4   /* System calls with 5 parameters. */
-#define portSVC_SYSTEM_CALL_EXIT    5
+#define portSVC_START_SCHEDULER        100
+#define portSVC_YIELD                  101
+#define portSVC_RAISE_PRIVILEGE        102
+#define portSVC_SYSTEM_CALL_EXIT       103
 
 /* Scheduler utilities. */
 
