@@ -1,0 +1,19 @@
+layer:
+  type: Target
+  description: Cortex-M33 with TrustZone target components and files
+
+  packs:
+    - pack: ARM::Cortex_DFP
+
+  for-device: ARMCM33
+
+  components:
+    - component: Device:Startup&C Startup
+
+  linker:
+    - regions: RTE/Device/$Dname$/regions_$Dname$.h
+
+  groups:
+    - group: FVP
+      files:
+        - file: ./fvp_config.txt

@@ -1,0 +1,21 @@
+layer:
+  type: Target
+  description: Cortex-M23 target components and files
+
+  packs:
+    - pack: ARM::Cortex_DFP
+
+  for-device: ARMCM23
+  processor:
+    trustzone: off
+
+  components:
+    - component: Device:Startup&C Startup
+
+  linker:
+    - regions: RTE/Device/$Dname$/regions_$Dname$.h
+
+  groups:
+    - group: FVP
+      files:
+        - file: ./fvp_config.txt
