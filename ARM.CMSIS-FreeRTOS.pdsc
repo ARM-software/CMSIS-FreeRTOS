@@ -1543,11 +1543,11 @@
   </components>
 
   <examples>
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS</description>
+    <example name="Hello World" folder="CMSIS/RTOS2/FreeRTOS/Examples" doc="./App/Hello/README.md">
+      <description>Hello World example using FreeRTOS and CMSIS-RTOS2 for Arm Virtual Hardware</description>
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
-        <environment name="uv" load="Blinky.uvprojx"/>
+        <environment name="csolution" load="Examples.csolution.yml"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
@@ -1557,39 +1557,11 @@
       </attributes>
     </example>
 
-    <example name="Native FreeRTOS Blinky" doc="Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Native_Blinky">
-      <description>Blinky example using FreeRTOS natively</description>
+    <example name="TrustZone for ARMv8-M" folder="CMSIS/RTOS2/FreeRTOS/Examples" doc="./App/TrustZone/README.md">
+      <description>CMSIS-RTOS2 example with secure/non-secure thread context management using FreeRTOS for Arm Virtual Hardware</description>
       <board name="uVision Simulator" vendor="Keil"/>
       <project>
-        <environment name="uv" load="Blinky.uvprojx"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="TrustZone for ARMv8-M" doc="NonSecure/Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/TrustZone">
-      <description>CMSIS-RTOS2 example with secure/non-secure thread context management using FreeRTOS</description>
-      <board name="uVision Simulator" vendor="Keil"/>
-      <project>
-        <environment name="uv" load="TrustZone.uvmpw"/>
-      </project>
-      <attributes>
-        <component Cclass="CMSIS" Cgroup="CORE"/>
-        <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
-        <category>Getting Started</category>
-      </attributes>
-    </example>
-
-    <example name="CMSIS-RTOS2 FreeRTOS Blinky" doc="Blinky/Abstract.txt" folder="CMSIS/RTOS2/FreeRTOS/Examples/Blinky_IAR">
-      <description>CMSIS-RTOS2 Blinky example using FreeRTOS</description>
-      <board name="EWARM Simulator" vendor="IAR"/>
-      <project>
-        <environment name="iar" load="Blinky/Blinky.ewp"/>
+        <environment name="csolution" load="Examples.csolution.yml"/>
       </project>
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
