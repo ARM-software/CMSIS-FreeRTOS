@@ -1075,7 +1075,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
 
 	  if(xTaskNotify(hTask, 0, eNoAction) != pdPASS)
 	  {
-		  rflags = osError;
+		  rflags = (uint32_t)osError;
 	  }
   }
 
