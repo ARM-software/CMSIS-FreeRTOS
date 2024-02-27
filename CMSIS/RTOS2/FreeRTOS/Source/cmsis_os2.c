@@ -997,6 +997,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
   uint32_t clear;
   TickType_t t0, td, tout;
   BaseType_t rval;
+  BaseType_t notify = pdFALSE;
 
   if (IRQ_Context() != 0U) {
     rflags = (uint32_t)osErrorISR;
@@ -1021,6 +1022,11 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
       if (rval == pdPASS) {
         rflags &= flags;
         rflags |= nval;
+
+        if(rflags & ~flags)
+        {
+        	notify = pdTRUE;
+        }
 
         if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
           if ((flags & rflags) == flags) {
@@ -1061,6 +1067,16 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
       }
     }
     while (rval != pdFAIL);
+  }
+
+  if(notify == pdTRUE)
+  {
+	  TaskHandle_t hTask = xTaskGetCurrentTaskHandle();
+
+	  if(xTaskNotify(hTask, 0, eNoAction) != pdPASS)
+	  {
+		  rflags = osError;
+	  }
   }
 
   /* Return flags before clearing */
