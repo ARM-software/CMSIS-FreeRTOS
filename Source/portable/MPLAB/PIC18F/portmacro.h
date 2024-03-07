@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -80,7 +80,7 @@ typedef unsigned char UBaseType_t;
 
 /* Retrieve the INTCON register from the stack, and enable interrupts
 if they were saved as being enabled.  Don't modify any other bits
-within the INTCON register as these may have lagitimately have been
+within the INTCON register as these may have legitimately have been
 modified within the critical region. */
 #define portEXIT_CRITICAL()         _asm                                    \
                                         MOVF    POSTDEC1, 1, 0              \

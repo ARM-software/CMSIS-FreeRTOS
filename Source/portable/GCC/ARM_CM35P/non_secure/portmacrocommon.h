@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -117,7 +117,7 @@ extern uint32_t ulSetInterruptMask( void ) /* __attribute__(( naked )) PRIVILEGE
 extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) PRIVILEGED_FUNCTION */;
 
 #if ( configENABLE_TRUSTZONE == 1 )
-    extern void vPortAllocateSecureContext( uint32_t ulSecureStackSize );     /* __attribute__ (( naked )) */
+    extern void vPortAllocateSecureContext( uint32_t ulSecureStackSize ); /* __attribute__ (( naked )) */
     extern void vPortFreeSecureContext( uint32_t * pulTCB ) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */;
 #endif /* configENABLE_TRUSTZONE */
 
@@ -188,13 +188,13 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
 
 #if ( configENABLE_MPU == 1 )
 
-    /**
-     * @brief Settings to define an MPU region.
-     */
+/**
+ * @brief Settings to define an MPU region.
+ */
     typedef struct MPURegionSettings
     {
-        uint32_t ulRBAR;     /**< RBAR for the region. */
-        uint32_t ulRLAR;     /**< RLAR for the region. */
+        uint32_t ulRBAR; /**< RBAR for the region. */
+        uint32_t ulRLAR; /**< RLAR for the region. */
     } MPURegionSettings_t;
 
     #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
@@ -203,9 +203,9 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
             #error configSYSTEM_CALL_STACK_SIZE must be defined to the desired size of the system call stack in words for using MPU wrappers v2.
         #endif
 
-        /**
-         * @brief System call stack.
-         */
+/**
+ * @brief System call stack.
+ */
         typedef struct SYSTEM_CALL_STACK_INFO
         {
             uint32_t ulSystemCallStackBuffer[ configSYSTEM_CALL_STACK_SIZE ];
@@ -218,74 +218,74 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
 
     #endif /* configUSE_MPU_WRAPPERS_V1 == 0 */
 
-    /**
-     * @brief MPU settings as stored in the TCB.
-     */
+/**
+ * @brief MPU settings as stored in the TCB.
+ */
     #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
 
-        #if( configENABLE_TRUSTZONE == 1 )
+        #if ( configENABLE_TRUSTZONE == 1 )
 
-            /*
-             * +-----------+---------------+----------+-----------------+------------------------------+-----+
-             * |  s16-s31  | s0-s15, FPSCR |  r4-r11  | r0-r3, r12, LR, | xSecureContext, PSP, PSPLIM, |     |
-             * |           |               |          | PC, xPSR        | CONTROL, EXC_RETURN          |     |
-             * +-----------+---------------+----------+-----------------+------------------------------+-----+
-             *
-             * <-----------><--------------><---------><----------------><-----------------------------><---->
-             *      16             16            8               8                     5                   1
-             */
-            #define MAX_CONTEXT_SIZE 54
+/*
+ * +-----------+---------------+----------+-----------------+------------------------------+-----+
+ * |  s16-s31  | s0-s15, FPSCR |  r4-r11  | r0-r3, r12, LR, | xSecureContext, PSP, PSPLIM, |     |
+ * |           |               |          | PC, xPSR        | CONTROL, EXC_RETURN          |     |
+ * +-----------+---------------+----------+-----------------+------------------------------+-----+
+ *
+ * <-----------><--------------><---------><----------------><-----------------------------><---->
+ *      16             16            8               8                     5                   1
+ */
+            #define MAX_CONTEXT_SIZE    54
 
         #else /* #if( configENABLE_TRUSTZONE == 1 ) */
 
-            /*
-             * +-----------+---------------+----------+-----------------+----------------------+-----+
-             * |  s16-s31  | s0-s15, FPSCR |  r4-r11  | r0-r3, r12, LR, | PSP, PSPLIM, CONTROL |     |
-             * |           |               |          | PC, xPSR        | EXC_RETURN           |     |
-             * +-----------+---------------+----------+-----------------+----------------------+-----+
-             *
-             * <-----------><--------------><---------><----------------><---------------------><---->
-             *      16             16            8               8                  4              1
-             */
-            #define MAX_CONTEXT_SIZE 53
+/*
+ * +-----------+---------------+----------+-----------------+----------------------+-----+
+ * |  s16-s31  | s0-s15, FPSCR |  r4-r11  | r0-r3, r12, LR, | PSP, PSPLIM, CONTROL |     |
+ * |           |               |          | PC, xPSR        | EXC_RETURN           |     |
+ * +-----------+---------------+----------+-----------------+----------------------+-----+
+ *
+ * <-----------><--------------><---------><----------------><---------------------><---->
+ *      16             16            8               8                  4              1
+ */
+            #define MAX_CONTEXT_SIZE    53
 
         #endif /* #if( configENABLE_TRUSTZONE == 1 ) */
 
     #else /* #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) ) */
 
-        #if( configENABLE_TRUSTZONE == 1 )
+        #if ( configENABLE_TRUSTZONE == 1 )
 
-            /*
-             * +----------+-----------------+------------------------------+-----+
-             * |  r4-r11  | r0-r3, r12, LR, | xSecureContext, PSP, PSPLIM, |     |
-             * |          | PC, xPSR        | CONTROL, EXC_RETURN          |     |
-             * +----------+-----------------+------------------------------+-----+
-             *
-             * <---------><----------------><------------------------------><---->
-             *     8               8                      5                   1
-             */
-            #define MAX_CONTEXT_SIZE 22
+/*
+ * +----------+-----------------+------------------------------+-----+
+ * |  r4-r11  | r0-r3, r12, LR, | xSecureContext, PSP, PSPLIM, |     |
+ * |          | PC, xPSR        | CONTROL, EXC_RETURN          |     |
+ * +----------+-----------------+------------------------------+-----+
+ *
+ * <---------><----------------><------------------------------><---->
+ *     8               8                      5                   1
+ */
+            #define MAX_CONTEXT_SIZE    22
 
         #else /* #if( configENABLE_TRUSTZONE == 1 ) */
 
-            /*
-             * +----------+-----------------+----------------------+-----+
-             * |  r4-r11  | r0-r3, r12, LR, | PSP, PSPLIM, CONTROL |     |
-             * |          | PC, xPSR        | EXC_RETURN           |     |
-             * +----------+-----------------+----------------------+-----+
-             *
-             * <---------><----------------><----------------------><---->
-             *     8               8                  4              1
-             */
-            #define MAX_CONTEXT_SIZE 21
+/*
+ * +----------+-----------------+----------------------+-----+
+ * |  r4-r11  | r0-r3, r12, LR, | PSP, PSPLIM, CONTROL |     |
+ * |          | PC, xPSR        | EXC_RETURN           |     |
+ * +----------+-----------------+----------------------+-----+
+ *
+ * <---------><----------------><----------------------><---->
+ *     8               8                  4              1
+ */
+            #define MAX_CONTEXT_SIZE    21
 
         #endif /* #if( configENABLE_TRUSTZONE == 1 ) */
 
     #endif /* #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) ) */
 
-    /* Flags used for xMPU_SETTINGS.ulTaskFlags member. */
-    #define portSTACK_FRAME_HAS_PADDING_FLAG     ( 1UL << 0UL )
-    #define portTASK_IS_PRIVILEGED_FLAG          ( 1UL << 1UL )
+/* Flags used for xMPU_SETTINGS.ulTaskFlags member. */
+    #define portSTACK_FRAME_HAS_PADDING_FLAG    ( 1UL << 0UL )
+    #define portTASK_IS_PRIVILEGED_FLAG         ( 1UL << 1UL )
 
 /* Size of an Access Control List (ACL) entry in bits. */
     #define portACL_ENTRY_SIZE_BITS             ( 32U )
@@ -313,7 +313,7 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
  * system calls.
  */
 #ifdef configASSERT
-    #if ( portHAS_BASEPRI == 1 )
+    #if ( portHAS_ARMV8M_MAIN_EXTENSION == 1 )
         void vPortValidateInterruptPriority( void );
         #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID()    vPortValidateInterruptPriority()
     #endif
@@ -333,12 +333,29 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
 /**
  * @brief Scheduler utilities.
  */
-#define portYIELD()    vPortYield()
+#if ( configENABLE_MPU == 1 )
+    #define portYIELD()               __asm volatile ( "svc %0" ::"i" ( portSVC_YIELD ) : "memory" )
+    #define portYIELD_WITHIN_API()    vPortYield()
+#else
+    #define portYIELD()               vPortYield()
+    #define portYIELD_WITHIN_API()    vPortYield()
+#endif
+
 #define portNVIC_INT_CTRL_REG     ( *( ( volatile uint32_t * ) 0xe000ed04 ) )
 #define portNVIC_PENDSVSET_BIT    ( 1UL << 28UL )
-#define portEND_SWITCHING_ISR( xSwitchRequired )                                 \
-    do { if( xSwitchRequired ) portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT; } \
-    while( 0 )
+#define portEND_SWITCHING_ISR( xSwitchRequired )            \
+    do                                                      \
+    {                                                       \
+        if( xSwitchRequired )                               \
+        {                                                   \
+            traceISR_EXIT_TO_SCHEDULER();                   \
+            portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT; \
+        }                                                   \
+        else                                                \
+        {                                                   \
+            traceISR_EXIT();                                \
+        }                                                   \
+    } while( 0 )
 #define portYIELD_FROM_ISR( x )    portEND_SWITCHING_ISR( x )
 /*-----------------------------------------------------------*/
 
@@ -424,12 +441,12 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
 
     extern BaseType_t xPortIsTaskPrivileged( void );
 
-    /**
-     * @brief Checks whether or not the calling task is privileged.
-     *
-     * @return pdTRUE if the calling task is privileged, pdFALSE otherwise.
-     */
-    #define portIS_TASK_PRIVILEGED()      xPortIsTaskPrivileged()
+/**
+ * @brief Checks whether or not the calling task is privileged.
+ *
+ * @return pdTRUE if the calling task is privileged, pdFALSE otherwise.
+ */
+    #define portIS_TASK_PRIVILEGED()    xPortIsTaskPrivileged()
 
 #endif /* configENABLE_MPU == 1 */
 /*-----------------------------------------------------------*/
@@ -438,6 +455,56 @@ extern void vClearInterruptMask( uint32_t ulMask ) /* __attribute__(( naked )) P
  * @brief Barriers.
  */
 #define portMEMORY_BARRIER()    __asm volatile ( "" ::: "memory" )
+/*-----------------------------------------------------------*/
+
+/* Select correct value of configUSE_PORT_OPTIMISED_TASK_SELECTION
+ * based on whether or not Mainline extension is implemented. */
+#ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
+    #if ( portHAS_ARMV8M_MAIN_EXTENSION == 1 )
+        #define configUSE_PORT_OPTIMISED_TASK_SELECTION    1
+    #else
+        #define configUSE_PORT_OPTIMISED_TASK_SELECTION    0
+    #endif
+#endif /* #ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION */
+
+/**
+ * @brief Port-optimised task selection.
+ */
+#if ( configUSE_PORT_OPTIMISED_TASK_SELECTION == 1 )
+
+/**
+ * @brief Count the number of leading zeros in a 32-bit value.
+ */
+    static portFORCE_INLINE uint32_t ulPortCountLeadingZeros( uint32_t ulBitmap )
+    {
+        uint32_t ulReturn;
+
+        __asm volatile ( "clz %0, %1" : "=r" ( ulReturn ) : "r" ( ulBitmap ) : "memory" );
+
+        return ulReturn;
+    }
+
+/* Check the configuration. */
+    #if ( configMAX_PRIORITIES > 32 )
+        #error configUSE_PORT_OPTIMISED_TASK_SELECTION can only be set to 1 when configMAX_PRIORITIES is less than or equal to 32.  It is very rare that a system requires more than 10 to 15 different priorities as tasks that share a priority will time slice.
+    #endif
+
+    #if ( portHAS_ARMV8M_MAIN_EXTENSION == 0 )
+        #error ARMv8-M baseline implementations (such as Cortex-M23) do not support port-optimised task selection.  Please set configUSE_PORT_OPTIMISED_TASK_SELECTION to 0 or leave it undefined.
+    #endif
+
+/**
+ * @brief Store/clear the ready priorities in a bit map.
+ */
+    #define portRECORD_READY_PRIORITY( uxPriority, uxReadyPriorities )      ( uxReadyPriorities ) |= ( 1UL << ( uxPriority ) )
+    #define portRESET_READY_PRIORITY( uxPriority, uxReadyPriorities )       ( uxReadyPriorities ) &= ~( 1UL << ( uxPriority ) )
+
+/**
+ * @brief Get the priority of the highest-priority task that is ready to execute.
+ */
+    #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities )    uxTopPriority = ( 31UL - ulPortCountLeadingZeros( ( uxReadyPriorities ) ) )
+
+#endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
 /*-----------------------------------------------------------*/
 
 /* *INDENT-OFF* */

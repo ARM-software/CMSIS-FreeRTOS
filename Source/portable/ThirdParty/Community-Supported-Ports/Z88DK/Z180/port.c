@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.3
+ * FreeRTOS Kernel V10.5.1+
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -42,29 +42,21 @@ any details of its type. */
 
 typedef void TCB_t;
 extern volatile TCB_t * volatile pxCurrentTCB;
+
 /*-----------------------------------------------------------*/
 
 /*
- * Macro to save all the general purpose registers, the save the stack pointer
- * into the TCB.
- *
- * The first thing we do is save the flags then disable interrupts. This is to
- * guard our stack against having a context switch interrupt after we have already
- * pushed the registers onto the stack.
- *
- * The interrupts will have been disabled during the call to portSAVE_CONTEXT()
- * so we need not worry about reading/writing to the stack pointer.
+ * Macros to set up, restart (reload), and stop the PRT1 Timer used for
+ * the System Tick.
  */
 
 #define configTICK_RATE_HZ              (256)               /* Timer configured */
 #define configISR_ORG                   ASMPC               /* ISR relocation */
 #define configISR_IVT                   0xFFE6              /* PRT1 address */
 
-#ifdef __SCCZ80
-
 #define configSETUP_TIMER_INTERRUPT()                           \
     do{                                                         \
-        asm(                                                    \
+        __asm__(                                                \
             "EXTERN __CPU_CLOCK                             \n" \
             "EXTERN RLDR1L, RLDR1H                          \n" \
             "EXTERN TCR, TCR_TIE1, TCR_TDE1                 \n" \
@@ -85,7 +77,7 @@ extern volatile TCB_t * volatile pxCurrentTCB;
 
 #define configRESET_TIMER_INTERRUPT()                           \
     do{                                                         \
-        asm(                                                    \
+        __asm__(                                                \
             "EXTERN TCR, TMDR1L                             \n" \
             "in0 a,(TCR)                                    \n" \
             "in0 a,(TMDR1L)                                 \n" \
@@ -94,7 +86,7 @@ extern volatile TCB_t * volatile pxCurrentTCB;
 
 #define configSTOP_TIMER_INTERRUPT()                            \
     do{                                                         \
-        asm(                                                    \
+        __asm__(                                                \
             "EXTERN TCR, TCR_TIE1, TCR_TDE1                 \n" \
             "; disable down counting and interrupts for PRT1\n" \
             "in0 a,(TCR)                                    \n" \
@@ -103,55 +95,6 @@ extern volatile TCB_t * volatile pxCurrentTCB;
             );                                                  \
     }while(0)
 
-#endif
-
-#ifdef __SDCC
-
-#define configSETUP_TIMER_INTERRUPT()                           \
-    do{                                                         \
-        __asm                                                   \
-            EXTERN __CPU_CLOCK                                  \
-            EXTERN RLDR1L, RLDR1H                               \
-            EXTERN TCR, TCR_TIE1, TCR_TDE1                      \
-            ; address of ISR                                    \
-            ld de,_timer_isr                                    \
-            ld hl,configISR_IVT ; PRT1 address                  \
-            ld (hl),e                                           \
-            inc hl                                              \
-            ld (hl),d                                           \
-            ; we do configTICK_RATE_HZ ticks per second         \
-            ld hl,__CPU_CLOCK/configTICK_RATE_HZ/20-1           \
-            out0(RLDR1L),l                                      \
-            out0(RLDR1H),h                                      \
-            ; enable down counting and interrupts for PRT1      \
-            in0 a,(TCR)                                         \
-            or TCR_TIE1|TCR_TDE1                                \
-            out0 (TCR),a                                        \
-        __endasm;                                               \
-    }while(0)
-
-#define configRESET_TIMER_INTERRUPT()                           \
-    do{                                                         \
-        __asm                                                   \
-            EXTERN TCR, TMDR1L                                  \
-            ; reset interrupt for PRT1                          \
-            in0 a,(TCR)                                         \
-            in0 a,(TMDR1L)                                      \
-        __endasm;                                               \
-    }while(0)
-
-#define configSTOP_TIMER_INTERRUPT()                            \
-    do{                                                         \
-        __asm                                                   \
-            EXTERN TCR, TCR_TIE1, TCR_TDE1                      \
-            ; disable down counting and interrupts for PRT1     \
-            in0 a,(TCR)                                         \
-            xor TCR_TIE1|TCR_TDE1                               \
-            out0 (TCR),a                                        \
-        __endasm;                                               \
-    }while(0)
-
-#endif
 
 /*-----------------------------------------------------------*/
 
@@ -159,6 +102,7 @@ extern volatile TCB_t * volatile pxCurrentTCB;
  * Perform hardware setup to enable ticks from Timer.
  */
 static void prvSetupTimerInterrupt( void ) __preserves_regs(iyh,iyl);
+
 /*-----------------------------------------------------------*/
 
 /*

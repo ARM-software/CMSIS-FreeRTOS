@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -182,6 +182,13 @@
 
 /* Definition to allow compatibility with existing FreeRTOS Demo using flop.c. */
     #define portTASK_USES_FLOATING_POINT() vPortTaskUsesDPFPU()
+
+#pragma inline_asm vPortMemoryBarrier
+static void vPortMemoryBarrier( void )
+{
+}
+
+#define portMEMORY_BARRIER()    vPortMemoryBarrier()
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

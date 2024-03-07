@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -47,8 +47,8 @@
 typedef void * CoRoutineHandle_t;
 
 /* Defines the prototype to which co-routine functions must conform. */
-typedef void (* crCOROUTINE_CODE)( CoRoutineHandle_t,
-                                   UBaseType_t );
+typedef void (* crCOROUTINE_CODE)( CoRoutineHandle_t xHandle,
+                                   UBaseType_t uxIndex );
 
 typedef struct corCoRoutineControlBlock
 {

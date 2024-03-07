@@ -1,12 +1,12 @@
-<h1>z180 support</h1>
+<h1>Z180 support</h1>
 
 Description
 -----------
-This PR establishes support for a Zilog z180 port, using the Programmable Reload Timer 1, configured at 256 Hz.
+This PR establishes support for a Zilog Z180 port, using the Programmable Reload Timer 1, configured at 256 Hz.
 
-Because of the generality of the z180, the address of the Interrupt Vector for PRT1 is configurable, and must be configured by the `crt0.asm` outside of this port. A configuration assumption has been made.
+Because of the generality of the Z180, the address of the Interrupt Vector for the programmable timer PRT1 is configurable, and must be configured by the `crt0.asm` outside of this port. A configuration assumption has been made, which should be checked against the actual system environment.
 
-The two compilers ([used by the z88dk](https://github.com/z88dk/z88dk)) are supported. The sccz80 compiler and the sdcc compiler. The PR is located under Z88dk.
+The two compilers ([used by the z88dk](https://github.com/z88dk/z88dk)) are supported.  The sccz80 compiler and the sdcc compiler. The in-line assembly language notation used can be read by both compilers.
 
 Background
 -----------

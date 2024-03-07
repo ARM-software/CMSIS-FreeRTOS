@@ -151,7 +151,7 @@
     #undef TICK_INT_vect
     #undef INT_FLAGS
     #undef INT_MASK
-    #undef TICK_init()
+    #undef TICK_init
     #error Invalid timer setting.
 #endif /* if ( configUSE_TIMER_INSTANCE == 0 ) */
 

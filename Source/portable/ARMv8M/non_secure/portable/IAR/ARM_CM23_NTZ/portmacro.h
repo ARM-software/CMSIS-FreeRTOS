@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -48,9 +48,9 @@
 /**
  * Architecture specifics.
  */
-#define portARCH_NAME         "Cortex-M23"
-#define portHAS_BASEPRI       0
-#define portDONT_DISCARD      __root
+#define portARCH_NAME                    "Cortex-M23"
+#define portHAS_ARMV8M_MAIN_EXTENSION    0
+#define portDONT_DISCARD                 __root
 /*-----------------------------------------------------------*/
 
 /* ARMv8-M common port configurations. */

@@ -33,7 +33,11 @@
 // Constants required for hardware setup.
 #define portINITIAL_CRITICAL_NESTING  ( ( uint16_t ) 10 )
 #define portFLAGS_INT_ENABLED         ( ( StackType_t ) 0x08 )
-#if defined(__TMS320C28XX_FPU32__)
+#if defined(__TMS320C28XX_FPU64__)
+# define AUX_REGISTERS_TO_SAVE        27 // XAR + FPU registers
+# define XAR4_REGISTER_POSITION       6  // XAR4 position in AUX registers array
+# define STF_REGISTER_POSITION        10 // STF position in AUX registers array
+#elif defined(__TMS320C28XX_FPU32__)
 # define AUX_REGISTERS_TO_SAVE        19 // XAR + FPU registers
 # define XAR4_REGISTER_POSITION       6  // XAR4 position in AUX registers array
 # define STF_REGISTER_POSITION        10 // STF position in AUX registers array
