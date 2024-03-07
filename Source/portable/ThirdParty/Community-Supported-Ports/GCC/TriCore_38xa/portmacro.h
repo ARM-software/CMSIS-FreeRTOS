@@ -28,9 +28,11 @@
 #ifndef _PORTABLE_GCC_TRICORE_PORTMACRO_H_
 #define _PORTABLE_GCC_TRICORE_PORTMACRO_H_
 
+/* *INDENT-OFF* */
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
+/* *INDENT-ON* */
 
 #include "port.h"
 
@@ -168,8 +170,10 @@ extern uint32_t uxPortSetInterruptMaskFromISR( void );
 void vPortReclaimCSA( uint32_t *pxTCB );
 #define portCLEAN_UP_TCB( pxTCB )		vPortReclaimCSA( ( uint32_t * ) ( pxTCB ) )
 
+/* *INDENT-OFF* */
 #ifdef __cplusplus
-}
+    }
 #endif
+/* *INDENT-ON* */
 
 #endif /* _PORTABLE_GCC_TRICORE_PORTMACRO_H_ */

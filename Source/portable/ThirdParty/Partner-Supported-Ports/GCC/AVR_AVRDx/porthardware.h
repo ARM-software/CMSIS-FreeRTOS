@@ -174,21 +174,21 @@
             RTC.PER = RTC_PERIOD_HZ( configTICK_RATE_HZ );         \
             RTC.INTCTRL |= 1 << RTC_OVF_bp;                        \
         }
-        #undef TICK_TMR_STOP()   
-        #undef TICK_TMR_START()  
-        #undef TICK_TMR_READ()     
-        #undef TICK_INT_READY()    
+        #undef TICK_TMR_STOP
+        #undef TICK_TMR_START
+        #undef TICK_TMR_READ
+        #undef TICK_INT_READY
     #endif
 
 #else /* if ( configUSE_TIMER_INSTANCE == 0 ) */
     #undef TICK_INT_vect
     #undef INT_FLAGS
     #undef INT_MASK
-    #undef TICK_init()
-    #undef TICK_TMR_STOP()   
-    #undef TICK_TMR_START()                                    
-    #undef TICK_TMR_READ()     
-    #undef TICK_INT_READY()    
+    #undef TICK_init
+    #undef TICK_TMR_STOP  
+    #undef TICK_TMR_START
+    #undef TICK_TMR_READ
+    #undef TICK_INT_READY
     #error Invalid timer setting.
 #endif /* if ( configUSE_TIMER_INSTANCE == 0 ) */
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -77,10 +77,10 @@ bool event_wait_timed( struct event * ev,
 
     clock_gettime( CLOCK_REALTIME, &ts );
     ts.tv_sec += ms / 1000;
-    ts.tv_nsec += ((ms % 1000) * 1000000);
+    ts.tv_nsec += ( ( ms % 1000 ) * 1000000 );
     pthread_mutex_lock( &ev->mutex );
 
-    while( (ev->event_triggered == false) && (ret == 0) )
+    while( ( ev->event_triggered == false ) && ( ret == 0 ) )
     {
         ret = pthread_cond_timedwait( &ev->cond, &ev->mutex, &ts );
 

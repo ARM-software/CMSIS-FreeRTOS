@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -93,7 +93,7 @@ secureportNON_SECURE_CALLABLE void SecureInit_EnableNSFPUAccess( void )
          * permitted. CP11 should be programmed to the same value as CP10. */
         *( secureinitNSACR ) |= ( secureinitNSACR_CP10_MASK | secureinitNSACR_CP11_MASK );
 
-        /* LSPENS = 0 ==> LSPEN is writable fron non-secure state. This ensures
+        /* LSPENS = 0 ==> LSPEN is writable from non-secure state. This ensures
          * that we can enable/disable lazy stacking in port.c file. */
         *( secureinitFPCCR ) &= ~( secureinitFPCCR_LSPENS_MASK );
 

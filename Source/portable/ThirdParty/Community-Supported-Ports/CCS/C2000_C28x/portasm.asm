@@ -61,7 +61,11 @@ _portRESTORE_FIRST_CONTEXT:
 ; Restore XAR4 and RPC from saved task stack.
 ; and return to main task function.
 ; SP should be set to stack start plus 2 before LRETR.
+  .if .TMS320C2800_FPU64 = 1
+  SUBB   SP, #44
+  .else
   SUBB   SP, #28
+  .endif
   POP    XAR4
   SUBB   SP, #14
   POP    RPC
@@ -82,6 +86,25 @@ _portTICK_ISR:
   MOVL    *SP++, XAR6
   MOVL    *SP++, XAR7
   MOV32   *SP++, STF
+
+  .if .TMS320C2800_FPU64 = 1
+  MOV32   *SP++, R0L
+  MOV32   *SP++, R0H
+  MOV32   *SP++, R1L
+  MOV32   *SP++, R1H
+  MOV32   *SP++, R2L
+  MOV32   *SP++, R2H
+  MOV32   *SP++, R3L
+  MOV32   *SP++, R3H
+  MOV32   *SP++, R4L
+  MOV32   *SP++, R4H
+  MOV32   *SP++, R5L
+  MOV32   *SP++, R5H
+  MOV32   *SP++, R6L
+  MOV32   *SP++, R6H
+  MOV32   *SP++, R7L
+  MOV32   *SP++, R7H
+  .else
   MOV32   *SP++, R0H
   MOV32   *SP++, R1H
   MOV32   *SP++, R2H
@@ -90,6 +113,8 @@ _portTICK_ISR:
   MOV32   *SP++, R5H
   MOV32   *SP++, R6H
   MOV32   *SP++, R7H
+  .endif
+
   PUSH    DP:ST1
 
 ; Save critical section nesting counter
@@ -110,10 +135,22 @@ _portTICK_ISR:
   POP     AL
   TBIT    AL, #4
   SB      SPA_BIT_SET, TC
+  .if .TMS320C2800_FPU64 = 1
+  MOVZ    AR7, @SP   ;load lower half of XAR7 with contents of SP, clear upper half of XAR7
+  SUBB    XAR7, #62
+  MOVZ    AR7, *XAR7
+  .else
   MOV     AR7, *-SP[46]
+  .endif
   SB      SAVE_IER, UNC
 SPA_BIT_SET:
+  .if .TMS320C2800_FPU64 = 1
+  MOVZ   AR7, @SP   ;load lower half of XAR7 with contents of SP, clear upper half of XAR7
+  SUBB   XAR7, #64
+  MOV    AR7, *XAR7
+  .else
   MOV     AR7, *-SP[48]
+  .endif
 SAVE_IER:
   MOVL    *SP++, XAR7
 
@@ -164,12 +201,42 @@ SKIP_CONTEXT_SWITCH:
   POP     AL
   TBIT    AL, #4
   SB      SPA_BIT_SET_RESTORE, TC
+  .if .TMS320C2800_FPU64 = 1
+  MOVZ    AR6, @SP   ;load lower half of XAR6 with contents of SP, clear upper half of XAR6
+  SUBB    XAR6, #58
+  MOV    *XAR6, AR7
+  .else
   MOV     *-SP[42], AR7
+  .endif
   SB      RESTORE_CONTEXT, UNC
 SPA_BIT_SET_RESTORE:
+  .if .TMS320C2800_FPU64 = 1
+  MOVZ    AR6, @SP   ;load lower half of XAR6 with contents of SP, clear upper half of XAR6
+  SUBB    XAR6, #60
+  MOV    *XAR6, AR7
+  .else
   MOV     *-SP[44], AR7
+  .endif
 
 RESTORE_CONTEXT:
+  .if .TMS320C2800_FPU64 = 1
+  MOV32   R7H, *--SP
+  MOV32   R7L, *--SP
+  MOV32   R6H, *--SP
+  MOV32   R6L, *--SP
+  MOV32   R5H, *--SP
+  MOV32   R5L, *--SP
+  MOV32   R4H, *--SP
+  MOV32   R4L, *--SP
+  MOV32   R3H, *--SP
+  MOV32   R3L, *--SP
+  MOV32   R2H, *--SP
+  MOV32   R2L, *--SP
+  MOV32   R1H, *--SP
+  MOV32   R1L, *--SP
+  MOV32   R0H, *--SP
+  MOV32   R0L, *--SP
+  .else
   MOV32   R7H, *--SP
   MOV32   R6H, *--SP
   MOV32   R5H, *--SP
@@ -178,6 +245,7 @@ RESTORE_CONTEXT:
   MOV32   R2H, *--SP
   MOV32   R1H, *--SP
   MOV32   R0H, *--SP
+  .endif
   MOV32   STF, *--SP
   MOVL    XAR7, *--SP
   MOVL    XAR6, *--SP
@@ -314,3 +382,4 @@ RESTORE_CONTEXT:
   IRET
 
   .endif
+

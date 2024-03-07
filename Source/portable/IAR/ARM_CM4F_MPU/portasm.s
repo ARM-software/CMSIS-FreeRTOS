@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -55,6 +55,12 @@ files (__ICCARM__ is defined by the IAR C compiler but not by the IAR assembler.
 
 #ifndef configUSE_MPU_WRAPPERS_V1
     #define configUSE_MPU_WRAPPERS_V1 0
+#endif
+
+/* Errata 837070 workaround must be enabled on Cortex-M7 r0p0
+ * and r0p1 cores. */
+#ifndef configENABLE_ERRATA_837070_WORKAROUND
+    #define configENABLE_ERRATA_837070_WORKAROUND 0
 #endif
 
 /* These must be in sync with portmacro.h. */
@@ -113,15 +119,15 @@ xPortPendSVHandler:
     str r3, [r0]                           /* Disable MPU. */
 
     ldr r0, =0xe000ed9c                    /* Region Base Address register. */
-    ldmia r2!, {r4-r11}                    /* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
-    stmia r0, {r4-r11}                     /* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
+    ldmia r2!, {r4-r11}                    /* Read 4 sets of MPU registers [MPU Region # 0 - 3]. */
+    stmia r0, {r4-r11}                     /* Write 4 sets of MPU registers [MPU Region # 0 - 3]. */
 
 #ifdef configTOTAL_MPU_REGIONS
     #if ( configTOTAL_MPU_REGIONS == 16 )
+        ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
+        stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 4 - 7]. */
         ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
         stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
-        ldmia r2!, {r4-r11}                 /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
-        stmia r0, {r4-r11}                  /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
     #endif /* configTOTAL_MPU_REGIONS == 16. */
 #endif
 
@@ -233,15 +239,15 @@ vPortRestoreContextOfFirstTask:
     str r3, [r0]                           /* Disable MPU. */
 
     ldr r0, =0xe000ed9c                    /* Region Base Address register. */
-    ldmia r2!, {r4-r11}                    /* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
-    stmia r0, {r4-r11}                     /* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
+    ldmia r2!, {r4-r11}                    /* Read 4 sets of MPU registers [MPU Region # 0 - 3]. */
+    stmia r0, {r4-r11}                     /* Write 4 sets of MPU registers [MPU Region # 0 - 3]. */
 
 #ifdef configTOTAL_MPU_REGIONS
     #if ( configTOTAL_MPU_REGIONS == 16 )
+        ldmia r2!, {r4-r11}                /* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
+        stmia r0, {r4-r11}                 /* Write 4 sets of MPU registers. [MPU Region # 4 - 7]. */
         ldmia r2!, {r4-r11}                /* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
         stmia r0, {r4-r11}                 /* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
-        ldmia r2!, {r4-r11}                /* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
-        stmia r0, {r4-r11}                 /* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
     #endif /* configTOTAL_MPU_REGIONS == 16. */
 #endif
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
@@ -42,7 +42,7 @@
 #endif
 
 #define portbenchmarkINTERRUPT_DISABLE()
-#define portbenchmarkINTERRUPT_RESTORE(newstate)
+#define portbenchmarkINTERRUPT_RESTORE( newstate )
 #define portbenchmarkIntLatency()
 #define portbenchmarkIntWait()
 #define portbenchmarkReset()

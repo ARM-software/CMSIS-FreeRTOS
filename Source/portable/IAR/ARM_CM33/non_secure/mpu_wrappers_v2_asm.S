@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -194,20 +194,6 @@ MPU_uxTaskGetNumberOfTasks:
     MPU_uxTaskGetNumberOfTasks_Unpriv:
         pop {r0}
         svc #SYSTEM_CALL_uxTaskGetNumberOfTasks
-/*-----------------------------------------------------------*/
-
-    PUBLIC MPU_pcTaskGetName
-MPU_pcTaskGetName:
-    push {r0}
-    mrs r0, control
-    tst r0, #1
-    bne MPU_pcTaskGetName_Unpriv
-    MPU_pcTaskGetName_Priv:
-        pop {r0}
-        b MPU_pcTaskGetNameImpl
-    MPU_pcTaskGetName_Unpriv:
-        pop {r0}
-        svc #SYSTEM_CALL_pcTaskGetName
 /*-----------------------------------------------------------*/
 
     PUBLIC MPU_ulTaskGetRunTimeCounter
@@ -742,24 +728,18 @@ MPU_xTimerGetTimerDaemonTaskHandle:
         svc #SYSTEM_CALL_xTimerGetTimerDaemonTaskHandle
 /*-----------------------------------------------------------*/
 
-    PUBLIC MPU_xTimerGenericCommandEntry
-MPU_xTimerGenericCommandEntry:
+    PUBLIC MPU_xTimerGenericCommandFromTaskEntry
+MPU_xTimerGenericCommandFromTaskEntry:
     push {r0}
-    /* This function can be called from ISR also and therefore, we need a check
-     * to take privileged path, if called from ISR. */
-    mrs r0, ipsr
-    cmp r0, #0
-    bne MPU_xTimerGenericCommand_Priv
     mrs r0, control
     tst r0, #1
-    beq MPU_xTimerGenericCommand_Priv
-    MPU_xTimerGenericCommand_Unpriv:
+    bne MPU_xTimerGenericCommandFromTask_Unpriv
+    MPU_xTimerGenericCommandFromTask_Priv:
         pop {r0}
-        svc #SYSTEM_CALL_xTimerGenericCommand
-    MPU_xTimerGenericCommand_Priv:
+        b MPU_xTimerGenericCommandFromTaskImpl
+    MPU_xTimerGenericCommandFromTask_Unpriv:
         pop {r0}
-        b MPU_xTimerGenericCommandPrivImpl
-
+        svc #SYSTEM_CALL_xTimerGenericCommandFromTask
 /*-----------------------------------------------------------*/
 
     PUBLIC MPU_pcTimerGetName
@@ -1089,10 +1069,6 @@ MPU_xTaskGetTickCountImpl:
 MPU_uxTaskGetNumberOfTasksImpl:
     b MPU_uxTaskGetNumberOfTasksImpl
 
-    PUBWEAK MPU_pcTaskGetNameImpl
-MPU_pcTaskGetNameImpl:
-    b MPU_pcTaskGetNameImpl
-
     PUBWEAK MPU_ulTaskGetRunTimeCounterImpl
 MPU_ulTaskGetRunTimeCounterImpl:
     b MPU_ulTaskGetRunTimeCounterImpl
@@ -1245,9 +1221,9 @@ MPU_xTimerIsTimerActiveImpl:
 MPU_xTimerGetTimerDaemonTaskHandleImpl:
     b MPU_xTimerGetTimerDaemonTaskHandleImpl
 
-    PUBWEAK MPU_xTimerGenericCommandPrivImpl
-MPU_xTimerGenericCommandPrivImpl:
-    b MPU_xTimerGenericCommandPrivImpl
+    PUBWEAK MPU_xTimerGenericCommandFromTaskImpl
+MPU_xTimerGenericCommandFromTaskImpl:
+    b MPU_xTimerGenericCommandFromTaskImpl
 
     PUBWEAK MPU_pcTimerGetNameImpl
 MPU_pcTimerGetNameImpl:

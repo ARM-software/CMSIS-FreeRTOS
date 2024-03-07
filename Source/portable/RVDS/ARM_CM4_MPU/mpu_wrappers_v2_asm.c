@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -307,26 +307,6 @@ MPU_uxTaskGetNumberOfTasks_Priv
 MPU_uxTaskGetNumberOfTasks_Unpriv
         pop {r0}
         svc #SYSTEM_CALL_uxTaskGetNumberOfTasks
-}
-/*-----------------------------------------------------------*/
-
-char * MPU_pcTaskGetName( TaskHandle_t xTaskToQuery ) FREERTOS_SYSTEM_CALL;
-
-__asm char * MPU_pcTaskGetName( TaskHandle_t xTaskToQuery ) /* FREERTOS_SYSTEM_CALL */
-{
-    PRESERVE8
-    extern MPU_pcTaskGetNameImpl
-
-    push {r0}
-    mrs r0, control
-    tst r0, #1
-    bne MPU_pcTaskGetName_Unpriv
-MPU_pcTaskGetName_Priv
-        pop {r0}
-        b MPU_pcTaskGetNameImpl
-MPU_pcTaskGetName_Unpriv
-        pop {r0}
-        svc #SYSTEM_CALL_pcTaskGetName
 }
 /*-----------------------------------------------------------*/
 
@@ -1262,26 +1242,23 @@ MPU_xTimerGetTimerDaemonTaskHandle_Unpriv
 
 #if ( configUSE_TIMERS == 1 )
 
-BaseType_t MPU_xTimerGenericCommandEntry( const xTimerGenericCommandParams_t * pxParams ) FREERTOS_SYSTEM_CALL;
+BaseType_t MPU_xTimerGenericCommandFromTaskEntry( const xTimerGenericCommandFromTaskParams_t * pxParams ) FREERTOS_SYSTEM_CALL;
 
-__asm BaseType_t MPU_xTimerGenericCommandEntry( const xTimerGenericCommandParams_t * pxParams ) /* FREERTOS_SYSTEM_CALL */
+__asm BaseType_t MPU_xTimerGenericCommandFromTaskEntry( const xTimerGenericCommandFromTaskParams_t * pxParams ) /* FREERTOS_SYSTEM_CALL */
 {
     PRESERVE8
-    extern MPU_xTimerGenericCommandPrivImpl
+    extern MPU_xTimerGenericCommandFromTaskImpl
 
     push {r0}
-    mrs r0, ipsr
-    cmp r0, #0
-    bne MPU_xTimerGenericCommand_Priv
     mrs r0, control
     tst r0, #1
-    beq MPU_xTimerGenericCommand_Priv
-MPU_xTimerGenericCommand_Unpriv
+    bne MPU_xTimerGenericCommandFromTask_Unpriv
+MPU_xTimerGenericCommandFromTask_Priv
         pop {r0}
-        svc #SYSTEM_CALL_xTimerGenericCommand
-MPU_xTimerGenericCommand_Priv
+        b MPU_xTimerGenericCommandFromTaskImpl
+MPU_xTimerGenericCommandFromTask_Unpriv
         pop {r0}
-        b MPU_xTimerGenericCommandPrivImpl
+        svc #SYSTEM_CALL_xTimerGenericCommandFromTask
 }
 
 #endif /* if ( configUSE_TIMERS == 1 ) */

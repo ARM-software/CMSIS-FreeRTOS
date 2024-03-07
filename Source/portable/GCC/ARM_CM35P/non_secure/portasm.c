@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -75,16 +75,16 @@
             "    ldmia r0!, {r4-r11}                          \n" /* Read 4 set of RBAR/RLAR registers from TCB. */
             "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
             "                                                 \n"
-        #if ( configTOTAL_MPU_REGIONS == 16 )
-            "    movs r3, #8                                  \n" /* r3 = 8. */
-            "    str r3, [r1]                                 \n" /* Program RNR = 8. */
-            "    ldmia r0!, {r4-r11}                          \n" /* Read 4 set of RBAR/RLAR registers from TCB. */
-            "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
-            "    movs r3, #12                                 \n" /* r3 = 12. */
-            "    str r3, [r1]                                 \n" /* Program RNR = 12. */
-            "    ldmia r0!, {r4-r11}                          \n" /* Read 4 set of RBAR/RLAR registers from TCB. */
-            "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
-        #endif /* configTOTAL_MPU_REGIONS == 16 */
+            #if ( configTOTAL_MPU_REGIONS == 16 )
+                "    movs r3, #8                                  \n" /* r3 = 8. */
+                "    str r3, [r1]                                 \n" /* Program RNR = 8. */
+                "    ldmia r0!, {r4-r11}                          \n" /* Read 4 set of RBAR/RLAR registers from TCB. */
+                "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
+                "    movs r3, #12                                 \n" /* r3 = 12. */
+                "    str r3, [r1]                                 \n" /* Program RNR = 12. */
+                "    ldmia r0!, {r4-r11}                          \n" /* Read 4 set of RBAR/RLAR registers from TCB. */
+                "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
+            #endif /* configTOTAL_MPU_REGIONS == 16 */
             "                                                 \n"
             "    ldr r1, xMPUCTRLConst2                       \n" /* r1 = 0xe000ed94 [Location of MPU_CTRL]. */
             "    ldr r2, [r1]                                 \n" /* Read the value of MPU_CTRL. */
@@ -294,15 +294,15 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             " save_general_regs:                              \n"
             "    mrs r3, psp                                  \n"
             "                                                 \n"
-        #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
-            "    add r3, r3, #0x20                            \n" /* Move r3 to location where s0 is saved. */
-            "    tst lr, #0x10                                \n"
-            "    ittt eq                                      \n"
-            "    vstmiaeq r2!, {s16-s31}                      \n" /* Store s16-s31. */
-            "    vldmiaeq r3, {s0-s16}                        \n" /* Copy hardware saved FP context into s0-s16. */
-            "    vstmiaeq r2!, {s0-s16}                       \n" /* Store hardware saved FP context. */
-            "    sub r3, r3, #0x20                            \n" /* Set r3 back to the location of hardware saved context. */
-        #endif /* configENABLE_FPU || configENABLE_MVE */
+            #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+                "    add r3, r3, #0x20                            \n" /* Move r3 to location where s0 is saved. */
+                "    tst lr, #0x10                                \n"
+                "    ittt eq                                      \n"
+                "    vstmiaeq r2!, {s16-s31}                      \n" /* Store s16-s31. */
+                "    vldmiaeq r3, {s0-s16}                        \n" /* Copy hardware saved FP context into s0-s16. */
+                "    vstmiaeq r2!, {s0-s16}                       \n" /* Store hardware saved FP context. */
+                "    sub r3, r3, #0x20                            \n" /* Set r3 back to the location of hardware saved context. */
+            #endif /* configENABLE_FPU || configENABLE_MVE */
             "                                                 \n"
             "    stmia r2!, {r4-r11}                          \n" /* Store r4-r11. */
             "    ldmia r3, {r4-r11}                           \n" /* Copy the hardware saved context into r4-r11. */
@@ -348,16 +348,16 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             "    ldmia r0!, {r4-r11}                          \n" /* Read 4 sets of RBAR/RLAR registers from TCB. */
             "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
             "                                                 \n"
-        #if ( configTOTAL_MPU_REGIONS == 16 )
-            "    movs r3, #8                                  \n" /* r3 = 8. */
-            "    str r3, [r1]                                 \n" /* Program RNR = 8. */
-            "    ldmia r0!, {r4-r11}                          \n" /* Read 4 sets of RBAR/RLAR registers from TCB. */
-            "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
-            "    movs r3, #12                                 \n" /* r3 = 12. */
-            "    str r3, [r1]                                 \n" /* Program RNR = 12. */
-            "    ldmia r0!, {r4-r11}                          \n" /* Read 4 sets of RBAR/RLAR registers from TCB. */
-            "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
-        #endif /* configTOTAL_MPU_REGIONS == 16 */
+            #if ( configTOTAL_MPU_REGIONS == 16 )
+                "    movs r3, #8                                  \n" /* r3 = 8. */
+                "    str r3, [r1]                                 \n" /* Program RNR = 8. */
+                "    ldmia r0!, {r4-r11}                          \n" /* Read 4 sets of RBAR/RLAR registers from TCB. */
+                "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
+                "    movs r3, #12                                 \n" /* r3 = 12. */
+                "    str r3, [r1]                                 \n" /* Program RNR = 12. */
+                "    ldmia r0!, {r4-r11}                          \n" /* Read 4 sets of RBAR/RLAR registers from TCB. */
+                "    stmia r2, {r4-r11}                           \n" /* Write 4 set of RBAR/RLAR registers using alias registers. */
+            #endif /* configTOTAL_MPU_REGIONS == 16 */
             "                                                 \n"
             "   ldr r1, xMPUCTRLConst                         \n" /* r1 = 0xe000ed94 [Location of MPU_CTRL]. */
             "   ldr r2, [r1]                                  \n" /* Read the value of MPU_CTRL. */
@@ -393,13 +393,13 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             "    ldmdb r2!, {r4-r11}                          \n" /* r4-r11 contain hardware saved context. */
             "    stmia r3!, {r4-r11}                          \n" /* Copy the hardware saved context on the task stack. */
             "    ldmdb r2!, {r4-r11}                          \n" /* r4-r11 restored. */
-        #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
-            "    tst lr, #0x10                                \n"
-            "    ittt eq                                      \n"
-            "    vldmdbeq r2!, {s0-s16}                       \n" /* s0-s16 contain hardware saved FP context. */
-            "    vstmiaeq r3!, {s0-s16}                       \n" /* Copy hardware saved FP context on the task stack. */
-            "    vldmdbeq r2!, {s16-s31}                      \n" /* Restore s16-s31. */
-        #endif /* configENABLE_FPU || configENABLE_MVE */
+            #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+                "    tst lr, #0x10                                \n"
+                "    ittt eq                                      \n"
+                "    vldmdbeq r2!, {s0-s16}                       \n" /* s0-s16 contain hardware saved FP context. */
+                "    vstmiaeq r3!, {s0-s16}                       \n" /* Copy hardware saved FP context on the task stack. */
+                "    vldmdbeq r2!, {s16-s31}                      \n" /* Restore s16-s31. */
+            #endif /* configENABLE_FPU || configENABLE_MVE */
             "                                                 \n"
             " restore_context_done:                           \n"
             "    str r2, [r1]                                 \n" /* Save the location where the context should be saved next as the first member of TCB. */
@@ -452,11 +452,11 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             " save_ns_context:                                  \n"
             "   ldr r3, pxCurrentTCBConst                       \n" /* Read the location of pxCurrentTCB i.e. &( pxCurrentTCB ). */
             "   ldr r1, [r3]                                    \n" /* Read pxCurrentTCB. */
-        #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
-            "   tst lr, #0x10                                   \n" /* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
-            "   it eq                                           \n"
-            "   vstmdbeq r2!, {s16-s31}                         \n" /* Store the additional FP context registers which are not saved automatically. */
-        #endif /* configENABLE_FPU || configENABLE_MVE */
+            #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+                "   tst lr, #0x10                               \n" /* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
+                "   it eq                                       \n"
+                "   vstmdbeq r2!, {s16-s31}                     \n" /* Store the additional FP context registers which are not saved automatically. */
+            #endif /* configENABLE_FPU || configENABLE_MVE */
             "   subs r2, r2, #44                                \n" /* Make space for xSecureContext, PSPLIM, LR and the remaining registers on the stack. */
             "   str r2, [r1]                                    \n" /* Save the new top of stack in TCB. */
             "   adds r2, r2, #12                                \n" /* r2 = r2 + 12. */
@@ -498,11 +498,11 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             "                                                   \n"
             " restore_ns_context:                               \n"
             "   ldmia r2!, {r4-r11}                             \n" /* Restore the registers that are not automatically restored. */
-        #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
-            "   tst lr, #0x10                                   \n" /* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
-            "   it eq                                           \n"
-            "   vldmiaeq r2!, {s16-s31}                         \n" /* Restore the additional FP context registers which are not restored automatically. */
-        #endif /* configENABLE_FPU || configENABLE_MVE */
+            #if ( ( configENABLE_FPU == 1 ) || ( configENABLE_MVE == 1 ) )
+                "   tst lr, #0x10                               \n" /* Test Bit[4] in LR. Bit[4] of EXC_RETURN is 0 if the Extended Stack Frame is in use. */
+                "   it eq                                       \n"
+                "   vldmiaeq r2!, {s16-s31}                     \n" /* Restore the additional FP context registers which are not restored automatically. */
+            #endif /* configENABLE_FPU || configENABLE_MVE */
             "   msr psp, r2                                     \n" /* Remember the new top of stack for the task. */
             "   bx lr                                           \n"
             "                                                   \n"

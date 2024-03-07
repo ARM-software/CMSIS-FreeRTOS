@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -57,7 +57,6 @@
         #define vTaskResume                           MPU_vTaskResume
         #define xTaskGetTickCount                     MPU_xTaskGetTickCount
         #define uxTaskGetNumberOfTasks                MPU_uxTaskGetNumberOfTasks
-        #define pcTaskGetName                         MPU_pcTaskGetName
         #define uxTaskGetStackHighWaterMark           MPU_uxTaskGetStackHighWaterMark
         #define uxTaskGetStackHighWaterMark2          MPU_uxTaskGetStackHighWaterMark2
         #define vTaskSetApplicationTaskTag            MPU_vTaskSetApplicationTaskTag
@@ -94,11 +93,14 @@
         #define xTaskCallApplicationTaskHook             MPU_xTaskCallApplicationTaskHook
 
         #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
+            #define pcTaskGetName                        MPU_pcTaskGetName
             #define xTaskCreateRestricted                MPU_xTaskCreateRestricted
             #define xTaskCreateRestrictedStatic          MPU_xTaskCreateRestrictedStatic
             #define vTaskAllocateMPURegions              MPU_vTaskAllocateMPURegions
             #define xTaskGetStaticBuffers                MPU_xTaskGetStaticBuffers
             #define uxTaskPriorityGetFromISR             MPU_uxTaskPriorityGetFromISR
+            #define uxTaskBasePriorityGet                MPU_uxTaskBasePriorityGet
+            #define uxTaskBasePriorityGetFromISR         MPU_uxTaskBasePriorityGetFromISR
             #define xTaskResumeFromISR                   MPU_xTaskResumeFromISR
             #define xTaskGetApplicationTaskTagFromISR    MPU_xTaskGetApplicationTaskTagFromISR
             #define xTaskGenericNotifyFromISR            MPU_xTaskGenericNotifyFromISR
@@ -156,7 +158,7 @@
         #define vTimerSetTimerID                  MPU_vTimerSetTimerID
         #define xTimerIsTimerActive               MPU_xTimerIsTimerActive
         #define xTimerGetTimerDaemonTaskHandle    MPU_xTimerGetTimerDaemonTaskHandle
-        #define xTimerGenericCommand              MPU_xTimerGenericCommand
+        #define xTimerGenericCommandFromTask      MPU_xTimerGenericCommandFromTask
         #define pcTimerGetName                    MPU_pcTimerGetName
         #define vTimerSetReloadMode               MPU_vTimerSetReloadMode
         #define uxTimerGetReloadMode              MPU_uxTimerGetReloadMode
@@ -167,10 +169,11 @@
  * the application can use opaque handles maintained in mpu_wrappers.c
  * with all the APIs. */
         #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
-            #define xTimerGetReloadMode      MPU_xTimerGetReloadMode
-            #define xTimerCreate             MPU_xTimerCreate
-            #define xTimerCreateStatic       MPU_xTimerCreateStatic
-            #define xTimerGetStaticBuffer    MPU_xTimerGetStaticBuffer
+            #define xTimerGetReloadMode            MPU_xTimerGetReloadMode
+            #define xTimerCreate                   MPU_xTimerCreate
+            #define xTimerCreateStatic             MPU_xTimerCreateStatic
+            #define xTimerGetStaticBuffer          MPU_xTimerGetStaticBuffer
+            #define xTimerGenericCommandFromISR    MPU_xTimerGenericCommandFromISR
         #endif /* #if ( configUSE_MPU_WRAPPERS_V1 == 0 ) */
 
 /* Map standard event_group.h API functions to the MPU equivalents. */

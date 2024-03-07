@@ -1,7 +1,14 @@
 ## FreeRTOS Community Supported Ports
 
 This repository contains FreeRTOS ports supported by FreeRTOS community members.
-Follow the steps below to contribute a FreeRTOS port to this repository:
+For a community supported FreeRTOS port:
+
+* The code has not been reviewed by the FreeRTOS team.
+* Tests may or may not exist for the FreeRTOS port.
+* Customer queries as well as bugs are addressed by the community.
+
+A new FreeRTOS port can be directly contributed by anyone. Follow the steps
+below to contribute a FreeRTOS port to this repository:
 
 1. Write FreeRTOS port for your Compiler and Architecture.
 2. *[Optional]* Create a project in the [FreeRTOS Community Supported Demos Repository](https://github.com/FreeRTOS/FreeRTOS-Community-Supported-Demos/tree/main)

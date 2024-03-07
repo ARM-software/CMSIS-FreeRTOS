@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.6.2
+ * FreeRTOS Kernel V11.0.1
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -361,31 +361,6 @@
             "     svc %0                                            \n"
             "                                                       \n"
             : : "i" ( SYSTEM_CALL_uxTaskGetNumberOfTasks ) : "memory"
-        );
-    }
-/*-----------------------------------------------------------*/
-
-    char * MPU_pcTaskGetName( TaskHandle_t xTaskToQuery ) __attribute__( ( naked ) ) FREERTOS_SYSTEM_CALL;
-
-    char * MPU_pcTaskGetName( TaskHandle_t xTaskToQuery ) /* __attribute__ (( naked )) FREERTOS_SYSTEM_CALL */
-    {
-        __asm volatile
-        (
-            " .syntax unified                                       \n"
-            " .extern MPU_pcTaskGetNameImpl                         \n"
-            "                                                       \n"
-            " push {r0}                                             \n"
-            " mrs r0, control                                       \n"
-            " tst r0, #1                                            \n"
-            " bne MPU_pcTaskGetName_Unpriv                          \n"
-            " MPU_pcTaskGetName_Priv:                               \n"
-            "     pop {r0}                                          \n"
-            "     b MPU_pcTaskGetNameImpl                           \n"
-            " MPU_pcTaskGetName_Unpriv:                             \n"
-            "     pop {r0}                                          \n"
-            "     svc %0                                            \n"
-            "                                                       \n"
-            : : "i" ( SYSTEM_CALL_pcTaskGetName ) : "memory"
         );
     }
 /*-----------------------------------------------------------*/
@@ -1512,30 +1487,27 @@
 
     #if ( configUSE_TIMERS == 1 )
 
-        BaseType_t MPU_xTimerGenericCommandEntry( const xTimerGenericCommandParams_t * pxParams ) __attribute__( ( naked ) ) FREERTOS_SYSTEM_CALL;
+        BaseType_t MPU_xTimerGenericCommandFromTaskEntry( const xTimerGenericCommandFromTaskParams_t * pxParams ) __attribute__( ( naked ) ) FREERTOS_SYSTEM_CALL;
 
-        BaseType_t MPU_xTimerGenericCommandEntry( const xTimerGenericCommandParams_t * pxParams ) /* __attribute__ (( naked )) FREERTOS_SYSTEM_CALL */
+        BaseType_t MPU_xTimerGenericCommandFromTaskEntry( const xTimerGenericCommandFromTaskParams_t * pxParams ) /* __attribute__ (( naked )) FREERTOS_SYSTEM_CALL */
         {
             __asm volatile
             (
-                " .syntax unified                                       \n"
-                " .extern MPU_xTimerGenericCommandPrivImpl              \n"
-                "                                                       \n"
-                " push {r0}                                             \n"
-                " mrs r0, ipsr                                          \n"
-                " cmp r0, #0                                            \n"
-                " bne MPU_xTimerGenericCommand_Priv                     \n"
-                " mrs r0, control                                       \n"
-                " tst r0, #1                                            \n"
-                " beq MPU_xTimerGenericCommand_Priv                     \n"
-                " MPU_xTimerGenericCommand_Unpriv:                      \n"
-                "     pop {r0}                                          \n"
-                "     svc %0                                            \n"
-                " MPU_xTimerGenericCommand_Priv:                        \n"
-                "     pop {r0}                                          \n"
-                "     b MPU_xTimerGenericCommandPrivImpl                \n"
-                "                                                       \n"
-                : : "i" ( SYSTEM_CALL_xTimerGenericCommand ) : "memory"
+                " .syntax unified                                               \n"
+                " .extern MPU_xTimerGenericCommandFromTaskImpl                  \n"
+                "                                                               \n"
+                " push {r0}                                                     \n"
+                " mrs r0, control                                               \n"
+                " tst r0, #1                                                    \n"
+                " bne MPU_xTimerGenericCommandFromTask_Unpriv                   \n"
+                " MPU_xTimerGenericCommandFromTask_Priv:                        \n"
+                "     pop {r0}                                                  \n"
+                "     b MPU_xTimerGenericCommandFromTaskImpl                    \n"
+                " MPU_xTimerGenericCommandFromTask_Unpriv:                      \n"
+                "     pop {r0}                                                  \n"
+                "     svc %0                                                    \n"
+                "                                                               \n"
+                : : "i" ( SYSTEM_CALL_xTimerGenericCommandFromTask ) : "memory"
             );
         }
 

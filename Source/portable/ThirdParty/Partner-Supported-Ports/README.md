@@ -1,7 +1,15 @@
 ## FreeRTOS Partner Supported Ports
 
-This repository contains FreeRTOS ports supported by FreeRTOS partners. Follow
-the steps below to contribute a FreeRTOS port to this repository:
+This repository contains FreeRTOS ports supported by FreeRTOS partners. For a
+partner supported FreeRTOS port:
+
+* The code has not been reviewed by the FreeRTOS team.
+* FreeRTOS team has not verified the tests results but tests exist and are
+  reported to be successful by the partner.
+* Customer queries as well as bugs are addressed by the partner.
+
+A new FreeRTOS port can be directly contributed by a partner. Follow the steps
+below to contribute a FreeRTOS port to this repository:
 
 1. Write the FreeRTOS port for your Compiler and Architecture.
 2. Create a project in the [FreeRTOS Partner Supported Demos Repository](https://github.com/FreeRTOS/FreeRTOS-Partner-Supported-Demos/tree/main)
