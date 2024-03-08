@@ -993,10 +993,12 @@ uint32_t osThreadFlagsGet (void) {
   Wait for one or more Thread Flags of the current running thread to become signaled.
 */
 uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) {
+  TaskHandle_t hTask;
   uint32_t rflags, nval;
   uint32_t clear;
   TickType_t t0, td, tout;
   BaseType_t rval;
+  BaseType_t notify = pdFALSE;
 
   if (IRQ_Context() != 0U) {
     rflags = (uint32_t)osErrorISR;
@@ -1021,6 +1023,11 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
       if (rval == pdPASS) {
         rflags &= flags;
         rflags |= nval;
+
+        if ((rflags & ~flags) != 0) {
+          /* Other flags already set, notify task to change its state */
+          notify = pdTRUE;
+        }
 
         if ((options & osFlagsWaitAll) == osFlagsWaitAll) {
           if ((flags & rflags) == flags) {
@@ -1061,6 +1068,15 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
       }
     }
     while (rval != pdFAIL);
+  }
+
+  if (notify == pdTRUE) {
+    hTask = xTaskGetCurrentTaskHandle();
+
+    /* Ensure task is already notified without changing existing flags */
+    if (xTaskNotify(hTask, 0, eNoAction) != pdPASS) {
+      rflags = (uint32_t)osError;
+    }
   }
 
   /* Return flags before clearing */
