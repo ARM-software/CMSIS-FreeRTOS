@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -167,18 +167,6 @@ void SysTick_Handler (void) {
 #endif /* SysTick */
 
 /*
-  Setup SVC to reset value.
-*/
-__STATIC_INLINE void SVC_Setup (void) {
-#if (__ARM_ARCH_7A__ == 0U)
-  /* Service Call interrupt might be configured before kernel start      */
-  /* and when its priority is lower or equal to BASEPRI, svc instruction */
-  /* causes a Hard Fault.                                                */
-  NVIC_SetPriority (SVCall_IRQn, 0U);
-#endif
-}
-
-/*
   Function macro used to retrieve semaphore count from ISR
 */
 #ifndef uxSemaphoreGetCountFromISR
@@ -322,8 +310,6 @@ osStatus_t osKernelStart (void) {
 
     /* Start scheduler if initialized and not started before */
     if ((state == taskSCHEDULER_NOT_STARTED) && (KernelState == osKernelReady)) {
-      /* Ensure SVC priority is at the reset value */
-      SVC_Setup();
       /* Change state to ensure correct API flow */
       KernelState = osKernelRunning;
       /* Start the kernel scheduler */
