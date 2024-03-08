@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
+ * Copyright (c) 2024 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -15,8 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *      Name:    clib_arm.c
- *      Purpose: ARM C library startup and initialization support
+ *      Name:    clib_os.c
+ *      Purpose: C library startup hooks (unless handled by CMSIS-Compiler)
  *
  *---------------------------------------------------------------------------*/
 
@@ -27,37 +27,29 @@
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
 
-/* Define the number of Threads which use standard C/C++ library libspace */
-#ifndef OS_THREAD_LIBSPACE_NUM
-  #define OS_THREAD_LIBSPACE_NUM      4
-#endif
-
-/* Define the number of Mutexes used by standard C/C++ library for stream protection */
-#ifndef OS_MUTEX_CLIB_NUM
-  #define OS_MUTEX_CLIB_NUM           5
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-/* Initialization after stack and heap setup */
-#if defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
-
-#ifndef __MICROLIB
-__WEAK
-void _platform_post_stackheap_init (void);
-void _platform_post_stackheap_init (void) {
-  /* Initialize OS, memory, etc. */
+/* Event Recorder initialization before entering function "main" */
+#if (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) && !defined(__MICROLIB))
+extern void _platform_post_stackheap_init (void);
+__WEAK void _platform_post_stackheap_init (void) {
+  /* Initialize Event Recorder and apply initial filter configuration */
   #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
     EvrFreeRTOSSetup(0);
   #endif
 }
-#endif /* __MICROLIB */
-
 #elif defined(__GNUC__)
-__WEAK
-void software_init_hook (void);
-void software_init_hook (void) {
-  /* Initialize OS, memory, etc. */
+extern void software_init_hook (void);
+__WEAK void software_init_hook (void) {
+  /* Initialize Event Recorder and apply initial filter configuration */
+  #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
+    EvrFreeRTOSSetup(0);
+  #endif
+}
+
+#elif defined(__ICCARM__)
+extern void $Super$$__iar_data_init3 (void);
+void $Sub$$__iar_data_init3 (void) {
+  $Super$$__iar_data_init3();
+  /* Initialize Event Recorder and apply initial filter configuration */
   #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
     EvrFreeRTOSSetup(0);
   #endif
@@ -65,18 +57,27 @@ void software_init_hook (void) {
 
 #endif
 
-/*----------------------------------------------------------------------------*/
+#if ((defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)) && !defined(__MICROLIB))
+/* Arm C/C++ Standard Library Interfaces */
 
-/* C/C++ Standard Library Multithreading Interface */
-#if (( defined(__CC_ARM) || (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))) && !defined(__MICROLIB))
+#if (!defined(CLIB_NO_FP_INIT) && \
+     !defined(__ARM_ARCH_7A__) && \
+     (defined(__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
+     (defined(__FPU_USED   ) && (__FPU_USED    == 1U)))
 
-#define LIBSPACE_SIZE 96
+/* Floating-point Initialization */
+extern void $Super$$_fp_init (void);
 
-/* Libspace memory pool */
-static uint32_t os_libspace[OS_THREAD_LIBSPACE_NUM+1][LIBSPACE_SIZE/sizeof(uint32_t)];
+void $Sub$$_fp_init (void);
+void $Sub$$_fp_init (void) {
+  $Super$$_fp_init();
+  FPU->FPDSCR = __get_FPSCR();
+}
 
-/* Array of Threads (IDs) using libspace */
-static TaskHandle_t os_libspace_id[OS_THREAD_LIBSPACE_NUM];
+#endif
+
+#if (!defined(RTE_CMSIS_Compiler_OS_Interface_RTOS2_LIBSPACE) && \
+     !defined(RTE_CMSIS_Compiler_OS_Interface_RTOS2_LOCKS))
 
 /* OS Kernel state checking */
 static uint32_t os_kernel_is_active (void) {
@@ -87,14 +88,22 @@ static uint32_t os_kernel_is_active (void) {
   }
 }
 
-/* Check if processor is in Thread or Handler mode */
-static uint32_t is_thread_mode (void) {
-  if (__get_IPSR() == 0U) {
-    return 1U; /* Thread mode  */
-  } else {
-    return 0U; /* Handler mode */
-  }
-}
+#endif
+
+#ifndef RTE_CMSIS_Compiler_OS_Interface_RTOS2_LIBSPACE
+
+/* Define the number of Threads which use standard C/C++ library libspace */
+#ifndef OS_THREAD_LIBSPACE_NUM
+  #define OS_THREAD_LIBSPACE_NUM      4
+#endif
+
+#define LIBSPACE_SIZE 96
+
+/* Libspace memory pool */
+static uint32_t os_libspace[OS_THREAD_LIBSPACE_NUM+1][LIBSPACE_SIZE/sizeof(uint32_t)];
+
+/* Array of Threads (IDs) using libspace */
+static TaskHandle_t os_libspace_id[OS_THREAD_LIBSPACE_NUM];
 
 /* Provide libspace for current thread */
 void *__user_perthread_libspace (void);
@@ -123,7 +132,14 @@ void *__user_perthread_libspace (void) {
   return (void *)&os_libspace[n][0];
 }
 
-/*----------------------------------------------------------------------------*/
+#endif /* RTE_CMSIS_Compiler_OS_Interface_RTOS2_LIBSPACE */
+
+#ifndef RTE_CMSIS_Compiler_OS_Interface_RTOS2_LOCKS
+
+/* Define the number of Mutexes used by standard C/C++ library for stream protection */
+#ifndef OS_MUTEX_CLIB_NUM
+  #define OS_MUTEX_CLIB_NUM           5
+#endif
 
 #if (OS_MUTEX_CLIB_NUM > 0)
 static StaticSemaphore_t clib_mutex_cb[OS_MUTEX_CLIB_NUM];
@@ -138,6 +154,14 @@ __USED void _mutex_acquire   (mutex *m);
 __USED void _mutex_release   (mutex *m);
 __USED void _mutex_free      (mutex *m);
 
+/* Check if processor is in Thread or Handler mode */
+static uint32_t is_thread_mode (void) {
+  if (__get_IPSR() == 0U) {
+    return 1U; /* Thread mode  */
+  } else {
+    return 0U; /* Handler mode */
+  }
+}
 
 /* Initialize mutex */
 int _mutex_initialize(mutex *m) {
@@ -212,4 +236,5 @@ void _mutex_free(mutex *m) {
 #endif
 }
 
+#endif /* RTE_CMSIS_Compiler_OS_Interface_RTOS2_LOCKS */
 #endif
