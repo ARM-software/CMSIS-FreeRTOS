@@ -12,6 +12,7 @@
       FreeRTOS 11.0.1
       Active development...
       - CMSIS-RTOS2 requires CMSIS:OS Tick component
+      - Drop support for Arm Compiler 5
     </release>
   </releases>
 
@@ -22,9 +23,6 @@
   </requirements>
 
   <conditions>
-    <condition id="ARMCC">
-      <require Tcompiler="ARMCC" Toptions="AC5"/>
-    </condition>
     <condition id="ARMCC6">
       <accept Tcompiler="ARMCC" Toptions="AC6"/>
       <accept Tcompiler="ARMCC" Toptions="AC6LTO"/>
@@ -176,52 +174,6 @@
     <condition id="CoreA">
       <description>Cortex-A processor based device</description>
       <accept condition="CA9_DP"/>
-    </condition>
-
-    <!-- ARMCC compiler -->
-    <condition id="CM0_ARMCC">
-      <description>Cortex-M0 or Cortex-M0+ or SC000 processor based device for the ARM Compiler 5</description>
-      <require condition="CM0"/>
-      <require condition="ARMCC"/>
-    </condition>
-
-    <condition id="CM3_ARMCC">
-      <description>Cortex-M3 or SC300 processor based device for the ARM Compiler 5</description>
-      <require condition="CM3"/>
-      <require condition="ARMCC"/>
-    </condition>
-
-    <condition id="CM4_ARMCC">
-      <description>Cortex-M4 processor based device for the ARM Compiler 5</description>
-      <require condition="CM4"/>
-      <require condition="ARMCC"/>
-    </condition>
-    <condition id="CM4_FP_ARMCC">
-      <description>Cortex-M4 processor based device using Floating Point Unit for the ARM Compiler 5</description>
-      <require condition="CM4_FP"/>
-      <require condition="ARMCC"/>
-    </condition>
-
-    <condition id="CM7_ARMCC">
-      <description>Cortex-M7 processor based device for the ARM Compiler 5</description>
-      <require condition="CM7"/>
-      <require condition="ARMCC"/>
-    </condition>
-    <condition id="CM7_SP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (SP) for the ARM Compiler 5</description>
-      <require condition="CM7_SP"/>
-      <require condition="ARMCC"/>
-    </condition>
-    <condition id="CM7_DP_ARMCC">
-      <description>Cortex-M7 processor based device using Floating Point Unit (DP) for the ARM Compiler 5</description>
-      <require condition="CM7_DP"/>
-      <require condition="ARMCC"/>
-    </condition>
-
-    <condition id="CA9_DP_ARMCC">
-      <description>Cortex-A9 processor based device using Floating Point Unit (DP) for the ARM Compiler 5</description>
-      <require condition="CA9_DP"/>
-      <require condition="ARMCC"/>
     </condition>
 
     <!-- ARMCC6 compiler -->
@@ -575,14 +527,12 @@
     <!-- FreeRTOS ports for the Arm Cortex core -->
     <condition id="FreeRTOS Port Cortex-M0">
       <description>Requirements for FreeRTOS port for Cortex-M0 and Cortex-M0+</description>
-      <accept condition="CM0_ARMCC"/>
       <accept condition="CM0_ARMCC6"/>
       <accept condition="CM0_GCC"/>
       <accept condition="CM0_IAR"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M3">
       <description>Requirements for FreeRTOS port for Cortex-M3</description>
-      <accept condition="CM3_ARMCC"/>
       <accept condition="CM3_ARMCC6"/>
       <accept condition="CM3_GCC"/>
       <accept condition="CM3_IAR"/>
@@ -594,7 +544,6 @@
     </condition>
     <condition id="FreeRTOS Port Cortex-M4">
       <description>Requirements for FreeRTOS port for Cortex-M4</description>
-      <accept condition="CM4_ARMCC"/>
       <accept condition="CM4_ARMCC6"/>
       <accept condition="CM4_GCC"/>
       <accept condition="CM4_IAR"/>
@@ -606,35 +555,30 @@
     </condition>
     <condition id="FreeRTOS Port Cortex-M4 FPU">
       <description>Requirements for FreeRTOS port for Cortex-M4 using FPU</description>
-      <accept condition="CM4_FP_ARMCC"/>
       <accept condition="CM4_FP_ARMCC6"/>
       <accept condition="CM4_FP_GCC"/>
       <accept condition="CM4_FP_IAR"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M4 FPU MPU">
       <description>Requirements for FreeRTOS port for Cortex-M4 using FPU and MPU</description>
-      <accept condition="CM4_FP_ARMCC"/>
       <accept condition="CM4_FP_ARMCC6"/>
       <accept condition="CM4_FP_GCC"/>
       <accept condition="CM4_FP_IAR"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M7">
       <description>Requirements for FreeRTOS port for Cortex-M7</description>
-      <accept condition="CM7_ARMCC"/>
       <accept condition="CM7_ARMCC6"/>
       <accept condition="CM7_GCC"/>
       <accept condition="CM7_IAR"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M7 FPU SP">
       <description>Requirements for FreeRTOS port for Cortex-M7 using FPU (SP)</description>
-      <accept condition="CM7_SP_ARMCC"/>
       <accept condition="CM7_SP_ARMCC6"/>
       <accept condition="CM7_SP_GCC"/>
       <accept condition="CM7_SP_IAR"/>
     </condition>
     <condition id="FreeRTOS Port Cortex-M7 FPU DP">
       <description>Requirements for FreeRTOS port for Cortex-M7 using FPU (DP)</description>
-      <accept condition="CM7_DP_ARMCC"/>
       <accept condition="CM7_DP_ARMCC6"/>
       <accept condition="CM7_DP_GCC"/>
       <accept condition="CM7_DP_IAR"/>
@@ -707,7 +651,6 @@
     </condition>
     <condition id="FreeRTOS Port Cortex-A9 FPU DP">
       <description>Requirements for FreeRTOS port for Cortex-A9 using FPU (DP)</description>
-      <accept condition="CA9_DP_ARMCC"/>
       <accept condition="CA9_DP_ARMCC6"/>
       <accept condition="CA9_DP_GCC"/>
       <accept condition="CA9_DP_IAR"/>
@@ -955,7 +898,6 @@
         <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
       </files>
     </component>
@@ -970,7 +912,6 @@
         <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
 
         <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
@@ -997,21 +938,6 @@
           <file category="source"  name="Source/list.c"/>
           <file category="source"  name="Source/queue.c"/>
           <file category="source"  name="Source/tasks.c"/>
-
-          <file category="include"   condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/"/>
-          <file category="source"    condition="CM0_ARMCC"    name="Source/portable/RVDS/ARM_CM0/port.c"/>
-          <file category="include"   condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"    condition="CM3_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include"   condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"    condition="CM4_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include"   condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/"/>
-          <file category="source"    condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4F/port.c"/>
-          <file category="include"   condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/"/>
-          <file category="source"    condition="CM7_ARMCC"    name="Source/portable/RVDS/ARM_CM3/port.c"/>
-          <file category="include"   condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-          <file category="source"    condition="CM7_DP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
-          <file category="include"   condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/"/>
-          <file category="source"    condition="CM7_SP_ARMCC" name="Source/portable/RVDS/ARM_CM7/r0p1/port.c"/>
 
           <file category="include"   condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/port.c"/>
@@ -1135,10 +1061,6 @@
           <file category="source"  name="Source/tasks.c"/>
           <file category="source"  name="Source/portable/Common/mpu_wrappers.c"/>
           <file category="source"  name="Source/portable/Common/mpu_wrappers_v2.c"/>
-
-          <file category="include"   condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4_MPU/"/>
-          <file category="source"    condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4_MPU/port.c"/>
-          <file category="source"    condition="CM4_FP_ARMCC" name="Source/portable/RVDS/ARM_CM4_MPU/mpu_wrappers_v2_asm.c"/>
 
           <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
           <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
@@ -1379,10 +1301,6 @@
           <file category="source"  name="Source/list.c"/>
           <file category="source"  name="Source/queue.c"/>
           <file category="source"  name="Source/tasks.c"/>
-
-          <file category="include"   condition="ARMCC"  name="Source/portable/RVDS/ARM_CA9/"/>
-          <file category="source"    condition="ARMCC"  name="Source/portable/RVDS/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="ARMCC"  name="Source/portable/RVDS/ARM_CA9/portASM.s"/>
 
           <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CA9/"/>
           <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CA9/port.c"/>
