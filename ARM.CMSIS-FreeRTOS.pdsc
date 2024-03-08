@@ -879,7 +879,7 @@
         <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/clib_os.c"/>
       </files>
     </component>
 
@@ -893,7 +893,7 @@
         <file category="doc"    name="Documentation/html/index.html"/>
         <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include/freertos_mpool.h"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
+        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/clib_os.c"/>
 
         <file category="source" attr="config" name="CMSIS/RTOS2/FreeRTOS/Source/handlers.c" version="9.1.0"/>
       </files>
