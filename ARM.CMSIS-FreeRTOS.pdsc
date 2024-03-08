@@ -13,6 +13,7 @@
       Active development...
       - CMSIS-RTOS2 requires CMSIS:OS Tick component
       - Drop support for Arm Compiler 5
+      - Drop support for CMSIS-RTOS1 API
     </release>
   </releases>
 
@@ -841,13 +842,6 @@
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Timers"/>
     </condition>
 
-    <condition id="CMSIS RTOS FreeRTOS">
-      <description>Components required for CMSIS RTOS API on top of FreeRTOS</description>
-      <require condition="FreeRTOS Port"/>
-
-      <require Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
-    </condition>
-
     <condition id="CMSIS RTOS2 FreeRTOS CortexM">
       <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-M</description>
       <require condition="FreeRTOS Port Cortex-M"/>
@@ -874,19 +868,6 @@
   </conditions>
 
   <components>
-    <!-- CMSIS-RTOS FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS" Csub="FreeRTOS" Cversion="11.0.1" Capiversion="1.0.0" condition="CMSIS RTOS FreeRTOS">
-      <description>CMSIS-RTOS implementation for Cortex-M based on FreeRTOS</description>
-      <RTE_Components_h>
-        #define RTE_CMSIS_RTOS                  /* CMSIS-RTOS */
-        #define RTE_CMSIS_RTOS_FreeRTOS         /* CMSIS-RTOS FreeRTOS */
-      </RTE_Components_h>
-      <files>
-        <file category="header" name="CMSIS/RTOS2/FreeRTOS/Include1/cmsis_os.h"/>
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os1.c"/>
-      </files>
-    </component>
-
     <!-- CMSIS-RTOS2 FreeRTOS component -->
     <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.0.1" Capiversion="2.2.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
