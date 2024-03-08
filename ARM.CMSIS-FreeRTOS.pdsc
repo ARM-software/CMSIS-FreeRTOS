@@ -9,7 +9,9 @@
 
   <releases>
     <release version="0.0.0">
+      FreeRTOS 11.0.1
       Active development...
+      - CMSIS-RTOS2 requires CMSIS:OS Tick component
     </release>
   </releases>
 
@@ -907,6 +909,7 @@
       <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-M</description>
       <require condition="FreeRTOS Port Cortex-M"/>
 
+      <require Cclass="CMSIS" Cgroup="OS Tick"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
@@ -917,8 +920,8 @@
       <description>Components required for CMSIS RTOS2 API on top of FreeRTOS for Cortex-A</description>
       <require condition="FreeRTOS Port Cortex-A"/>
 
+      <require Cclass="CMSIS" Cgroup="OS Tick"/>
       <require Cclass="Device" Cgroup="IRQ Controller"/>
-      <require Cclass="Device" Cgroup="OS Tick"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config" Cvariant="CMSIS RTOS2"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Core"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
@@ -954,8 +957,6 @@
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/cmsis_os2.c"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC"/>
         <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/ARM/clib_arm.c" condition="ARMCC6"/>
-
-        <file category="source" name="CMSIS/RTOS2/FreeRTOS/Source/os_systick.c"/>
       </files>
     </component>
 
