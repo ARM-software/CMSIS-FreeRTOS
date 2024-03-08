@@ -167,13 +167,6 @@ void SysTick_Handler (void) {
 #endif /* SysTick */
 
 /*
-  Function macro used to retrieve semaphore count from ISR
-*/
-#ifndef uxSemaphoreGetCountFromISR
-#define uxSemaphoreGetCountFromISR( xSemaphore ) uxQueueMessagesWaitingFromISR( ( QueueHandle_t ) ( xSemaphore ) )
-#endif
-
-/*
   Determine if CPU executes from interrupt context or if interrupts are masked.
 */
 __STATIC_INLINE uint32_t IRQ_Context (void) {
