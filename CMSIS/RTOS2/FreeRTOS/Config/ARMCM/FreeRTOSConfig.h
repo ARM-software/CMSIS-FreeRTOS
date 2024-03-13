@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.5.0
+ * $Revision:   V10.6.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -51,94 +51,137 @@
 //  <o>Minimal stack size [words] <0-65535>
 //  <i> Stack for idle task and default task stack in words.
 //  <i> Default: 128
-#define configMINIMAL_STACK_SIZE                ((uint16_t)(128))
+#define configMINIMAL_STACK_SIZE                  ((uint16_t)(128))
 
 //  <o>Total heap size [bytes] <0-0xFFFFFFFF>
 //  <i> Heap memory size in bytes.
 //  <i> Default: 8192
-#define configTOTAL_HEAP_SIZE                   ((size_t)8192)
+#define configTOTAL_HEAP_SIZE                     ((size_t)8192)
 
 //  <o>Kernel tick frequency [Hz] <0-0xFFFFFFFF>
 //  <i> Kernel tick rate in Hz.
 //  <i> Default: 1000
-#define configTICK_RATE_HZ                      ((TickType_t)1000)
+#define configTICK_RATE_HZ                        ((TickType_t)1000)
 
 //  <o>Timer task stack depth [words] <0-65535>
 //  <i> Stack for timer task in words.
 //  <i> Default: 80
-#define configTIMER_TASK_STACK_DEPTH            80
+#define configTIMER_TASK_STACK_DEPTH              80
 
 //  <o>Timer task priority <0-56>
 //  <i> Timer task priority.
 //  <i> Default: 40 (High)
-#define configTIMER_TASK_PRIORITY               40
+#define configTIMER_TASK_PRIORITY                 40
 
 //  <o>Timer queue length <0-1024>
 //  <i> Timer command queue length.
 //  <i> Default: 5
-#define configTIMER_QUEUE_LENGTH                5
+#define configTIMER_QUEUE_LENGTH                  5
 
 //  <o>Preemption interrupt priority
 //  <i> Maximum priority of interrupts that are safe to call FreeRTOS API.
 //  <i> Default: 16
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY      16
 
 //  <q>Use time slicing
 //  <i> Enable setting to use timeslicing.
 //  <i> Default: 1
-#define configUSE_TIME_SLICING                  1
+#define configUSE_TIME_SLICING                    1
 
 //  <q>Use tickless idle
 //  <i> Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
 //  <i> disable it to keep the tick interrupt running at all times.
 //  <i> Default: 0
-#define configUSE_TICKLESS_IDLE                 0
+#define configUSE_TICKLESS_IDLE                   0
 
 //  <q>Idle should yield
 //  <i> Control Yield behaviour of the idle task.
 //  <i> Default: 1
-#define configIDLE_SHOULD_YIELD                 1
+#define configIDLE_SHOULD_YIELD                   1
 
 //  <o>Check for stack overflow
 //    <0=>Disable <1=>Method one <2=>Method two
 //  <i> Enable or disable stack overflow checking.
 //  <i> Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
 //  <i> Default: 0
-#define configCHECK_FOR_STACK_OVERFLOW          2
+#define configCHECK_FOR_STACK_OVERFLOW            2
 
 //  <q>Use idle hook
 //  <i> Enable callback function call on each idle task iteration.
 //  <i> Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
 //  <i> Default: 0
-#define configUSE_IDLE_HOOK                     0
+#define configUSE_IDLE_HOOK                       0
 
 //  <q>Use tick hook
 //  <i> Enable callback function call during each tick interrupt.
 //  <i> Callback function vApplicationTickHook implementation is required when tick hook is enabled.
 //  <i> Default: 0
-#define configUSE_TICK_HOOK                     0
+#define configUSE_TICK_HOOK                       0
 
 //  <q>Use deamon task startup hook
 //  <i> Enable callback function call when timer service starts.
 //  <i> Callback function vApplicationDaemonTaskStartupHook implementation is required when deamon task startup hook is enabled.
 //  <i> Default: 0
-#define configUSE_DAEMON_TASK_STARTUP_HOOK      0
+#define configUSE_DAEMON_TASK_STARTUP_HOOK        0
 
 //  <q>Use malloc failed hook
 //  <i> Enable callback function call when out of dynamic memory.
 //  <i> Callback function vApplicationMallocFailedHook implementation is required when malloc failed hook is enabled.
 //  <i> Default: 0
-#define configUSE_MALLOC_FAILED_HOOK            0
+#define configUSE_MALLOC_FAILED_HOOK              0
 
 //  <o>Queue registry size
 //  <i> Define maximum number of queue objects registered for debug purposes.
 //  <i> The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
 //  <i> Default: 0
-#define configQUEUE_REGISTRY_SIZE               0
+#define configQUEUE_REGISTRY_SIZE                 0
 
-// <h>Event Recorder configuration
-//  <i> Initialize and setup Event Recorder level filtering.
-//  <i> Settings have no effect when Event Recorder is not present.
+// <h>Memory Allocation Configuration
+// <i> Enable and configure memory allocation specific features.
+// <i> To configure FreeRTOS heap size use configTOTAL_HEAP_SIZE.
+
+//  <q> Support static memory allocation
+//  <i> Enable or disable static memory allocation.
+//  <i> When enabled RTOS objects can be created using application provided RAM.
+//  <i> Default: 1
+#define configSUPPORT_STATIC_ALLOCATION           1
+
+//  <q> Support dynamic memory allocation
+//  <i> Enable or disable dynamic memory allocation.
+//  <i> When enabled RTOS objects can be created using RAM automatically allocated from the FreeRTOS heap.
+//  <i> Default: 1
+#define configSUPPORT_DYNAMIC_ALLOCATION          1
+
+//  <q>Use kernel provided static memory
+//  <i> When enabled FreeRTOS kernel provides static memory for Idle and Timer tasks.
+//  <i> Otherwise user shall provide implementation of:
+//  <i> - vApplicationGetIdleTaskMemory and vApplicationGetTimerTaskMemory
+//  <i> - vApplicationGetPassiveIdleTaskMemory (when kernel uses SMP)
+//  <i> Default: 1
+#define configKERNEL_PROVIDED_STATIC_MEMORY       1
+
+//  <q>Use application allocated heap
+//  <i> Global heap buffer must be provided externally when using application allocated heap.
+//  <i> The buffer must be declared as: uint8_t ucHeap[ configTOTAL_HEAP_SIZE ].
+//  <i> Default: 0
+#define configAPPLICATION_ALLOCATED_HEAP          0
+
+//  <q>Use separate heap for stack allocation
+//  <i> Enable or disable stack allocation for any task from a separate heap.
+//  <i> Thread-safe implementation of pvPortMallocStack and vPortFreeStack is required when using separate heap.
+//  <i> Default: 0
+#define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 0
+
+//  <q>Use heap protector
+//  <i> Enable or disable bounds checking and obfuscation to heap block pointers.
+//  <i> This setting only applies to Heap_4 and Heap_5.
+//  <i> Default: 0
+#define configENABLE_HEAP_PROTECTOR               0
+// </h>
+
+// <h>Event Recorder Configuration
+// <i> Initialize and setup Event Recorder level filtering.
+// <i> Settings have no effect when Event Recorder is not present.
 
 //  <q>Initialize Event Recorder
 //  <i> Initialize Event Recorder before FreeRTOS kernel start.
@@ -232,8 +275,6 @@
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
 #define configCPU_CLOCK_HZ                      (SystemCoreClock)
-#define configSUPPORT_STATIC_ALLOCATION         1
-#define configSUPPORT_DYNAMIC_ALLOCATION        1
 #define configUSE_PREEMPTION                    1
 #define configUSE_TIMERS                        1
 #define configUSE_MUTEXES                       1
