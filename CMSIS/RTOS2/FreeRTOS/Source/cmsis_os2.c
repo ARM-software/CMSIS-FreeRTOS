@@ -521,6 +521,9 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
   TaskHandle_t hTask;
   UBaseType_t prio;
   int32_t mem;
+#if (configUSE_OS2_CPU_AFFINITY == 1)
+  UBaseType_t core_aff = tskNO_AFFINITY;
+#endif
 
   hTask = NULL;
 
@@ -561,6 +564,12 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
           mem = 0;
         }
       }
+
+      #if (configUSE_OS2_CPU_AFFINITY == 1)
+        if (attr->affinity_mask != 0U) {
+          core_aff = attr->affinity_mask;
+        }
+      #endif
     }
     else {
       mem = 0;
@@ -568,16 +577,49 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
 
     if (mem == 1) {
       #if (configSUPPORT_STATIC_ALLOCATION == 1)
-        hTask = xTaskCreateStatic ((TaskFunction_t)func, name, stack, argument, prio, (StackType_t  *)attr->stack_mem,
-                                                                                      (StaticTask_t *)attr->cb_mem);
+        #if (configUSE_OS2_CPU_AFFINITY == 0)
+          hTask = xTaskCreateStatic ((TaskFunction_t)func,
+                                                     name,
+                                                     stack,
+                                                     argument,
+                                                     prio,
+                                     (StackType_t  *)attr->stack_mem,
+                                     (StaticTask_t *)attr->cb_mem);
+        #else
+          hTask = xTaskCreateStaticAffinitySet ((TaskFunction_t)func,
+                                                                name,
+                                                                stack,
+                                                                argument,
+                                                                prio,
+                                                (StackType_t  *)attr->stack_mem,
+                                                (StaticTask_t *)attr->cb_mem,
+                                                                core_aff);
+        #endif
       #endif
     }
     else {
       if (mem == 0) {
         #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-          if (xTaskCreate ((TaskFunction_t)func, name, (configSTACK_DEPTH_TYPE)stack, argument, prio, &hTask) != pdPASS) {
-            hTask = NULL;
-          }
+          #if (configUSE_OS2_CPU_AFFINITY == 0)
+            if (xTaskCreate ((TaskFunction_t        )func,
+                                                     name,
+                             (configSTACK_DEPTH_TYPE)stack,
+                                                     argument,
+                                                     prio,
+                                                     &hTask) != pdPASS) {
+              hTask = NULL;
+            }
+          #else
+            if (xTaskCreateAffinitySet ((TaskFunction_t        )func,
+                                                                name,
+                                        (configSTACK_DEPTH_TYPE)stack,
+                                                                argument,
+                                                                prio,
+                                                                core_aff,
+                                                                &hTask) != pdPASS) {
+              hTask = NULL;
+            }
+          #endif
         #endif
       }
     }
@@ -878,6 +920,50 @@ uint32_t osThreadEnumerate (osThreadId_t *thread_array, uint32_t array_items) {
 }
 #endif /* (configUSE_OS2_THREAD_ENUMERATE == 1) */
 
+#if (configUSE_OS2_CPU_AFFINITY == 1)
+/*
+  Set processor affinity mask of a thread.
+*/
+osStatus_t osThreadSetAffinityMask (osThreadId_t thread_id, uint32_t affinity_mask) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  osStatus_t stat;
+
+  if (IRQ_Context() != 0U) {
+    stat = osErrorISR;
+  }
+  else if (hTask == NULL) {
+    stat = osErrorParameter;
+  }
+  else {
+    stat = osOK;
+    vTaskCoreAffinitySet (hTask, (UBaseType_t)affinity_mask);
+  }
+
+  /* Return execution status */
+  return (stat);
+}
+
+/*
+  Get current processor affinity mask of a thread.
+*/
+uint32_t osThreadGetAffinityMask (osThreadId_t thread_id) {
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
+  UBaseType_t affinity_mask;
+
+  if (IRQ_Context() != 0U) {
+    affinity_mask = 0U;
+  }
+  else if (hTask == NULL) {
+    affinity_mask = 0U;
+  }
+  else {
+    affinity_mask = vTaskCoreAffinityGet (hTask);
+  }
+
+  /* Return current processor affinity mask */
+  return ((uint32_t)affinity_mask);
+}
+#endif /* (configUSE_OS2_CPU_AFFINITY == 1) */
 
 /* ==== Thread Flags Functions ==== */
 

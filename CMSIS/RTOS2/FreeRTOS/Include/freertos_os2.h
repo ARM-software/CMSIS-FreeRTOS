@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -110,6 +110,12 @@
 #define configUSE_OS2_MUTEX                   configUSE_MUTEXES
 #endif
 
+/*
+  Option to exclude CMSIS-RTOS2 Processor Affinity API functions from the application image.
+*/
+#ifndef configUSE_OS2_CPU_AFFINITY
+#define configUSE_OS2_CPU_AFFINITY            configUSE_CORE_AFFINITY
+#endif
 
 /*
   CMSIS-RTOS2 FreeRTOS configuration check (FreeRTOSConfig.h).
@@ -266,6 +272,26 @@
     #error "Definition configUSE_MUTEXES must equal 1 to implement Mutex Management API."
   #endif
 #endif
+
+#if (configUSE_CORE_AFFINITY == 0)
+  /*
+    CMSIS-RTOS2 Processor Affinity API functions require FreeRTOS kernel support for
+    Symmetric Multiprocessing (SMP). In case if this functionality is not available
+    and the functions are not used in the application image, compiler will optimize
+    them away.
+    Set #define configUSE_CORE_AFFINITY 1 to fix this error.
+    Note: SMP is only available when #define configNUMBER_OF_CORES > 1
+
+    Alternatively, if the application does not use processor affinity functions they
+    can be excluded from the image code by setting:
+    #define configUSE_OS2_CPU_AFFINITY 0 (in FreeRTOSConfig.h)
+  */
+
+  #if (configUSE_OS2_CPU_AFFINITY == 1)
+    #error "Definitions configNUMBER_OF_CORES and configUSE_CORE_AFFINITY must equal 1 to implement Processor Affinity API."
+  #endif
+#endif
+
 
 #if (configUSE_COUNTING_SEMAPHORES == 0)
   /*

@@ -271,6 +271,27 @@
 #define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
 // </h>
 
+// <h> Symmetric Multiprocessing Configuration
+// <i> Enable and configure FreeRTOS for Symmetric Multiprocessing (SMP).
+
+//  <q>Number of processor cores
+//  <i> Sets the number of available processor cores.
+//  <i> Default: 1
+#define configNUMBER_OF_CORES                 1
+
+//  <q>Use processor core affinity
+//  <i> Enables the control for task to run on specific processor cores.
+//  <i> Task that has no processor affinity set may run on any available core.
+//  <i> Default: 0
+#define configUSE_CORE_AFFINITY               0
+
+//  <q>Use passive idle hook
+//  <i> Enable callback function call on each idle task iteration.
+//  <i> Callback function vApplicationPassiveIdleHook implementation is required when idle hook is enabled.
+//  <i> Default: 0
+#define configUSE_PASSIVE_IDLE_HOOK           0
+// </h>
+
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */

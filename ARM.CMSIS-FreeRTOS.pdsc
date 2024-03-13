@@ -11,6 +11,7 @@
     <release version="0.0.0">
       FreeRTOS 11.0.1
       Active development...
+      - Add support for processor affinity to CMSIS-RTOS2 wrapper
       - Add memory allocation configuration options to FreeRTOSConfig.h
       - CMSIS-RTOS2 requires CMSIS:OS Tick component
       - Drop support for Arm Compiler 5
@@ -20,7 +21,7 @@
 
   <requirements>
     <packages>
-      <package vendor="ARM" name="CMSIS" version="5.9.0"/>
+      <package vendor="ARM" name="CMSIS" version="6.0.0-0"/>
     </packages>
   </requirements>
 
@@ -870,7 +871,7 @@
 
   <components>
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.0.1" Capiversion="2.2.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.0.1" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -884,7 +885,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.0.1" Capiversion="2.2.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.0.1" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
