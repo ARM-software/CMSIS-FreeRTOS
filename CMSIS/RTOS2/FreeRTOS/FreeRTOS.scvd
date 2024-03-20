@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS-FreeRTOS" version="10.6.1"/>
+  <component name="CMSIS-FreeRTOS" version="11.0.1"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -178,14 +178,14 @@
       <var name="Queue_REG_Semaphores" type="uint32_t" value="0"/>
 
       <read name="xSchedulerRunning"      type="uint32_t" symbol="tasks.c/xSchedulerRunning"/>
-      <read name="xYieldPending"          type="uint32_t" symbol="tasks.c/xYieldPending"/>
+      <read name="xYieldPending"          type="uint32_t" symbol="tasks.c/xYieldPendings"/>
       <read name="xTickCount"             type="uint32_t" symbol="tasks.c/xTickCount"/>
       <read name="xNumOfOverflows"        type="uint32_t" symbol="tasks.c/xNumOfOverflows"/>
       <read name="xPendedTicks"           type="uint32_t" symbol="tasks.c/xPendedTicks"/>
       <read name="pxCurrentTCB"           type="uint32_t" symbol="tasks.c/pxCurrentTCB"/>
       <read name="uxCurrentNumberOfTasks" type="uint32_t" symbol="tasks.c/uxCurrentNumberOfTasks"/>
 
-      <read name="xIdleTaskHandle"        type="uint32_t" symbol="tasks.c/xIdleTaskHandle"/>
+      <read name="xIdleTaskHandle"        type="uint32_t" symbol="tasks.c/xIdleTaskHandles"/>
       <read name="xTimerTaskHandle"       type="uint32_t" symbol="timers.c/xTimerTaskHandle"/>
       <read name="xTimerQueue"            type="uint32_t" symbol="timers.c/xTimerQueue"/>
 
@@ -776,7 +776,200 @@
     <event id="0xF000 + 0x16" level="Op"     property="TaskNotifyWait"                                                            value="uxIndexToWait=%d[val1], ulNotifiedValue=%x[val2]" info=""/>
     <event id="0xF000 + 0x17" level="Op"     property="TaskNotify"                                                                value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
     <event id="0xF000 + 0x18" level="Op"     property="TaskNotifyFromIsr"                                                         value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], eAction=%x[val3], ulNotifiedValue=%x[val4]" info=""/>
-    <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"                                                     value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], ulNotifiedValue=%x[val3]" info=""/>
+    <event id="0xF000 + 0x19" level="Op"     property="TaskNotifyGiveFromIsr"                                                     value="xTaskToNotify=%x[val1], uxIndexToWait=%x[val2], ulNotifiedValue=%x[val3]" info=""/>    
+    <event id="0xF000 + 0x1A" level="Op"     property="MovedTaskToDelayedList"                                                    value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x1B" level="Op"     property="MovedTaskToOverflowDelayedList"                                            value="pxTCB=%x[val1]" info=""/>
+
+    <event id="0xF000 + 0x20" level="API"    property="xTaskCreateStatic"                              value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x21" level="API"    property="xTaskCreateStatic"                              value="uxPriority=%d[val1], puxStackBuffer=%x[val2], pxTaskBuffer=%x[val3]" info=""/>
+    <event id="0xF000 + 0x22" level="Op"     property="xTaskCreateStatic_Return"                       value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x23" level="API"    property="xTaskCreateStaticAffinitySet"                   value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x24" level="API"    property="xTaskCreateStaticAffinitySet"                   value="uxPriority=%d[val1], puxStackBuffer=%x[val2], pxTaskBuffer=%x[val3], uxCoreAffinityMask=%x[val4]" info=""/>
+    <event id="0xF000 + 0x25" level="Op"     property="xTaskCreateStaticAffinitySet_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x26" level="API"    property="xTaskCreateRestrictedStatic"                    value="pxTaskDefinition=%x[val1], pxCreatedTask=%x[val2]" info=""/>
+    <event id="0xF000 + 0x27" level="Op"     property="xTaskCreateRestrictedStatic_Return"             value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x28" level="API"    property="xTaskCreateRestrictedStaticAffinitySet"         value="pxTaskDefinition=%x[val1], uxCoreAffinityMask=%x[val2], pxCreatedTask=%x[val3]" info=""/>
+    <event id="0xF000 + 0x29" level="Op"     property="xTaskCreateRestrictedStaticAffinitySet_Return"  value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x2A" level="API"    property="xTaskCreateRestricted"                          value="pxTaskDefinition=%x[val1], pxCreatedTask=%x[val2]" info=""/>
+    <event id="0xF000 + 0x2B" level="Op"     property="xTaskCreateRestricted_Return"                   value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x2C" level="API"    property="xTaskCreateRestrictedAffinitySet"               value="pxTaskDefinition=%x[val1], uxCoreAffinityMask=%x[val2], pxCreatedTask=%x[val3]" info=""/>
+    <event id="0xF000 + 0x2D" level="Op"     property="xTaskCreateRestrictedAffinitySet_Return"        value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x2E" level="API"    property="xTaskCreate"                                    value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x2F" level="API"    property="xTaskCreate"                                    value="uxPriority=%d[val1], pxCreatedTask=%x[val2]" info=""/>
+    <event id="0xF000 + 0x30" level="Op"     property="xTaskCreate_Return"                             value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x31" level="API"    property="xTaskCreateAffinitySet"                         value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x32" level="API"    property="xTaskCreateAffinitySet"                         value="uxPriority=%d[val1], uxCoreAffinityMask=%x[val2], pxCreatedTask=%x[val3]" info=""/>
+    <event id="0xF000 + 0x33" level="Op"     property="xTaskCreateAffinitySet_Return"                  value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x34" level="API"    property="vTaskDelete"                                    value="xTaskToDelete=%x[val1]" info=""/>
+    <event id="0xF000 + 0x35" level="Op"     property="vTaskDelete_Return"                             value="" info=""/>
+    <event id="0xF000 + 0x36" level="API"    property="xTaskDelayUntil"                                value="pxPreviousWakeTime=%d[val1], xTimeIncrement=%d[val2]" info=""/>
+    <event id="0xF000 + 0x37" level="Op"     property="xTaskDelayUntil_Return"                         value="xShouldDelay=%d[val1]" info=""/>
+    <event id="0xF000 + 0x38" level="API"    property="vTaskDelay"                                     value="xTicksToDelay=%d[val1]" info=""/>
+    <event id="0xF000 + 0x39" level="Op"     property="vTaskDelay_Return"                              value="" info=""/>
+    <event id="0xF000 + 0x3A" level="API"    property="eTaskGetState"                                  value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x3B" level="Op"     property="eTaskGetState_Return"                           value="eReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x3C" level="API"    property="uxTaskPriorityGet"                              value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x3D" level="Op"     property="uxTaskPriorityGet_Return"                       value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x3E" level="API"    property="uxTaskPriorityGetFromISR"                       value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x3F" level="Op"     property="uxTaskPriorityGetFromISR_Return"                value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x40" level="API"    property="uxTaskBasePriorityGet"                          value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x41" level="Op"     property="uxTaskBasePriorityGet_Return"                   value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x42" level="API"    property="uxTaskBasePriorityGetFromISR"                   value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x43" level="Op"     property="uxTaskBasePriorityGetFromISR_Return"            value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x44" level="API"    property="vTaskPrioritySet"                               value="xTask=%x[val1], uxNewPriority=%d[val2]" info=""/>
+    <event id="0xF000 + 0x45" level="Op"     property="vTaskPrioritySet_Return"                        value="" info=""/>
+    <event id="0xF000 + 0x46" level="API"    property="vTaskCoreAffinitySet"                           value="xTask=%x[val1], uxCoreAffinityMask=%d[val2]" info=""/>
+    <event id="0xF000 + 0x47" level="Op"     property="vTaskCoreAffinitySet_Return"                    value="" info=""/>
+    <event id="0xF000 + 0x48" level="API"    property="vTaskCoreAffinityGet"                           value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x49" level="Op"     property="vTaskCoreAffinityGet_Return"                    value="uxCoreAffinityMask=%d[val1]" info=""/>
+    <event id="0xF000 + 0x4A" level="API"    property="vTaskPreemptionDisable"                         value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x4B" level="Op"     property="vTaskPreemptionDisable_Return"                  value="" info=""/>
+    <event id="0xF000 + 0x4C" level="API"    property="vTaskPreemptionEnable"                          value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x4D" level="Op"     property="vTaskPreemptionEnable_Return"                   value="" info=""/>
+    <event id="0xF000 + 0x4E" level="API"    property="vTaskSuspend"                                   value="xTaskToSuspend=%x[val1]" info=""/>
+    <event id="0xF000 + 0x4F" level="Op"     property="vTaskSuspend_Return"                            value="" info=""/>
+    <event id="0xF000 + 0x50" level="API"    property="vTaskResume"                                    value="xTaskToResume=%x[val1]" info=""/>
+    <event id="0xF000 + 0x51" level="Op"     property="vTaskResume_Return"                             value="" info=""/>
+    <event id="0xF000 + 0x52" level="API"    property="xTaskResumeFromISR"                             value="xTaskToResume=%x[val1]" info=""/>
+    <event id="0xF000 + 0x53" level="Op"     property="xTaskResumeFromISR_Return"                      value="xYieldRequired=%d[val1]" info=""/>
+    <event id="0xF000 + 0x54" level="API"    property="vTaskStartScheduler"                            value="" info=""/>
+    <event id="0xF000 + 0x55" level="Op"     property="vTaskStartScheduler_Return"                     value="" info=""/>
+    <event id="0xF000 + 0x56" level="API"    property="vTaskEndScheduler"                              value="" info=""/>
+    <event id="0xF000 + 0x57" level="Op"     property="vTaskEndScheduler_Return"                       value="" info=""/>
+    <event id="0xF000 + 0x58" level="API"    property="vTaskSuspendAll"                                value="" info=""/>
+    <event id="0xF000 + 0x59" level="Op"     property="vTaskSuspendAll_Return"                         value="" info=""/>
+    <event id="0xF000 + 0x5A" level="API"    property="xTaskResumeAll"                                 value="" info=""/>
+    <event id="0xF000 + 0x5B" level="Op"     property="xTaskResumeAll_Return"                          value="xAlreadyYielded=%d[val1]" info=""/>
+    <event id="0xF000 + 0x5C" level="API"    property="xTaskGetTickCount"                              value="" info=""/>
+    <event id="0xF000 + 0x5D" level="Op"     property="xTaskGetTickCount_Return"                       value="xTicks=%d[val1]" info=""/>
+    <event id="0xF000 + 0x5E" level="API"    property="xTaskGetTickCountFromISR"                       value="" info=""/>
+    <event id="0xF000 + 0x5F" level="Op"     property="xTaskGetTickCountFromISR_Return"                value="xTicks=%d[val1]" info=""/>
+    <event id="0xF000 + 0x60" level="API"    property="uxTaskGetNumberOfTasks"                         value="" info=""/>
+    <event id="0xF000 + 0x61" level="Op"     property="uxTaskGetNumberOfTasks_Return"                  value="uxCurrentNumberOfTasks=%d[val1]" info=""/>
+    <event id="0xF000 + 0x62" level="API"    property="pcTaskGetName"                                  value="xTaskToQuery=%x[val1]" info=""/>
+    <event id="0xF000 + 0x63" level="Op"     property="pcTaskGetName_Return"                           value="pcTaskName=%s[val1]" info=""/>
+    <event id="0xF000 + 0x64" level="API"    property="xTaskGetHandle"                                 value="pcNameToQuery=%s[val1]" info=""/>
+    <event id="0xF000 + 0x65" level="Op"     property="xTaskGetHandle_Return"                          value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0x66" level="API"    property="xTaskGetStaticBuffers"                          value="xTask=%x[val1], ppuxStackBuffer=%x[val2], ppxTaskBuffer=%x[val3]" info=""/>
+    <event id="0xF000 + 0x67" level="Op"     property="xTaskGetStaticBuffers_Return"                   value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x68" level="API"    property="uxTaskGetSystemState"                           value="pxTaskStatusArray=%x[val1], uxArraySize=%d[val2], pulTotalRunTime=%d[val3]" info=""/>
+    <event id="0xF000 + 0x69" level="Op"     property="uxTaskGetSystemState_Return"                    value="uxTask=%d[val1]" info=""/>
+    <event id="0xF000 + 0x6A" level="API"    property="xTaskGetIdleTaskHandle"                         value="" info=""/>
+    <event id="0xF000 + 0x6B" level="Op"     property="xTaskGetIdleTaskHandle_Return"                  value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x6C" level="API"    property="xTaskGetIdleTaskHandleForCore"                  value="xCoreID=%d[val1]" info=""/>
+    <event id="0xF000 + 0x6D" level="Op"     property="xTaskGetIdleTaskHandleForCore_Return"           value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x6E" level="API"    property="vTaskStepTick"                                  value="xTicksToJump=%d[val1]" info=""/>
+    <event id="0xF000 + 0x6F" level="Op"     property="vTaskStepTick_Return"                           value="" info=""/>
+    <event id="0xF000 + 0x70" level="API"    property="xTaskCatchUpTicks"                              value="xTicksToCatchUp=%d[val1]" info=""/>
+    <event id="0xF000 + 0x71" level="Op"     property="xTaskCatchUpTicks_Return"                       value="xYieldOccurred=%d[val1]" info=""/>
+    <event id="0xF000 + 0x72" level="API"    property="xTaskAbortDelay"                                value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x73" level="Op"     property="xTaskAbortDelay_Return"                         value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x74" level="API"    property="xTaskIncrementTick"                             value="" info=""/>
+    <event id="0xF000 + 0x75" level="Op"     property="xTaskIncrementTick_Return"                      value="xSwitchRequired=%d[val1]" info=""/>
+    <event id="0xF000 + 0x76" level="API"    property="vTaskSetApplicationTaskTag"                     value="xTask=%x[val1], pxHookFunction=%x[val2]" info=""/>
+    <event id="0xF000 + 0x77" level="Op"     property="vTaskSetApplicationTaskTag_Return"              value="" info=""/>
+    <event id="0xF000 + 0x78" level="API"    property="xTaskGetApplicationTaskTag"                     value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x79" level="Op"     property="xTaskGetApplicationTaskTag_Return"              value="xReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0x7A" level="API"    property="xTaskGetApplicationTaskTagFromISR"              value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x7B" level="Op"     property="xTaskGetApplicationTaskTagFromISR_Return"       value="xReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0x7C" level="API"    property="xTaskCallApplicationTaskHook"                   value="xTask=%x[val1], pvParameter=%x[val2]" info=""/>
+    <event id="0xF000 + 0x7D" level="Op"     property="xTaskCallApplicationTaskHook_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x7E" level="API"    property="vTaskSwitchContext"                             value="" info=""/>
+    <event id="0xF000 + 0x7F" level="Op"     property="vTaskSwitchContext_Return"                      value="" info=""/>
+    <event id="0xF000 + 0x80" level="API"    property="vTaskPlaceOnEventList"                          value="pxEventList=%x[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF000 + 0x81" level="Op"     property="vTaskPlaceOnEventList_Return"                   value="" info=""/>
+    <event id="0xF000 + 0x82" level="API"    property="vTaskPlaceOnUnorderedEventList"                 value="pxEventList=%x[val1], xItemValue=%d[val2], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF000 + 0x83" level="Op"     property="vTaskPlaceOnUnorderedEventList_Return"          value="" info=""/>
+    <event id="0xF000 + 0x84" level="API"    property="vTaskPlaceOnEventListRestricted"                value="pxEventList=%x[val1], xTicksToWait=%d[val2], xWaitIndefinitely=%d[val3]" info=""/>
+    <event id="0xF000 + 0x85" level="Op"     property="vTaskPlaceOnEventListRestricted_Return"         value="" info=""/>
+    <event id="0xF000 + 0x86" level="API"    property="xTaskRemoveFromEventList"                       value="pxEventList=%x[val1]" info=""/>
+    <event id="0xF000 + 0x87" level="Op"     property="xTaskRemoveFromEventList_Return"                value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x88" level="API"    property="vTaskRemoveFromUnorderedEventList"              value="pxEventListItem=%x[val1], xItemValue=%d[val2]" info=""/>
+    <event id="0xF000 + 0x89" level="Op"     property="vTaskRemoveFromUnorderedEventList_Return"       value="" info=""/>
+    <event id="0xF000 + 0x8A" level="API"    property="vTaskSetTimeOutState"                           value="pxTimeOut=%x[val1]" info=""/>
+    <event id="0xF000 + 0x8B" level="Op"     property="vTaskSetTimeOutState_Return"                    value="" info=""/>
+    <event id="0xF000 + 0x8C" level="API"    property="vTaskInternalSetTimeOutState"                   value="pxTimeOut=%x[val1]" info=""/>
+    <event id="0xF000 + 0x8D" level="Op"     property="vTaskInternalSetTimeOutState_Return"            value="" info=""/>
+    <event id="0xF000 + 0x8E" level="API"    property="xTaskCheckForTimeOut"                           value="pxTimeOut=%x[val1], pxTicksToWait=%x[val2]" info=""/>
+    <event id="0xF000 + 0x8F" level="Op"     property="xTaskCheckForTimeOut_Return"                    value="" info=""/>
+    <event id="0xF000 + 0x90" level="API"    property="vTaskMissedYield"                               value="" info=""/>
+    <event id="0xF000 + 0x91" level="Op"     property="vTaskMissedYield_Return"                        value="" info=""/>
+    <event id="0xF000 + 0x92" level="API"    property="uxTaskGetTaskNumber"                            value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0x93" level="Op"     property="uxTaskGetTaskNumber_Return"                     value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0x94" level="API"    property="vTaskSetTaskNumber"                             value="xTask=%x[val1], uxHandle=%d[val2]" info=""/>
+    <event id="0xF000 + 0x95" level="Op"     property="vTaskSetTaskNumber_Return"                      value="" info=""/>
+    <event id="0xF000 + 0x96" level="API"    property="eTaskConfirmSleepModeStatus"                    value="" info=""/>
+    <event id="0xF000 + 0x97" level="Op"     property="eTaskConfirmSleepModeStatus_Return"             value="eReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0x98" level="API"    property="vTaskSetThreadLocalStoragePointer"              value="xTaskToSet=%x[val1], xIndex=%d[val2], pvValue=%x[val3]" info=""/>
+    <event id="0xF000 + 0x99" level="Op"     property="vTaskSetThreadLocalStoragePointer_Return"       value="" info=""/>
+    <event id="0xF000 + 0x9A" level="API"    property="pvTaskGetThreadLocalStoragePointer"             value="xTaskToQuery=%x[val1], xIndex=%d[val2]" info=""/>
+    <event id="0xF000 + 0x9B" level="Op"     property="pvTaskGetThreadLocalStoragePointer_Return"      value="pvReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0x9C" level="API"    property="vTaskAllocateMPURegions"                        value="xTaskToModify=%x[val1], pxRegions=%x[val2]" info=""/>
+    <event id="0xF000 + 0x9D" level="Op"     property="vTaskAllocateMPURegions_Return"                 value="" info=""/>
+    <event id="0xF000 + 0x9E" level="API"    property="vTaskGetInfo"                                   value="xTask=%x[val1], pxTaskStatus=%x[val2], xGetFreeStackSpace=%d[val3], eState=%x[val4]" info=""/>
+    <event id="0xF000 + 0x9F" level="Op"     property="vTaskGetInfo_Return"                            value="" info=""/>
+    <event id="0xF000 + 0xA0" level="API"    property="uxTaskGetStackHighWaterMark2"                   value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0xA1" level="Op"     property="uxTaskGetStackHighWaterMark2_Return"            value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xA2" level="API"    property="uxTaskGetStackHighWaterMark"                    value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0xA3" level="Op"     property="uxTaskGetStackHighWaterMark_Return"             value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xA4" level="API"    property="xTaskGetCurrentTaskHandle"                      value="" info=""/>
+    <event id="0xF000 + 0xA5" level="Op"     property="xTaskGetCurrentTaskHandle_Return"               value="xReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0xA6" level="API"    property="xTaskGetCurrentTaskHandleForCore"               value="xCoreID=%x[val1]" info=""/>
+    <event id="0xF000 + 0xA7" level="Op"     property="xTaskGetCurrentTaskHandleForCore_Return"        value="xReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0xA8" level="API"    property="xTaskGetSchedulerState"                         value="" info=""/>
+    <event id="0xF000 + 0xA9" level="Op"     property="xTaskGetSchedulerState_Return"                  value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xAA" level="API"    property="xTaskPriorityInherit"                           value="pxMutexHolder=%x[val1]" info=""/>
+    <event id="0xF000 + 0xAB" level="Op"     property="xTaskPriorityInherit_Return"                    value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xAC" level="API"    property="xTaskPriorityDisinherit"                        value="pxMutexHolder=%x[val1]" info=""/>
+    <event id="0xF000 + 0xAD" level="Op"     property="xTaskPriorityDisinherit_Return"                 value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xAE" level="API"    property="vTaskPriorityDisinheritAfterTimeout"            value="pxMutexHolder=%x[val1], uxHighestPriorityWaitingTask=%d[val2]" info=""/>
+    <event id="0xF000 + 0xAF" level="Op"     property="vTaskPriorityDisinheritAfterTimeout_Return"     value="" info=""/>
+    <event id="0xF000 + 0xB0" level="API"    property="vTaskYieldWithinAPI"                            value="" info=""/>
+    <event id="0xF000 + 0xB1" level="Op"     property="vTaskYieldWithinAPI_Return"                     value="" info=""/>
+    <event id="0xF000 + 0xB2" level="API"    property="vTaskEnterCritical"                             value="" info=""/>
+    <event id="0xF000 + 0xB3" level="Op"     property="vTaskEnterCritical_Return"                      value="" info=""/>
+    <event id="0xF000 + 0xB4" level="API"    property="vTaskEnterCriticalFromISR"                      value="" info=""/>
+    <event id="0xF000 + 0xB5" level="Op"     property="vTaskEnterCriticalFromISR_Return"               value="uxSavedInterruptStatus=%x[val1]" info=""/>
+    <event id="0xF000 + 0xB6" level="API"    property="vTaskExitCritical"                              value="" info=""/>
+    <event id="0xF000 + 0xB7" level="Op"     property="vTaskExitCritical_Return"                       value="" info=""/>
+    <event id="0xF000 + 0xB8" level="API"    property="vTaskExitCriticalFromISR"                       value="uxSavedInterruptStatus=%x[val1]" info=""/>
+    <event id="0xF000 + 0xB9" level="Op"     property="vTaskExitCriticalFromISR_Return"                value="" info=""/>
+    <event id="0xF000 + 0xBA" level="API"    property="vTaskListTasks"                                 value="pcWriteBuffer=%x[val1], uxBufferLength=%d[val2]" info=""/>
+    <event id="0xF000 + 0xBB" level="Op"     property="vTaskListTasks_Return"                          value="" info=""/>
+    <event id="0xF000 + 0xBC" level="API"    property="vTaskGetRunTimeStatistics"                      value="pcWriteBuffer=%x[val1], uxBufferLength=%d[val2]" info=""/>
+    <event id="0xF000 + 0xBD" level="Op"     property="vTaskGetRunTimeStatistics_Return"               value="" info=""/>
+    <event id="0xF000 + 0xBE" level="API"    property="uxTaskResetEventItemValue"                      value="" info=""/>
+    <event id="0xF000 + 0xBF" level="Op"     property="uxTaskResetEventItemValue_Return"               value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF000 + 0xC0" level="API"    property="pvTaskIncrementMutexHeldCount"                  value="" info=""/>
+    <event id="0xF000 + 0xC1" level="Op"     property="pvTaskIncrementMutexHeldCount_Return"           value="pxTCB=%x[val1]" info=""/>
+    <event id="0xF000 + 0xC2" level="API"    property="ulTaskGenericNotifyTake"                        value="uxIndexToWaitOn=%d[val1], xClearCountOnExit=%d[val2], xTicksToWait=%d[val3]" info=""/>
+    <event id="0xF000 + 0xC3" level="Op"     property="ulTaskGenericNotifyTake_Return"                 value="" info=""/>
+    <event id="0xF000 + 0xC4" level="API"    property="xTaskGenericNotifyWait"                         value="uxIndexToWaitOn=%d[val1], ulBitsToClearOnEntry=%x[val2], ulBitsToClearOnExit=%x[val3]" info=""/>
+    <event id="0xF000 + 0xC5" level="API"    property="xTaskGenericNotifyWait"                         value="pulNotificationValue=%x[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF000 + 0xC6" level="Op"     property="xTaskGenericNotifyWait_Return"                  value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xC7" level="API"    property="xTaskGenericNotify"                             value="xTaskToNotify=%x[val1], uxIndexToNotify=%d[val2], ulValue=%x[val3]" info=""/>
+    <event id="0xF000 + 0xC8" level="API"    property="xTaskGenericNotify"                             value="eAction=%d[val1], pulPreviousNotificationValue=%x[val2]" info=""/>
+    <event id="0xF000 + 0xC9" level="Op"     property="xTaskGenericNotify_Return"                      value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xCA" level="API"    property="xTaskGenericNotifyFromISR"                      value="xTaskToNotify=%x[val1], uxIndexToNotify=%d[val2], ulValue=%x[val3]" info=""/>
+    <event id="0xF000 + 0xCB" level="API"    property="xTaskGenericNotifyFromISR"                      value="eAction=%d[val1], pulPreviousNotificationValue=%x[val2], pxHigherPriorityTaskWoken=%x[val3]" info=""/>
+    <event id="0xF000 + 0xCC" level="Op"     property="xTaskGenericNotifyFromISR_Return"               value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xCD" level="API"    property="vTaskGenericNotifyGiveFromISR"                  value="xTaskToNotify=%x[val1], uxIndexToNotify=%d[val2], pxHigherPriorityTaskWoken=%x[val3]" info=""/>
+    <event id="0xF000 + 0xCE" level="Op"     property="vTaskGenericNotifyGiveFromISR_Return"           value="" info=""/>
+    <event id="0xF000 + 0xCF" level="API"    property="xTaskGenericNotifyStateClear"                   value="xTask=%x[val1], uxIndexToClear=%d[val2]" info=""/>
+    <event id="0xF000 + 0xD0" level="Op"     property="xTaskGenericNotifyStateClear_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xD1" level="API"    property="ulTaskGenericNotifyValueClear"                  value="xTask=%x[val1], uxIndexToClear=%d[val2], ulBitsToClear=%x[val3]" info=""/>
+    <event id="0xF000 + 0xD2" level="Op"     property="ulTaskGenericNotifyValueClear_Return"           value="ulReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xD3" level="API"    property="ulTaskGetRunTimeCounter"                        value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0xD4" level="Op"     property="ulTaskGetRunTimeCounter_Return"                 value="ulRunTimeCounter=%d[val1]" info=""/>
+    <event id="0xF000 + 0xD5" level="API"    property="ulTaskGetRunTimePercent"                        value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0xD6" level="Op"     property="ulTaskGetRunTimePercent_Return"                 value="ulReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xD7" level="API"    property="ulTaskGetIdleRunTimeCounter"                    value="" info=""/>
+    <event id="0xF000 + 0xD8" level="Op"     property="ulTaskGetIdleRunTimeCounter_Return"             value="ulReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xD9" level="API"    property="ulTaskGetIdleRunTimePercent"                    value="" info=""/>
+    <event id="0xF000 + 0xDA" level="Op"     property="ulTaskGetIdleRunTimePercent_Return"             value="ulReturn=%d[val1]" info=""/>
+    <event id="0xF000 + 0xDB" level="API"    property="xTaskGetMPUSettings"                            value="xTask=%x[val1]" info=""/>
+    <event id="0xF000 + 0xDC" level="Op"     property="xTaskGetMPUSettings_Return"                     value="xMPUSettings=%x[val1]" info=""/>    
+
 
     <event id="0xF100 + 0x00" level="Op"    property="QueueCreate"                   value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x01" level="Error" property="QueueCreateFailed"             value="ucQueueType=%x[val1]" info=""/>
@@ -804,6 +997,7 @@
     <event id="0xF100 + 0x17" level="Op"    property="BlockingOnQueueReceive"        value="pxQueue=%x[val1]" info=""/>
     <event id="0xF100 + 0x18" level="Op"    property="BlockingOnQueueSend"           value="pxQueue=%x[val1]" info=""/>
 
+
     <event id="0xF200 + 0x00" level="Op"    property="TimerCreate"          value="pxNewTimer=%x[val1]" info=""/>
     <event id="0xF200 + 0x01" level="Error" property="TimerCreateFailed"    value="" info=""/>
     <event id="0xF200 + 0x02" level="Op"    property="TimerCommandSend"     value="xTimer=%x[val1], xMessageID=%x[val2], xOptionalValue=%x[val3], xReturn=%x[val4]" info=""/>
@@ -811,21 +1005,101 @@
     <event id="0xF200 + 0x04" level="Op"    property="TimerExpired"         value="pxTimer=%x[val1]" info=""/>
     <event id="0xF200 + 0x05" level="Op"    property="PendFuncCall"         value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
     <event id="0xF200 + 0x06" level="Op"    property="PendFuncCallFromIsr"  value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
+    
+    <event id="0xF200 + 0x10" level="API"   property="xTimerCreateTimerTask"                 value="" info=""/>
+    <event id="0xF200 + 0x11" level="Op"    property="xTimerCreateTimerTask_Return"          value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x12" level="API"   property="xTimerCreate"                          value="pcTimerName=%x[val1], xTimerPeriodInTicks=%d[val2], xAutoReload=%d[val3]" info=""/>
+    <event id="0xF200 + 0x13" level="API"   property="xTimerCreate"                          value="pvTimerID=%x[val1], pxCallbackFunction=%d[val2]" info=""/>
+    <event id="0xF200 + 0x14" level="Op"    property="xTimerCreate_Return"                   value="pxNewTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x15" level="API"   property="xTimerCreateStatic"                    value="pcTimerName=%x[val1], xTimerPeriodInTicks=%d[val2], xAutoReload=%d[val3]" info=""/>
+    <event id="0xF200 + 0x16" level="API"   property="xTimerCreateStatic"                    value="pvTimerID=%x[val1], pxCallbackFunction=%d[val2], pxTimerBuffer=%x[val3]" info=""/>
+    <event id="0xF200 + 0x17" level="Op"    property="xTimerCreateStatic_Return"             value="pxNewTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x18" level="API"   property="xTimerGenericCommandFromTask"          value="xTimer=%x[val1], xCommandID=%d[val2], xOptionalValue=%x[val3]" info=""/>
+    <event id="0xF200 + 0x19" level="API"   property="xTimerGenericCommandFromTask"          value="pxHigherPriorityTaskWoken=%x[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF200 + 0x1A" level="Op"    property="xTimerGenericCommandFromTask_Return"   value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x1B" level="API"   property="xTimerGenericCommandFromISR"           value="xTimer=%x[val1], xCommandID=%d[val2], xOptionalValue=%x[val3]" info=""/>
+    <event id="0xF200 + 0x1C" level="API"   property="xTimerGenericCommandFromISR"           value="pxHigherPriorityTaskWoken=%x[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF200 + 0x1D" level="Op"    property="xTimerGenericCommandFromISR_Return"    value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x1E" level="API"   property="xTimerGetTimerDaemonTaskHandle"        value="" info=""/>
+    <event id="0xF200 + 0x1F" level="Op"    property="xTimerGetTimerDaemonTaskHandle_Return" value="xTimerTaskHandle=%x[val1]" info=""/>
+    <event id="0xF200 + 0x20" level="API"   property="xTimerGetPeriod"                       value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x21" level="Op"    property="xTimerGetPeriod_Return"                value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x22" level="API"   property="vTimerSetReloadMode"                   value="xTimer=%x[val1], xAutoReload=%d[val2]" info=""/>
+    <event id="0xF200 + 0x23" level="Op"    property="vTimerSetReloadMode_Return"            value="" info=""/>
+    <event id="0xF200 + 0x24" level="API"   property="xTimerGetReloadMode"                   value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x25" level="Op"    property="xTimerGetReloadMode_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x26" level="API"   property="uxTimerGetReloadMode"                  value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x27" level="Op"    property="uxTimerGetReloadMode_Return"           value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x28" level="API"   property="xTimerGetExpiryTime"                   value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x29" level="Op"    property="xTimerGetExpiryTime_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x2A" level="API"   property="xTimerGetStaticBuffer"                 value="xTimer=%x[val1], ppxTimerBuffer=%x[val2]" info=""/>
+    <event id="0xF200 + 0x2B" level="Op"    property="xTimerGetStaticBuffer_Return"          value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x2C" level="API"   property="pcTimerGetName"                        value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x2D" level="Op"    property="pcTimerGetName_Return"                 value="pcTimerName=%s[val1]" info=""/>
+    <event id="0xF200 + 0x2E" level="API"   property="xTimerIsTimerActive"                   value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x2F" level="Op"    property="xTimerIsTimerActive_Return"            value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x30" level="API"   property="pvTimerGetTimerID"                     value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x31" level="Op"    property="pvTimerGetTimerID_Return"              value="pvReturn=%x[val1]" info=""/>
+    <event id="0xF200 + 0x32" level="API"   property="vTimerSetTimerID"                      value="xTimer=%x[val1], pvNewID=%x[val2]" info=""/>
+    <event id="0xF200 + 0x33" level="Op"    property="vTimerSetTimerID_Return"               value="" info=""/>
+    <event id="0xF200 + 0x34" level="API"   property="xTimerPendFunctionCallFromISR"         value="xFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], pxHigherPriorityTaskWoken=%x[val4]" info=""/>
+    <event id="0xF200 + 0x35" level="Op"    property="xTimerPendFunctionCallFromISR_Return"  value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x36" level="API"   property="xTimerPendFunctionCall"                value="xFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xTicksToWait=%d[val4]" info=""/>
+    <event id="0xF200 + 0x37" level="Op"    property="xTimerPendFunctionCall_Return"         value="xReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x38" level="API"   property="uxTimerGetTimerNumber"                 value="xTimer=%x[val1]" info=""/>
+    <event id="0xF200 + 0x39" level="Op"    property="uxTimerGetTimerNumber_Return"          value="uxReturn=%d[val1]" info=""/>
+    <event id="0xF200 + 0x3A" level="API"   property="vTimerSetTimerNumber"                  value="xTimer=%x[val1], uxTimerNumber=%d[val2]" info=""/>
+    <event id="0xF200 + 0x3B" level="Op"    property="vTimerSetTimerNumber_Return"           value="" info=""/>
 
-    <event id="0xF300 + 0x00" level="Op"    property="EventGroupCreate"           value="pxEventGroup=%x[val1]" info=""/>
-    <event id="0xF300 + 0x01" level="Error" property="EventGroupCreateFailed"     value="" info=""/>
-    <event id="0xF300 + 0x02" level="Op"    property="EventGroupSyncBlock"        value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2], uxBitsToWaitFor=%x[val3]" info=""/>
-    <event id="0xF300 + 0x03" level="Op"    property="EventGroupSyncEnd"          value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2], uxBitsToWaitFor=%x[val3], xTimeoutOccurred=%x[val4]" info=""/>
-    <event id="0xF300 + 0x04" level="Op"    property="EventGroupWaitBitsBlock"    value="pxEventGroup=%x[val1], uxBitsToWaitFor=%x[val2]" info=""/>
-    <event id="0xF300 + 0x05" level="Op"    property="EventGroupWaitBitsEnd"      value="pxEventGroup=%x[val1], uxBitsToWaitFor=%x[val2], xTimeoutOccurred=%x[val3]" info=""/>
-    <event id="0xF300 + 0x06" level="Op"    property="EventGroupClearBits"        value="pxEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
-    <event id="0xF300 + 0x07" level="Op"    property="EventGroupClearBitsFromIsr" value="pxEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
-    <event id="0xF300 + 0x08" level="Op"    property="EventGroupSetBits"          value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
-    <event id="0xF300 + 0x09" level="Op"    property="EventGroupSetBitsFromIsr"   value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
-    <event id="0xF300 + 0x0A" level="Op"    property="EventGroupDelete"           value="pxEventGroup=%x[val1]" info=""/>
+
+    <event id="0xF300 + 0x00" level="Op"    property="EventGroupCreate"                     value="pxEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x01" level="Error" property="EventGroupCreateFailed"               value="" info=""/>
+    <event id="0xF300 + 0x02" level="Op"    property="EventGroupSyncBlock"                  value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2], uxBitsToWaitFor=%x[val3]" info=""/>
+    <event id="0xF300 + 0x03" level="Op"    property="EventGroupSyncEnd"                    value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2], uxBitsToWaitFor=%x[val3], xTimeoutOccurred=%x[val4]" info=""/>
+    <event id="0xF300 + 0x04" level="Op"    property="EventGroupWaitBitsBlock"              value="pxEventGroup=%x[val1], uxBitsToWaitFor=%x[val2]" info=""/>
+    <event id="0xF300 + 0x05" level="Op"    property="EventGroupWaitBitsEnd"                value="pxEventGroup=%x[val1], uxBitsToWaitFor=%x[val2], xTimeoutOccurred=%x[val3]" info=""/>
+    <event id="0xF300 + 0x06" level="Op"    property="EventGroupClearBits"                  value="pxEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
+    <event id="0xF300 + 0x07" level="Op"    property="EventGroupClearBitsFromIsr"           value="pxEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
+    <event id="0xF300 + 0x08" level="Op"    property="EventGroupSetBits"                    value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
+    <event id="0xF300 + 0x09" level="Op"    property="EventGroupSetBitsFromIsr"             value="pxEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
+    <event id="0xF300 + 0x0A" level="Op"    property="EventGroupDelete"                     value="pxEventGroup=%x[val1]" info=""/>
+
+    <event id="0xF300 + 0x10" level="API"   property="xEventGroupCreateStatic"              value="pxEventGroupBuffer=%x[val1]" info=""/>
+    <event id="0xF300 + 0x11" level="Op"    property="xEventGroupCreateStatic_Return"       value="xEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x12" level="API"   property="xEventGroupCreate"                    value="" info=""/>
+    <event id="0xF300 + 0x13" level="Op"    property="xEventGroupCreate_Return"             value="xEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x14" level="API"   property="xEventGroupSync"                      value="xEventGroup=%x[val1], uxBitsToSet=%x[val2], uxBitsToWaitFor=%x[val3], xTicksToWait=%d[val4]" info=""/>
+    <event id="0xF300 + 0x15" level="Op"    property="xEventGroupSync_Return"               value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF300 + 0x16" level="API"   property="xEventGroupWaitBits"                  value="xEventGroup=%x[val1], uxBitsToWaitFor=%x[val2], xClearOnExit=%x[val3]" info=""/>
+    <event id="0xF300 + 0x17" level="API"   property="xEventGroupWaitBits"                  value="xWaitForAllBits=%d[val1], xTicksToWait=%d[val2]" info=""/>
+    <event id="0xF300 + 0x18" level="Op"    property="xEventGroupWaitBits_Return"           value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF300 + 0x19" level="API"   property="xEventGroupClearBits"                 value="xEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
+    <event id="0xF300 + 0x1A" level="Op"    property="xEventGroupClearBits_Return"          value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF300 + 0x1B" level="API"   property="xEventGroupClearBitsFromISR"          value="xEventGroup=%x[val1], uxBitsToClear=%x[val2]" info=""/>
+    <event id="0xF300 + 0x1C" level="Op"    property="xEventGroupClearBitsFromISR_Return"   value="xReturn=%d[val1]" info=""/>
+    <event id="0xF300 + 0x1D" level="API"   property="xEventGroupGetBitsFromISR"            value="xEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x1E" level="Op"    property="xEventGroupGetBitsFromISR_Return"     value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF300 + 0x1F" level="API"   property="xEventGroupSetBits"                   value="xEventGroup=%x[val1], uxBitsToSet=%x[val2]" info=""/>
+    <event id="0xF300 + 0x20" level="Op"    property="xEventGroupSetBits_Return"            value="uxReturn=%x[val1]" info=""/>
+    <event id="0xF300 + 0x21" level="API"   property="vEventGroupDelete"                    value="xEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x22" level="Op"    property="vEventGroupDelete_Return"             value="" info=""/>
+    <event id="0xF300 + 0x23" level="API"   property="xEventGroupGetStaticBuffer"           value="xEventGroup=%x[val1], ppxEventGroupBuffer=%x[val2]" info=""/>
+    <event id="0xF300 + 0x24" level="Op"    property="xEventGroupGetStaticBuffer_Return"    value="xReturn=%d[val1]" info=""/>
+    <event id="0xF300 + 0x25" level="API"   property="vEventGroupSetBitsCallback"           value="pvEventGroup=%x[val1], ulBitsToSet=%x[val2]" info=""/>
+    <event id="0xF300 + 0x26" level="Op"    property="vEventGroupSetBitsCallback_Return"    value="" info=""/>
+    <event id="0xF300 + 0x27" level="API"   property="vEventGroupClearBitsCallback"         value="pvEventGroup=%x[val1], ulBitsToClear=%x[val2]" info=""/>
+    <event id="0xF300 + 0x28" level="Op"    property="vEventGroupClearBitsCallback_Return"  value="" info=""/>
+    <event id="0xF300 + 0x29" level="API"   property="xEventGroupSetBitsFromISR"            value="xEventGroup=%x[val1], uxBitsToSet=%x[val2], pxHigherPriorityTaskWoken=%x[val3]" info=""/>
+    <event id="0xF300 + 0x2A" level="Op"    property="xEventGroupSetBitsFromISR_Return"     value="xReturn=%d[val1]" info=""/>
+    <event id="0xF300 + 0x2B" level="API"   property="uxEventGroupGetNumber"                value="xEventGroup=%x[val1]" info=""/>
+    <event id="0xF300 + 0x2C" level="Op"    property="uxEventGroupGetNumber_Return"         value="xReturn=%d[val1]" info=""/>
+    <event id="0xF300 + 0x2D" level="API"   property="vEventGroupSetNumber"                 value="xEventGroup=%x[val1], uxEventGroupNumber=%d[val2]" info=""/>
+    <event id="0xF300 + 0x2E" level="Op"    property="vEventGroupSetNumber_Return"          value="" info=""/>
+
 
     <event id="0xF400 + 0x00" level="Op"    property="Malloc" value="pvAddress=%x[val1], uiSize=%d[val2]" info=""/>
     <event id="0xF400 + 0x01" level="Op"    property="Free"   value="pvAddress=%x[val1], uiSize=%d[val2]" info=""/>
+
 
     <event id="0xF500 + 0x00" level="Error" property="StreamBufferCreateFailed"       value="uxIsMessageBuffer=%d[val1]" info=""/>
     <event id="0xF500 + 0x01" level="Error" property="StreamBufferCreateStaticFailed" value="pxStreamBuffer=%x[val1], uxIsMessageBuffer=%d[val2]" info=""/>

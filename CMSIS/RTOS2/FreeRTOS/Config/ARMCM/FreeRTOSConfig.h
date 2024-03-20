@@ -186,48 +186,48 @@
 //  <q>Initialize Event Recorder
 //  <i> Initialize Event Recorder before FreeRTOS kernel start.
 //  <i> Default: 1
-#define configEVR_INITIALIZE                    1
+#define configEVR_INITIALIZE                      1
 
 //  <e>Setup recording level filter
 //  <i> Enable configuration of FreeRTOS events recording level
 //  <i> Default: 1
-#define configEVR_SETUP_LEVEL                   1
+#define configEVR_SETUP_LEVEL                     1
 
 //  <o>Tasks functions
 //  <i> Define event recording level bitmask for events generated from Tasks functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_TASKS                   0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_TASKS                     0x05
 
 //  <o>Queue functions
 //  <i> Define event recording level bitmask for events generated from Queue functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_QUEUE                   0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_QUEUE                     0x05
 
 //  <o>Timer functions
 //  <i> Define event recording level bitmask for events generated from Timer functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_TIMERS                  0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_TIMERS                    0x05
 
 //  <o>Event Groups functions
 //  <i> Define event recording level bitmask for events generated from Event Groups functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_EVENTGROUPS             0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_EVENTGROUPS               0x05
 
 //  <o>Heap functions
 //  <i> Define event recording level bitmask for events generated from Heap functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_HEAP                    0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_HEAP                      0x05
 
 //  <o>Stream Buffer functions
 //  <i> Define event recording level bitmask for events generated from Stream Buffer functions.
 //  <i> Default: 0x05
-//    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_STREAMBUFFER            0x05
+//    <0x00=>Off <0x01=>Errors <0x03=>Errors + API <0x05=>Errors + Operation <0x07=>Errors + API + Operation <0x0F=>All
+#define configEVR_LEVEL_STREAMBUFFER              0x05
 //  </e>
 // </h>
 
