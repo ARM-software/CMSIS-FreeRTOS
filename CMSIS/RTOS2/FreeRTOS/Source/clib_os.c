@@ -136,6 +136,16 @@ void *__user_perthread_libspace (void) {
 
 #ifndef RTE_CMSIS_Compiler_OS_Interface_RTOS2_LOCKS
 
+#if (__ARM_ARCH_7A__ == 1U)
+/* CPSR mode bitmasks */
+#define CPSR_MODE_USER            0x10U
+#define CPSR_MODE_SYSTEM          0x1FU
+
+#define IS_IRQ_MODE()             ((__get_mode() != CPSR_MODE_USER) && (__get_mode() != CPSR_MODE_SYSTEM))
+#else
+#define IS_IRQ_MODE()             (__get_IPSR() != 0U)
+#endif
+
 /* Define the number of Mutexes used by standard C/C++ library for stream protection */
 #ifndef OS_MUTEX_CLIB_NUM
   #define OS_MUTEX_CLIB_NUM           5
@@ -156,7 +166,7 @@ __USED void _mutex_free      (mutex *m);
 
 /* Check if processor is in Thread or Handler mode */
 static uint32_t is_thread_mode (void) {
-  if (__get_IPSR() == 0U) {
+  if (IS_IRQ_MODE() != 0) {
     return 1U; /* Thread mode  */
   } else {
     return 0U; /* Handler mode */
