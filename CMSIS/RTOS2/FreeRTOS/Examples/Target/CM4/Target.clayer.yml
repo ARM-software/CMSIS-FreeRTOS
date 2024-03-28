@@ -1,0 +1,21 @@
+layer:
+  type: Target
+  description: Cortex-M4 with FPU target components and files
+
+  packs:
+    - pack: ARM::Cortex_DFP
+
+  for-device: ARMCM4
+  processor:
+    fpu: sp
+
+  components:
+    - component: Device:Startup&C Startup
+
+  linker:
+    - regions: RTE/Device/$Dname$/regions_$Dname$.h
+
+  groups:
+    - group: FVP
+      files:
+        - file: ./fvp_config.txt
