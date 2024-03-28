@@ -77,7 +77,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"cre_freertos_proj.html"
+"cre_freertos_proj.html",
+"group__freertos__evr__tasks.html#gaaedfadf899d5e291fc28138e3724b498"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
