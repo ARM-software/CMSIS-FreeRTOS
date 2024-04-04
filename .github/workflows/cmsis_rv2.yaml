@@ -105,7 +105,6 @@ jobs:
           ./build.py --verbose -r FreeRTOS -c ${{ matrix.compiler }} build || echo "::warning::=== Some configurations failed to build! ==="
 
       - name: Execute
-        if: ${{ env.ARM_UBL_ACTIVATION_CODE }}
         working-directory: ./CMSIS-RTOS2_Validation/Project
         run: |
           echo "Run test projects ..."
@@ -122,7 +121,7 @@ jobs:
           fi
     
       - name: Upload Test Reports
-        if: ${{ !cancelled() && env.ARM_UBL_ACTIVATION_CODE }}
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.compiler }}
@@ -139,13 +138,12 @@ jobs:
   
     steps:
       - name: Download Test Reports
-        if: ${{ env.ARM_UBL_ACTIVATION_CODE }}
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
       - name: Publish Test Results
-        if: ${{ env.ARM_UBL_ACTIVATION_CODE && env.GITHUB_TOKEN }}
+        if: ${{ env.GITHUB_TOKEN }}
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
