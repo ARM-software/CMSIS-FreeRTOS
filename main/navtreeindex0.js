@@ -14,9 +14,13 @@ var NAVTREEINDEX0 =
 "cre_freertos_proj.html#native_freertos_config_prio":[2,0,1],
 "cre_freertos_proj.html#native_freertos_er":[2,0,2],
 "examples.html":[3],
-"examples.html#examples_cmsis":[3,1],
-"examples.html#examples_cmsis_a9":[3,2],
-"examples.html#examples_native":[3,0],
+"examples.html#build_cmdline":[3,0,2],
+"examples.html#build_run":[3,0],
+"examples.html#build_target_types":[3,0,0],
+"examples.html#build_vscode":[3,0,1],
+"examples.html#example_exec":[3,0,3],
+"examples.html#example_hello":[3,1],
+"examples.html#example_trustzone":[3,2],
 "functionOverview.html":[5],
 "functionOverview.html#autotoc_md10":[5,0,8],
 "functionOverview.html#autotoc_md11":[5,0,9],
@@ -245,9 +249,5 @@ var NAVTREEINDEX0 =
 "group__freertos__evr__tasks.html#gaa86ea1a3e27efad234277416e74517c1":[6,0,1,0,31],
 "group__freertos__evr__tasks.html#gaa9acfc9821eb634cd0d5e6ba3d39bd1f":[6,0,1,0,4],
 "group__freertos__evr__tasks.html#gaa9bd336dd70fc919d8bb2f0ec242d217":[6,0,1,0,86],
-"group__freertos__evr__tasks.html#gaaa02736b80632040c67c1f1f07d95596":[6,0,1,0,81],
-"group__freertos__evr__tasks.html#gaabd51c00b4f2234f837638d6a9f20064":[6,0,1,0,102],
-"group__freertos__evr__tasks.html#gaac624dcd64077589c8b1808f97e3c876":[6,0,1,0,199],
-"group__freertos__evr__tasks.html#gaac9c44998f7309f7b9d13a13f04057d1":[6,0,1,0,61],
-"group__freertos__evr__tasks.html#gaaecb30fb5590245d558c668427f2d8cd":[6,0,1,0,190]
+"group__freertos__evr__tasks.html#gaaa02736b80632040c67c1f1f07d95596":[6,0,1,0,81]
 };

@@ -48,9 +48,14 @@ var NAVTREE =
       [ "Debug a CMSIS-FreeRTOS project", "cre_freertos_proj.html#dbg_cmsisfreertos", null ]
     ] ],
     [ "Example projects", "examples.html", [
-      [ "Blinky example using FreeRTOS natively", "examples.html#examples_native", null ],
-      [ "Blinky example using CMSIS-FreeRTOS", "examples.html#examples_cmsis", null ],
-      [ "Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9", "examples.html#examples_cmsis_a9", null ]
+      [ "Build and Run", "examples.html#build_run", [
+        [ "Targets", "examples.html#build_target_types", null ],
+        [ "Build in VS Code using Arm Keil Studio Pack extensions", "examples.html#build_vscode", null ],
+        [ "Build via command line", "examples.html#build_cmdline", null ],
+        [ "Execute on Virtual Hardware Target", "examples.html#example_exec", null ]
+      ] ],
+      [ "Hello World", "examples.html#example_hello", null ],
+      [ "TrustZone", "examples.html#example_trustzone", null ]
     ] ],
     [ "Technical data and limitations", "tech_data.html", [
       [ "Limitations", "tech_data.html#td_limitations", null ],
@@ -78,7 +83,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "cre_freertos_proj.html",
-"group__freertos__evr__tasks.html#gaaedfadf899d5e291fc28138e3724b498"
+"group__freertos__evr__tasks.html#gaabd51c00b4f2234f837638d6a9f20064"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

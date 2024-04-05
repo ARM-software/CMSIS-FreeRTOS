@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"group__freertos__evr__tasks.html#gaabd51c00b4f2234f837638d6a9f20064":[6,0,1,0,102],
+"group__freertos__evr__tasks.html#gaac624dcd64077589c8b1808f97e3c876":[6,0,1,0,199],
+"group__freertos__evr__tasks.html#gaac9c44998f7309f7b9d13a13f04057d1":[6,0,1,0,61],
+"group__freertos__evr__tasks.html#gaaecb30fb5590245d558c668427f2d8cd":[6,0,1,0,190],
 "group__freertos__evr__tasks.html#gaaedfadf899d5e291fc28138e3724b498":[6,0,1,0,62],
 "group__freertos__evr__tasks.html#gaaef610a00a005279b0fa327c261a6ce1":[6,0,1,0,127],
 "group__freertos__evr__tasks.html#gaaf005ef29c30a02ba66645d04c4aa7c9":[6,0,1,0,88],
