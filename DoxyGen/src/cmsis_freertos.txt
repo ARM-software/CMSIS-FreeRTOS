@@ -15,7 +15,7 @@ expose proprietary source code, and has
 <a target="_blank" href="https://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html">no IP infringement</a>
 risk.
 
-<a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
+<a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
 operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
 components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for
 multi-core systems, and has a binary compatible interface across ABI compliant compilers.
@@ -23,7 +23,7 @@ multi-core systems, and has a binary compatible interface across ABI compliant c
 Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
 CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application
 code to be used with different RTOS kernels (for example
-<a class="el" href="https://www2.keil.com/mdk5/cmsis/rtx/">Keil RTX5</a>).
+<a class="el" href="https://developer.arm.com/Tools%20and%20Software/Keil%20MDK/RTX5%20RTOS/">Keil RTX5</a>).
 
 This documentation shows you:
 - how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
@@ -369,7 +369,7 @@ Definitions configEVR_LEVEL_x set the recording level bitmask for events generat
 
 \section dbg_cmsisfreertos Debug a CMSIS-FreeRTOS project
 
-\note The following only applies when used with <a href="https://www2.keil.com/mdk5" target="_blank">Arm Keil MDK</a>. If
+\note The following only applies when used with <a href="https://developer.arm.com/Tools%20and%20Software/Keil%20MDK" target="_blank">Arm Keil MDK</a>. If
 you are using a different toolchain, please consult its user's manual.
 
 Apart from the debug capabilities that \ref cmsis_freertos_evr_config "Event Recorder" offers, Keil MDK also supports thread
@@ -385,8 +385,8 @@ BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID
 
 \note
 - For more information on conditional breakpoints in Keil MDK, consult the
-  <a href="https://www.keil.com/support/man/docs/uv4/uv4_db_dbg_breakpnts.htm" target="_blank">user's manual</a>.
-- Enabling <a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a> is
+  <a href="https://developer.arm.com/documentation/101407/latest/Debugging/Debug-Windows-and-Dialogs/Breakpoints-Window" target="_blank">user's manual</a>.
+- Enabling <a href="https://developer.arm.com/documentation/101407/latest/User-Interface/View-Menu" target="_blank">Periodic Window Update</a> is
   required to capture register values for active running threads while executing. When turned off, only the current FreeRTOS
   thread can be unwound after execution has been stopped.
 
@@ -403,7 +403,7 @@ BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID
   \endcode
 
 - If you don't want to use
-<a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a>, obtain the
+<a href="https://developer.arm.com/documentation/101407/latest/User-Interface/View-Menu" target="_blank">Periodic Window Update</a>, obtain the
 thread and unwind information by adding a function that gets called from each thread of interest:
 \code
 _attribute_((noinline)) int FuncN1 (int n1) {
@@ -427,7 +427,7 @@ _attribute_((noinline)) int FuncN1 (int n1) {
 This helps to make thread aware breakpoints far less dependent on the compiler optimization level.
 
 - Thread aware breakpoints should be setup using a
-<a href="https://www.keil.com/support/man/docs/uv4/uv4_db_scripting.htm" target="_blank">debug script</a>. Reason being
+<a href="https://developer.arm.com/documentation/101407/latest/Debugging/Debug-Scripting" target="_blank">debug script</a>. Reason being
 that thread aware breakpoints are of a 'hybrid' type, that is a combined address and condition expression that works best
 when run from a debug script.
 */
@@ -438,69 +438,158 @@ when run from a debug script.
 \page examples Example projects
 
 This pack contains two example projects:
- - \ref examples_native
- - \ref examples_cmsis
+ - \ref example_hello
+ - \ref example_trustzone
 
-The first example shows how to use FreeRTOS standalone, whereas the second example shows how to use the CMSIS-RTOS2 API with
-an underlying FreeRTOS.
+The first example shows how to configure a simple application using FreeRTOS with CMSIS-RTOS2, whereas the second example
+shows how to use the FreeRTOS with CMSIS-RTOS2 in an application that utilizes TrustZone secure/non-secure execution.
 
-The examples simulate a step-motor driver. Four phase variables are simulating the activation of the four output driver
-stages. The state changes are shown in the Watch window variable \c g_phases. All four phases are displayed in the Logic
-Analyzer:
+Provided examples use the
+[CMSIS Solution Project File Format](https://github.com/Open-CMSIS-Pack/cmsis-toolbox/blob/main/docs/YML-Input-Format.md)
+and can be build for multiple Cortex-M targets
+- using [CMSIS Toolbox](https://github.com/Open-CMSIS-Pack/cmsis-toolbox/blob/main/docs/README.md#cmsis-toolbox)
+either from the command line or
+- from Visual Studio Code by using
+[Arm Keil Studio Cloud extensions](https://developer.arm.com/documentation/108029/0000/?lang=en).
 
-\image html blinky_example_simu.png
-
-
-\section examples_native Blinky example using FreeRTOS natively
-
-This example shows how to use FreeRTOS natively in a µVision project. This makes your code portable and you can
-choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
-
-To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
-<b>Native FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
-where you want to copy the project to and press OK. µVision opens.
+The \b Examples solution defines projects and build information for each project.
 
 
-\section examples_cmsis Blinky example using CMSIS-FreeRTOS
+\section build_run Build and Run
 
-This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS. This makes your code portable and you can
-choose to use a different RTOS kernel anytime during development (even only for evaluation purposes).
+The \b Examples solution supports only "Debug" Build-Type which is optimized for debugging. It disables
+compiler optimization and retains all debug related information. By default, Arm Compiler 6 is used to
+build the projects.
 
-To open the example, go to Pack Installer, select \b ARM in the \b Devices tab, and click on \b Copy next to the
-<b>CMSIS-RTOS2 FreeRTOS Blinky (uVision Simulator)</b> project on the \b Examples tab. Select the location on your hard drive
-where you want to copy the project to and press OK. µVision opens.
+\subsection build_target_types Targets
+
+Each example can be built for multiple target processors. The below table lists supported target processors
+together with the corresponding context target-types and model executable that shall be used for running
+the application image.
+
+| Target processor | Target-Type | Model Executable       |
+|:-----------------|:------------|:-----------------------|
+| Cortex-M0        | CM0         | FVP_MPS2_Cortex-M0     |
+| Cortex-M0+       | CM0plus     | FVP_MPS2_Cortex-M0plus |
+| Cortex-M3        | CM3         | FVP_MPS2_Cortex-M3     |
+| Cortex-M4        | CM4         | FVP_MPS2_Cortex-M4     |
+| Cortex-M7        | CM7         | FVP_MPS2_Cortex-M7     |
+| Cortex-M23       | CM23        | FVP_MPS2_Cortex-M23    |
+| Cortex-M23       | CM23_noTZ   | FVP_MPS2_Cortex-M23    |
+| Cortex-M33       | CM33        | FVP_MPS2_Cortex-M33    |
+| Cortex-M33       | CM33_noTZ   | FVP_MPS2_Cortex-M33    |
+| Cortex-M55       | CM55        | FVP_Corstone_SSE-300   |
+| Cortex-M55       | CM55_noTZ   | FVP_Corstone_SSE-300   |
+| Cortex-M85       | CM85        | FVP_Corstone_SSE-310   |
+| Cortex-M85       | CM85_noTZ   | FVP_Corstone_SSE-310   |
+
+\subsection build_vscode Build in VS Code using Arm Keil Studio Pack extensions
+
+- See [Arm Keil Studio Visual Studio Code Extensions User Guide](https://developer.arm.com/documentation/108029/0000/?lang=en)
+  for more information about using the Keil Studio extensions.
+- Search for [Arm Keil Studio Pack](https://marketplace.visualstudio.com/items?itemName=Arm.keil-studio-pack)
+  in the Visual Studio Marketplace to download the extensions.
+
+To build a project using Keil Studio extensions open CMSIS view, open "Manage CMSIS Solution" view and select
+"Active Context" and "Active Projects". Build Type is automatically selected since there is only
+one option.
+
+Once the context and projects are selected one can build them by selecting "Build" in CMSIS view.
+
+\subsection build_cmdline Build via command line
+
+- See [CMSIS-Toolbox documentation](https://github.com/Open-CMSIS-Pack/cmsis-toolbox/blob/main/docs/README.md)
+  to learn more about CMSIS Solution project build and management tools.
+
+To build the project via command line one can use the following command syntax:
+
+\code{.sh}
+cbuild Examples.csolution.yml --context <project-name>.<build-type>+<target-type>
+\endcode
+
+To list the available contexts execute the following command:
+
+\code{.sh}
+cbuild list contexts Examples.csolution.yml
+\endcode
+
+\subsection example_exec Execute on Virtual Hardware Target
+
+[Arm Virtual Hardware Target](https://www.arm.com/products/development-tools/simulation/virtual-hardware)
+simulation models are used to execute the example application images.
+
+To execute application image (axf or elf) on an simulation model use the following command syntax:
+\code{.sh}
+<model-executable> -f ./Target/<target_type>/fvp_config.txt -a ./out/<project>/<project>.axf
+\endcode
 
 
-\section examples_cmsis_a9 Blinky example using CMSIS-FreeRTOS running on Arm Cortex-A9
+\section example_hello Hello World
 
-This example shows how to use the CMSIS-RTOS2 API with an underlying FreeRTOS running on an NXP i.MX6 equipped with an Arm
-Cortex-A9 code. This example only works in <a href="https://www.keil.com/mdk5/ds-mdk">DS-MDK</a>, the Eclipse-based
-development environment from Arm. For information on setting up the target connection, please refer to
-<a href="https://www2.keil.com/mdk5/ds-mdk/imx6sxsabrereference">NXP i.MX 6SoloX SABRE Reference</a>.
+The <b>Hello World</b> application can be used as a starting point when developing new application. Using it, one can verify
+initial system setup and configuration.
 
-\note you need to have the i.MX6 device family pack installed to see the example in the \b Examples tab of Pack Installer.
+The application is simple and shows how to use CMSIS-RTOS2:
+- how to initialize and start the RTOS kernel
+- how to create a new thread
+- how to retarget stdout
 
-To open the example, open the Pack Installer perspective, select \b NXP in the \b Devices tab, and click on \b Copy next to
-the <b>CMSIS-RTOS2 FreeRTOS Blinky CA9 (MCIMX6SX-SABRE)</b> project on the \b Examples tab.
+<b>Build via command line</b>
 
-\image html copy_a9_example.png
+The following cbuild command may be used to build Hello World example project for Cortex-M3:
+\code{.sh}
+  cbuild Examples.csolution.yml --context Hello.Debug+CM3 --update-rte
+\endcode
 
-Confirm the default location in the Eclipse Workspace by pressing Copy.
+<b>Execute via command line</b>
 
-\image html copy_a9_example_ws.png
+To execute simulation model and run Hello World project executable for Cortex-M3 use the following command:
+\code{.sh}
+  FVP_MPS2_Cortex-M3 -f ./Target/CM3/fvp_config.txt -a ./out/Hello/Hello.axf
+\endcode
 
-Right-click on the project and select \b Build \b Project. Then, right-click on the project and select \b Debug \b As and
-then \b Debug \b Configurations. The Debug Configurations dialog opens:
+When executed, application outputs the following to the serial terminal:
 
-\image html dbg_conf.png
+\image html hello_out.png
+(Press Ctrl + C to stop the simulation model.)
 
-The project is already set up for running from the SDRAM of the i.MX6 SABRE board. Press \b Debug. DS-MDK will switch to the
-debug perspective. After a successful connection to the target, press \b F8 to run the application. In the \b App \b Console
-you will see the output of the phases:
 
-\image html dbg_output.png
+\section example_trustzone TrustZone
+
+The <b>TrustZone</b> application explains how to setup projects for booting and execution from TrustZone secure to non-secure
+domain and vice versa.
+
+The application shows:
+- how to boot from the secure domain and switch the execution to the non-secure domain
+- how to create the interface functions between secure and non-secure domain
+- how to use the secure/non-secure interface functions
+
+<b>Build via command line</b>
+
+TrustZone example must always be build in two steps:
+
+1. Build secure side project for Cortex-M55
+   \code{.sh}
+   cbuild Examples.csolution.yml --context TZ_Secure.Debug+CM55 --update-rte
+   \endcode
+
+2. Build non-secure side project for Cortex-M55
+   \code{.sh}
+   cbuild Examples.csolution.yml --context TZ_NonSecure.Debug+CM55 --update-rte
+   \endcode
+
+<b>Execute via command line</b>
+
+To execute simulation model and run TrustZone project executable for Cortex-M55 use the following command:
+\code{.sh}
+  FVP_Corstone_SSE-300 -f ./Target/CM55/fvp_config.txt -a ./out/TZ_NonSecure/TZ_NonSecure.axf -a ./out/TZ_Secure/TZ_Secure.axf
+\endcode
+
+When executed, application outputs the following to the serial terminal:
+
+\image html trustzone_out.png
+(Press Ctrl + C to stop the simulation model.)
 */
-
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
 /**
@@ -539,7 +628,7 @@ The following list briefly describes the limitations and unsupported features of
 \section td_validation Validation suite results
 
 CMSIS provides a
-<a target="_blank" href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
+<a target="_blank" href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
 be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the
 CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).
 
