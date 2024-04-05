@@ -62,6 +62,7 @@ PACK_BASE_FILES="
 #
 PACKCHK_DEPS="
   ARM.CMSIS.pdsc
+  ARM.Cortex_DFP.pdsc
 "
 
 # Optional: restrict fallback modes for changelog generation

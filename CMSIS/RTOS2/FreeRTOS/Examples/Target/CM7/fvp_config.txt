@@ -1,0 +1,16 @@
+# Parameters:
+# instance.parameter=value       #(type, mode) default = 'def value' : description : [min..max]
+#------------------------------------------------------------------------------
+armcortexm7ct.INITVTOR=0                              # (int   , init-time) default = '0x0'    : vector-table offset at reset
+armcortexm7ct.semihosting-Thumb_SVC=0xAB              # (int   , init-time) default = '0xab'   : T32 SVC number for semihosting
+armcortexm7ct.semihosting-cmd_line=                   # (string, init-time) default = ''       : Command line available to semihosting SVC calls
+armcortexm7ct.semihosting-cwd=                        # (string, init-time) default = ''       : Base directory for semihosting file access.
+armcortexm7ct.semihosting-enable=1                    # (bool  , init-time) default = '1'      : Enable semihosting SVC traps. Applications that do not use semihosting must set this parameter to false.
+armcortexm7ct.semihosting-heap_base=0                 # (int   , init-time) default = '0x0'    : Virtual address of heap base
+armcortexm7ct.semihosting-heap_limit=0                # (int   , init-time) default = '0x20700000' : Virtual address of top of heap
+armcortexm7ct.semihosting-prefix=0                    # (bool  , init-time) default = '0'      : Prefix semihosting output with target instance name
+armcortexm7ct.semihosting-stack_base=0                # (int   , init-time) default = '0x20800000' : Virtual address of base of descending stack
+armcortexm7ct.semihosting-stack_limit=0               # (int   , init-time) default = '0x20700000' : Virtual address of stack limit
+armcortexm7ct.vfp-present=1                           # (bool  , init-time) default = '1'      : Set whether the model has VFP support
+fvp_mps2.mps2_visualisation.disable-visualisation=1   # (bool  , init-time) default = '0'      : Enable/disable visualisation
+fvp_mps2.telnetterminal0.start_telnet=0               # (bool  , init-time) default = '1'      : Start telnet if nothing connected

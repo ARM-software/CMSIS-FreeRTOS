@@ -1,0 +1,35 @@
+project:
+  description: Hello World example
+
+  packs:
+    - pack: ARM::CMSIS@>=6.0.0
+    - pack: ARM::Cortex_DFP
+    - pack: ARM::CMSIS-FreeRTOS
+    - pack: ARM::CMSIS-View
+
+  components:
+    - component: ARM::CMSIS:CORE
+    - component: ARM::CMSIS:OS Tick
+    - component: ARM::CMSIS:RTOS2:FreeRTOS
+    - component: ARM::CMSIS-View:Event Recorder&Semihosting
+    
+    - component: ARM::RTOS&FreeRTOS:Core&Cortex-M
+    - component: ARM::RTOS&FreeRTOS:Config&CMSIS RTOS2
+    - component: ARM::RTOS&FreeRTOS:Event Groups
+    - component: ARM::RTOS&FreeRTOS:Heap&Heap_4
+    - component: ARM::RTOS&FreeRTOS:Timers
+
+  groups:
+    - group: Documentation
+      files:
+        - file: README.md
+    - group: Application
+      files:
+        - file: hello.c
+    - group: Board
+      files:
+        - file: main.c
+
+  layers:
+    - layer: $Target-Layer$
+      type: Target

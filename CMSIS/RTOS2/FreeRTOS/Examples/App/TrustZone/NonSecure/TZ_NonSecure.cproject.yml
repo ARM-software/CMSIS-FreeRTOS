@@ -1,0 +1,38 @@
+project:
+
+  processor:
+    trustzone: non-secure
+
+  packs:
+    - pack: ARM::CMSIS@>=6.0.0
+    - pack: ARM::CMSIS-FreeRTOS
+    - pack: ARM::CMSIS-View
+
+  components:
+    - component: ARM::CMSIS:CORE
+    - component: ARM::CMSIS:OS Tick
+    - component: ARM::CMSIS:RTOS2:FreeRTOS
+    - component: ARM::CMSIS-View:Event Recorder&Semihosting
+    
+    - component: ARM::RTOS&FreeRTOS:Core&Cortex-M Non-Secure
+    - component: ARM::RTOS&FreeRTOS:Config&CMSIS RTOS2
+    - component: ARM::RTOS&FreeRTOS:Event Groups
+    - component: ARM::RTOS&FreeRTOS:Heap&Heap_4
+    - component: ARM::RTOS&FreeRTOS:Timers
+
+  groups:
+    - group: Documentation
+      files:
+        - file: ../README.md
+
+    - group: Non-secure Code
+      files:
+        - file: main_ns.c
+
+    - group: Secure Library
+      files:
+        - file: ../Secure/library_nsc.h
+        - file: ../../../out/TZ_Secure/TZ_Secure_CMSE_Lib.o
+
+  layers:
+    - layer: $Target-Layer$

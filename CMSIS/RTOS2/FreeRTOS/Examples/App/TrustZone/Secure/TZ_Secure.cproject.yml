@@ -1,0 +1,28 @@
+project:
+
+  processor:
+    trustzone: secure
+
+  packs:
+    - pack: ARM::CMSIS@>=6.0.0
+    - pack: ARM::CMSIS-FreeRTOS
+
+  components:
+    - component: ARM::CMSIS:CORE
+    - component: ARM::RTOS&FreeRTOS:TrustZone
+
+  groups:
+    - group: Documentation
+      files:
+        - file: ../README.md
+
+    - group: Secure Code
+      files:
+        - file: main_s.c
+
+    - group: Secure Library
+      files:
+        - file: library_nsc.c
+
+  layers:
+    - layer: $Target-Layer$

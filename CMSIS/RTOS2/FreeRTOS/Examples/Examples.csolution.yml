@@ -1,0 +1,117 @@
+solution:
+  created-for: CMSIS-Toolbox@2.0.0
+
+  cdefault:
+
+  packs:
+    - pack: ARM::CMSIS@>=6.0.0
+    - pack: ARM::Cortex_DFP
+
+  target-types:
+    - type: CM0
+      device: ARMCM0
+      variables:
+        - Target-Layer: ../../Target/CM0/Target.clayer.yml
+
+    - type: CM0plus
+      device: ARMCM0P
+      variables:
+        - Target-Layer: ../../Target/CM0plus/Target.clayer.yml
+
+    - type: CM3
+      device: ARMCM3
+      variables:
+        - Target-Layer: ../../Target/CM3/Target.clayer.yml
+
+    - type: CM4
+      device: ARMCM4
+      variables:
+        - Target-Layer: ../../Target/CM4/Target.clayer.yml
+
+    - type: CM7
+      device: ARMCM7
+      variables:
+        - Target-Layer: ../../Target/CM7/Target.clayer.yml
+
+    - type: CM23
+      device: ARMCM23
+      define:
+        - NS_APP_START_ADDRESS: 0x00200000
+      variables:
+        - Target-Layer: ../../../Target/CM23/Target.clayer.yml
+
+    - type: CM23_noTZ
+      device: ARMCM23
+      variables:
+        - Target-Layer: ../../Target/CM23_noTZ/Target.clayer.yml
+
+    - type: CM33
+      device: ARMCM33
+      define:
+        - NS_APP_START_ADDRESS: 0x00200000
+      variables:
+        - Target-Layer: ../../../Target/CM33/Target.clayer.yml
+
+    - type: CM33_noTZ
+      device: ARMCM33
+      variables:
+        - Target-Layer: ../../Target/CM33_noTZ/Target.clayer.yml
+
+    - type: CM55
+      device: ARMCM55
+      define:
+        - NS_APP_START_ADDRESS: 0x01000000
+      variables:
+        - Target-Layer: ../../../Target/CM55/Target.clayer.yml
+
+    - type: CM55_noTZ
+      device: ARMCM55
+      variables:
+        - Target-Layer: ../../Target/CM55_noTZ/Target.clayer.yml
+
+    - type: CM85
+      device: ARMCM85
+      define:
+        - NS_APP_START_ADDRESS: 0x01100000
+      variables:
+        - Target-Layer: ../../../Target/CM85/Target.clayer.yml
+
+    - type: CM85_noTZ
+      device: ARMCM85
+      variables:
+        - Target-Layer: ../../Target/CM85_noTZ/Target.clayer.yml
+
+  build-types:
+    - type: Debug
+      optimize: none
+      debug: on
+
+  output-dirs:
+    outdir: ./out/$Project$/
+
+  projects:
+    - project: ./App/Hello/Hello.cproject.yml
+      for-context:
+        - +CM0
+        - +CM0plus
+        - +CM3
+        - +CM4
+        - +CM7
+        - +CM23_noTZ
+        - +CM33_noTZ
+        - +CM55_noTZ
+        - +CM85_noTZ
+
+    - project: ./App/TrustZone/Secure/TZ_Secure.cproject.yml
+      for-context:
+        - +CM23
+        - +CM33
+        - +CM55
+        - +CM85
+
+    - project: ./App/TrustZone/NonSecure/TZ_NonSecure.cproject.yml
+      for-context:
+        - +CM23
+        - +CM33
+        - +CM55
+        - +CM85
