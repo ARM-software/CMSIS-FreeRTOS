@@ -2,7 +2,7 @@ project:
   description: Hello World example
 
   packs:
-    - pack: ARM::CMSIS@>=6.0.0-0
+    - pack: ARM::CMSIS@>=6.0.0
     - pack: ARM::Cortex_DFP
     - pack: ARM::CMSIS-FreeRTOS
     - pack: ARM::CMSIS-View
