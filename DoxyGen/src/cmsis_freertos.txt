@@ -15,7 +15,7 @@ expose proprietary source code, and has
 <a target="_blank" href="https://www.freertos.org/differences-between-officially-supported-and-contributed-FreeRTOS-code.html">no IP infringement</a>
 risk.
 
-<a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
+<a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/index.html"><b>CMSIS-RTOS v2</b></a> is a common API for real-time
 operating systems (RTOS). It provides a standardized programming interface that is portable to many RTOS and enables software
 components that can work across multiple RTOS systems. It supports the Armv8-M architecture, dynamic object creation, for
 multi-core systems, and has a binary compatible interface across ABI compliant compilers.
@@ -23,7 +23,7 @@ multi-core systems, and has a binary compatible interface across ABI compliant c
 Using this software pack, users can choose between a native FreeRTOS implementation or one that is adhering to the
 CMSIS-RTOS2 API and using FreeRTOS under the hood. The CMSIS-RTOS2 API enables programmers to create portable application
 code to be used with different RTOS kernels (for example
-<a class="el" href="https://www2.keil.com/mdk5/cmsis/rtx/">Keil RTX5</a>).
+<a class="el" href="https://developer.arm.com/Tools%20and%20Software/Keil%20MDK/RTX5%20RTOS/">Keil RTX5</a>).
 
 This documentation shows you:
 - how to \ref cre_freertos_proj "create a new microcontroller project" using FreeRTOS from scratch.
@@ -369,7 +369,7 @@ Definitions configEVR_LEVEL_x set the recording level bitmask for events generat
 
 \section dbg_cmsisfreertos Debug a CMSIS-FreeRTOS project
 
-\note The following only applies when used with <a href="https://www2.keil.com/mdk5" target="_blank">Arm Keil MDK</a>. If
+\note The following only applies when used with <a href="https://developer.arm.com/Tools%20and%20Software/Keil%20MDK" target="_blank">Arm Keil MDK</a>. If
 you are using a different toolchain, please consult its user's manual.
 
 Apart from the debug capabilities that \ref cmsis_freertos_evr_config "Event Recorder" offers, Keil MDK also supports thread
@@ -385,8 +385,8 @@ BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID
 
 \note
 - For more information on conditional breakpoints in Keil MDK, consult the
-  <a href="https://www.keil.com/support/man/docs/uv4/uv4_db_dbg_breakpnts.htm" target="_blank">user's manual</a>.
-- Enabling <a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a> is
+  <a href="https://developer.arm.com/documentation/101407/latest/Debugging/Debug-Windows-and-Dialogs/Breakpoints-Window" target="_blank">user's manual</a>.
+- Enabling <a href="https://developer.arm.com/documentation/101407/latest/User-Interface/View-Menu" target="_blank">Periodic Window Update</a> is
   required to capture register values for active running threads while executing. When turned off, only the current FreeRTOS
   thread can be unwound after execution has been stopped.
 
@@ -403,7 +403,7 @@ BS \\Blinky\Blinky.c\FuncN1\179, 1, "break = (CURR_TID == tid_phaseA || CURR_TID
   \endcode
 
 - If you don't want to use
-<a href="https://www.keil.com/support/man/docs/uv4/uv4_ui_view.htm" target="_blank">Periodic Window Update</a>, obtain the
+<a href="https://developer.arm.com/documentation/101407/latest/User-Interface/View-Menu" target="_blank">Periodic Window Update</a>, obtain the
 thread and unwind information by adding a function that gets called from each thread of interest:
 \code
 _attribute_((noinline)) int FuncN1 (int n1) {
@@ -427,7 +427,7 @@ _attribute_((noinline)) int FuncN1 (int n1) {
 This helps to make thread aware breakpoints far less dependent on the compiler optimization level.
 
 - Thread aware breakpoints should be setup using a
-<a href="https://www.keil.com/support/man/docs/uv4/uv4_db_scripting.htm" target="_blank">debug script</a>. Reason being
+<a href="https://developer.arm.com/documentation/101407/latest/Debugging/Debug-Scripting" target="_blank">debug script</a>. Reason being
 that thread aware breakpoints are of a 'hybrid' type, that is a combined address and condition expression that works best
 when run from a debug script.
 */
@@ -628,7 +628,7 @@ The following list briefly describes the limitations and unsupported features of
 \section td_validation Validation suite results
 
 CMSIS provides a
-<a target="_blank" href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/html/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
+<a target="_blank" href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/rtosValidation.html">CMSIS-RTOS2 validation suite</a> that can
 be used to test a real-time operating system for compliance to the standard. The test suite has been executed successfully on the
 CMSIS-FreeRTOS implementation (<a href="cmsis_rtos2_validation.txt">see results</a>).
 
