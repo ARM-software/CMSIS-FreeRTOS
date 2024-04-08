@@ -1,0 +1,69 @@
+name: Example
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: 
+      - .github/workflows/examples.yaml
+      - CMSIS/RTOS2/FreeRTOS/Examples/*
+      - CMSIS/RTOS2/FreeRTOS/Include/*
+      - CMSIS/RTOS2/FreeRTOS/Source/*
+      - Source/**/*
+      - ARM.CMSIS-FreeRTOS.pdsc
+  push:
+    branches: [main]
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  examples:
+    strategy:
+      fail-fast: true
+      matrix:
+        compiler: [AC6, GCC, CLANG]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Cache packs
+        uses: actions/cache@v4
+        with:
+          key: packs-${{ github.run_id }}-${{ matrix.compiler }}
+          restore-keys: |
+              packs-
+          path: /home/runner/.cache/arm/packs
+
+      - name: Install LLVM dependencies and tools
+        working-directory: /home/runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install libtinfo5
+
+      - name: Prepare vcpkg env
+        uses: JonatanAntoni/actions/vcpkg@main
+        with:
+          config: ./CMSIS/RTOS2/FreeRTOS/Examples/vcpkg-configuration.json
+          
+      - name: Activate Arm tool license
+        run: |
+          armlm activate --server https://mdk-preview.keil.arm.com --product KEMDK-COM0
+    
+      - uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Register local pack
+        run: |
+          cpackget rm ARM.CMSIS-FreeRTOS || echo "Ok"
+          cpackget add ./ARM.CMSIS-FreeRTOS.pdsc
+
+      - name: Build exmples
+        working-directory: ./CMSIS/RTOS2/FreeRTOS/Examples
+        run: |
+          cbuild Examples.csolution.yml --packs --update-rte --toolchain ${{ matrix.compiler }}
+
+      - name: Deactivate Arm tool license
+        if: always()
+        run: |
+          armlm deactivate --product KEMDK-COM0
