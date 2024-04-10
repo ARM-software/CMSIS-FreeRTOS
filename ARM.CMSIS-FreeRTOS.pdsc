@@ -13,6 +13,7 @@
       Active development...
       - Add support for processor affinity to CMSIS-RTOS2 wrapper
       - Add memory allocation configuration options to FreeRTOSConfig.h
+      - Corrected task priority mapping, FreeRTOS priority is now osPriority_t-1
       - CMSIS-RTOS2 requires CMSIS:OS Tick component
       - Drop support for Arm Compiler 5
       - Drop support for CMSIS-RTOS1 API
