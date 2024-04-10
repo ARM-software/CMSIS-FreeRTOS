@@ -48,7 +48,6 @@ File/Directory             |Content
 :--------------------------|:---------------------------------------------------------------------------------
 \b CMSIS/Documentation     | This documentation.
 \b CMSIS/RTOS2             | CMSIS-RTOS2 compliant implementation of FreeRTOS.
-\b Config                  | FreeRTOS configuration header file.
 \b License                 | FreeRTOS license agreement.
 \b Source                  | FreeRTOS kernel source code.
 \b ARM.CMSIS-FreeRTOS.pdsc | Package description file in CMSIS-Pack format.
@@ -175,7 +174,7 @@ When you have created the CMSIS-FreeRTOS project, you can configure the real-tim
 
 \image html freertos_config_h_cmsis_rtos.png
 
-The following settings are available:
+The following main settings are available:
 
 Name                           | \#define                             | Description                                                           |
 -------------------------------|--------------------------------------|-----------------------------------------------------------------------|
@@ -187,6 +186,7 @@ Timer task priority            | configTIMER_TASK_PRIORITY            | Timer ta
 Timer queue length             | configTIMER_QUEUE_LENGTH             | Timer command queue length.                                           |
 Preemption interrupt priority  | configMAX_SYSCALL_INTERRUPT_PRIORITY | Maximum priority of interrupts that are safe to call FreeRTOS API.    |
 Use time slicing               | configUSE_TIME_SLICING               | Enable setting to use time slicing.                                   |
+Use tickless idle              | configUSE_TICKLESS_IDLE              | Enable low power tickless mode that stops tick interrupt when idle.   |
 Idle should yield              | configIDLE_SHOULD_YIELD              | Control Yield behavior of the idle task.                              |
 Check for stack overflow       | configCHECK_FOR_STACK_OVERFLOW       | Enable or disable stack overflow checking.                            |
 Use idle hook                  | configUSE_IDLE_HOOK                  | Enable callback function call on each idle task iteration.            |
@@ -211,6 +211,56 @@ Timer functions                | configEVR_LEVEL_TIMERS               | Define e
 Event Groups functions         | configEVR_LEVEL_EVENTGROUPS          | Define event recording level bitmask for events generated from Event Groups functions.  |
 Heap functions                 | configEVR_LEVEL_HEAP                 | Define event recording level bitmask for events generated from Heap functions.          |
 Stream Buffer functions        | configEVR_LEVEL_STREAMBUFFER         | Define event recording level bitmask for events generated from Stream Buffer functions. |
+
+<b> Memory Allocation Configuration </b>
+
+The following settings are available:
+
+Name                                   | \#define                             | Description                                                                        |
+---------------------------------------|--------------------------------------|------------------------------------------------------------------------------------|
+Support static memory allocation       | configSUPPORT_STATIC_ALLOCATION      | Enable or disable support for static memory allocation.                            |
+Support dynamic memory allocation      | configSUPPORT_DYNAMIC_ALLOCATION     | Enable or disable support for dynamic memory allocation.                           |
+Use kernel provided static memory      | configKERNEL_PROVIDED_STATIC_MEMORY  | When enabled, FreeRTOS kernel provides static memory for Idle and Timer tasks.     |
+Use application allocated heap         | configAPPLICATION_ALLOCATED_HEAP     | When enabled, application must provide heap buffer externally.                     |
+Use separate heap for stack allocation | configSTACK_ALLOCATION_FROM_SEPARATE_HEAP | Enable or disable stack allocation for any task from a separate heap.         |
+Use heap protector                     | configENABLE_HEAP_PROTECTOR          | Enable or disable bounds checking and obfuscation to heap block pointers.          |
+
+<b> Port Specific Configuration </b>
+
+The following settings are available:
+
+Name                              | \#define                        | Description                                                                        |
+----------------------------------|---------------------------------|------------------------------------------------------------------------------------|
+Use Floating Point Unit           | configENABLE_FPU                | Enable or disable support for FPU when switching execution context.                |
+Use M-Profile Vector Extension    | configENABLE_MVE                | Enable or disable support for MVE when switching execution context.                |
+Use Memory Protection Unit        | configENABLE_MPU                | Enable or disable support for MPU on ARMv8-M MPU enabled ports.                    |
+Use TrustZone Secure Side Only    | configRUN_FREERTOS_SECURE_ONLY  | Enable this setting when FreeRTOS runs on the Secure side only.                    |
+Use TrustZone Security Extension  | configENABLE_TRUSTZONE          | Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.|
+Minimal secure stack size [words] | configMINIMAL_SECURE_STACK_SIZE | Stack for idle task Secure side context in words.                                  |
+
+<b> Interrupt Controller Configuration </b>
+
+\note Settings related to interrupt controller are relevant only on ARMv7-A ports where it is necessary to configure Arm Generic Interrupt Controller (GIC).
+
+The following settings are available:
+
+Name                                      | \#define                                        | Description                                                   |
+------------------------------------------|-------------------------------------------------|---------------------------------------------------------------|
+Interrupt controller base address         | configINTERRUPT_CONTROLLER_BASE_ADDRESS         | Sets the base address of the interrupt controller peripheral. |
+Interrupt controller CPU interface offset | configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET | Sets the offset from interrupt controller base address at which the CPU interface starts.          |
+Interrupt controller unique priorities    | configUNIQUE_INTERRUPT_PRIORITIES               | Sets the number of unique priorities that can be specified in the interrupt controller peripheral. |
+
+<b> Symmetric Multiprocessing Configuration </b>
+
+\note Symmetric Multiprocessing Configuration (SMP) settings are only relevant if FreeRTOS port implementation supports SMP.
+
+The following settings are available:
+
+Name                        | \#define                    | Description                                                      |
+----------------------------|-----------------------------|------------------------------------------------------------------|
+Number of processor cores   | configNUMBER_OF_CORES       | Sets the number of available processor cores.                    |
+Use processor core affinity | configUSE_CORE_AFFINITY     | Enables the control for task to run on specific processor cores. |
+Use passive idle hook       | configUSE_PASSIVE_IDLE_HOOK | Enable callback function call on each idle task iteration.       |
 
 
 \subsection cmsis_freertos_er Add Event Recorder Visibility
@@ -357,12 +407,13 @@ Definition configEVR_SETUP_LEVEL enables setup of recording level filter for eve
 #define configEVR_LEVEL_STREAMBUFFER
 \endcode
 
-Value  | Description                                       |
--------|---------------------------------------------------|
-0x00   | Disable event generation                          |
-0x01   | Enable generation of error events                 |
-0x05   | Enable generation of error and operational events |
-0x0F   | Enable generation of all events                   |
+Value  | Description                                            |
+-------|--------------------------------------------------------|
+0x00   | Disable event generation                               |
+0x01   | Enable generation of error events                      |
+0x05   | Enable generation of error and operational events      |
+0x07   | Enable generation of error, API and operational events |
+0x0F   | Enable generation of all events                        |
 
 Definitions configEVR_LEVEL_x set the recording level bitmask for events generated by each function group. They are taken into account only when recording level filter setup is enabled. Default value is \token{0x05}.
 
