@@ -12,6 +12,7 @@
       FreeRTOS 11.0.1
       Active development...
       - Add support for processor affinity to CMSIS-RTOS2 wrapper
+      - Add symmetric multiprocessing configuration options to FreeRTOSConfig.h
       - Add memory allocation configuration options to FreeRTOSConfig.h
       - Corrected task priority mapping, FreeRTOS priority is now osPriority_t-1
       - CMSIS-RTOS2 requires CMSIS:OS Tick component
@@ -65,12 +66,6 @@
     <condition id="CM7">
       <description>Cortex-M7 processor based device</description>
       <require Dcore="Cortex-M7" Dfpu="NO_FPU"/>
-    </condition>
-
-    <condition id="CM7_FP">
-      <description>Cortex-M7 processor based device using Floating Point Unit</description>
-      <accept Dcore="Cortex-M7" Dfpu="SP_FPU"/>
-      <accept Dcore="Cortex-M7" Dfpu="DP_FPU"/>
     </condition>
 
     <condition id="CM7_SP">
@@ -159,25 +154,6 @@
     <condition id="CA9_DP">
       <description>Cortex-A9 processor based device using Floating Point Unit (DP)</description>
       <require Dcore="Cortex-A9" Dfpu="DP_FPU"/>
-    </condition>
-
-    <condition id="CoreM">
-      <description>Cortex-M processor based device</description>
-      <accept condition="CM0"/>
-      <accept condition="CM3"/>
-      <accept condition="CM4"/>
-      <accept condition="CM4_FP"/>
-      <accept condition="CM7"/>
-      <accept condition="CM7_FP"/>
-      <accept condition="CM23"/>
-      <accept condition="CM33"/>
-      <accept condition="CM55"/>
-      <accept condition="CM85"/>
-    </condition>
-
-    <condition id="CoreA">
-      <description>Cortex-A processor based device</description>
-      <accept condition="CA9_DP"/>
     </condition>
 
     <!-- ARMCC6 compiler -->
@@ -1311,8 +1287,7 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="Documentation/html/cre_freertos_proj.html#cmsis_freertos_config"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM/FreeRTOSConfig.h" version="10.6.0" condition="CoreM"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCA/FreeRTOSConfig.h" version="10.4.0" condition="CoreA"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="10.6.0"/>
         </files>
       </component>
 
@@ -1323,8 +1298,7 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="Documentation/html/cre_freertos_proj.html#native_freertos_config"/>
-          <file category="header" attr="config" name="Config/ARMCM/FreeRTOSConfig.h" version="10.4.0" condition="CoreM"/>
-          <file category="header" attr="config" name="Config/ARMCA/FreeRTOSConfig.h" version="10.3.0" condition="CoreA"/>
+          <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.0.0"/>
         </files>
       </component>
 
@@ -1444,7 +1418,7 @@
           #define RTE_RTOS_FreeRTOS_TZ
         </RTE_Components_h>
         <files>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/ARMCM_TZ/FreeRTOSConfig.h" version="10.2.0"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/TrustZone/FreeRTOSConfig.h" version="10.2.0"/>
 
           <file category="header"    condition="CM23_TZ_ARMCC6"  name="Source/portable/GCC/ARM_CM23/secure/secure_port_macros.h"/>
           <file category="include"   condition="CM23_TZ_ARMCC6"  name="Source/portable/GCC/ARM_CM23/secure/"/>

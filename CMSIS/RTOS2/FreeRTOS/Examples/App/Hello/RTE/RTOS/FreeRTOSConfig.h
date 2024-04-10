@@ -80,8 +80,8 @@
 
 //  <o>Preemption interrupt priority
 //  <i> Maximum priority of interrupts that are safe to call FreeRTOS API.
-//  <i> Default: 16
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY      16
+//  <i> Default: 128
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY      128
 
 //  <q>Use time slicing
 //  <i> Enable setting to use timeslicing.
@@ -136,49 +136,6 @@
 //  <i> Default: 0
 #define configQUEUE_REGISTRY_SIZE                 0
 
-// <h>Memory Allocation Configuration
-// <i> Enable and configure memory allocation specific features.
-// <i> To configure FreeRTOS heap size use configTOTAL_HEAP_SIZE.
-
-//  <q> Support static memory allocation
-//  <i> Enable or disable static memory allocation.
-//  <i> When enabled RTOS objects can be created using application provided RAM.
-//  <i> Default: 1
-#define configSUPPORT_STATIC_ALLOCATION           1
-
-//  <q> Support dynamic memory allocation
-//  <i> Enable or disable dynamic memory allocation.
-//  <i> When enabled RTOS objects can be created using RAM automatically allocated from the FreeRTOS heap.
-//  <i> Default: 1
-#define configSUPPORT_DYNAMIC_ALLOCATION          1
-
-//  <q>Use kernel provided static memory
-//  <i> When enabled FreeRTOS kernel provides static memory for Idle and Timer tasks.
-//  <i> Otherwise user shall provide implementation of:
-//  <i> - vApplicationGetIdleTaskMemory and vApplicationGetTimerTaskMemory
-//  <i> - vApplicationGetPassiveIdleTaskMemory (when kernel uses SMP)
-//  <i> Default: 1
-#define configKERNEL_PROVIDED_STATIC_MEMORY       1
-
-//  <q>Use application allocated heap
-//  <i> Global heap buffer must be provided externally when using application allocated heap.
-//  <i> The buffer must be declared as: uint8_t ucHeap[ configTOTAL_HEAP_SIZE ].
-//  <i> Default: 0
-#define configAPPLICATION_ALLOCATED_HEAP          0
-
-//  <q>Use separate heap for stack allocation
-//  <i> Enable or disable stack allocation for any task from a separate heap.
-//  <i> Thread-safe implementation of pvPortMallocStack and vPortFreeStack is required when using separate heap.
-//  <i> Default: 0
-#define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 0
-
-//  <q>Use heap protector
-//  <i> Enable or disable bounds checking and obfuscation to heap block pointers.
-//  <i> This setting only applies to Heap_4 and Heap_5.
-//  <i> Default: 0
-#define configENABLE_HEAP_PROTECTOR               0
-// </h>
-
 // <h>Event Recorder Configuration
 // <i> Initialize and setup Event Recorder level filtering.
 // <i> Settings have no effect when Event Recorder is not present.
@@ -231,50 +188,118 @@
 //  </e>
 // </h>
 
-// <h> Port Specific Features
+// <h>Memory Allocation Configuration
+// <i> Enable and configure memory allocation specific features.
+// <i> To configure FreeRTOS heap size use configTOTAL_HEAP_SIZE.
+
+//  <q> Support static memory allocation
+//  <i> Enable or disable static memory allocation.
+//  <i> When enabled RTOS objects can be created using application provided RAM.
+//  <i> Default: 1
+#define configSUPPORT_STATIC_ALLOCATION           1
+
+//  <q> Support dynamic memory allocation
+//  <i> Enable or disable dynamic memory allocation.
+//  <i> When enabled RTOS objects can be created using RAM automatically allocated from the FreeRTOS heap.
+//  <i> Default: 1
+#define configSUPPORT_DYNAMIC_ALLOCATION          1
+
+//  <q>Use kernel provided static memory
+//  <i> When enabled FreeRTOS kernel provides static memory for Idle and Timer tasks.
+//  <i> Otherwise user shall provide implementation of:
+//  <i> - vApplicationGetIdleTaskMemory and vApplicationGetTimerTaskMemory
+//  <i> - vApplicationGetPassiveIdleTaskMemory (when kernel uses SMP)
+//  <i> Default: 1
+#define configKERNEL_PROVIDED_STATIC_MEMORY       1
+
+//  <q>Use application allocated heap
+//  <i> Global heap buffer must be provided externally when using application allocated heap.
+//  <i> The buffer must be declared as: uint8_t ucHeap[ configTOTAL_HEAP_SIZE ].
+//  <i> Default: 0
+#define configAPPLICATION_ALLOCATED_HEAP          0
+
+//  <q>Use separate heap for stack allocation
+//  <i> Enable or disable stack allocation for any task from a separate heap.
+//  <i> Thread-safe implementation of pvPortMallocStack and vPortFreeStack is required when using separate heap.
+//  <i> Default: 0
+#define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 0
+
+//  <q>Use heap protector
+//  <i> Enable or disable bounds checking and obfuscation to heap block pointers.
+//  <i> This setting only applies to Heap_4 and Heap_5.
+//  <i> Default: 0
+#define configENABLE_HEAP_PROTECTOR               0
+// </h>
+
+// <h>Port Specific Configuration
 // <i> Enable and configure port specific features.
 // <i> Check FreeRTOS documentation for definitions that apply for the used port.
 
 //  <q>Use Floating Point Unit
 //  <i> Using Floating Point Unit (FPU) affects context handling.
 //  <i> Enable FPU when application uses floating point operations.
+//  <i> This setting is only relevant on ARMv8-M ports.
 //  <i> Default: 1
 #define configENABLE_FPU                          0
 
 //  <q>Use M-Profile Vector Extension
 //  <i> Using M-Profile Vector Extension (MVE) affects context handling.
 //  <i> Enable MVE when application uses signal processing and ML algorithms.
+//  <i> This setting is only relevant on ARMv8-M ports.
 //  <i> Default: 0
 #define configENABLE_MVE                          0
 
 //  <q>Use Memory Protection Unit
 //  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
-//  <i> This setting is only releavant for MPU enabled ports.
+//  <i> This setting is only relevant on ARMv8-M MPU enabled ports.
 //  <i> Default: 0
 #define configENABLE_MPU                          0
 
-//  <q> Use TrustZone Secure Side Only
+//  <q>Use TrustZone Secure Side Only
 //  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.
 //  <i> Enable this setting when FreeRTOS runs on the Secure side only.
+//  <i> This setting is only relevant on ARMv8-M ports.
+//  <i> Default: 0
 #define configRUN_FREERTOS_SECURE_ONLY            0
 
 //  <q>Use TrustZone Security Extension
 //  <i> Using TrustZone affects context handling.
 //  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
+//  <i> This setting is only relevant on ARMv8-M ports.
 //  <i> Default: 1
 #define configENABLE_TRUSTZONE                    0
 
 //  <o>Minimal secure stack size [words] <0-65535>
 //  <i> Stack for idle task Secure side context in words.
-//  <i> This setting is only relevant when TrustZone extension is enabled.
+//  <i> This setting is only relevant on ARMv8-M ports when TrustZone extension is enabled.
 //  <i> Default: 128
 #define configMINIMAL_SECURE_STACK_SIZE           ((uint32_t)128)
+
+//  <h>Interrupt Controller Configuration
+//  <i> Configure Arm Generic Interrupt Controller (GIC) interrupt controller specific settings.
+//  <i> Settings related to interrupt controller are relevant only on ARMv7-A ports.
+
+//   <o>Interrupt controller base address
+//   <i> Must be set to the base address of the interrupt controller peripheral.
+//   <i> Default: 0x2C000000
+#define configINTERRUPT_CONTROLLER_BASE_ADDRESS   0x2C000000UL
+
+//   <o>Interrupt controller CPU interface offset
+//   <i> Must be set to the offset from interrupt controller base address at which the CPU interface starts.
+//   <i> Default: 0x1000
+#define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x00001000UL
+
+//   <o>Interrupt controller unique priorities
+//   <i> The number of unique priorities that can be specified in the interrupt controller peripheral.
+//   <i> Default: 32
+#define configUNIQUE_INTERRUPT_PRIORITIES         32
+//  </h>
 // </h>
 
-// <h> Symmetric Multiprocessing Configuration
+// <h>Symmetric Multiprocessing Configuration
 // <i> Enable and configure FreeRTOS for Symmetric Multiprocessing (SMP).
 
-//  <q>Number of processor cores
+//  <o>Number of processor cores
 //  <i> Sets the number of available processor cores.
 //  <i> Default: 1
 #define configNUMBER_OF_CORES                     1
@@ -303,7 +328,7 @@
 #define configUSE_COUNTING_SEMAPHORES             1
 #define configUSE_TASK_NOTIFICATIONS              1
 #define configUSE_TRACE_FACILITY                  1
-#define configUSE_16_BIT_TICKS                    0 
+#define configUSE_16_BIT_TICKS                    0
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION   0
 #define configMAX_PRIORITIES                      56
 #define configKERNEL_INTERRUPT_PRIORITY           255
@@ -324,18 +349,38 @@
 #define INCLUDE_xTaskAbortDelay                   1
 #define INCLUDE_xTimerPendFunctionCall            1
 
-/* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
-#define xPortPendSVHandler                        PendSV_Handler
-#define vPortSVCHandler                           SVC_Handler
+#if (__ARM_ARCH_7A__ == 1U)
+  /* Cortex-A specifics */
+  #include "os_tick.h"
 
-/* Ensure Cortex-M port compatibility. */
-#define SysTick_Handler                           xPortSysTickHandler
+  /* Maximum API call interrupt priority:
+     - Interrupts assigned a priority at or below this priority can call interrupt safe FreeRTOS API function, and will nest.
+     - Interrupts assigned a priority above this priority will not be effected by RTOS critical sections, and will nest,
+       but cannot call any FreeRTOS API functions.
+     - Use configMAX_SYSCALL_INTERRUPT_PRIORITY to set this define as they are essentially the same.
+  */
+  #define configMAX_API_CALL_INTERRUPT_PRIORITY   configMAX_SYSCALL_INTERRUPT_PRIORITY
 
-#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
-//#define traceENTER_xTaskGetSchedulerState_DISABLE
-//#define traceRETURN_xTaskGetSchedulerState_DISABLE
-/* Include debug event definitions */
-#include "freertos_evr.h"
+  /* Map the FreeRTOS port timer configuration functions to their implementations */
+  #define configSETUP_TICK_INTERRUPT()                         \
+    OS_Tick_Setup (configTICK_RATE_HZ, FreeRTOS_Tick_Handler); \
+    OS_Tick_Enable();
+
+  #define configCLEAR_TICK_INTERRUPT()                         \
+    OS_Tick_AcknowledgeIRQ()
+#else
+  /* Cortex-M specifics */
+  /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
+  #define xPortPendSVHandler                      PendSV_Handler
+  #define vPortSVCHandler                         SVC_Handler
+
+  /* Ensure Cortex-M port compatibility. */
+  #define SysTick_Handler                         xPortSysTickHandler
+
+  #if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
+  /* Include debug event definitions */
+  #include "freertos_evr.h"
+  #endif
 #endif
 
 #endif /* FREERTOS_CONFIG_H */

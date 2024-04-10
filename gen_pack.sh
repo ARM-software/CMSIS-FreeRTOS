@@ -30,7 +30,6 @@ DEFAULT_ARGS=(-c "v")
 #
 PACK_DIRS="
   CMSIS
-  Config
   Documentation
   Source
 "
