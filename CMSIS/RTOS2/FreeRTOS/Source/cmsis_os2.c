@@ -582,7 +582,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
                                                      name,
                                                      stack,
                                                      argument,
-                                                     prio,
+                                                     prio - 1U,
                                      (StackType_t  *)attr->stack_mem,
                                      (StaticTask_t *)attr->cb_mem);
         #else
@@ -590,7 +590,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
                                                                 name,
                                                                 stack,
                                                                 argument,
-                                                                prio,
+                                                                prio - 1U,
                                                 (StackType_t  *)attr->stack_mem,
                                                 (StaticTask_t *)attr->cb_mem,
                                                                 core_aff);
@@ -605,7 +605,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
                                                      name,
                              (configSTACK_DEPTH_TYPE)stack,
                                                      argument,
-                                                     prio,
+                                                     prio - 1U,
                                                      &hTask) != pdPASS) {
               hTask = NULL;
             }
@@ -614,7 +614,7 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
                                                                 name,
                                         (configSTACK_DEPTH_TYPE)stack,
                                                                 argument,
-                                                                prio,
+                                                                prio - 1U,
                                                                 core_aff,
                                                                 &hTask) != pdPASS) {
               hTask = NULL;
@@ -722,7 +722,7 @@ osStatus_t osThreadSetPriority (osThreadId_t thread_id, osPriority_t priority) {
   }
   else {
     stat = osOK;
-    vTaskPrioritySet (hTask, (UBaseType_t)priority);
+    vTaskPrioritySet (hTask, (UBaseType_t)priority - 1U);
   }
 
   /* Return execution status */
@@ -739,7 +739,7 @@ osPriority_t osThreadGetPriority (osThreadId_t thread_id) {
   if ((IRQ_Context() != 0U) || (hTask == NULL)) {
     prio = osPriorityError;
   } else {
-    prio = (osPriority_t)((int32_t)uxTaskPriorityGet (hTask));
+    prio = (osPriority_t)(uxTaskPriorityGet (hTask) + 1U);
   }
 
   /* Return current thread priority */
