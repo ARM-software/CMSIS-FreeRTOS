@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,7 +20,7 @@
  * $Revision:   V10.2.0
  *
  * Project:     CMSIS-FreeRTOS
- * Title:       FreeRTOS Secure Contex configuration definitions
+ * Title:       FreeRTOS Secure Context configuration definitions
  *
  * --------------------------------------------------------------------------*/
 
