@@ -53,10 +53,13 @@
       "name": "CM23",
       "type": "arm-debugger.fvp",
       "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
       "cdbEntry": "Arm FVP::MPS2_Cortex_M23::Bare Metal Debug::Bare Metal Debug::Cortex-M23_0",
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM23/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
+      "debugFrom": "Reset_Handler",
+      "programs": [
+        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+      ]
     },
     {
       "name": "CM23_noTZ",
@@ -71,10 +74,13 @@
       "name": "CM33",
       "type": "arm-debugger.fvp",
       "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
       "cdbEntry": "Arm FVP::MPS2_Cortex_M33::Bare Metal Debug::Bare Metal Debug::Cortex-M33_0",
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM33/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
+      "debugFrom": "Reset_Handler",
+      "programs": [
+        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+      ]
     },
     {
       "name": "CM33_noTZ",
@@ -89,10 +95,13 @@
       "name": "CM55",
       "type": "arm-debugger.fvp",
       "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
       "cdbEntry": "Arm SubSystem FVP::Corstone SSE-300 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M55",
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM55/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
+      "debugFrom": "Reset_Handler",
+      "programs": [
+        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+      ]
     },
     {
       "name": "CM55_noTZ",
@@ -107,10 +116,13 @@
       "name": "CM85",
       "type": "arm-debugger.fvp",
       "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
       "cdbEntry": "Arm SubSystem FVP::Corstone SSE-310 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M85",
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM85/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
+      "debugFrom": "Reset_Handler",
+      "programs": [
+        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+      ]
     },
     {
       "name": "CM85_noTZ",
