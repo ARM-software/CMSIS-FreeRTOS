@@ -905,6 +905,7 @@
 
           <file category="include"   condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/portasm.c"/>
           <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
           <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3/port.c"/>
           <file category="include"   condition="CM4_ARMCC6"    name="Source/portable/GCC/ARM_CM3/"/>
@@ -935,6 +936,7 @@
 
           <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
           <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/portasm.c"/>
           <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
           <file category="source"    condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3/port.c"/>
           <file category="include"   condition="CM4_GCC"    name="Source/portable/GCC/ARM_CM3/"/>
