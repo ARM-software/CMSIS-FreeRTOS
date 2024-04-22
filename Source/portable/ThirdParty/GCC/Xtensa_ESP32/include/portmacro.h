@@ -8,8 +8,8 @@
  */
 
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -522,7 +522,7 @@
         void vPortStoreTaskMPUSettings( xMPU_SETTINGS * xMPUSettings,
                                         const struct xMEMORY_REGION * const xRegions,
                                         StackType_t * pxBottomOfStack,
-                                        uint32_t usStackDepth ) PRIVILEGED_FUNCTION;
+                                        configSTACK_DEPTH_TYPE uxStackDepth ) PRIVILEGED_FUNCTION;
         void vPortReleaseTaskMPUSettings( xMPU_SETTINGS * xMPUSettings );
     #endif
 

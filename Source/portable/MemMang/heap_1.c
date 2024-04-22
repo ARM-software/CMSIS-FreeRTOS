@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -64,7 +64,7 @@
 #endif /* configAPPLICATION_ALLOCATED_HEAP */
 
 /* Index into the ucHeap array. */
-static size_t xNextFreeByte = ( size_t ) 0;
+static size_t xNextFreeByte = ( size_t ) 0U;
 
 /*-----------------------------------------------------------*/
 
@@ -150,3 +150,16 @@ size_t xPortGetFreeHeapSize( void )
 {
     return( configADJUSTED_HEAP_SIZE - xNextFreeByte );
 }
+
+/*-----------------------------------------------------------*/
+
+/*
+ * Reset the state in this file. This state is normally initialized at start up.
+ * This function must be called by the application before restarting the
+ * scheduler.
+ */
+void vPortHeapResetState( void )
+{
+    xNextFreeByte = ( size_t ) 0U;
+}
+/*-----------------------------------------------------------*/

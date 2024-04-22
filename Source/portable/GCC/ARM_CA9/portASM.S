@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -246,7 +246,7 @@ exit_without_switch:
     MOVS    PC, LR
 
 switch_before_exit:
-    /* A context swtich is to be performed.  Clear the context switch pending
+    /* A context switch is to be performed.  Clear the context switch pending
     flag. */
     MOV     r0, #0
     STR     r0, [r1]

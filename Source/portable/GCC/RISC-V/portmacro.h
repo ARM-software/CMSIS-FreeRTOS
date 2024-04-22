@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -110,9 +110,6 @@ extern void vTaskSwitchContext( void );
 
 /* Critical section management. */
 #define portCRITICAL_NESTING_IN_TCB    0
-
-#define portSET_INTERRUPT_MASK_FROM_ISR()                          0
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR( uxSavedStatusValue )    ( void ) uxSavedStatusValue
 
 #define portDISABLE_INTERRUPTS()                                   __asm volatile ( "csrc mstatus, 8" )
 #define portENABLE_INTERRUPTS()                                    __asm volatile ( "csrs mstatus, 8" )

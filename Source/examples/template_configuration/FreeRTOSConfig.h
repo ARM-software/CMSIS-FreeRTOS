@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -237,6 +237,28 @@
 #define configTIMER_QUEUE_LENGTH        10
 
 /******************************************************************************/
+/* Event Group related definitions. *******************************************/
+/******************************************************************************/
+
+/* Set configUSE_EVENT_GROUPS to 1 to include event group functionality in the
+ * build. Set to 0 to exclude event group functionality from the build. The
+ * FreeRTOS/source/event_groups.c source file must be included in the build if
+ * configUSE_EVENT_GROUPS is set to 1. Defaults to 1 if left undefined. */
+
+#define configUSE_EVENT_GROUPS    1
+
+/******************************************************************************/
+/* Stream Buffer related definitions. *****************************************/
+/******************************************************************************/
+
+/* Set configUSE_STREAM_BUFFERS to 1 to include stream buffer functionality in
+ * the build. Set to 0 to exclude event group functionality from the build. The
+ * FreeRTOS/source/stream_buffer.c source file must be included in the build if
+ * configUSE_STREAM_BUFFERS is set to 1. Defaults to 1 if left undefined. */
+
+#define configUSE_STREAM_BUFFERS    1
+
+/******************************************************************************/
 /* Memory allocation related definitions. *************************************/
 /******************************************************************************/
 
@@ -283,10 +305,9 @@
 /******************************************************************************/
 
 /* configKERNEL_INTERRUPT_PRIORITY sets the priority of the tick and context
- * switch performing interrupts.  The default value is set to the highest interrupt
- * priority (0).  Not supported by all FreeRTOS ports.  See
- * https://www.freertos.org/RTOS-Cortex-M3-M4.html for information specific to ARM
- * Cortex-M devices. */
+ * switch performing interrupts.  Not supported by all FreeRTOS ports.  See
+ * https://www.freertos.org/RTOS-Cortex-M3-M4.html for information specific to
+ * ARM Cortex-M devices. */
 #define configKERNEL_INTERRUPT_PRIORITY          0
 
 /* configMAX_SYSCALL_INTERRUPT_PRIORITY sets the interrupt priority above which
@@ -432,7 +453,7 @@
 #define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY               1
 
 /* Set configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS to 1 to allow unprivileged
- * tasks enter critical sections (effectively mask interrupts).  Set to 0 to
+ * tasks enter critical sections (effectively mask interrupts). Set to 0 to
  * prevent unprivileged tasks entering critical sections.  Defaults to 1 if left
  * undefined.  Only used by the FreeRTOS Cortex-M MPU ports, not the standard
  * ARMv7-M Cortex-M port. */
@@ -496,6 +517,15 @@
  * run any task on any available core. */
 #define configUSE_CORE_AFFINITY                   0
 
+/* When using SMP with core affinity feature enabled, set
+ * configTASK_DEFAULT_CORE_AFFINITY to change the default core affinity mask for
+ * tasks created without an affinity mask specified. Setting the define to 1 would
+ * make such tasks run on core 0 and setting it to (1 << portGET_CORE_ID()) would
+ * make such tasks run on the current core. This config value is useful, if
+ * swapping tasks between cores is not supported (e.g. Tricore) or if legacy code
+ * should be controlled. Defaults to tskNO_AFFINITY if left undefined. */
+#define configTASK_DEFAULT_CORE_AFFINITY          tskNO_AFFINITY
+
 /* When using SMP (i.e. configNUMBER_OF_CORES is greater than one), if
  * configUSE_TASK_PREEMPTION_DISABLE is set to 1, individual tasks can be set to
  * either pre-emptive or co-operative mode using the vTaskPreemptionDisable and
@@ -530,6 +560,56 @@
  * vApplicationGetIdleTaskMemory() and vApplicationGetTimerTaskMemory() by
  * setting configKERNEL_PROVIDED_STATIC_MEMORY to 0 or leaving it undefined. */
 #define configKERNEL_PROVIDED_STATIC_MEMORY    1
+
+/******************************************************************************/
+/* ARMv8-M port Specific Configuration definitions. ***************************/
+/******************************************************************************/
+
+/* Set configENABLE_TRUSTZONE to 1 when running FreeRTOS on the non-secure side
+ * to enable the TrustZone support in FreeRTOS ARMv8-M ports which allows the
+ * non-secure FreeRTOS tasks to call the (non-secure callable) functions
+ * exported from secure side. */
+#define configENABLE_TRUSTZONE            1
+
+/* If the application writer does not want to use TrustZone, but the hardware does
+ * not support disabling TrustZone then the entire application (including the FreeRTOS
+ * scheduler) can run on the secure side without ever branching to the non-secure side.
+ * To do that, in addition to setting configENABLE_TRUSTZONE to 0, also set
+ * configRUN_FREERTOS_SECURE_ONLY to 1. */
+#define configRUN_FREERTOS_SECURE_ONLY    1
+
+/* Set configENABLE_MPU to 1 to enable the Memory Protection Unit (MPU), or 0
+ * to leave the Memory Protection Unit disabled. */
+#define configENABLE_MPU                  1
+
+/* Set configENABLE_FPU to 1 to enable the Floating Point Unit (FPU), or 0
+ * to leave the Floating Point Unit disabled. */
+#define configENABLE_FPU                  1
+
+/* Set configENABLE_MVE to 1 to enable the M-Profile Vector Extension (MVE) support,
+ * or 0 to leave the MVE support disabled. This option is only applicable to Cortex-M55
+ * and Cortex-M85 ports as M-Profile Vector Extension (MVE) is available only on
+ * these architectures. configENABLE_MVE must be left undefined, or defined to 0
+ * for the Cortex-M23,Cortex-M33 and Cortex-M35P ports. */
+#define configENABLE_MVE                  1
+
+/******************************************************************************/
+/* ARMv7-M and ARMv8-M port Specific Configuration definitions. ***************/
+/******************************************************************************/
+
+/* Set configCHECK_HANDLER_INSTALLATION to 1 to enable additional asserts to verify
+ * that the application has correctly installed FreeRTOS interrupt handlers.
+ *
+ * An application can install FreeRTOS interrupt handlers in one of the following ways:
+ *   1. Direct Routing  -  Install the functions vPortSVCHandler and xPortPendSVHandler
+ *                         for SVC call and PendSV interrupts respectively.
+ *   2. Indirect Routing - Install separate handlers for SVC call and PendSV
+ *                         interrupts and route program control from those handlers
+ *                         to vPortSVCHandler and xPortPendSVHandler functions.
+ * The applications that use Indirect Routing must set configCHECK_HANDLER_INSTALLATION to 0.
+ *
+ * Defaults to 1 if left undefined. */
+#define configCHECK_HANDLER_INSTALLATION    1
 
 /******************************************************************************/
 /* Definitions that include or exclude functionality. *************************/

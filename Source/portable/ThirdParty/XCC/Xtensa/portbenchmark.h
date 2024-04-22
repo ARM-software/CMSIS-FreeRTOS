@@ -1,7 +1,7 @@
 /*
- * FreeRTOS Kernel V11.0.1
+ * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -42,7 +42,7 @@
 #endif
 
 #define portbenchmarkINTERRUPT_DISABLE()
-#define portbenchmarkINTERRUPT_RESTORE( newstate )
+#define portbenchmarkINTERRUPT_RESTORE(newstate)
 #define portbenchmarkIntLatency()
 #define portbenchmarkIntWait()
 #define portbenchmarkReset()

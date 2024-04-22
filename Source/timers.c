@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V11.0.1
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V11.1.0
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -254,12 +254,12 @@
                 {
                     StaticTask_t * pxTimerTaskTCBBuffer = NULL;
                     StackType_t * pxTimerTaskStackBuffer = NULL;
-                    uint32_t ulTimerTaskStackSize;
+                    configSTACK_DEPTH_TYPE uxTimerTaskStackSize;
 
-                    vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &ulTimerTaskStackSize );
+                    vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &uxTimerTaskStackSize );
                     xTimerTaskHandle = xTaskCreateStaticAffinitySet( prvTimerTask,
                                                                      configTIMER_SERVICE_TASK_NAME,
-                                                                     ulTimerTaskStackSize,
+                                                                     uxTimerTaskStackSize,
                                                                      NULL,
                                                                      ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
                                                                      pxTimerTaskStackBuffer,
@@ -289,12 +289,12 @@
                 {
                     StaticTask_t * pxTimerTaskTCBBuffer = NULL;
                     StackType_t * pxTimerTaskStackBuffer = NULL;
-                    uint32_t ulTimerTaskStackSize;
+                    configSTACK_DEPTH_TYPE uxTimerTaskStackSize;
 
-                    vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &ulTimerTaskStackSize );
+                    vApplicationGetTimerTaskMemory( &pxTimerTaskTCBBuffer, &pxTimerTaskStackBuffer, &uxTimerTaskStackSize );
                     xTimerTaskHandle = xTaskCreateStatic( prvTimerTask,
                                                           configTIMER_SERVICE_TASK_NAME,
-                                                          ulTimerTaskStackSize,
+                                                          uxTimerTaskStackSize,
                                                           NULL,
                                                           ( ( UBaseType_t ) configTIMER_TASK_PRIORITY ) | portPRIVILEGE_BIT,
                                                           pxTimerTaskStackBuffer,
@@ -1320,6 +1320,18 @@
         }
 
     #endif /* configUSE_TRACE_FACILITY */
+/*-----------------------------------------------------------*/
+
+/*
+ * Reset the state in this file. This state is normally initialized at start up.
+ * This function must be called by the application before restarting the
+ * scheduler.
+ */
+    void vTimerResetState( void )
+    {
+        xTimerQueue = NULL;
+        xTimerTaskHandle = NULL;
+    }
 /*-----------------------------------------------------------*/
 
 /* This entire source file will be skipped if the application is not configured

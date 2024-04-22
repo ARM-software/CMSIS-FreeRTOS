@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.0.1
+ * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2020 Synopsys, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT

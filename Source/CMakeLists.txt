@@ -85,6 +85,7 @@ if(NOT FREERTOS_PORT)
         " GCC_ARM_CM85_NTZ_NONSECURE       - Compiler: GCC           Target: ARM Cortex-M85 non-trustzone non-secure\n"
         " GCC_ARM_CM85_TFM                 - Compiler: GCC           Target: ARM Cortex-M85 non-secure for TF-M\n"
         " GCC_ARM_CR5                      - Compiler: GCC           Target: ARM Cortex-R5\n"
+        " GCC_ARM_CRX_MPU                  - Compiler: GCC           Target: ARM Cortex-Rx with MPU\n"
         " GCC_ARM_CRX_NOGIC                - Compiler: GCC           Target: ARM Cortex-Rx no GIC\n"
         " GCC_ARM7_AT91FR40008             - Compiler: GCC           Target: ARM7 Atmel AT91R40008\n"
         " GCC_ARM7_AT91SAM7S               - Compiler: GCC           Target: ARM7 Atmel AT91SAM7S\n"
@@ -217,16 +218,17 @@ elseif((FREERTOS_PORT STREQUAL "A_CUSTOM_PORT") AND (NOT TARGET freertos_kernel_
     "    port.c\n"
     "    portmacro.h\n"
     " Where FreeRTOSCustomPort/CMakeLists.txt is a modified version of:\n"
-    "   add_library(freertos_kernel_port STATIC)\n"
+    "   add_library(freertos_kernel_port OBJECT)\n"
     "   target_sources(freertos_kernel_port\n"
     "     PRIVATE\n"
     "       port.c\n"
     "       portmacro.h)\n"
-    "   target_include_directories(freertos_kernel_port\n"
-    "     PUBLIC\n"
+    "   add_library(freertos_kernel_port_headers INTERFACE)\n"
+    "     target_include_directories(freertos_kernel_port_headers INTERFACE \n"
     "      .)\n"
     "   target_link_libraries(freertos_kernel_port\n"
     "     PRIVATE\n"
+    "       freertos_kernel_port_headers\n"
     "       freertos_kernel_include)")
 endif()
 
@@ -257,8 +259,11 @@ endif()
 
 target_link_libraries(freertos_kernel
     PUBLIC
-        freertos_kernel_port
         freertos_kernel_include
+        freertos_kernel_port_headers
+    PRIVATE
+        freertos_kernel_port
+
 )
 
 ########################################################################

@@ -1,7 +1,7 @@
-/*
- * FreeRTOS Kernel V11.0.1
+ /*
+ * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2015-2019 Cadence Design Systems, Inc.
- * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -43,7 +43,7 @@
     #error "You need to download the FreeRTOS_trace patch that overwrites this file"
 #endif
 
-#define porttracePrint( nelements )
-#define porttraceStamp( stamp, count_incr )
+#define porttracePrint(nelements)
+#define porttraceStamp(stamp, count_incr)
 
 #endif /* PORTTRACE_H */
