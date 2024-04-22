@@ -5,6 +5,12 @@
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
   <license>LICENSE</license>
+  <licenseSets>
+    <licenseSet id="all" default="true" gating="true">
+      <license title="Apache 2.0 for CMSIS extensions" name="./LICENSE"           spdx="Apache-2.0"/>
+      <license title="MIT License for FreeRTOS kernel" name="./Source/LICENSE.md" spdx="MIT"/>
+    </licenseSet>
+  </licenseSets>
   <url>https://www.keil.com/pack/</url>
 
   <releases>
