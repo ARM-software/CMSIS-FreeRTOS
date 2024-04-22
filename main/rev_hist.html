@@ -113,6 +113,18 @@ $(document).ready(function(){initNavTree('rev_hist.html',''); initResizable(); }
 <tr>
 <td>v11.0.1-dev </td><td>Active development for CMSIS-FreeRTOS 11.0.1   </td></tr>
 <tr>
+<td>v11.0.1 </td><td><p class="starttd">FreeRTOS 11.0.1</p>
+<p class="endtd">Updates and bugfixes:</p><ul>
+<li>Add support for processor affinity to CMSIS-RTOS2 wrapper</li>
+<li>Add symmetric multiprocessing configuration options to FreeRTOSConfig.h</li>
+<li>Add memory allocation configuration options to FreeRTOSConfig.h</li>
+<li>Corrected task priority mapping, FreeRTOS priority is now osPriority_t-1</li>
+<li>CMSIS-RTOS2 requires CMSIS:OS Tick component</li>
+<li>Drop support for Arm Compiler 5</li>
+<li>Drop support for CMSIS-RTOS1 API   </li>
+</ul>
+</td></tr>
+<tr>
 <td>v10.5.1 </td><td><p class="starttd">FreeRTOS 10.5.1</p>
 <p class="endtd">Updates and bugfixes:</p><ul>
 <li>Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt</li>
