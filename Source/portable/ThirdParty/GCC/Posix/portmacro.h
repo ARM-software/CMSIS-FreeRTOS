@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.0.1
+ * FreeRTOS Kernel V11.1.0
  * Copyright 2020 Cambridge Consultants Ltd.
  *
  * SPDX-License-Identifier: MIT
@@ -64,7 +64,7 @@ typedef long             BaseType_t;
 typedef unsigned long    UBaseType_t;
 
 typedef unsigned long    TickType_t;
-#define portMAX_DELAY              ( TickType_t ) ULONG_MAX
+#define portMAX_DELAY              ( ( TickType_t ) ULONG_MAX )
 
 #define portTICK_TYPE_IS_ATOMIC    1
 

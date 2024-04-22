@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.0.1
+ * FreeRTOS Kernel V11.1.0
  * license and copyright intentionally withheld to promote copying into user code.
  */
 
@@ -19,6 +19,10 @@ StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
                                      TaskFunction_t pxCode,
                                      void * pvParameters )
 {
+    ( void ) pxTopOfStack;
+    ( void ) pvParameters;
+    ( void ) * pxCode;
+
     return NULL;
 }
 

@@ -503,6 +503,11 @@
       <accept condition="CM0_GCC"/>
       <accept condition="CM0_IAR"/>
     </condition>
+    <condition id="FreeRTOS Port Cortex-M0 MPU">
+      <description>Requirements for FreeRTOS port for Cortex-M0+ using MPU</description>
+      <accept condition="CM0_ARMCC6"/>
+      <accept condition="CM0_GCC"/>
+    </condition>
     <condition id="FreeRTOS Port Cortex-M3">
       <description>Requirements for FreeRTOS port for Cortex-M3</description>
       <accept condition="CM3_ARMCC6"/>

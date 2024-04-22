@@ -159,20 +159,6 @@ void vPortYield( void )
 /*-----------------------------------------------------------*/
 
 /*
- * Manual context switch callable from ISRs. The first thing
- * we do is save the registers so we can use a naked attribute.
- */
-void vPortYieldFromISR( void ) __attribute__( ( naked ) );
-void vPortYieldFromISR( void )
-{
-    portSAVE_CONTEXT();
-    vTaskSwitchContext();
-    portRESTORE_CONTEXT();
-    asm volatile ( "reti" );
-}
-/*-----------------------------------------------------------*/
-
-/*
  * Context switch function used by the tick.  This must be identical to
  * vPortYield() from the call to vTaskSwitchContext() onwards.  The only
  * difference from vPortYield() is the tick count is incremented as the

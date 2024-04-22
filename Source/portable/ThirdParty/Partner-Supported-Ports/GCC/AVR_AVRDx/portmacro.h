@@ -95,8 +95,6 @@ typedef unsigned char    UBaseType_t;
 extern void vPortYield( void ) __attribute__( ( naked ) );
 #define portYIELD()             vPortYield()
 
-extern void vPortYieldFromISR( void ) __attribute__( ( naked ) );
-#define portYIELD_FROM_ISR()    vPortYieldFromISR()
 /*-----------------------------------------------------------*/
 
 /* Task function macros as described on the FreeRTOS.org WEB site. */

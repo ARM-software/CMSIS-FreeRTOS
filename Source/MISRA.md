@@ -2,11 +2,11 @@
 
 FreeRTOS-Kernel conforms to [MISRA C:2012](https://www.misra.org.uk/misra-c)
 guidelines, with the deviations listed below. Compliance is checked with
-Coverity static analysis. Since the FreeRTOS kernel is designed for
-small-embedded devices, it needs to have a very small memory footprint and
-has to be efficient. To achieve that and to increase the performance, it
-deviates from some MISRA rules. The specific deviations, suppressed inline,
-are listed below.
+Coverity static analysis version 2023.6.1. Since the FreeRTOS kernel is
+designed for small-embedded devices, it needs to have a very small memory
+footprint and has to be efficient. To achieve that and to increase the
+performance, it deviates from some MISRA rules. The specific deviations,
+suppressed inline, are listed below.
 
 Additionally, [MISRA configuration file](examples/coverity/coverity_misra.config)
 contains project wide deviations.
@@ -17,6 +17,14 @@ with ( Assuming rule 8.4 violation; with justification in point 1 ):
 ```
 grep 'MISRA Ref 8.4.1' . -rI
 ```
+
+#### Dir 4.7
+MISRA C:2012 Dir 4.7: If a function returns error information, then that error
+information shall be tested.
+
+_Ref 4.7.1_
+ - `taskENTER_CRITICAL_FROM_ISR` returns the interrupt mask and not any error
+    information. Therefore, there is no need test the return value.
 
 #### Rule 8.4
 
