@@ -645,6 +645,7 @@
     </condition>
     <condition id="FreeRTOS Port Cortex-M v6_v7 MPU">
       <description>Requirements for FreeRTOS port for Cortex-M v6 and v7 using MPU</description>
+      <accept condition="FreeRTOS Port Cortex-M0 MPU"/>
       <accept condition="FreeRTOS Port Cortex-M3 MPU"/>
       <accept condition="FreeRTOS Port Cortex-M4 MPU"/>
       <accept condition="FreeRTOS Port Cortex-M4 FPU MPU"/>
@@ -1019,6 +1020,10 @@
           <file category="source"  name="Source/portable/Common/mpu_wrappers.c"/>
           <file category="source"  name="Source/portable/Common/mpu_wrappers_v2.c"/>
 
+          <file category="include"   condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/portasm.c"/>
+          <file category="source"    condition="CM0_ARMCC6"    name="Source/portable/GCC/ARM_CM0/mpu_wrappers_v2_asm.c"/>
           <file category="include"   condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
           <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
           <file category="source"    condition="CM3_ARMCC6"    name="Source/portable/GCC/ARM_CM3_MPU/mpu_wrappers_v2_asm.c"/>
@@ -1029,6 +1034,10 @@
           <file category="source"    condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
           <file category="source"    condition="CM4_FP_ARMCC6" name="Source/portable/GCC/ARM_CM4_MPU/mpu_wrappers_v2_asm.c"/>
 
+          <file category="include"   condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/"/>
+          <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/port.c"/>
+          <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/portasm.c"/>
+          <file category="source"    condition="CM0_GCC"    name="Source/portable/GCC/ARM_CM0/mpu_wrappers_v2_asm.c"/>
           <file category="include"   condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/"/>
           <file category="source"    condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/port.c"/>
           <file category="source"    condition="CM3_GCC"    name="Source/portable/GCC/ARM_CM3_MPU/mpu_wrappers_v2_asm.c"/>
