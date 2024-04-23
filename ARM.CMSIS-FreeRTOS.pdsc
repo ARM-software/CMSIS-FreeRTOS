@@ -704,7 +704,6 @@
       <description>Requirements for FreeRTOS Core for Cortex-A</description>
       <require condition="FreeRTOS Port Cortex-A"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
@@ -713,7 +712,6 @@
       <description>Requirements for FreeRTOS Core for Cortex-M</description>
       <require condition="FreeRTOS Port Cortex-M"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
@@ -722,7 +720,6 @@
     <description>Requirements for FreeRTOS Core with MPU support for Cortex-M v6 and v7</description>
       <require condition="FreeRTOS Port Cortex-M v6_v7 MPU"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
@@ -734,7 +731,6 @@
       <description>Requirements for FreeRTOS Core with TrustZone support</description>
       <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
@@ -743,7 +739,6 @@
       <description>Requirements for FreeRTOS Core with TrustZone and MPU support</description>
       <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
 
-      <require Cclass="Device" Cgroup="Startup"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Event Groups"/>
@@ -1540,7 +1535,6 @@
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
         <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
         <category>Getting Started</category>
       </attributes>
     </example>
@@ -1554,7 +1548,6 @@
       <attributes>
         <component Cclass="CMSIS" Cgroup="CORE"/>
         <component Cclass="CMSIS" Cgroup="RTOS2"/>
-        <component Cclass="Device" Cgroup="Startup"/>
         <category>Getting Started</category>
       </attributes>
     </example>
