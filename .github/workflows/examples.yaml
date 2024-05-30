@@ -43,7 +43,7 @@ jobs:
           sudo apt-get install libtinfo5
 
       - name: Prepare vcpkg env
-        uses: JonatanAntoni/actions/vcpkg@main
+        uses: ARM-software/cmsis-actions/vcpkg@main
         with:
           config: ./CMSIS/RTOS2/FreeRTOS/Examples/vcpkg-configuration.json
           
