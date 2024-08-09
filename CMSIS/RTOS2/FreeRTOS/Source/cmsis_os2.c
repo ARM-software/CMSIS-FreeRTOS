@@ -395,6 +395,18 @@ int32_t osKernelRestoreLock (int32_t lock) {
   else {
     switch (xTaskGetSchedulerState()) {
       case taskSCHEDULER_SUSPENDED:
+        if (lock == 0) {
+          if (xTaskResumeAll() != pdTRUE) {
+            lock = (int32_t)osError;
+          }
+        }
+        else {
+          if (lock != 1) {
+            lock = (int32_t)osError;
+          }
+        }
+        break;
+
       case taskSCHEDULER_RUNNING:
         if (lock == 1) {
           vTaskSuspendAll();
@@ -402,13 +414,6 @@ int32_t osKernelRestoreLock (int32_t lock) {
         else {
           if (lock != 0) {
             lock = (int32_t)osError;
-          }
-          else {
-            if (xTaskResumeAll() != pdTRUE) {
-              if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
-                lock = (int32_t)osError;
-              }
-            }
           }
         }
         break;
