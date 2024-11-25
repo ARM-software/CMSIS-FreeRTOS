@@ -8,16 +8,16 @@ project:
     - pack: ARM::CMSIS-View
 
   components:
-    - component: ARM::CMSIS:CORE
-    - component: ARM::CMSIS:OS Tick
-    - component: ARM::CMSIS:RTOS2:FreeRTOS
-    - component: ARM::CMSIS-View:Event Recorder&Semihosting
+    - component: CMSIS:CORE
+    - component: CMSIS:OS Tick:SysTick
+    - component: CMSIS:RTOS2:FreeRTOS
+    - component: CMSIS-View:Event Recorder&Semihosting
     
-    - component: ARM::RTOS&FreeRTOS:Core&Cortex-M
-    - component: ARM::RTOS&FreeRTOS:Config&CMSIS RTOS2
-    - component: ARM::RTOS&FreeRTOS:Event Groups
-    - component: ARM::RTOS&FreeRTOS:Heap&Heap_4
-    - component: ARM::RTOS&FreeRTOS:Timers
+    - component: RTOS&FreeRTOS:Core&Cortex-M
+    - component: RTOS&FreeRTOS:Config&CMSIS RTOS2
+    - component: RTOS&FreeRTOS:Event Groups
+    - component: RTOS&FreeRTOS:Heap&Heap_4
+    - component: RTOS&FreeRTOS:Timers
 
   groups:
     - group: Documentation
