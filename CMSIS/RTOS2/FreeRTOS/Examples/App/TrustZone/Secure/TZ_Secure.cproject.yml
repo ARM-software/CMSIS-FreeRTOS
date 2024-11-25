@@ -8,8 +8,8 @@ project:
     - pack: ARM::CMSIS-FreeRTOS
 
   components:
-    - component: ARM::CMSIS:CORE
-    - component: ARM::RTOS&FreeRTOS:TrustZone
+    - component: CMSIS:CORE
+    - component: RTOS&FreeRTOS:TrustZone
 
   groups:
     - group: Documentation
