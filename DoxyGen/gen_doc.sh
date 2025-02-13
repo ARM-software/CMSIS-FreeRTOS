@@ -5,7 +5,7 @@
 #
 # Pre-requisites:
 # - bash shell (for Windows: install git for Windows)
-# - doxygen 1.9.2
+# - doxygen 1.9.6
 
 set -o pipefail
 
@@ -14,7 +14,7 @@ REQUIRED_GEN_PACK_LIB="0.6.0"
 
 DIRNAME=$(dirname $(readlink -f $0))
 DOXYGEN=$(which doxygen 2>/dev/null)
-REQ_DXY_VERSION="1.9.2"
+REQ_DXY_VERSION="1.9.6"
 
 if [[ ! -f "${DOXYGEN}" ]]; then
     echo "Doxygen not found!" >&2
