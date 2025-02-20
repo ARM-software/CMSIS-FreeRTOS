@@ -470,7 +470,7 @@
     </condition>
     <condition id="CM35P_TZ_IAR">
       <description>Cortex-M35P processor based device with TrustZone for the IAR Compiler</description>
-      <require condition="CM33_TZ"/>
+      <require condition="CM35P_TZ"/>
       <require condition="IAR"/>
     </condition>
 
