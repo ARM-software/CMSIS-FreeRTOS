@@ -23,7 +23,7 @@ jobs:
       matrix:
         compiler: [AC6, GCC, CLANG]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
         working-directory: /home/runner
         run: |
           sudo apt-get update
-          sudo apt-get install libtinfo5
+          sudo apt-get install libtinfo6
 
       - name: Prepare vcpkg env
         uses: ARM-software/cmsis-actions/vcpkg@main
