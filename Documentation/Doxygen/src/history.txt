@@ -1,0 +1,98 @@
+/**
+\page rev_hist Revision History
+<table class="cmtable" summary="Revision History">
+<tr>
+  <th>Version</th>
+  <th>Description</th>
+</tr>
+<tr>
+  <td>v11.1.0</td>
+  <td>
+    FreeRTOS 11.1.0
+    
+    Updates and bugfixes:
+    - Add Cortex-M0plus MPU port
+    - Remove dependency on Device:Startup component
+  </td>
+</tr>
+<tr>
+  <td>v11.0.1</td>
+  <td>
+    FreeRTOS 11.0.1
+    
+    Updates and bugfixes:
+    - Add support for processor affinity to CMSIS-RTOS2 wrapper
+    - Add symmetric multiprocessing configuration options to FreeRTOSConfig.h
+    - Add memory allocation configuration options to FreeRTOSConfig.h
+    - Corrected task priority mapping, FreeRTOS priority is now osPriority_t-1
+    - CMSIS-RTOS2 requires CMSIS:OS Tick component
+    - Drop support for Arm Compiler 5
+    - Drop support for CMSIS-RTOS1 API
+  </td>
+</tr>
+<tr>
+  <td>v10.5.1</td>
+  <td>
+    FreeRTOS 10.5.1
+    
+    Updates and bugfixes:
+    - Disable Arm Standard C library mutex acquire/release when using stdio streams from interrupt
+    - Corrected osThreadGetState to return osThreadError when called for a thread previously terminated with osThreadTerminate
+    - Corrected osEventFlagsSet return value when called from ISR
+    - Corrected osEventFlagsWait to return osFlagsErrorParameter when called from ISR with non-zero timeout
+    - Corrected osTimerStart to return osErrorParameter when ticks argument equals zero
+    - Corrected SysTick_Handler and osKernelGetSysTimerCount to cope with tickless idle implementation
+    - Re-enable interrupts after mutex create in C lib stream protection initialization
+  </td>
+</tr>
+<tr>
+  <td>v10.4.6</td>
+  <td>
+    FreeRTOS 10.4.6
+    
+    Updates and bugfixes:
+    - Updated osSemaphoreGetCount to use uxSemaphoreGetCountFromISR instead of uxQueueMessagesWaitingFromISR
+    - Correct typecasting of argument usStackDepth for xTaskCreate in function osThreadNew (#51)
+    - Fix mutex allocation for Arm Standard C library and allow it only when the kernel is running
+  </td>
+</tr>
+<tr>
+  <td>v10.4.3</td>
+  <td>
+    FreeRTOS 10.4.3
+    
+    Updates and bugfixes:
+    - Corrected timeout handling in osThreadFlagsWait (#50)
+    - Enable full static memory allocation for timer object (#48)
+    - Fix vQueueAddToRegistry function call issue when arguments are NULL (#49)
+    - Added workaround for xEventGroupClearBitsFromISR no yield problem
+    - Added FreeRTOS kernel state check to osKernelInitialize and osKernelState
+    - Make source code more verbose with documented limitations (#41)
+    - Fix osMemoryPoolNew expression use (#42)
+  </td>
+</tr>
+<tr>
+  <td>v10.3.1</td>
+  <td>
+    FreeRTOS 10.3.1
+    
+    Maintenance for CMSIS 5.7.0:
+    - Enhanced kernel configuration handling and checking when using CMSIS-RTOS2 API
+    - Added CMSIS-RTOS2 Blinky example for IAR using EWARM simulator
+    - Modified pack description to avoid component identification issues
+  </td>
+</tr>
+<tr>
+  <td>v10.0.1</td>
+  <td>
+    FreeRTOS 10.0.0
+    
+    Maintenance for CMSIS 5.3.0:
+     - Added queue registry support to CMSIS:RTOS2:FreeRTOS component.
+     - Updated CMSIS-FreeRTOS component view to display queue, mutex and semaphore objects.
+     - Updated to CMSIS RTOS2 API 2.1.2 and OS Tick API 1.0.1.
+     - Fixed context switch response latency for API calls from ISR.
+  </td>
+</tr>
+</table>
+*/
