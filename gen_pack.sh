@@ -17,12 +17,12 @@ DEFAULT_ARGS=(-c "v")
 # Pack warehouse directory - destination
 # Default: ./output
 #
-# PACK_OUTPUT=./output
+PACK_OUTPUT=./output
 
 # Temporary pack build directory,
 # Default: ./build
 #
-# PACK_BUILD=./build
+PACK_BUILD=./build
 
 # Specify directory names to be added to pack base directory
 # An empty list defaults to all folders next to this script.
@@ -44,7 +44,9 @@ PACK_BASE_FILES="
 # Specify file names to be deleted from pack build directory
 # Default: empty
 #
-# PACK_DELETE_FILES=""
+PACK_DELETE_FILES="
+  Documentation/Doxygen
+"
 
 # Specify patches to be applied
 # Default: empty
@@ -82,7 +84,14 @@ PACK_CHANGELOG_MODE="full"
 function preprocess() {
   # add custom steps here to be executed
   # before populating the pack build folder
-  ./Documentation/DoxyGen/gen_doc.sh
+  pushd ./Documentation/Doxygen/ > /dev/null
+  echo "Changing working directory to $(pwd)"
+
+  echo "Executing ./gen_doc.sh"
+  ./gen_doc.sh
+
+  popd > /dev/null
+  echo "Changing working directory to $(pwd)"
   return 0
 }
 

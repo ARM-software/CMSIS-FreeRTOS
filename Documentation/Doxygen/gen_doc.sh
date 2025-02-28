@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Version: 3.0
 # Date: 2023-11-06
-# This bash script generates CMSIS-freertos documentation
+# This bash script generates CMSIS-FreeRTOS documentation
 #
 # Pre-requisites:
 # - bash shell (for Windows: install git for Windows)
