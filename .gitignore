@@ -1,7 +1,7 @@
 # list files that shall be ignored by git
+build/
+Documentation/Doxygen/freertos.dxy
+Documentation/Doxygen/linkchecker-out.csv
 Documentation/html/
-DoxyGen/freertos.dxy
-DoxyGen/src/history.txt
-Local_Release
-Documentation/DoxyGen/freertos.dxy
-Documentation/DoxyGen/linkchecker-out.csv
+output/
+
