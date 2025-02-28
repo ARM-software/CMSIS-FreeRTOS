@@ -14,8 +14,7 @@ Use *main* branch for pull-requests.
 | CMSIS/RTOS2/FreeRTOS/Config   | CMSIS-FreeRTOS configuration file   |
 | CMSIS/RTOS2/FreeRTOS/Examples | CMSIS-FreeRTOS example projects     |
 | CMSIS/RTOS2/FreeRTOS/Source   | CMSIS-FreeRTOS source code          |
-| Documentation                 | Generated documentation placeholder |
-| DoxyGen                       | Source of the documentation         |
+| Documentation                 | Source of the documentation         |
 | Source                        | FreeRTOS Kernel source code         |
 
 ## Generate CMSIS Pack for Release
@@ -25,7 +24,7 @@ This GitHub development repository contains all the sources you need to successf
 To build the complete pack for installation use the **gen_pack.sh** bash script. This script file also
 generates the documentation.
 
-Documentation may be generated separately using the bash script **gen_doc.sh** (located in ./DoxyGen).
+Documentation may be generated separately using the bash script **gen_doc.sh** (located in ./Documentation/Doxygen).
 
 ## License
 
