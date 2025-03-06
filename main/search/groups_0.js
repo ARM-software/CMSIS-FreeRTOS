@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cmsis_2dfreertos_20specifics_0',['CMSIS-FreeRTOS Specifics',['../group__freertos__specific.html',1,'']]]
+  ['buffer_20functions_0',['Stream Buffer Functions',['../group__freertos__evr__streambuf.html',1,'']]]
 ];

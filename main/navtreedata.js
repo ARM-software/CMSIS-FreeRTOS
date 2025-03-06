@@ -27,7 +27,7 @@ var NAVTREE =
   [ "CMSIS-FreeRTOS", "index.html", [
     [ "Introduction", "index.html#Introduction", [
       [ "License", "index.html#autotoc_md0", null ],
-      [ "ARM::CMSIS-FreeRTOS Pack", "index.html#autotoc_md1", null ]
+      [ "CMSIS-FreeRTOS Pack", "index.html#autotoc_md1", null ]
     ] ],
     [ "Revision History", "rev_hist.html", null ],
     [ "Create a FreeRTOS project", "cre_freertos_proj.html", [
@@ -76,7 +76,7 @@ var NAVTREE =
         [ "Message Queue", "functionOverview.html#autotoc_md11", null ]
       ] ]
     ] ],
-    [ "API Reference", "modules.html", "modules" ]
+    [ "API Reference", "topics.html", "topics" ]
   ] ]
 ];
 
@@ -86,5 +86,5 @@ var NAVTREEINDEX =
 "group__freertos__evr__tasks.html#gaabd51c00b4f2234f837638d6a9f20064"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';

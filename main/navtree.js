@@ -364,8 +364,10 @@ function showNode(o, node, index, hash)
             showNode(o,node,index,hash); // retry with child node expanded
           },true);
         } else {
-          var rootBase = stripPath(o.toroot.replace(/\..+$/, ''));
-          if (rootBase=="index" || rootBase=="pages" || rootBase=="search") {
+          /* vlamar01: Commented two lines below to ensure nav. tree expands on all selections */
+          //var rootBase = stripPath(o.toroot.replace(/\..+$/, ''));
+          //if (rootBase=="index" || rootBase=="pages" || rootBase=="search")
+          {
             expandNode(o, n, true, true);
           }
           selectAndHighlight(hash,n);

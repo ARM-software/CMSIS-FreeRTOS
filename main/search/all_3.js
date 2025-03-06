@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['heap_20functions_0',['Heap Functions',['../group__freertos__evr__heap.html',1,'']]]
+  ['data_20and_20limitations_0',['Technical data and limitations',['../tech_data.html',1,'']]],
+  ['debug_20a_20cmsis_20freertos_20project_1',['Debug a CMSIS-FreeRTOS project',['../cre_freertos_proj.html#dbg_cmsisfreertos',1,'']]]
 ];

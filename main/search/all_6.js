@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['stream_20buffer_20functions_0',['Stream Buffer Functions',['../group__freertos__evr__streambuf.html',1,'']]]
+  ['generic_20wait_20functions_0',['Generic Wait Functions',['../functionOverview.html#autotoc_md5',1,'']]],
+  ['groups_20functions_1',['Event Groups Functions',['../group__freertos__evr__event__groups.html',1,'']]]
 ];
