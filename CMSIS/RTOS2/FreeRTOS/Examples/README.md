@@ -55,7 +55,7 @@ Once the context and projects are selected one can build them by selecting "Buil
 
 ## Build via command line
 
-> - See [CMSIS-Toolbox documentation](https://github.com/Open-CMSIS-Pack/cmsis-toolbox/blob/main/docs/README.md)
+> - See [CMSIS-Toolbox documentation](https://open-cmsis-pack.github.io/cmsis-toolbox/)
 >   to learn more about CMSIS Solution project build and management tools.
 
 To build the project via command line one can use the following command syntax:
