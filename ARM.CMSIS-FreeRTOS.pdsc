@@ -847,7 +847,7 @@
 
   <components>
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.1.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.2.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -861,7 +861,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.1.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.2.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -877,7 +877,7 @@
       </files>
     </component>
 
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="11.1.0">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="11.2.0">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/RTOS.html</doc>
 
@@ -1306,7 +1306,7 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="Documentation/html/cre_freertos_proj.html#native_freertos_config"/>
-          <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.0.0"/>
+          <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.2.0"/>
         </files>
       </component>
 

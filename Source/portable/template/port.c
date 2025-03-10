@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * license and copyright intentionally withheld to promote copying into user code.
  */
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -427,7 +427,7 @@ uint32_t ulPortSetInterruptMask( void )
          *
          * The following links provide detailed information:
          * https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html
-         * https://www.FreeRTOS.org/FAQHelp.html */
+         * https://www.freertos.org/Why-FreeRTOS/FAQs */
         configASSERT( portICCRPR_RUNNING_PRIORITY_REGISTER >= ( uint32_t ) ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) );
 
         /* Priority grouping:  The interrupt controller (GIC) allows the bits
@@ -438,7 +438,7 @@ uint32_t ulPortSetInterruptMask( void )
          * this is not the case (if some bits represent a sub-priority).
          *
          * The priority grouping is configured by the GIC's binary point register
-         * (ICCBPR).  Writting 0 to ICCBPR will ensure it is set to its lowest
+         * (ICCBPR).  Writing 0 to ICCBPR will ensure it is set to its lowest
          * possible value (which may be above 0). */
         configASSERT( ( portICCBPR_BINARY_POINT_REGISTER & portBINARY_POINT_BITS ) <= portMAX_BINARY_POINT_VALUE );
     }
