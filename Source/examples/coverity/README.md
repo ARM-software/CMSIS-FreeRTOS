@@ -1,6 +1,6 @@
 # MISRA Compliance for FreeRTOS-Kernel
 FreeRTOS-Kernel is MISRA C:2012 compliant. This directory contains a project to
-run [Synopsys Coverity](https://www.synopsys.com/software-integrity/security-testing/static-analysis-sast.html)
+run [Synopsys Coverity](https://www.blackduck.com/static-analysis-tools-sast/coverity.html)
 for checking MISRA compliance.
 
 > **Note**
@@ -17,7 +17,7 @@ files.
 
 ## Getting Started
 ### Prerequisites
-Coverity can be run on any platform mentioned [here](https://sig-docs.synopsys.com/polaris/topics/c_coverity-compatible-platforms.html).
+Coverity can be run on any platform mentioned [here](https://documentation.blackduck.com/bundle/coverity-docs/page/deploy-install-guide/topics/supported_platforms_for_coverity_analysis.html).
 The following are the prerequisites to generate coverity report:
 
 1. CMake version > 3.13.0 (You can check whether you have this by typing `cmake --version`).
@@ -35,7 +35,7 @@ commands in a terminal:
   ~~~
 2. Create the build files using CMake in a `build` directory:
 
-Singe core FreeRTOS:
+Single core FreeRTOS:
   ~~~
   cmake -B build -S examples/coverity
   ~~~

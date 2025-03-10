@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -100,7 +100,7 @@ typedef unsigned long    UBaseType_t;
 #define portMPU_RASR_TEX_S_C_B_LOCATION                          ( 16UL )
 #define portMPU_RASR_TEX_S_C_B_MASK                              ( 0x3FUL )
 
-/* MPU settings that can be overriden in FreeRTOSConfig.h. */
+/* MPU settings that can be overridden in FreeRTOSConfig.h. */
 #ifndef configTOTAL_MPU_REGIONS
     /* Define to 8 for backward compatibility. */
     #define configTOTAL_MPU_REGIONS    ( 8UL )
@@ -221,7 +221,16 @@ typedef struct MPU_REGION_SETTINGS
 
 #endif /* configUSE_MPU_WRAPPERS_V1 == 0 */
 
-#define MAX_CONTEXT_SIZE                    ( 52 )
+/*
+ * +---------+---------------+-----------------+-----------------+-----+
+ * | s16-s31 | s0-s15, FPSCR | CONTROL, r4-r11 | PSP, r0-r3, r12 |     |
+ * |         |               | EXC_RETURN      | LR, PC, xPSR    |     |
+ * +---------+---------------+-----------------+-----------------+-----+
+ *
+ * <--------><---------------><----------------><----------------><---->
+ *     16           17               10                 9           1
+ */
+#define MAX_CONTEXT_SIZE                    ( 53 )
 
 /* Size of an Access Control List (ACL) entry in bits. */
 #define portACL_ENTRY_SIZE_BITS             ( 32U )
@@ -345,7 +354,7 @@ extern void vPortExitCritical( void );
 #define portTASK_FUNCTION( vFunction, pvParameters )          void vFunction( void * pvParameters )
 /*-----------------------------------------------------------*/
 
-#ifdef configASSERT
+#if ( configASSERT_DEFINED == 1 )
     void vPortValidateInterruptPriority( void );
     #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID()    vPortValidateInterruptPriority()
 #endif

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -25,6 +25,9 @@
  * https://github.com/FreeRTOS
  *
  */
+
+/* Hardware includes. */
+#include "msp430.h"
 
 /* Scheduler includes. */
 #include "FreeRTOS.h"

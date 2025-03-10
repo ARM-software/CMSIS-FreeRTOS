@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -1240,10 +1240,10 @@ MPU_pcTimerGetName_Unpriv
 #if ( configUSE_TIMERS == 1 )
 
 void MPU_vTimerSetReloadMode( TimerHandle_t xTimer,
-                              const BaseType_t uxAutoReload ) FREERTOS_SYSTEM_CALL;
+                              const BaseType_t xAutoReload ) FREERTOS_SYSTEM_CALL;
 
 __asm void MPU_vTimerSetReloadMode( TimerHandle_t xTimer,
-                                    const BaseType_t uxAutoReload ) /* FREERTOS_SYSTEM_CALL */
+                                    const BaseType_t xAutoReload ) /* FREERTOS_SYSTEM_CALL */
 {
     PRESERVE8
     extern MPU_vTimerSetReloadModeImpl

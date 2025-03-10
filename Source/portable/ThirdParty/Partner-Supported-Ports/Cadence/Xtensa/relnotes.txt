@@ -1,0 +1,170 @@
+Notes for Version 3.00
+----------------------
+
+- This version supports FreeRTOS version 11.0.0.
+
+- The directory structure and makefiles have been reorganized to conform
+  to the structure of FreeRTOS version 11.0.0.
+
+
+Notes for Version 2.40
+----------------------
+
+- Now supports Xtensa LX processors with up to 128 interrupts.
+  Note: XT_USE_SWPRI only supported on LX processors with <= 32 interrupts.
+
+
+Notes for Version 2.30
+----------------------
+
+- Code overlay support enabled (for Xtensa LX only). An example
+  is provided in the demos/cadence/sim directory. Code overlay
+  support requires mutexes.
+
+
+Notes for Version 2.20
+----------------------
+
+- FreeRTOS kernel version updated to 10.4.4.
+
+- XAF config defaults brought back into 10.4.4-stable branch.
+  Variable frequency support is merged into this branch as well.
+
+
+Notes for Version 2.10
+----------------------
+
+- Now supports Xtensa NX processors.
+
+
+Notes for Version 2.01
+----------------------
+
+- Modified debug exception handling to allow user-supplied handler to
+  be installed. The user handler can be a C function and is installed
+  like so -
+
+    xt_set_exception_handler( EXCCAUSE_DEBUG, dbg_handler );
+
+
+Notes for version 2.0
+---------------------
+
+- Extensive refactor of code to eliminate use of MPU struct for saving
+  coprocessor state. Coprocessor exception handling has been redone.
+
+- Low power sleep support (tickless idle) added.
+
+- Removed use of XTOS header files and macros. Renamed port macros to 
+  avoid name conflicts with XTOS macros.
+
+- More compiler warnings enabled for build (-Werror -Wextra -std=c99).
+
+- Interrupt and exception API reworked. Timer setup and handling mostly
+  converted to C code and simplified.
+
+
+Notes for version 1.7
+---------------------
+
+- portSTACK_TYPE changed to uint32_t from uint8_t. Stack size definitions
+  adjusted accordingly.
+
+- portYIELD_FROM_ISR changed to call _frxt_setup_switch conditionally.
+
+- Tick handler calls xTaskIncrementTick inside critical region to prevent
+  interrupt nesting issues.
+
+
+Notes for version 1.6
+---------------------
+
+- This version supports FreeRTOS version 10.0.0.
+
+- The directory structure and makefiles have been reorganized to conform
+  to the structure of FreeRTOS version 10.0.0.
+
+
+Notes for version 1.5
+---------------------
+
+- This version supports FreeRTOS version 9.0.0.
+
+- This version supports thread safe operation with the Xtensa C Library
+  (xclib) in addition to the Newlib C library (newlib).
+  The xtensa_config.h file is set up to enable thread safe operation by
+  default if xclib or newlib is detected. Use -D XT_USE_THREAD_SAFE_CLIB=0
+  on the command line or in the project definition to disable this.
+
+- Incorrect function prototypes for xt_ints_on/xt_ints_off have been fixed.
+
+
+Notes for version 1.4.2
+-----------------------
+
+- This version implements a bugfix. The bug was that even when the
+  config parameter "configUSE_TIME_SLICING" was set to zero, time
+  slicing would still occur due to a problem in the Xtensa interrupt
+  processing code.
+
+- The "small_test" test has been added to illustrate how FreeRTOS 
+  can be configured to reduce the memory footprint.
+
+
+Notes for version 1.4
+---------------------
+
+- This version supports FreeRTOS version 8.2.0.
+
+- This version adds a new test xt_intr.c for interrupts testing.
+
+- This version separates the trace and benchmark facilities into a
+  separate downloadable.
+  
+
+Notes for version 1.3
+---------------------
+
+- This version implements a separate interrupt stack. The interrupt
+  dispatch code saves the current task's state on to the task's own
+  stack and then switches to the interrupt stack for the interrupt
+  processing. Nested interrupts will continue to use the interrupt
+  stack. This helps to reduce the sizes of task stacks, since task
+  stacks no longer have to account for space to accommodate possible
+  nested interrupts. The size of the interrupt stack is controlled
+  by a config parameter.
+
+
+Notes for version 1.2
+---------------------
+
+- This version supports FreeRTOS version 8.1.2.
+
+- This version supports both CALL0 and windowed Xtensa configurations.
+
+- This version supports thread safe operation for the Newlib C library.
+
+- This version introduces an API for installing low/medium priority
+  interrupt handlers and exception handlers, which can be written in C.
+  See xtensa_api.h for details.
+
+- This version supports software prioritization of interrupts at the
+  same level. Define XT_USE_SWPRI to use this feature. Higher-numbered
+  interrupts are handled at a higher priority than lower-numbered ones.
+
+- The FreeRTOS demo application requires a stack size of at least 4 KB.
+  The standalone tests should be able to run with smaller stack sizes.
+  The minimum stack size depends on the specific Xtensa configuration.
+  Adjust the stack size of your application as required.
+
+- The examples are all defined with a heap size of 256 KB. This could
+  be a problem with Xtensa configurations that have only small amounts
+  of memory. Adjust the heap size to suit your platform and application.
+  There is an example of a small-footprint configuration in the directory
+  Xtensa_XCC_small.
+
+- NOTE: Code overlay support is not yet enabled for this port, even though
+  the support code is present. This feature is not enabled nor tested.
+  Do not define XT_USE_OVLY when building.
+
+-End-
