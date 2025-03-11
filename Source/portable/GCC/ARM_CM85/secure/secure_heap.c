@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -28,6 +28,9 @@
 
 /* Standard includes. */
 #include <stdint.h>
+
+/* Configuration includes. */
+#include "FreeRTOSConfig.h"
 
 /* Secure context heap includes. */
 #include "secure_heap.h"
@@ -234,7 +237,7 @@ static void prvInsertBlockIntoFreeList( BlockLink_t * pxBlockToInsert )
         pxBlockToInsert->pxNextFreeBlock = pxIterator->pxNextFreeBlock;
     }
 
-    /* If the block being inserted plugged a gab, so was merged with the block
+    /* If the block being inserted plugged a gap, so was merged with the block
      * before and the block after, then it's pxNextFreeBlock pointer will have
      * already been set, and should not be set here as that would make it point
      * to itself. */
@@ -256,6 +259,7 @@ void * pvPortMalloc( size_t xWantedSize )
     BlockLink_t * pxNewBlockLink;
     void * pvReturn = NULL;
     size_t xAdditionalRequiredSize;
+    size_t xAllocatedBlockSize = 0;
 
     /* If this is the first call to malloc then the heap will require
      * initialisation to setup the list of free blocks. */
@@ -374,6 +378,8 @@ void * pvPortMalloc( size_t xWantedSize )
                     mtCOVERAGE_TEST_MARKER();
                 }
 
+                xAllocatedBlockSize = pxBlock->xBlockSize;
+
                 /* The block is being returned - it is allocated and owned by
                  * the application and has no "next" block. */
                 secureheapALLOCATE_BLOCK( pxBlock );
@@ -394,7 +400,10 @@ void * pvPortMalloc( size_t xWantedSize )
         mtCOVERAGE_TEST_MARKER();
     }
 
-    traceMALLOC( pvReturn, xWantedSize );
+    traceMALLOC( pvReturn, xAllocatedBlockSize );
+
+    /* Prevent compiler warnings when trace macros are not used. */
+    ( void ) xAllocatedBlockSize;
 
     #if ( secureconfigUSE_MALLOC_FAILED_HOOK == 1 )
     {

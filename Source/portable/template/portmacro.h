@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * license and copyright intentionally withheld to promote copying into user code.
  */
 
@@ -105,7 +105,7 @@ extern void vPortYield( void );
 #define portYIELD()                                           vPortYield()
 
 /* Task function macros as described on the FreeRTOS.org WEB site. */
-#define portTASK_FUNCTION_PROTO( vFunction, pvParameters )    void vFunction( void * pvParameters )
+#define portTASK_FUNCTION_PROTO( vFunction, pvParameters )    void vFunction( void * pvParameters ) __attribute__( ( noreturn ) )
 #define portTASK_FUNCTION( vFunction, pvParameters )          void vFunction( void * pvParameters )
 
 #if ( configNUMBER_OF_CORES > 1 )
@@ -123,19 +123,19 @@ extern void vPortYield( void );
 
 /* Acquire the TASK lock. TASK lock is a recursive lock.
  * It should be able to be locked by the same core multiple times. */
-    #define portGET_TASK_LOCK()              do {} while( 0 )
+    #define portGET_TASK_LOCK( xCoreID )     do {} while( 0 )
 
 /* Release the TASK lock. If a TASK lock is locked by the same core multiple times,
  * it should be released as many times as it is locked. */
-    #define portRELEASE_TASK_LOCK()          do {} while( 0 )
+    #define portRELEASE_TASK_LOCK( xCoreID ) do {} while( 0 )
 
 /* Acquire the ISR lock. ISR lock is a recursive lock.
  * It should be able to be locked by the same core multiple times. */
-    #define portGET_ISR_LOCK()               do {} while( 0 )
+    #define portGET_ISR_LOCK( xCoreID )      do {} while( 0 )
 
 /* Release the ISR lock. If a ISR lock is locked by the same core multiple times, \
  * it should be released as many times as it is locked. */
-    #define portRELEASE_ISR_LOCK()           do {} while( 0 )
+    #define portRELEASE_ISR_LOCK( xCoreID )  do {} while( 0 )
 
 #endif /* if ( configNUMBER_OF_CORES > 1 ) */
 

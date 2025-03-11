@@ -1,0 +1,4 @@
+- IRQ premption is currently disabled; this might be easy enough to fix by stacking the core local ISRStackTop, and using 0
+  for recursing, since that just uses the current one - of course the whole code may not be happy with nested IRQs
+- Right now mtvec table and irq handlers are installed on both cores, since the SDK doesn't currently treat them separately.
+- Q: Why is critical_nestings stored in TCB on RISC-V?

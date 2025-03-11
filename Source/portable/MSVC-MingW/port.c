@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -141,6 +141,9 @@ static DWORD WINAPI prvSimulatedPeripheralTimer( LPVOID lpParameter )
 {
     TickType_t xMinimumWindowsBlockTime;
     TIMECAPS xTimeCaps;
+    TickType_t xWaitTimeBetweenTicks = portTICK_PERIOD_MS;
+    HANDLE hTimer = NULL;
+    LARGE_INTEGER liDueTime;
 
     /* Set the timer resolution to the maximum possible. */
     if( timeGetDevCaps( &xTimeCaps, sizeof( xTimeCaps ) ) == MMSYSERR_NOERROR )
@@ -160,45 +163,35 @@ static DWORD WINAPI prvSimulatedPeripheralTimer( LPVOID lpParameter )
     /* Just to prevent compiler warnings. */
     ( void ) lpParameter;
 
+    /* Tick time for the timer is adjusted with the maximum available
+     resolution. */
+    if( portTICK_PERIOD_MS < xMinimumWindowsBlockTime )
+    {
+        xWaitTimeBetweenTicks = xMinimumWindowsBlockTime;
+    }
+
+    /* Convert the tick time in milliseconds to nanoseconds resolution
+     for the Waitable Timer. */
+    liDueTime.u.LowPart = xWaitTimeBetweenTicks * 1000 * 1000;
+    liDueTime.u.HighPart = 0;
+
+    /* Create a synchronization Waitable Timer.*/
+    hTimer = CreateWaitableTimer( NULL, FALSE, NULL );
+
+    configASSERT( hTimer != NULL );
+
+    /* Set the Waitable Timer. The timer is set to run periodically at every
+    xWaitTimeBetweenTicks milliseconds. */
+    configASSERT( SetWaitableTimer( hTimer, &liDueTime, xWaitTimeBetweenTicks, NULL, NULL, 0 ) );
+
     while( xPortRunning == pdTRUE )
     {
         /* Wait until the timer expires and we can access the simulated interrupt
-         * variables.  *NOTE* this is not a 'real time' way of generating tick
-         * events as the next wake time should be relative to the previous wake
-         * time, not the time that Sleep() is called.  It is done this way to
-         * prevent overruns in this very non real time simulated/emulated
-         * environment. */
-        if( portTICK_PERIOD_MS < xMinimumWindowsBlockTime )
-        {
-            Sleep( xMinimumWindowsBlockTime );
-        }
-        else
-        {
-            Sleep( portTICK_PERIOD_MS );
-        }
+         * variables. */
 
-        if( xPortRunning == pdTRUE )
-        {
-            configASSERT( xPortRunning );
+        WaitForSingleObject( hTimer, INFINITE );
 
-            /* Can't proceed if in a critical section as pvInterruptEventMutex won't
-             * be available. */
-            WaitForSingleObject( pvInterruptEventMutex, INFINITE );
-
-            /* The timer has expired, generate the simulated tick event. */
-            ulPendingInterrupts |= ( 1 << portINTERRUPT_TICK );
-
-            /* The interrupt is now pending - notify the simulated interrupt
-             * handler thread.  Must be outside of a critical section to get here so
-             * the handler thread can execute immediately pvInterruptEventMutex is
-             * released. */
-            configASSERT( ulCriticalNesting == 0UL );
-            SetEvent( pvInterruptEvent );
-
-            /* Give back the mutex so the simulated interrupt handler unblocks
-             * and can access the interrupt handler variables. */
-            ReleaseMutex( pvInterruptEventMutex );
-        }
+        vPortGenerateSimulatedInterruptFromWindowsThread( portINTERRUPT_TICK );
     }
 
     return 0;
@@ -353,11 +346,11 @@ BaseType_t xPortStartScheduler( void )
         pxThreadState = ( ThreadState_t * ) *( ( size_t * ) pxCurrentTCB );
         ulCriticalNesting = portNO_CRITICAL_NESTING;
 
-        /* Start the first task. */
-        ResumeThread( pxThreadState->pvThread );
-
         /* The scheduler is now running. */
         xPortRunning = pdTRUE;
+
+        /* Start the first task. */
+        ResumeThread( pxThreadState->pvThread );
 
         /* Handle all simulated interrupts - including yield requests and
          * simulated ticks. */
@@ -456,48 +449,31 @@ static void prvProcessSimulatedInterrupts( void )
 
             if( ulSwitchRequired != pdFALSE )
             {
-                void * pvOldCurrentTCB;
+                /* Suspend the old thread. */
+                pxThreadState = ( ThreadState_t * ) *( ( size_t * ) pxCurrentTCB );
+                SuspendThread( pxThreadState->pvThread );
 
-                pvOldCurrentTCB = pxCurrentTCB;
+                /* Ensure the thread is actually suspended by performing a
+                 * synchronous operation that can only complete when the thread
+                 * is actually suspended. The below code asks for dummy register
+                 * data. Experimentation shows that these two lines don't appear
+                 * to do anything now, but according to
+                 * https://devblogs.microsoft.com/oldnewthing/20150205-00/?p=44743
+                 * they do - so as they do not harm (slight run-time hit). */
+                xContext.ContextFlags = CONTEXT_INTEGER;
+                ( void ) GetThreadContext( pxThreadState->pvThread, &xContext );
 
                 /* Select the next task to run. */
                 vTaskSwitchContext();
 
-                /* If the task selected to enter the running state is not the task
-                 * that is already in the running state. */
-                if( pvOldCurrentTCB != pxCurrentTCB )
-                {
-                    /* Suspend the old thread.  In the cases where the (simulated)
-                     * interrupt is asynchronous (tick event swapping a task out rather
-                     * than a task blocking or yielding) it doesn't matter if the
-                     * 'suspend' operation doesn't take effect immediately - if it
-                     * doesn't it would just be like the interrupt occurring slightly
-                     * later.  In cases where the yield was caused by a task blocking
-                     * or yielding then the task will block on a yield event after the
-                     * yield operation in case the 'suspend' operation doesn't take
-                     * effect immediately.  */
-                    pxThreadState = ( ThreadState_t * ) *( ( size_t * ) pvOldCurrentTCB );
-                    SuspendThread( pxThreadState->pvThread );
+                /* Obtain the state of the task now selected to enter the
+                 * Running state. */
+                pxThreadState = ( ThreadState_t * ) ( *( size_t * ) pxCurrentTCB );
 
-                    /* Ensure the thread is actually suspended by performing a
-                     *  synchronous operation that can only complete when the thread is
-                     *  actually suspended.  The below code asks for dummy register
-                     *  data.  Experimentation shows that these two lines don't appear
-                     *  to do anything now, but according to
-                     *  https://devblogs.microsoft.com/oldnewthing/20150205-00/?p=44743
-                     *  they do - so as they do not harm (slight run-time hit). */
-                    xContext.ContextFlags = CONTEXT_INTEGER;
-                    ( void ) GetThreadContext( pxThreadState->pvThread, &xContext );
-
-                    /* Obtain the state of the task now selected to enter the
-                     * Running state. */
-                    pxThreadState = ( ThreadState_t * ) ( *( size_t * ) pxCurrentTCB );
-
-                    /* pxThreadState->pvThread can be NULL if the task deleted
-                     * itself - but a deleted task should never be resumed here. */
-                    configASSERT( pxThreadState->pvThread != NULL );
-                    ResumeThread( pxThreadState->pvThread );
-                }
+                /* pxThreadState->pvThread can be NULL if the task deleted
+                 * itself - but a deleted task should never be resumed here. */
+                configASSERT( pxThreadState->pvThread != NULL );
+                ResumeThread( pxThreadState->pvThread );
             }
 
             /* If the thread that is about to be resumed stopped running
@@ -585,6 +561,20 @@ void vPortCloseRunningThread( void * pvTaskToDelete,
     /* This is called from a critical section, which must be exited before the
      * thread stops. */
     taskEXIT_CRITICAL();
+
+    /* Record that a yield is pending so that the next tick interrupt switches
+     * out this thread regardless of the value of configUSE_PREEMPTION. This is
+     * needed when a task deletes itself - the taskYIELD_WITHIN_API within
+     * vTaskDelete does not get called because this function never returns. If
+     * we do not pend portINTERRUPT_YIELD here, the next task is not scheduled
+     * when configUSE_PREEMPTION is set to 0. */
+    if( pvInterruptEventMutex != NULL )
+    {
+        WaitForSingleObject( pvInterruptEventMutex, INFINITE );
+        ulPendingInterrupts |= ( 1 << portINTERRUPT_YIELD );
+        ReleaseMutex( pvInterruptEventMutex );
+    }
+
     CloseHandle( pxThreadState->pvYieldEvent );
     ExitThread( 0 );
 }
@@ -632,6 +622,32 @@ void vPortGenerateSimulatedInterrupt( uint32_t ulInterruptNumber )
              * sure. */
             WaitForSingleObject( pxThreadState->pvYieldEvent, INFINITE );
         }
+    }
+}
+/*-----------------------------------------------------------*/
+
+void vPortGenerateSimulatedInterruptFromWindowsThread( uint32_t ulInterruptNumber )
+{
+    if( xPortRunning == pdTRUE )
+    {
+        /* Can't proceed if in a critical section as pvInterruptEventMutex won't
+         * be available. */
+        WaitForSingleObject( pvInterruptEventMutex, INFINITE );
+
+        /* Pending a user defined interrupt to be handled in simulated interrupt
+         * handler thread. */
+        ulPendingInterrupts |= ( 1 << ulInterruptNumber );
+
+        /* The interrupt is now pending - notify the simulated interrupt
+         * handler thread.  Must be outside of a critical section to get here so
+         * the handler thread can execute immediately pvInterruptEventMutex is
+         * released. */
+        configASSERT( ulCriticalNesting == 0UL );
+        SetEvent( pvInterruptEvent );
+
+        /* Give back the mutex so the simulated interrupt handler unblocks
+         * and can access the interrupt handler variables. */
+        ReleaseMutex( pvInterruptEventMutex );
     }
 }
 /*-----------------------------------------------------------*/

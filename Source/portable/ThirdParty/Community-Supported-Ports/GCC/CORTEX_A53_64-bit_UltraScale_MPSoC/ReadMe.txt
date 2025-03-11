@@ -1,0 +1,1 @@
+The bsp_patches contains the xlinx bsp modifications needed to port FreeRTOS-SMP to the  ZynqMPOSC(A53*4) platform, see details bsp_patches/ReadMe.txt

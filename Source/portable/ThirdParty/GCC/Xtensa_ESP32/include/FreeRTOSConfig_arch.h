@@ -7,7 +7,7 @@
  */
 
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -85,7 +85,7 @@
 
 /* If CONFIG_FREERTOS_ASSERT_DISABLE is set then configASSERT is defined empty later in FreeRTOS.h and the macro */
 /* configASSERT_DEFINED remains unset (meaning some warnings are avoided) */
-#ifdef configASSERT
+#if ( configASSERT_DEFINED == 1 )
     #undef configASSERT
     #if defined( CONFIG_FREERTOS_ASSERT_FAIL_PRINT_CONTINUE )
         #define configASSERT( a )                                           \
@@ -114,7 +114,7 @@
  * interrupts. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    XCHAL_EXCM_LEVEL
 
-/* Stack alignment, architecture specifc. Must be a power of two. */
+/* Stack alignment, architecture specific. Must be a power of two. */
 #define configSTACK_ALIGNMENT                   16
 
 

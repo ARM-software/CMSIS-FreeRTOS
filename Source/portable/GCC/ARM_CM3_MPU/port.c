@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -695,7 +695,7 @@ static void prvRestoreContextOfFirstTask( void )
         " msr msp, r0                           \n" /* Set the msp back to the start of the stack. */
         "                                       \n"
         /*------------ Program MPU. ------------ */
-        " ldr r3, pxCurrentTCBConst2            \n" /* r3 = pxCurrentTCBConst2. */
+        " ldr r3, =pxCurrentTCB                 \n" /* r3 = =pxCurrentTCB. */
         " ldr r2, [r3]                          \n" /* r2 = pxCurrentTCB. */
         " add r2, r2, #4                        \n" /* r2 = Second item in the TCB which is xMPUSettings. */
         "                                       \n"
@@ -716,7 +716,7 @@ static void prvRestoreContextOfFirstTask( void )
         " dsb                                   \n" /* Force memory writes before continuing. */
         "                                       \n"
         /*---------- Restore Context. ---------- */
-        " ldr r3, pxCurrentTCBConst2            \n" /* r3 = pxCurrentTCBConst2. */
+        " ldr r3, =pxCurrentTCB                 \n" /* r3 = =pxCurrentTCB. */
         " ldr r2, [r3]                          \n" /* r2 = pxCurrentTCB. */
         " ldr r1, [r2]                          \n" /* r1 = Location of saved context in TCB. */
         "                                       \n"
@@ -732,8 +732,6 @@ static void prvRestoreContextOfFirstTask( void )
         " bx lr                                 \n"
         "                                       \n"
         " .ltorg                                \n" /* Assemble current literal pool to avoid offset-out-of-bound errors with lto. */
-        " .align 4                              \n"
-        "pxCurrentTCBConst2: .word pxCurrentTCB \n"
     );
 }
 /*-----------------------------------------------------------*/
@@ -767,7 +765,7 @@ BaseType_t xPortStartScheduler( void )
          *
          * Assertion failures here indicate incorrect installation of the
          * FreeRTOS handlers. For help installing the FreeRTOS handlers, see
-         * https://www.FreeRTOS.org/FAQHelp.html.
+         * https://www.freertos.org/Why-FreeRTOS/FAQs.
          *
          * Systems with a configurable address for the interrupt vector table
          * can also encounter assertion failures or even system faults here if
@@ -988,7 +986,7 @@ void xPortPendSVHandler( void )
 
     __asm volatile
     (
-        " ldr r3, pxCurrentTCBConst             \n" /* r3 = pxCurrentTCBConst. */
+        " ldr r3, =pxCurrentTCB                 \n" /* r3 = =pxCurrentTCB. */
         " ldr r2, [r3]                          \n" /* r2 = pxCurrentTCB. */
         " ldr r1, [r2]                          \n" /* r1 = Location where the context should be saved. */
         "                                       \n"
@@ -1012,7 +1010,7 @@ void xPortPendSVHandler( void )
         " msr basepri, r0                       \n"
         "                                       \n"
         /*------------ Program MPU. ------------ */
-        " ldr r3, pxCurrentTCBConst             \n" /* r3 = pxCurrentTCBConst. */
+        " ldr r3, =pxCurrentTCB                 \n" /* r3 = =pxCurrentTCB. */
         " ldr r2, [r3]                          \n" /* r2 = pxCurrentTCB. */
         " add r2, r2, #4                        \n" /* r2 = Second item in the TCB which is xMPUSettings. */
         "                                       \n"
@@ -1033,7 +1031,7 @@ void xPortPendSVHandler( void )
         " dsb                                   \n" /* Force memory writes before continuing. */
         "                                       \n"
         /*---------- Restore Context. ---------- */
-        " ldr r3, pxCurrentTCBConst             \n" /* r3 = pxCurrentTCBConst. */
+        " ldr r3, =pxCurrentTCB                 \n" /* r3 = =pxCurrentTCB. */
         " ldr r2, [r3]                          \n" /* r2 = pxCurrentTCB. */
         " ldr r1, [r2]                          \n" /* r1 = Location of saved context in TCB. */
         "                                       \n"
@@ -1047,8 +1045,6 @@ void xPortPendSVHandler( void )
         " bx lr                                 \n"
         "                                       \n"
         " .ltorg                                \n" /* Assemble current literal pool to avoid offset-out-of-bound errors with lto. */
-        " .align 4                              \n"
-        "pxCurrentTCBConst: .word pxCurrentTCB  \n"
         ::"i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
     );
 }
@@ -1207,8 +1203,6 @@ BaseType_t xIsPrivileged( void ) /* __attribute__ (( naked )) */
         "   movne r0, #0                            \n" /* CONTROL[0]!=0. Return false to indicate that the processor is not privileged. */
         "   moveq r0, #1                            \n" /* CONTROL[0]==0. Return true to indicate that the processor is privileged. */
         "   bx lr                                   \n" /* Return. */
-        "                                           \n"
-        "   .align 4                                \n"
         ::: "r0", "memory"
     );
 }
@@ -1462,7 +1456,7 @@ void vPortStoreTaskMPUSettings( xMPU_SETTINGS * xMPUSettings,
              *
              * The following links provide detailed information:
              * https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html
-             * https://www.FreeRTOS.org/FAQHelp.html */
+             * https://www.freertos.org/Why-FreeRTOS/FAQs */
             configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
         }
 

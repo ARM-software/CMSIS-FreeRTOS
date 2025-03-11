@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT AND BSD-3-Clause
@@ -401,7 +401,7 @@ static void prvSetupTimerInterrupt( void )
     #if ( configTICK_USE_TC == 1 )
         volatile avr32_tc_t * tc = &AVR32_TC;
 
-        /* Options for waveform genration. */
+        /* Options for waveform generation. */
         tc_waveform_opt_t waveform_opt =
         {
             .channel = configTICK_TC_CHANNEL,              /* Channel selection. */

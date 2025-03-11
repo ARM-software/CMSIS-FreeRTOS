@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -63,7 +63,7 @@ debugger).  The true stack pointer is then stored in the bp register.  We add
                                         "les    bx, dword ptr pxCurrentTCB"                                                 \
                                         "mov    ss, es:[ bx + 2 ]"                                                          \
                                         "mov    sp, es:[ bx ]"                                                              \
-                                        "mov    bp, sp"                     /* Prepair the bp register for the restoration of the SP in the compiler generated portion of the ISR */    \
+                                        "mov    bp, sp"                     /* Prepare the bp register for the restoration of the SP in the compiler generated portion of the ISR */    \
                                         "add    bp, 0x0002"
 
 

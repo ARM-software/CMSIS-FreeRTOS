@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -36,7 +36,7 @@ extern "C" {
 #include "FreeRTOSConfig.h"
 
 #ifndef configTOTAL_MPU_REGIONS
-    #error "Set configTOTAL_MPU_REGIONS to the humber of MPU regions in FreeRTOSConfig.h"
+    #error "Set configTOTAL_MPU_REGIONS to the number of MPU regions in FreeRTOSConfig.h"
 #elif( configTOTAL_MPU_REGIONS == 12 )
     #define portMPU_TOTAL_REGIONS ( 12UL )
 #elif( configTOTAL_MPU_REGIONS == 16 )

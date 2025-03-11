@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2024 Arm Limited and/or its affiliates
+ * <open-source-office@arm.com>
  *
  * SPDX-License-Identifier: MIT
  *
@@ -54,7 +56,7 @@
  * The FreeRTOS Cortex M33 port can be configured to run on the Secure Side only
  * i.e. the processor boots as secure and never jumps to the non-secure side.
  * The Trust Zone support in the port must be disabled in order to run FreeRTOS
- * on the secure side. The following are the valid configuration seetings:
+ * on the secure side. The following are the valid configuration settings:
  *
  * 1. Run FreeRTOS on the Secure Side:
  *    configRUN_FREERTOS_SECURE_ONLY = 1 and configENABLE_TRUSTZONE = 0
@@ -110,6 +112,7 @@ typedef void ( * portISR_t )( void );
 #define portSCB_VTOR_REG                      ( *( ( portISR_t ** ) 0xe000ed08 ) )
 #define portSCB_SYS_HANDLER_CTRL_STATE_REG    ( *( ( volatile uint32_t * ) 0xe000ed24 ) )
 #define portSCB_MEM_FAULT_ENABLE_BIT          ( 1UL << 16UL )
+#define portSCB_USG_FAULT_ENABLE_BIT          ( 1UL << 18UL )
 /*-----------------------------------------------------------*/
 
 /**
@@ -185,8 +188,8 @@ typedef void ( * portISR_t )( void );
 #define portMPU_MAIR0_REG                       ( *( ( volatile uint32_t * ) 0xe000edc0 ) )
 #define portMPU_MAIR1_REG                       ( *( ( volatile uint32_t * ) 0xe000edc4 ) )
 
-#define portMPU_RBAR_ADDRESS_MASK               ( 0xffffffe0 ) /* Must be 32-byte aligned. */
-#define portMPU_RLAR_ADDRESS_MASK               ( 0xffffffe0 ) /* Must be 32-byte aligned. */
+#define portMPU_RBAR_ADDRESS_MASK               ( 0xffffffe0 )     /* Must be 32-byte aligned. */
+#define portMPU_RLAR_ADDRESS_MASK               ( 0xffffffe0 )     /* Must be 32-byte aligned. */
 
 #define portMPU_RBAR_ACCESS_PERMISSIONS_MASK    ( 3UL << 1UL )
 
@@ -225,14 +228,21 @@ typedef void ( * portISR_t )( void );
 
 #define portMPU_RLAR_REGION_ENABLE              ( 1UL )
 
+#if ( portARMV8M_MINOR_VERSION >= 1 )
+
+/* Enable Privileged eXecute Never MPU attribute for the selected memory
+ * region. */
+    #define portMPU_RLAR_PRIVILEGED_EXECUTE_NEVER    ( 1UL << 4UL )
+#endif /* portARMV8M_MINOR_VERSION >= 1 */
+
 /* Enable privileged access to unmapped region. */
-#define portMPU_PRIV_BACKGROUND_ENABLE_BIT      ( 1UL << 2UL )
+#define portMPU_PRIV_BACKGROUND_ENABLE_BIT    ( 1UL << 2UL )
 
 /* Enable MPU. */
-#define portMPU_ENABLE_BIT                      ( 1UL << 0UL )
+#define portMPU_ENABLE_BIT                    ( 1UL << 0UL )
 
 /* Expected value of the portMPU_TYPE register. */
-#define portEXPECTED_MPU_TYPE_VALUE             ( configTOTAL_MPU_REGIONS << 8UL )
+#define portEXPECTED_MPU_TYPE_VALUE           ( configTOTAL_MPU_REGIONS << 8UL )
 
 /* Extract first address of the MPU region as encoded in the
  * RBAR (Region Base Address Register) value. */
@@ -367,6 +377,20 @@ typedef void ( * portISR_t )( void );
  * any secure calls.
  */
 #define portNO_SECURE_CONTEXT    0
+
+/**
+ * @brief Constants required to check and configure PACBTI security feature implementation.
+ */
+#if ( ( configENABLE_PAC == 1 ) || ( configENABLE_BTI == 1 ) )
+
+    #define portID_ISAR5_REG       ( *( ( volatile uint32_t * ) 0xe000ed74 ) )
+
+    #define portCONTROL_UPAC_EN    ( 1UL << 7UL )
+    #define portCONTROL_PAC_EN     ( 1UL << 6UL )
+    #define portCONTROL_UBTI_EN    ( 1UL << 5UL )
+    #define portCONTROL_BTI_EN     ( 1UL << 4UL )
+
+#endif /* configENABLE_PAC == 1 || configENABLE_BTI == 1 */
 /*-----------------------------------------------------------*/
 
 /**
@@ -375,7 +399,7 @@ typedef void ( * portISR_t )( void );
  */
 static void prvTaskExitError( void );
 
-#if ( configENABLE_MPU == 1 )
+#if ( ( configENABLE_MPU == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) )
 
 /**
  * @brief Extract MPU region's access permissions from the Region Base Address
@@ -386,7 +410,7 @@ static void prvTaskExitError( void );
  * @return uint32_t Access permissions.
  */
     static uint32_t prvGetRegionAccessPermissions( uint32_t ulRBARValue ) PRIVILEGED_FUNCTION;
-#endif /* configENABLE_MPU */
+#endif /* configENABLE_MPU == 1 && configUSE_MPU_WRAPPERS_V1 == 0 */
 
 #if ( configENABLE_MPU == 1 )
 
@@ -403,6 +427,26 @@ static void prvTaskExitError( void );
  */
     static void prvSetupFPU( void ) PRIVILEGED_FUNCTION;
 #endif /* configENABLE_FPU */
+
+#if ( ( configENABLE_PAC == 1 ) || ( configENABLE_BTI == 1 ) )
+
+/**
+ * @brief Configures PACBTI features.
+ *
+ * This function configures the Pointer Authentication, and Branch Target
+ * Identification security features as per the user configuration. It returns
+ * the value of the special purpose CONTROL register accordingly, and optionally
+ * updates the CONTROL register value. Currently, only Cortex-M85 (ARMv8.1-M
+ * architecture based) target supports PACBTI security feature.
+ *
+ * @param xWriteControlRegister Used to control whether the special purpose
+ * CONTROL register should be updated or not.
+ *
+ * @return CONTROL register value according to the configured PACBTI option.
+ */
+    static uint32_t prvConfigurePACBTI( BaseType_t xWriteControlRegister );
+
+#endif /* configENABLE_PAC == 1 || configENABLE_BTI == 1 */
 
 /**
  * @brief Setup the timer to generate the tick interrupts.
@@ -828,7 +872,7 @@ static void prvTaskExitError( void )
 }
 /*-----------------------------------------------------------*/
 
-#if ( configENABLE_MPU == 1 )
+#if ( ( configENABLE_MPU == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) )
 
     static uint32_t prvGetRegionAccessPermissions( uint32_t ulRBARValue ) /* PRIVILEGED_FUNCTION */
     {
@@ -847,7 +891,7 @@ static void prvTaskExitError( void )
         return ulAccessPermissions;
     }
 
-#endif /* configENABLE_MPU */
+#endif /* configENABLE_MPU == 1 && configUSE_MPU_WRAPPERS_V1 == 0 */
 /*-----------------------------------------------------------*/
 
 #if ( configENABLE_MPU == 1 )
@@ -1169,6 +1213,7 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
         uint32_t ulStackFrameSize, ulSystemCallLocation, i;
 
         #if defined( __ARMCC_VERSION )
+
             /* Declaration when these variable are defined in code instead of being
              * exported from linker scripts. */
             extern uint32_t * __syscalls_flash_start__;
@@ -1239,6 +1284,7 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
              * point (i.e. the caller of the MPU_<API>). We need to restore it
              * when we exit from the system call. */
             pxMpuSettings->xSystemCallStackInfo.ulLinkRegisterAtSystemCallEntry = pulTaskStack[ portOFFSET_TO_LR ];
+
             /* Store the value of the PSPLIM register before the SVC was raised.
              * We need to restore it when we exit from the system call. */
             #if ( portUSE_PSPLIM_REGISTER == 1 )
@@ -1257,6 +1303,7 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
 
             /* Start executing the system call upon returning from this handler. */
             pulSystemCallStack[ portOFFSET_TO_PC ] = uxSystemCallImplementations[ ucSystemCallNumber ];
+
             /* Raise a request to exit from the system call upon finishing the
              * system call. */
             pulSystemCallStack[ portOFFSET_TO_LR ] = ( uint32_t ) vRequestSystemCallExit;
@@ -1316,6 +1363,7 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
         uint32_t ulStackFrameSize, ulSystemCallLocation, i;
 
         #if defined( __ARMCC_VERSION )
+
             /* Declaration when these variable are defined in code instead of being
              * exported from linker scripts. */
             extern uint32_t * __privileged_functions_start__;
@@ -1451,6 +1499,7 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
                                          xMPU_SETTINGS * xMPUSettings ) /* PRIVILEGED_FUNCTION */
     {
         uint32_t ulIndex = 0;
+        uint32_t ulControl = 0x0;
 
         xMPUSettings->ulContext[ ulIndex ] = 0x04040404; /* r4. */
         ulIndex++;
@@ -1497,16 +1546,24 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
         xMPUSettings->ulContext[ ulIndex ] = ( uint32_t ) pxEndOfStack;         /* PSPLIM. */
         ulIndex++;
 
+        #if ( ( configENABLE_PAC == 1 ) || ( configENABLE_BTI == 1 ) )
+        {
+            /* Check PACBTI security feature configuration before pushing the
+             * CONTROL register's value on task's TCB. */
+            ulControl = prvConfigurePACBTI( pdFALSE );
+        }
+        #endif /* configENABLE_PAC == 1 || configENABLE_BTI == 1 */
+
         if( xRunPrivileged == pdTRUE )
         {
             xMPUSettings->ulTaskFlags |= portTASK_IS_PRIVILEGED_FLAG;
-            xMPUSettings->ulContext[ ulIndex ] = ( uint32_t ) portINITIAL_CONTROL_PRIVILEGED; /* CONTROL. */
+            xMPUSettings->ulContext[ ulIndex ] = ( ulControl | ( uint32_t ) portINITIAL_CONTROL_PRIVILEGED ); /* CONTROL. */
             ulIndex++;
         }
         else
         {
             xMPUSettings->ulTaskFlags &= ( ~portTASK_IS_PRIVILEGED_FLAG );
-            xMPUSettings->ulContext[ ulIndex ] = ( uint32_t ) portINITIAL_CONTROL_UNPRIVILEGED; /* CONTROL. */
+            xMPUSettings->ulContext[ ulIndex ] = ( ulControl | ( uint32_t ) portINITIAL_CONTROL_UNPRIVILEGED ); /* CONTROL. */
             ulIndex++;
         }
 
@@ -1529,6 +1586,20 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
             xMPUSettings->xSystemCallStackInfo.pulTaskStack = NULL;
         }
         #endif /* configUSE_MPU_WRAPPERS_V1 == 0 */
+
+        #if ( configENABLE_PAC == 1 )
+        {
+            uint32_t ulTaskPacKey[ 4 ], i;
+
+            vApplicationGenerateTaskRandomPacKey( &( ulTaskPacKey[ 0 ] ) );
+
+            for( i = 0; i < 4; i++ )
+            {
+                xMPUSettings->ulContext[ ulIndex ] = ulTaskPacKey[ i ];
+                ulIndex++;
+            }
+        }
+        #endif /* configENABLE_PAC */
 
         return &( xMPUSettings->ulContext[ ulIndex ] );
     }
@@ -1612,6 +1683,20 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
         }
         #endif /* portPRELOAD_REGISTERS */
 
+        #if ( configENABLE_PAC == 1 )
+        {
+            uint32_t ulTaskPacKey[ 4 ], i;
+
+            vApplicationGenerateTaskRandomPacKey( &( ulTaskPacKey[ 0 ] ) );
+
+            for( i = 0; i < 4; i++ )
+            {
+                pxTopOfStack--;
+                *pxTopOfStack = ulTaskPacKey[ i ];
+            }
+        }
+        #endif /* configENABLE_PAC */
+
         return pxTopOfStack;
     }
 
@@ -1644,7 +1729,7 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
          *
          * Assertion failures here indicate incorrect installation of the
          * FreeRTOS handlers. For help installing the FreeRTOS handlers, see
-         * https://www.FreeRTOS.org/FAQHelp.html.
+         * https://www.freertos.org/Why-FreeRTOS/FAQs.
          *
          * Systems with a configurable address for the interrupt vector table
          * can also encounter assertion failures or even system faults here if
@@ -1733,6 +1818,14 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
     portNVIC_SHPR3_REG |= portNVIC_PENDSV_PRI;
     portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
     portNVIC_SHPR2_REG = 0;
+
+    #if ( ( configENABLE_PAC == 1 ) || ( configENABLE_BTI == 1 ) )
+    {
+        /* Set the CONTROL register value based on PACBTI security feature
+         * configuration before starting the first task. */
+        ( void ) prvConfigurePACBTI( pdTRUE );
+    }
+    #endif /* configENABLE_PAC == 1 || configENABLE_BTI == 1 */
 
     #if ( configENABLE_MPU == 1 )
     {
@@ -1880,6 +1973,16 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
                 xMPUSettings->xRegionsSettings[ ulRegionNumber ].ulRLAR = ( ulRegionEndAddress ) |
                                                                           ( portMPU_RLAR_REGION_ENABLE );
 
+                /* PXN. */
+                #if ( portARMV8M_MINOR_VERSION >= 1 )
+                {
+                    if( ( xRegions[ lIndex ].ulParameters & tskMPU_REGION_PRIVILEGED_EXECUTE_NEVER ) != 0 )
+                    {
+                        xMPUSettings->xRegionsSettings[ ulRegionNumber ].ulRLAR |= ( portMPU_RLAR_PRIVILEGED_EXECUTE_NEVER );
+                    }
+                }
+                #endif /* portARMV8M_MINOR_VERSION >= 1 */
+
                 /* Normal memory/ Device memory. */
                 if( ( xRegions[ lIndex ].ulParameters & tskMPU_REGION_DEVICE_MEMORY ) != 0 )
                 {
@@ -1920,9 +2023,9 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
         if( xSchedulerRunning == pdFALSE )
         {
             /* Grant access to all the kernel objects before the scheduler
-            * is started. It is necessary because there is no task running
-            * yet and therefore, we cannot use the permissions of any
-            * task. */
+             * is started. It is necessary because there is no task running
+             * yet and therefore, we cannot use the permissions of any
+             * task. */
             xAccessGranted = pdTRUE;
         }
         else if( ( xTaskMpuSettings->ulTaskFlags & portTASK_IS_PRIVILEGED_FLAG ) == portTASK_IS_PRIVILEGED_FLAG )
@@ -2025,7 +2128,7 @@ BaseType_t xPortIsInsideInterrupt( void )
              *
              * The following links provide detailed information:
              * https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html
-             * https://www.FreeRTOS.org/FAQHelp.html */
+             * https://www.freertos.org/Why-FreeRTOS/FAQs */
             configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
         }
 
@@ -2141,4 +2244,39 @@ BaseType_t xPortIsInsideInterrupt( void )
     #endif /* #if ( configENABLE_ACCESS_CONTROL_LIST == 1 ) */
 
 #endif /* #if ( ( configENABLE_MPU == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) ) */
+/*-----------------------------------------------------------*/
+
+#if ( ( configENABLE_PAC == 1 ) || ( configENABLE_BTI == 1 ) )
+
+    static uint32_t prvConfigurePACBTI( BaseType_t xWriteControlRegister )
+    {
+        uint32_t ulControl = 0x0;
+
+        /* Ensure that PACBTI is implemented. */
+        configASSERT( portID_ISAR5_REG != 0x0 );
+
+        /* Enable UsageFault exception. */
+        portSCB_SYS_HANDLER_CTRL_STATE_REG |= portSCB_USG_FAULT_ENABLE_BIT;
+
+        #if ( configENABLE_PAC == 1 )
+        {
+            ulControl |= ( portCONTROL_UPAC_EN | portCONTROL_PAC_EN );
+        }
+        #endif
+
+        #if ( configENABLE_BTI == 1 )
+        {
+            ulControl |= ( portCONTROL_UBTI_EN | portCONTROL_BTI_EN );
+        }
+        #endif
+
+        if( xWriteControlRegister == pdTRUE )
+        {
+            __asm volatile ( "msr control, %0" : : "r" ( ulControl ) );
+        }
+
+        return ulControl;
+    }
+
+#endif /* configENABLE_PAC == 1 || configENABLE_BTI == 1 */
 /*-----------------------------------------------------------*/

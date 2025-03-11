@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -472,7 +472,8 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             "     ldr r3, =%1                \n"
             "     cmp r2, r3                 \n"
             "     beq system_call_exit       \n"
-            "     b vPortSVCHandler_C        \n"
+            "     ldr r3, =vPortSVCHandler_C \n"
+            "     bx r3                      \n"
             "                                \n"
             " system_call_enter:             \n"
             "    push {lr}                   \n"
@@ -508,11 +509,13 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             "                                \n"
             " stacking_used_psp:             \n"
             "    mrs r0, psp                 \n"
-            "    b vPortSVCHandler_C         \n"
+            "    ldr r3, =vPortSVCHandler_C  \n"
+            "    bx r3                       \n"
             "                                \n"
             " stacking_used_msp:             \n"
             "    mrs r0, msp                 \n"
-            "    b vPortSVCHandler_C         \n"
+            "    ldr r3, =vPortSVCHandler_C  \n"
+            "    bx r3                       \n"
             "                                \n"
             " .align 4                       \n"
         );

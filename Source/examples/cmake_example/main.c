@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.1.0
+ * FreeRTOS Kernel V11.2.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -30,7 +30,7 @@
  * This is a simple main that will start the FreeRTOS-Kernel and run a periodic task
  * that only delays if compiled with the template port, this project will do nothing.
  * For more information on getting started please look here:
- * https://freertos.org/FreeRTOS-quick-start-guide.html
+ * https://www.freertos.org/Documentation/01-FreeRTOS-quick-start/01-Beginners-guide/02-Quick-start-guide
  */
 
 /* FreeRTOS includes. */
@@ -45,7 +45,7 @@
 
 /*-----------------------------------------------------------*/
 
-static void exampleTask( void * parameters );
+static void exampleTask( void * parameters ) __attribute__( ( noreturn ) );
 
 /*-----------------------------------------------------------*/
 
@@ -62,7 +62,7 @@ static void exampleTask( void * parameters )
 }
 /*-----------------------------------------------------------*/
 
-void main( void )
+int main( void )
 {
     static StaticTask_t exampleTaskTCB;
     static StackType_t exampleTaskStack[ configMINIMAL_STACK_SIZE ];
@@ -84,6 +84,8 @@ void main( void )
     {
         /* Should not reach here. */
     }
+
+    return 0;
 }
 /*-----------------------------------------------------------*/
 
