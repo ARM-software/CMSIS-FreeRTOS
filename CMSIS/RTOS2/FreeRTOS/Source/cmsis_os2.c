@@ -329,6 +329,8 @@ int32_t osKernelLock (void) {
   else {
     switch (xTaskGetSchedulerState()) {
       case taskSCHEDULER_SUSPENDED:
+        /* Suspend scheduler or increment nesting level */
+        vTaskSuspendAll();
         lock = 1;
         break;
 
@@ -361,12 +363,8 @@ int32_t osKernelUnlock (void) {
     switch (xTaskGetSchedulerState()) {
       case taskSCHEDULER_SUSPENDED:
         lock = 1;
-
-        if (xTaskResumeAll() != pdTRUE) {
-          if (xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED) {
-            lock = (int32_t)osError;
-          }
-        }
+        /* Resume scheduler or decrement nesting level */
+        (void)xTaskResumeAll();
         break;
 
       case taskSCHEDULER_RUNNING:
@@ -396,9 +394,8 @@ int32_t osKernelRestoreLock (int32_t lock) {
     switch (xTaskGetSchedulerState()) {
       case taskSCHEDULER_SUSPENDED:
         if (lock == 0) {
-          if (xTaskResumeAll() != pdTRUE) {
-            lock = (int32_t)osError;
-          }
+          /* Resume scheduler or decrement nesting level */
+          (void)xTaskResumeAll();
         }
         else {
           if (lock != 1) {
@@ -409,6 +406,7 @@ int32_t osKernelRestoreLock (int32_t lock) {
 
       case taskSCHEDULER_RUNNING:
         if (lock == 1) {
+          /* Suspend scheduler or increment nesting level */
           vTaskSuspendAll();
         }
         else {
