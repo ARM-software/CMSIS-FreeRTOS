@@ -57,8 +57,8 @@
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM23/fvp_config.txt",
       "debugFrom": "Reset_Handler",
       "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+        "${workspaceFolder}\\out\\TZ_NonSecure\\CM23\\Debug\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\CM23\\Debug\\TZ_Secure.axf"
       ]
     },
     {
@@ -78,8 +78,8 @@
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM33/fvp_config.txt",
       "debugFrom": "Reset_Handler",
       "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+        "${workspaceFolder}\\out\\TZ_NonSecure\\CM33\\Debug\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\CM33\\Debug\\TZ_Secure.axf"
       ]
     },
     {
@@ -99,8 +99,8 @@
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM55/fvp_config.txt",
       "debugFrom": "Reset_Handler",
       "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+        "${workspaceFolder}\\out\\TZ_NonSecure\\CM55\\Debug\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\CM55\\Debug\\TZ_Secure.axf"
       ]
     },
     {
@@ -120,8 +120,8 @@
       "fvpParameters": "\"${workspaceFolder}\"/Target/CM85/fvp_config.txt",
       "debugFrom": "Reset_Handler",
       "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\TZ_Secure.axf"
+        "${workspaceFolder}\\out\\TZ_NonSecure\\CM85\\Debug\\TZ_NonSecure.axf",
+        "${workspaceFolder}\\out\\TZ_Secure\\CM85\\Debug\\TZ_Secure.axf"
       ]
     },
     {
