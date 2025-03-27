@@ -107,9 +107,6 @@ solution:
       optimize: none
       debug: on
 
-  output-dirs:
-    outdir: ./out/$Project$/
-
   projects:
     - project: ./App/Hello/Hello.cproject.yml
       for-context:
