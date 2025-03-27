@@ -11,7 +11,7 @@ project:
   components:
     - component: CMSIS:CORE
     - component: CMSIS:OS Tick:SysTick
-    - component: CMSIS:RTOS2:FreeRTOS
+    - component: CMSIS:RTOS2:FreeRTOS&Cortex-M
     - component: CMSIS-View:Event Recorder&Semihosting
     
     - component: RTOS&FreeRTOS:Core&Cortex-M Non-Secure
@@ -32,7 +32,7 @@ project:
     - group: Secure Library
       files:
         - file: ../Secure/library_nsc.h
-        - file: ../../../out/TZ_Secure/TZ_Secure_CMSE_Lib.o
+        - file: $cmse-lib(TZ_Secure)$
 
   layers:
     - layer: $Target-Layer$

@@ -1,7 +1,28 @@
 solution:
-  created-for: CMSIS-Toolbox@2.0.0
-
+  created-for: CMSIS-Toolbox@2.8.0
   cdefault:
+
+  select-compiler:
+    - compiler: AC6
+    - compiler: GCC
+    - compiler: CLANG
+    - compiler: IAR
+
+  misc:
+    - for-compiler: GCC
+      Link:
+        - --specs=rdimon.specs
+
+    - for-compiler: CLANG
+      Link:
+        - -lcrt0-semihost
+        - -lsemihost
+
+    - for-compiler: IAR
+      C-CPP:
+        - -e
+      Link:
+        - --semihosting
 
   packs:
     - pack: ARM::CMSIS@>=6.0.0
