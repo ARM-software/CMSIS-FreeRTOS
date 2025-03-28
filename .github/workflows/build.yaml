@@ -23,7 +23,7 @@ jobs:
 
       - uses: Open-CMSIS-Pack/gen-pack-action@main
         with:
-          doxygen-version: 1.13.2                                  # default
+          doxygen-version: 1.13.2                                 # default
           packchk-version: 1.3.95                                 # default
           gen-doc-script: ./Documentation/Doxygen/gen_doc.sh      # skipped by default
           doc-path: ./Documentation/html                          # skipped by default
