@@ -6,6 +6,10 @@ ignoreerrors=
     mag_seld.svg
     ../tab_a.png
     ../tab_ad.png
+    minus.svg
+    plus.svg
+    minusd.svg
+    plusd.svg
 
 [filtering]
 ignorewarnings=

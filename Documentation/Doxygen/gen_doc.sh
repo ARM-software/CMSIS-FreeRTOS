@@ -72,9 +72,9 @@ fi
 
 pushd "${DIRNAME}" > /dev/null
 
-echo "Generating documentation ..."
+echo_log "Generating documentation ..."
 
-projectName=$(grep -E "PROJECT_NAME\s+=" freertos.dxy.in | sed -r -e 's/[^"]*"([^"]+)".*/\1/')
+projectName=$(grep -E "PROJECT_NAME\s+=" freertos.dxy.in | sed -r -e 's/^PROJECT_NAME\s*=\s*"?([^"]*)"?/\1/')
 projectNumberFull="${VERSION_FULL}"
 projectNumber="${projectNumberFull%+*}"
 datetime=$(date -u +'%a %b %e %Y %H:%M:%S')
@@ -84,23 +84,24 @@ sed -e "s/{projectNumber}/${projectNumber}/" freertos.dxy.in > freertos.dxy
 
 git_changelog -f html -p "v" > src/history.txt
 
-echo "\"${UTILITY_DOXYGEN}\" freertos.dxy"
+echo_log "\"${UTILITY_DOXYGEN}\" freertos.dxy"
 "${UTILITY_DOXYGEN}" freertos.dxy
 
 mkdir -p "${DIRNAME}/${GENDIR}/search/"
-cp -f "${DIRNAME}/templates/search.css" "${DIRNAME}/${GENDIR}/search/"
-cp -f "${DIRNAME}/templates/navtree.js" "${DIRNAME}/${GENDIR}/"
+cp -f "${DIRNAME}/style_template/search.css" "${DIRNAME}/${GENDIR}/search/"
+cp -f "${DIRNAME}/style_template/search.js" "${DIRNAME}/${GENDIR}/search/"
+cp -f "${DIRNAME}/style_template/navtree.js" "${DIRNAME}/${GENDIR}"
+cp -f "${DIRNAME}/style_template/resize.js" "${DIRNAME}/${GENDIR}"
 
-sed -e "s/{datetime}/${datetime}/" "${DIRNAME}/templates/footer.js.in" \
+sed -e "s/{datetime}/${datetime}/" "${DIRNAME}/style_template/footer.js.in" \
   | sed -e "s/{year}/${year}/" \
   | sed -e "s/{projectName}/${projectName}/" \
   | sed -e "s/{projectNumber}/${projectNumber}/" \
   | sed -e "s/{projectNumberFull}/${projectNumberFull}/" \
   > "${DIRNAME}/${GENDIR}/footer.js"
 
-popd  > /dev/null
+popd > /dev/null || exit 1
 
-[[ ${RUN_LINKCHECKER} != 0 ]] && check_links "${DIRNAME}/../html/index.html" "${DIRNAME}"
-
+[[ ${RUN_LINKCHECKER} != 0 ]] && check_links "${DIRNAME}/${GENDIR}/index.html" "${DIRNAME}"
 
 exit 0
