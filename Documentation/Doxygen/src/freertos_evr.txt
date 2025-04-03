@@ -1,3 +1,13 @@
+// Group creation for Reference
+/**
+\addtogroup freertos_specific CMSIS-FreeRTOS Specifics
+\brief This section describes CMSIS-FreeRTOS specifics.
+\details
+CMSIS-FreeRTOS interfaces to the
+<a href="https://arm-software.github.io/CMSIS-View/latest/evr.html" target="_blank"><b>Event Recorder</b></a>
+to provide event information which helps you to understand and analyze the operation. Refer to \ref freertos_evr for more
+information.
+*/
 
 /**
 \defgroup freertos_setup Event Recorder Setup
@@ -9,7 +19,7 @@ CMSIS-FreeRTOS interfaces to the
 to provide event information which helps you to understand and analyze the operation.
 
 To use the Event Recorder together with CMSIS-FreeRTOS, it is required to create an image that generates event information.
-The steps are described under \ref cre_freertos_proj.
+The steps are described under \ref page_create_project.
 @{
 */
 
@@ -20,7 +30,7 @@ The function \b EvrFreeRTOSSetup initializes Event Recorder and configures recor
 
 The argument \a reset specifies if reset of previously applied configuration is performed in case if EvrFreeRTOSSetup was already called.
 
-Behavior of this function execution is defined with Event Recorder Configuration (\ref cmsis_freertos_evr_config). Calling this function has
+Behavior of this function execution is defined with Event Recorder Configuration (\ref configure_evr). Calling this function has
 no effect when Event Recorder component is not selected.
 
 \note \b EvrFreeRTOSSetup is called by function \b osKernelInitialize when CMSIS-RTOS2 API is in use and should not be called explicitly.
@@ -42,7 +52,7 @@ to provide event information which helps you to understand and analyze the opera
 To use the Event Recorder together with CMSIS-FreeRTOS, it is required to create an image that generates event information.
 The steps are:
   - <a href="https://arm-software.github.io/CMSIS-View/latest/er_use.html#Add_Event_Recorder" target="_blank"><b>Add Event Recorder</b></a>: Select in the RTE management dialog the software component <b>Compiler:Event Recorder</b>.
-  - \ref cmsis_freertos_evr_config : Use configEVR_ definitions in FreeRTOSConfig.h to enable Event Recorder initialization and setup event filter.
+  - \ref configure_evr : Use configEVR_ definitions in FreeRTOSConfig.h to enable Event Recorder initialization and setup event filter.
   - Build the application code and download it to the debug hardware.
   
 Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder</b>.
