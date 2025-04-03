@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['event_20flags_0',['Event Flags',['../functionOverview.html#autotoc_md7',1,'']]],
+  ['event_20flags_0',['Event Flags',['../page_function_overview.html#autotoc_md19',1,'']]],
   ['event_20functions_1',['Event functions',['../group__freertos__evr.html',1,'']]],
   ['event_20groups_20functions_2',['Event Groups Functions',['../group__freertos__evr__event__groups.html',1,'']]],
-  ['event_20recorder_3',['Configure Event Recorder',['../cre_freertos_proj.html#cmsis_freertos_evr_config',1,'']]],
+  ['event_20recorder_3',['Configure Event Recorder',['../page_create_project.html#configure_evr',1,'']]],
   ['event_20recorder_20setup_4',['Event Recorder Setup',['../group__freertos__setup.html',1,'']]],
-  ['event_20recorder_20visibility_5',['Event Recorder Visibility',['../cre_freertos_proj.html#native_freertos_er',1,'Add Event Recorder Visibility'],['../cre_freertos_proj.html#cmsis_freertos_er',1,'Add Event Recorder Visibility']]],
+  ['event_20recorder_20visibility_5',['Event Recorder Visibility',['../page_create_project.html#native_freertos_add_evr',1,'Add Event Recorder Visibility'],['../page_create_project.html#cmsis_freertos_add_evr',1,'Add Event Recorder Visibility']]],
   ['evrfreertoseventgroups_5feventgroupclearbits_6',['EvrFreeRTOSEventGroups_EventGroupClearBits',['../group__freertos__evr__event__groups.html#ga7b949dc8d8167fc621fc6102808caa81',1,'freertos_evr.h']]],
   ['evrfreertoseventgroups_5feventgroupclearbitsfromisr_7',['EvrFreeRTOSEventGroups_EventGroupClearBitsFromIsr',['../group__freertos__evr__event__groups.html#ga1a8cc5bff8d6d29db8d96d790f7c1db5',1,'freertos_evr.h']]],
   ['evrfreertoseventgroups_5feventgroupcreate_8',['EvrFreeRTOSEventGroups_EventGroupCreate',['../group__freertos__evr__event__groups.html#gad8448ba4d5388e38e190b352f45a101f',1,'freertos_evr.h']]],
@@ -340,7 +340,7 @@ var searchData=
   ['evrfreertostimers_5fxtimerpendfunctioncall_5freturn_337',['EvrFreeRTOSTimers_xTimerPendFunctionCall_Return',['../group__freertos__evr__timers.html#gad08c3fa8086243434f5f937552fe9a7e',1,'freertos_evr.h']]],
   ['evrfreertostimers_5fxtimerpendfunctioncallfromisr_338',['EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR',['../group__freertos__evr__timers.html#gaee5fc763cfef769053f27d0caab2fa5d',1,'freertos_evr.h']]],
   ['evrfreertostimers_5fxtimerpendfunctioncallfromisr_5freturn_339',['EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR_Return',['../group__freertos__evr__timers.html#gad143d3e20090bdb5f392be25721e7bc2',1,'freertos_evr.h']]],
-  ['example_20projects_340',['Example projects',['../examples.html',1,'']]],
-  ['execute_20on_20virtual_20hardware_20target_341',['Execute on Virtual Hardware Target',['../examples.html#example_exec',1,'']]],
-  ['extensions_342',['Build in VS Code using Arm Keil Studio Pack extensions',['../examples.html#build_vscode',1,'']]]
+  ['example_20projects_340',['Example Projects',['../page_example_projects.html',1,'']]],
+  ['execute_20on_20virtual_20hardware_20target_341',['Execute on Virtual Hardware Target',['../page_example_projects.html#autotoc_md9',1,'']]],
+  ['extensions_342',['Build in VS Code using Arm Keil Studio Pack extensions',['../page_example_projects.html#autotoc_md7',1,'']]]
 ];

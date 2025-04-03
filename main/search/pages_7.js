@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['overview_0',['Function Overview',['../functionOverview.html',1,'']]]
+  ['limitations_0',['Technical Data and Limitations',['../page_technical_data.html',1,'']]]
 ];

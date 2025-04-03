@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['wait_20functions_0',['Generic Wait Functions',['../functionOverview.html#autotoc_md5',1,'']]],
-  ['world_1',['Hello World',['../examples.html#example_hello',1,'']]]
+  ['wait_20functions_0',['Generic Wait Functions',['../page_function_overview.html#autotoc_md17',1,'']]],
+  ['world_1',['Hello World',['../page_example_projects.html#example_hello_world',1,'']]]
 ];

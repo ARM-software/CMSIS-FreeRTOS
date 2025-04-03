@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_20and_20limitations_0',['Technical data and limitations',['../tech_data.html',1,'']]]
+  ['data_20and_20limitations_0',['Technical Data and Limitations',['../page_technical_data.html',1,'']]]
 ];

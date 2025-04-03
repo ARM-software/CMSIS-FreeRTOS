@@ -25,55 +25,52 @@
 var NAVTREE =
 [
   [ "CMSIS-FreeRTOS", "index.html", [
-    [ "Introduction", "index.html#Introduction", [
-      [ "License", "index.html#autotoc_md0", null ],
-      [ "CMSIS-FreeRTOS Pack", "index.html#autotoc_md1", null ]
-    ] ],
+    [ "Introduction", "index.html", "index" ],
     [ "Revision History", "rev_hist.html", null ],
-    [ "Create a FreeRTOS project", "cre_freertos_proj.html", [
-      [ "Create a native FreeRTOS project", "cre_freertos_proj.html#native_freertos", [
-        [ "Configure FreeRTOS", "cre_freertos_proj.html#native_freertos_config", null ],
-        [ "Interrupt priority configuration", "cre_freertos_proj.html#native_freertos_config_prio", null ],
-        [ "Add Event Recorder Visibility", "cre_freertos_proj.html#native_freertos_er", null ]
+    [ "Create a FreeRTOS Project", "page_create_project.html", [
+      [ "Create a Native FreeRTOS Project", "page_create_project.html#create_native_project", [
+        [ "Configure FreeRTOS", "page_create_project.html#configure_native_freertos", null ],
+        [ "Interrupt Priority Configuration", "page_create_project.html#interrupt_priority_config", null ],
+        [ "Add Event Recorder Visibility", "page_create_project.html#native_freertos_add_evr", null ]
       ] ],
-      [ "Create a CMSIS-FreeRTOS project", "cre_freertos_proj.html#cmsis_freertos", [
-        [ "Configure CMSIS-FreeRTOS", "cre_freertos_proj.html#cmsis_freertos_config", null ],
-        [ "Add Event Recorder Visibility", "cre_freertos_proj.html#cmsis_freertos_er", null ]
+      [ "Create a CMSIS-FreeRTOS Project", "page_create_project.html#create_cmsis_project", [
+        [ "Configure CMSIS-FreeRTOS", "page_create_project.html#configure_cmsis_freertos", null ],
+        [ "Add Event Recorder Visibility", "page_create_project.html#cmsis_freertos_add_evr", null ]
       ] ],
-      [ "Create a mixed-interface project", "cre_freertos_proj.html#freertos_interfaces", [
-        [ "Start the kernel using CMSIS-RTOS2 API", "cre_freertos_proj.html#freertos_interface_rtos2", null ],
-        [ "Start the kernel using native API", "cre_freertos_proj.html#freertos_interface_native", null ]
+      [ "Create a Mixed-Interface Project", "page_create_project.html#create_mixed_project", [
+        [ "Start the Kernel Using CMSIS-RTOS2 API", "page_create_project.html#autotoc_md2", null ],
+        [ "Start the Kernel Using Native API", "page_create_project.html#autotoc_md3", null ]
       ] ],
-      [ "Configure Event Recorder", "cre_freertos_proj.html#cmsis_freertos_evr_config", null ],
-      [ "Debug a CMSIS-FreeRTOS project", "cre_freertos_proj.html#dbg_cmsisfreertos", null ]
+      [ "Configure Event Recorder", "page_create_project.html#configure_evr", null ],
+      [ "Debug a CMSIS-FreeRTOS Project", "page_create_project.html#autotoc_md4", null ]
     ] ],
-    [ "Example projects", "examples.html", [
-      [ "Build and Run", "examples.html#build_run", [
-        [ "Targets", "examples.html#build_target_types", null ],
-        [ "Build in VS Code using Arm Keil Studio Pack extensions", "examples.html#build_vscode", null ],
-        [ "Build via command line", "examples.html#build_cmdline", null ],
-        [ "Execute on Virtual Hardware Target", "examples.html#example_exec", null ]
+    [ "Example Projects", "page_example_projects.html", [
+      [ "Build and Run", "page_example_projects.html#autotoc_md5", [
+        [ "Targets", "page_example_projects.html#autotoc_md6", null ],
+        [ "Build in VS Code using Arm Keil Studio Pack extensions", "page_example_projects.html#autotoc_md7", null ],
+        [ "Build via command line", "page_example_projects.html#autotoc_md8", null ],
+        [ "Execute on Virtual Hardware Target", "page_example_projects.html#autotoc_md9", null ]
       ] ],
-      [ "Hello World", "examples.html#example_hello", null ],
-      [ "TrustZone", "examples.html#example_trustzone", null ]
+      [ "Hello World", "page_example_projects.html#example_hello_world", null ],
+      [ "TrustZone", "page_example_projects.html#example_trustzone", null ]
     ] ],
-    [ "Technical data and limitations", "tech_data.html", [
-      [ "Limitations", "tech_data.html#td_limitations", null ],
-      [ "Validation suite results", "tech_data.html#td_validation", null ],
-      [ "Troubleshooting", "tech_data.html#td_troubleshooting", null ]
+    [ "Technical Data and Limitations", "page_technical_data.html", [
+      [ "Limitations", "page_technical_data.html#autotoc_md10", null ],
+      [ "Validation Suite Results", "page_technical_data.html#autotoc_md11", null ],
+      [ "Troubleshooting", "page_technical_data.html#autotoc_md12", null ]
     ] ],
-    [ "Function Overview", "functionOverview.html", [
-      [ "CMSIS-RTOS2 API", "functionOverview.html#rtos_api2", [
-        [ "Kernel Information and Control", "functionOverview.html#autotoc_md2", null ],
-        [ "Thread Management", "functionOverview.html#autotoc_md3", null ],
-        [ "Thread Flags", "functionOverview.html#autotoc_md4", null ],
-        [ "Generic Wait Functions", "functionOverview.html#autotoc_md5", null ],
-        [ "Timer Management", "functionOverview.html#autotoc_md6", null ],
-        [ "Event Flags", "functionOverview.html#autotoc_md7", null ],
-        [ "Mutex Management", "functionOverview.html#autotoc_md8", null ],
-        [ "Semaphores", "functionOverview.html#autotoc_md9", null ],
-        [ "Memory Pool", "functionOverview.html#autotoc_md10", null ],
-        [ "Message Queue", "functionOverview.html#autotoc_md11", null ]
+    [ "Function Overview", "page_function_overview.html", [
+      [ "CMSIS-RTOS2 API", "page_function_overview.html#autotoc_md13", [
+        [ "Kernel Information and Control", "page_function_overview.html#autotoc_md14", null ],
+        [ "Thread Management", "page_function_overview.html#autotoc_md15", null ],
+        [ "Thread Flags", "page_function_overview.html#autotoc_md16", null ],
+        [ "Generic Wait Functions", "page_function_overview.html#autotoc_md17", null ],
+        [ "Timer Management", "page_function_overview.html#autotoc_md18", null ],
+        [ "Event Flags", "page_function_overview.html#autotoc_md19", null ],
+        [ "Mutex Management", "page_function_overview.html#autotoc_md20", null ],
+        [ "Semaphores", "page_function_overview.html#autotoc_md21", null ],
+        [ "Memory Pool", "page_function_overview.html#autotoc_md22", null ],
+        [ "Message Queue", "page_function_overview.html#autotoc_md23", null ]
       ] ]
     ] ],
     [ "API Reference", "topics.html", "topics" ]
@@ -82,8 +79,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"cre_freertos_proj.html",
-"group__freertos__evr__tasks.html#gaabd51c00b4f2234f837638d6a9f20064"
+"group__freertos__evr.html",
+"group__freertos__evr__tasks.html#gad1e16ab3c923226d42766f4f6438e1bd"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

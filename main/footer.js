@@ -1,7 +1,7 @@
 function writeHeader() {
-    document.write('Version 11.2.0-dev3');
+    document.write('Version 11.2.0-dev4');
 };
 
 function writeFooter()  {
-    document.write('Generated on Thu Mar 27 2025 13:04:01 for PROJECT_NAME           = CMSIS-FreeRTOS 11.2.0-dev3+gbb1d124. Copyright &copy; 2025 Arm Limited (or its affiliates). All rights reserved.');
+    document.write('Generated on Thu Apr  3 2025 09:46:59 for CMSIS-FreeRTOS 11.2.0-dev4+gce5056d. Copyright &copy; 2025 Arm Limited (or its affiliates). All rights reserved.');
 };
