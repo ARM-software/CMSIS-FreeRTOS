@@ -1295,7 +1295,7 @@
           #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
         </RTE_Components_h>
         <files>
-          <file category="doc"    name="Documentation/html/cre_freertos_proj.html#cmsis_freertos_config"/>
+          <file category="doc"    name="Documentation/html/page_create_project.html#configure_cmsis_freertos"/>
           <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="10.6.0"/>
         </files>
       </component>
@@ -1306,7 +1306,7 @@
           #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
         </RTE_Components_h>
         <files>
-          <file category="doc"    name="Documentation/html/cre_freertos_proj.html#native_freertos_config"/>
+          <file category="doc"    name="Documentation/html/page_create_project.html#configure_native_freertos"/>
           <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.2.0"/>
         </files>
       </component>
