@@ -1296,7 +1296,7 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="Documentation/html/page_create_project.html#configure_cmsis_freertos"/>
-          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="10.6.0"/>
+          <file category="header" attr="config" name="CMSIS/RTOS2/FreeRTOS/Config/FreeRTOSConfig.h" version="10.7.0"/>
         </files>
       </component>
 
