@@ -320,10 +320,11 @@
 //------------- <<< end of configuration section >>> ---------------------------
 
 /* Define to trap errors during development */
-#define configASSERT(x)                           if((x) == 0) {              \
-                                                    taskDISABLE_INTERRUPTS(); \
-                                                    for(;;) { ; }             \
-                                                  }
+#define configASSERT(x)                           do {                \
+                                                    if ((x) == 0) {   \
+                                                      __BKPT(0);      \
+                                                    }                 \
+                                                  } while(0)
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
 #define configCPU_CLOCK_HZ                        (SystemCoreClock)
