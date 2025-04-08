@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.6.0
+ * $Revision:   V10.7.0
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -65,8 +65,8 @@
 
 //  <o>Timer task stack depth [words] <0-65535>
 //  <i> Stack for timer task in words.
-//  <i> Default: 80
-#define configTIMER_TASK_STACK_DEPTH              80
+//  <i> Default: 128
+#define configTIMER_TASK_STACK_DEPTH              128
 
 //  <o>Timer task priority <0-56>
 //  <i> Timer task priority.
@@ -318,6 +318,13 @@
 // </h>
 
 //------------- <<< end of configuration section >>> ---------------------------
+
+/* Define to trap errors during development */
+#define configASSERT(x)                           do {                \
+                                                    if ((x) == 0) {   \
+                                                      __BKPT(0);      \
+                                                    }                 \
+                                                  } while(0)
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
 #define configCPU_CLOCK_HZ                        (SystemCoreClock)
