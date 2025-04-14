@@ -1340,7 +1340,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_1.c"/>
-          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
+          <file category="doc"    name="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management"/>
         </files>
       </component>
 
@@ -1351,7 +1351,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_2.c"/>
-          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
+          <file category="doc"    name="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management"/>
         </files>
       </component>
 
@@ -1362,7 +1362,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_3.c"/>
-          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
+          <file category="doc"    name="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management"/>
         </files>
       </component>
 
@@ -1373,7 +1373,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_4.c"/>
-          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
+          <file category="doc"    name="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management"/>
         </files>
       </component>
 
@@ -1384,7 +1384,7 @@
         </RTE_Components_h>
         <files>
           <file category="source" name="Source/portable/MemMang/heap_5.c"/>
-          <file category="doc"    name="http://www.freertos.org/a00111.html"/>
+          <file category="doc"    name="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management"/>
         </files>
       </component>
 
