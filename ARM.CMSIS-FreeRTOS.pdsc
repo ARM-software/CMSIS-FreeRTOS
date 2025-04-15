@@ -1061,17 +1061,13 @@
           <file category="source"  name="Source/queue.c"/>
           <file category="source"  name="Source/tasks.c"/>
 
-          <file category="include"   condition="ARMCC6" name="Source/portable/GCC/ARM_CA9/"/>
-          <file category="source"    condition="ARMCC6" name="Source/portable/GCC/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="ARMCC6" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
+          <file category="include"   condition="CA9_DP_AC6_GCC" name="Source/portable/GCC/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_AC6_GCC" name="Source/portable/GCC/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_AC6_GCC" name="Source/portable/GCC/ARM_CA9/portASM.S"/>
 
-          <file category="include"   condition="GCC"    name="Source/portable/GCC/ARM_CA9/"/>
-          <file category="source"    condition="GCC"    name="Source/portable/GCC/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="GCC"    name="Source/portable/GCC/ARM_CA9/portASM.S"/>
-
-          <file category="include"   condition="IAR"    name="Source/portable/IAR/ARM_CA9/"/>
-          <file category="source"    condition="IAR"    name="Source/portable/IAR/ARM_CA9/port.c"/>
-          <file category="sourceAsm" condition="IAR"    name="Source/portable/IAR/ARM_CA9/portASM.s"/>
+          <file category="include"   condition="CA9_DP_IAR"     name="Source/portable/IAR/ARM_CA9/"/>
+          <file category="source"    condition="CA9_DP_IAR"     name="Source/portable/IAR/ARM_CA9/port.c"/>
+          <file category="sourceAsm" condition="CA9_DP_IAR"     name="Source/portable/IAR/ARM_CA9/portASM.s"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
