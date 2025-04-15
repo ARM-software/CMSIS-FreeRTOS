@@ -689,7 +689,6 @@
       <require condition="FreeRTOS Port Cortex-M v8 TZ"/>
 
       <!-- TrustZone Secure Context is a standalone component -->
-      <deny Cclass="CMSIS" Cgroup="RTOS"  Csub="FreeRTOS"/>
       <deny Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS"/>
 
       <deny Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
