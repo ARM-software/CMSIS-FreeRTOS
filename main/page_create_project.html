@@ -135,6 +135,63 @@ $(function(){initNavTree('page_create_project.html',''); initResizable(true); })
 <li><a class="el" href="#create_native_project">Using the FreeRTOS API and kernel</a>.</li>
 <li><a class="el" href="#create_cmsis_project">Using the CMSIS-RTOS2 API with an underlying FreeRTOS kernel</a>.</li>
 </ol>
+<p>Before starting, please review the brief summary of the <a class="el" href="#pack_components">Pack Components</a> below to familiarize yourself with them.</p>
+<h1><a class="anchor" id="pack_components"></a>
+Pack Components</h1>
+<p>The CMSIS-FreeRTOS pack includes the following components and their variants:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Component   </th><th class="markdownTableHeadNone">Variant   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">CMSIS:RTOS2:FreeRTOS   </td><td class="markdownTableBodyNone">Cortex-M   </td><td class="markdownTableBodyNone">CMSIS-RTOS2 API implementation based on the FreeRTOS kernel for Cortex-M.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-A   </td><td class="markdownTableBodyNone">Adds support for external IRQ controller on Cortex-A processors.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RTOS:CORE   </td><td class="markdownTableBodyNone">Cortex-M   </td><td class="markdownTableBodyNone">Core API for Cortex-M processors, providing task scheduling and communication.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M MPU   </td><td class="markdownTableBodyNone">Adds support for the Memory Protection Unit (MPU) on Cortex-M processors.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M Non-Secure   </td><td class="markdownTableBodyNone">Core API for Cortex-M, supporting TrustZone non-secure domain operation. <b>[Warning: Deprecated]</b>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M Non-Secure MPU   </td><td class="markdownTableBodyNone">Combines TrustZone non-secure domain support with MPU functionality. <b>[Warning: Deprecated]</b>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-A   </td><td class="markdownTableBodyNone">Core API for Cortex-A processors.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RTOS:Config   </td><td class="markdownTableBodyNone">CMSIS RTOS2   </td><td class="markdownTableBodyNone">Configuration file tailored for the CMSIS-RTOS2 API.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">FreeRTOS   </td><td class="markdownTableBodyNone">Configuration file for native FreeRTOS API usage.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RTOS:Coroutines   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Adds FreeRTOS Co-routine API.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RTOS:Event Groups   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Provides event group functionality for task synchronization and communication.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RTOS:Heap   </td><td class="markdownTableBodyNone">Heap_1   </td><td class="markdownTableBodyNone">A simple memory allocation scheme that does not permit memory to be freed.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Heap_2   </td><td class="markdownTableBodyNone">Allows memory to be freed but does not coalesce adjacent free memory blocks.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Heap_3   </td><td class="markdownTableBodyNone">Wraps the standard <code>malloc()</code> and <code>free()</code> functions for thread safety.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Heap_4   </td><td class="markdownTableBodyNone">Coalesces adjacent free memory blocks to avoid fragmentation.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Heap_5   </td><td class="markdownTableBodyNone">Extends Heap_4 with the ability to span the heap across non-adjacent memory areas.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RTOS:Message Buffer   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Enables tasks and interrupts to send and receive variable-length messages.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RTOS:Stream Buffer   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Allows tasks and interrupts to send and receive continuous streams of data.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">RTOS:Timers   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Adds support for software timers, enabling delayed and periodic function execution.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">RTOS:TrustZone   </td><td class="markdownTableBodyNone">-   </td><td class="markdownTableBodyNone">Provides context management for execution in TrustZone secure domain.   </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><b>NOTE</b></p>
+<p>CMSIS-FreeRTOS 11.2.0 adds support for TrustZone <b>domain detection from project</b> settings. Regardless of the build contexts (no TrustZone, TrustZone secure or non-secure domain) the below variants shall be used:</p>
+<ul>
+<li>RTOS:CORE&amp;Cortex-M</li>
+<li>RTOS:CORE&amp;Cortex-M MPU</li>
+</ul>
+<p>This makes <b>variants Cortex-M Non-Secure and Cortex-M Non-Secure MPU obsolete</b> and will be removed in future releases. </p>
+</blockquote>
 <h1><a class="anchor" id="create_native_project"></a>
 Create a Native FreeRTOS Project</h1>
 <p>The steps to create a microcontroller application using FreeRTOS are:</p>

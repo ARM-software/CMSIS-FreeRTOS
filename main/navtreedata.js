@@ -28,6 +28,7 @@ var NAVTREE =
     [ "Introduction", "index.html", "index" ],
     [ "Revision History", "rev_hist.html", null ],
     [ "Create a FreeRTOS Project", "page_create_project.html", [
+      [ "Pack Components", "page_create_project.html#pack_components", null ],
       [ "Create a Native FreeRTOS Project", "page_create_project.html#create_native_project", [
         [ "Configure FreeRTOS", "page_create_project.html#configure_native_freertos", null ],
         [ "Interrupt Priority Configuration", "page_create_project.html#interrupt_priority_config", null ],
