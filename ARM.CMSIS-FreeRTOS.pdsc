@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<package schemaVersion="1.7.27" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.27/schema/PACK.xsd">
+<package schemaVersion="1.7.40" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.40/schema/PACK.xsd">
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
   <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
@@ -569,6 +569,11 @@
       <accept condition="FreeRTOS Port Cortex-M v6_v7"/>
       <accept condition="FreeRTOS Port Cortex-M v8"/>
     </condition>
+    <condition id="FreeRTOS Port Cortex-M MPU">
+      <description>FreeRTOS ports for Arm Cortex that support MPU</description>
+      <accept condition="FreeRTOS Port Cortex-M v6_v7 MPU"/>
+      <accept condition="FreeRTOS Port Cortex-M v8"/>
+    </condition>
     <condition id="FreeRTOS Port">
       <description>FreeRTOS ports for Arm Cortex combined</description>
       <accept condition="FreeRTOS Port Cortex-A"/>
@@ -598,9 +603,9 @@
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
     </condition>
 
-    <condition id="FreeRTOS Core CM v6_v7 MPU">
-    <description>Requirements for FreeRTOS Core with MPU support for Cortex-M v6 and v7</description>
-      <require condition="FreeRTOS Port Cortex-M v6_v7 MPU"/>
+    <condition id="FreeRTOS Core CM MPU">
+    <description>Requirements for FreeRTOS Core with MPU support for Cortex-M</description>
+      <require condition="FreeRTOS Port Cortex-M MPU"/>
 
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Config"/>
       <require Cclass="RTOS" Cbundle="FreeRTOS" Cgroup="Heap"/>
@@ -853,7 +858,7 @@
         </files>
       </component>
 
-      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core CM v6_v7 MPU">
+      <component Cgroup="Core" Cvariant="Cortex-M MPU" condition="FreeRTOS Core CM MPU">
         <description>Core API (Kernel, Tasks, Semaphores, Mutexes, Queues) for Cortex-M using MPU</description>
         <RTE_Components_h>
           #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
@@ -886,11 +891,51 @@
           <file category="include"   condition="CM4_FP_AC6_GCC" name="Source/portable/GCC/ARM_CM4_MPU/"/>
           <file category="source"    condition="CM4_FP_AC6_GCC" name="Source/portable/GCC/ARM_CM4_MPU/port.c"/>
           <file category="source"    condition="CM4_FP_AC6_GCC" name="Source/portable/GCC/ARM_CM4_MPU/mpu_wrappers_v2_asm.c"/>
+          <file category="include"   condition="CM23_AC6_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/"/>
+          <file category="source"    condition="CM23_AC6_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM23_AC6_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/portasm.c"/>
+          <file category="source"    condition="CM23_AC6_GCC"   name="Source/portable/GCC/ARM_CM23_NTZ/non_secure/mpu_wrappers_v2_asm.c"/>
+          <file category="include"   condition="CM33_AC6_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/"/>
+          <file category="source"    condition="CM33_AC6_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM33_AC6_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c"/>
+          <file category="source"    condition="CM33_AC6_GCC"   name="Source/portable/GCC/ARM_CM33_NTZ/non_secure/mpu_wrappers_v2_asm.c"/>
+          <file category="include"   condition="CM35P_AC6_GCC"  name="Source/portable/GCC/ARM_CM35P_NTZ/non_secure/"/>
+          <file category="source"    condition="CM35P_AC6_GCC"  name="Source/portable/GCC/ARM_CM35P_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM35P_AC6_GCC"  name="Source/portable/GCC/ARM_CM35P_NTZ/non_secure/portasm.c"/>
+          <file category="source"    condition="CM35P_AC6_GCC"  name="Source/portable/GCC/ARM_CM35P_NTZ/non_secure/mpu_wrappers_v2_asm.c"/>
+          <file category="include"   condition="CM55_AC6_GCC"   name="Source/portable/GCC/ARM_CM55_NTZ/non_secure/"/>
+          <file category="source"    condition="CM55_AC6_GCC"   name="Source/portable/GCC/ARM_CM55_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM55_AC6_GCC"   name="Source/portable/GCC/ARM_CM55_NTZ/non_secure/portasm.c"/>
+          <file category="source"    condition="CM55_AC6_GCC"   name="Source/portable/GCC/ARM_CM55_NTZ/non_secure/mpu_wrappers_v2_asm.c"/>
+          <file category="include"   condition="CM85_AC6_GCC"   name="Source/portable/GCC/ARM_CM85_NTZ/non_secure/"/>
+          <file category="source"    condition="CM85_AC6_GCC"   name="Source/portable/GCC/ARM_CM85_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM85_AC6_GCC"   name="Source/portable/GCC/ARM_CM85_NTZ/non_secure/portasm.c"/>
+          <file category="source"    condition="CM85_AC6_GCC"   name="Source/portable/GCC/ARM_CM85_NTZ/non_secure/mpu_wrappers_v2_asm.c"/>
 
           <file category="include"   condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/"/>
           <file category="source"    condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/port.c"/>
           <file category="sourceAsm" condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/portasm.s"/>
           <file category="sourceAsm" condition="CM4_FP_IAR" name="Source/portable/IAR/ARM_CM4F_MPU/mpu_wrappers_v2_asm.S"/>
+          <file category="include"   condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/"/>
+          <file category="source"    condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/portasm.s"/>
+          <file category="source"    condition="CM23_IAR"   name="Source/portable/IAR/ARM_CM23_NTZ/non_secure/mpu_wrappers_v2_asm.S"/>
+          <file category="include"   condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/"/>
+          <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/portasm.s"/>
+          <file category="source"    condition="CM33_IAR"   name="Source/portable/IAR/ARM_CM33_NTZ/non_secure/mpu_wrappers_v2_asm.S"/>
+          <file category="include"   condition="CM35P_IAR"  name="Source/portable/IAR/ARM_CM35P_NTZ/non_secure/"/>
+          <file category="source"    condition="CM35P_IAR"  name="Source/portable/IAR/ARM_CM35P_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM35P_IAR"  name="Source/portable/IAR/ARM_CM35P_NTZ/non_secure/portasm.s"/>
+          <file category="source"    condition="CM35P_IAR"  name="Source/portable/IAR/ARM_CM35P_NTZ/non_secure/mpu_wrappers_v2_asm.S"/>
+          <file category="include"   condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM55_NTZ/non_secure/"/>
+          <file category="source"    condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM55_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM55_NTZ/non_secure/portasm.s"/>
+          <file category="source"    condition="CM55_IAR"   name="Source/portable/IAR/ARM_CM55_NTZ/non_secure/mpu_wrappers_v2_asm.S"/>
+          <file category="include"   condition="CM85_IAR"   name="Source/portable/IAR/ARM_CM85_NTZ/non_secure/"/>
+          <file category="source"    condition="CM85_IAR"   name="Source/portable/IAR/ARM_CM85_NTZ/non_secure/port.c"/>
+          <file category="source"    condition="CM85_IAR"   name="Source/portable/IAR/ARM_CM85_NTZ/non_secure/portasm.s"/>
+          <file category="source"    condition="CM85_IAR"   name="Source/portable/IAR/ARM_CM85_NTZ/non_secure/mpu_wrappers_v2_asm.S"/>
 
           <file category="include" name="CMSIS/RTOS2/FreeRTOS/Include/"/>
           <file category="source"  name="CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c"/>
