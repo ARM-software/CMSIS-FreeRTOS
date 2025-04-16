@@ -14,7 +14,7 @@ project:
     - component: CMSIS:RTOS2:FreeRTOS&Cortex-M
     - component: CMSIS-View:Event Recorder&Semihosting
     
-    - component: RTOS&FreeRTOS:Core&Cortex-M Non-Secure
+    - component: RTOS&FreeRTOS:Core&Cortex-M
     - component: RTOS&FreeRTOS:Config&CMSIS RTOS2
     - component: RTOS&FreeRTOS:Event Groups
     - component: RTOS&FreeRTOS:Heap&Heap_4
