@@ -2398,7 +2398,7 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreateRestrictedStatic_DISABLE))
-  #define traceENTER_xTaskCreateRestrictedStatic      EvrFreeRTOSTasks_xTaskCreateRestrictedStatic
+  #define traceENTER_xTaskCreateRestrictedStatic(pxT,pxC) EvrFreeRTOSTasks_xTaskCreateRestrictedStatic(pxT, (void **)pxC)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTaskCreateRestrictedStatic_DISABLE))
@@ -2414,7 +2414,7 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreateRestricted_DISABLE))
-  #define traceENTER_xTaskCreateRestricted            EvrFreeRTOSTasks_xTaskCreateRestricted
+  #define traceENTER_xTaskCreateRestricted(pxT,pxC)   EvrFreeRTOSTasks_xTaskCreateRestricted(pxT,(void **)pxC)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTaskCreateRestricted_DISABLE))
@@ -3584,7 +3584,7 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_STATIC_FAILED_DISABLE))
-  #define traceSTREAM_BUFFER_CREATE_STATIC_FAILED(x,ux)  EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed(x,ux)
+  #define traceSTREAM_BUFFER_CREATE_STATIC_FAILED(x,ux)  EvrFreeRTOSStreamBuf_StreamBufferCreateStaticFailed(NULL,ux)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceSTREAM_BUFFER_CREATE_DISABLE))
