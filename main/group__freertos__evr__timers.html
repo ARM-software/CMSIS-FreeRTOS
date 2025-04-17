@@ -152,12 +152,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga6d29aabccac31d30777625064495e0f9" id="r_ga6d29aabccac31d30777625064495e0f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga6d29aabccac31d30777625064495e0f9">EvrFreeRTOSTimers_TimerExpired</a> (Timer_t pxTimer)</td></tr>
 <tr class="memdesc:ga6d29aabccac31d30777625064495e0f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event on timer expire (Op)  <br /></td></tr>
 <tr class="separator:ga6d29aabccac31d30777625064495e0f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4b35fa6a01c96b3395a4c49143a150d4" id="r_ga4b35fa6a01c96b3395a4c49143a150d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga4b35fa6a01c96b3395a4c49143a150d4">EvrFreeRTOSTimers_PendFuncCall</a> (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)</td></tr>
-<tr class="memdesc:ga4b35fa6a01c96b3395a4c49143a150d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event on pass of the function execution to the timer service task (Op)  <br /></td></tr>
-<tr class="separator:ga4b35fa6a01c96b3395a4c49143a150d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga870fe8028016271f6ef11061fbe82fcd" id="r_ga870fe8028016271f6ef11061fbe82fcd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga870fe8028016271f6ef11061fbe82fcd">EvrFreeRTOSTimers_PendFuncCallFromIsr</a> (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)</td></tr>
-<tr class="memdesc:ga870fe8028016271f6ef11061fbe82fcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event on pass of the function execution to the timer service task from the ISR (Op)  <br /></td></tr>
-<tr class="separator:ga870fe8028016271f6ef11061fbe82fcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf59a0654c5e8c2f6d59c53823c71ea16" id="r_gaf59a0654c5e8c2f6d59c53823c71ea16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gaf59a0654c5e8c2f6d59c53823c71ea16">EvrFreeRTOSTimers_PendFuncCall</a> (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)</td></tr>
+<tr class="memdesc:gaf59a0654c5e8c2f6d59c53823c71ea16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event on pass of the function execution to the timer service task (Op)  <br /></td></tr>
+<tr class="separator:gaf59a0654c5e8c2f6d59c53823c71ea16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga432db810ab2d460f7c43bdde90aa7d99" id="r_ga432db810ab2d460f7c43bdde90aa7d99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga432db810ab2d460f7c43bdde90aa7d99">EvrFreeRTOSTimers_PendFuncCallFromIsr</a> (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)</td></tr>
+<tr class="memdesc:ga432db810ab2d460f7c43bdde90aa7d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event on pass of the function execution to the timer service task from the ISR (Op)  <br /></td></tr>
+<tr class="separator:ga432db810ab2d460f7c43bdde90aa7d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0d6a5bc11b2832d3d29ba99a317db70d" id="r_ga0d6a5bc11b2832d3d29ba99a317db70d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga0d6a5bc11b2832d3d29ba99a317db70d">EvrFreeRTOSTimers_xTimerCreateTimerTask</a> (void)</td></tr>
 <tr class="memdesc:ga0d6a5bc11b2832d3d29ba99a317db70d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event sent when function xTimerCreateTimerTask is called (API).  <br /></td></tr>
 <tr class="separator:ga0d6a5bc11b2832d3d29ba99a317db70d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -356,8 +356,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga4b35fa6a01c96b3395a4c49143a150d4" name="ga4b35fa6a01c96b3395a4c49143a150d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4b35fa6a01c96b3395a4c49143a150d4">&#9670;&#160;</a></span>EvrFreeRTOSTimers_PendFuncCall()</h2>
+<a id="gaf59a0654c5e8c2f6d59c53823c71ea16" name="gaf59a0654c5e8c2f6d59c53823c71ea16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf59a0654c5e8c2f6d59c53823c71ea16">&#9670;&#160;</a></span>EvrFreeRTOSTimers_PendFuncCall()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -368,7 +368,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void EvrFreeRTOSTimers_PendFuncCall </td>
           <td>(</td>
-          <td class="paramtype">PendedFunction_t</td>          <td class="paramname"><span class="paramname"><em>pxFunctionToPend</em></span>, </td>
+          <td class="paramtype">PendedFunction_t</td>          <td class="paramname"><span class="paramname"><em>xFunctionToPend</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -396,7 +396,7 @@ Functions</h2></td></tr>
 <p>Event on pass of the function execution to the timer service task (Op) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">pxFunctionToPend</td><td>pointer to callback function </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xFunctionToPend</td><td>pointer to callback function </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pvParameter1</td><td>function parameter 1. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ulParameter2</td><td>function parameter 2. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">xReturn</td><td>return value.</td></tr>
@@ -405,7 +405,7 @@ Functions</h2></td></tr>
 </dl>
 <p>The event <b>PendFuncCall</b> is generated before the function xTimerPendFunctionCall returns.</p>
 <p><b>Value</b> in the Event Recorder shows:</p><ul>
-<li><b>pxFunctionToPend</b> : callback function to execute from the timer service/deamon task.</li>
+<li><b>xFunctionToPend</b> : callback function to execute from the timer service/deamon task.</li>
 <li><b>pvParameter1</b> : the value passed into the callback function as the first parameter.</li>
 <li><b>ulParameter2</b> : the value passed into the callback function as the second parameter.</li>
 <li><b>xReturn</b> : execution status (1=callback passed to the timer sevice task, any other value: queue full, failed to register the callback execution) </li>
@@ -413,8 +413,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga870fe8028016271f6ef11061fbe82fcd" name="ga870fe8028016271f6ef11061fbe82fcd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga870fe8028016271f6ef11061fbe82fcd">&#9670;&#160;</a></span>EvrFreeRTOSTimers_PendFuncCallFromIsr()</h2>
+<a id="ga432db810ab2d460f7c43bdde90aa7d99" name="ga432db810ab2d460f7c43bdde90aa7d99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga432db810ab2d460f7c43bdde90aa7d99">&#9670;&#160;</a></span>EvrFreeRTOSTimers_PendFuncCallFromIsr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -425,7 +425,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void EvrFreeRTOSTimers_PendFuncCallFromIsr </td>
           <td>(</td>
-          <td class="paramtype">PendedFunction_t</td>          <td class="paramname"><span class="paramname"><em>pxFunctionToPend</em></span>, </td>
+          <td class="paramtype">PendedFunction_t</td>          <td class="paramname"><span class="paramname"><em>xFunctionToPend</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -453,7 +453,7 @@ Functions</h2></td></tr>
 <p>Event on pass of the function execution to the timer service task from the ISR (Op) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">pxFunctionToPend</td><td>pointer to callback function </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xFunctionToPend</td><td>pointer to callback function </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pvParameter1</td><td>function parameter 1. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">ulParameter2</td><td>function parameter 2. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">xReturn</td><td>return value.</td></tr>
@@ -462,7 +462,7 @@ Functions</h2></td></tr>
 </dl>
 <p>The event <b>PendFuncCallFromIsr</b> is generated before the function xTimerPendFunctionCallFromISR returns.</p>
 <p><b>Value</b> in the Event Recorder shows:</p><ul>
-<li><b>pxFunctionToPend</b> : callback function to execute from the timer service/deamon task.</li>
+<li><b>xFunctionToPend</b> : callback function to execute from the timer service/deamon task.</li>
 <li><b>pvParameter1</b> : the value passed into the callback function as the first parameter.</li>
 <li><b>ulParameter2</b> : the value passed into the callback function as the second parameter.</li>
 <li><b>xReturn</b> : execution status (1=callback passed to the timer sevice task, any other value: queue full, failed to register the callback execution) </li>

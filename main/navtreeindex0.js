@@ -91,6 +91,7 @@ var NAVTREEINDEX0 =
 "group__freertos__evr__tasks.html#ga02e6f56841414cc8a802e6684ef98793":[6,0,1,0,145],
 "group__freertos__evr__tasks.html#ga0493d0ebdd2ac2ce92c4f339a5e265b0":[6,0,1,0,129],
 "group__freertos__evr__tasks.html#ga04a5ab9982c8d31ac44936227f3e792e":[6,0,1,0,43],
+"group__freertos__evr__tasks.html#ga063419fac1277ec3c1931a883e6cefa4":[6,0,1,0,147],
 "group__freertos__evr__tasks.html#ga09148c12e292b36d1ac92139c308775d":[6,0,1,0,80],
 "group__freertos__evr__tasks.html#ga0a4092a178d2e97ae98d26ea9596e418":[6,0,1,0,201],
 "group__freertos__evr__tasks.html#ga0a4ad685c536ba37861216d1dd0f7cf8":[6,0,1,0,116],
@@ -108,7 +109,6 @@ var NAVTREEINDEX0 =
 "group__freertos__evr__tasks.html#ga1a94904fdd6c88ebce17f2bbed82abb6":[6,0,1,0,118],
 "group__freertos__evr__tasks.html#ga1c2afd5819d6c22a37991691c8354c88":[6,0,1,0,47],
 "group__freertos__evr__tasks.html#ga1c7d8dcb5f8b13225a9bebc84be91975":[6,0,1,0,12],
-"group__freertos__evr__tasks.html#ga1ca632c85449c09fe4b81f6f75aa6b64":[6,0,1,0,147],
 "group__freertos__evr__tasks.html#ga1cbf20ac2e553e9e65d014c7f3af1a81":[6,0,1,0,95],
 "group__freertos__evr__tasks.html#ga1d91c97d13c8bdf2407c7459f2a24d45":[6,0,1,0,119],
 "group__freertos__evr__tasks.html#ga1db5a4b844c98fc28e4940dc0bbe8d46":[6,0,1,0,97],
@@ -191,6 +191,7 @@ var NAVTREEINDEX0 =
 "group__freertos__evr__tasks.html#ga9015cfde8b89d00e1f387504a8f06fc2":[6,0,1,0,191],
 "group__freertos__evr__tasks.html#ga905a96b63815c854e8591a9847078222":[6,0,1,0,19],
 "group__freertos__evr__tasks.html#ga917d1e93b2a791b51ff4ca6f3dadb5cf":[6,0,1,0,182],
+"group__freertos__evr__tasks.html#ga918c041464135a5d1501c296e82c50bd":[6,0,1,0,149],
 "group__freertos__evr__tasks.html#ga920f1a9b0abe6b33f2d7158394db5a73":[6,0,1,0,178],
 "group__freertos__evr__tasks.html#ga92d12fd8aca538200c06864e98800348":[6,0,1,0,52],
 "group__freertos__evr__tasks.html#ga93ac755d886536ffc61469a98b805047":[6,0,1,0,125],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "group__freertos__evr__tasks.html#gacc779548482377a9c1ae6debd50dfdb4":[6,0,1,0,114],
 "group__freertos__evr__tasks.html#gacea2d958b0191dc93013befcf85a1e11":[6,0,1,0,92],
 "group__freertos__evr__tasks.html#gad088220e60a44aa3be938082138851ed":[6,0,1,0,51],
-"group__freertos__evr__tasks.html#gad1cae887e9bc9f379bd9a0245266842e":[6,0,1,0,14],
-"group__freertos__evr__tasks.html#gad1d0b72f0ab5909a3b06a91460737940":[6,0,1,0,142]
+"group__freertos__evr__tasks.html#gad1cae887e9bc9f379bd9a0245266842e":[6,0,1,0,14]
 };

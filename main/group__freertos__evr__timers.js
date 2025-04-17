@@ -2,8 +2,8 @@ var group__freertos__evr__timers =
 [
     [ "EvrFreeRTOSTimers_pcTimerGetName", "group__freertos__evr__timers.html#ga9e6e27f6637c6134eddcac4d3708fee7", null ],
     [ "EvrFreeRTOSTimers_pcTimerGetName_Return", "group__freertos__evr__timers.html#gadc444c0f119fd64bf776279f805d38e9", null ],
-    [ "EvrFreeRTOSTimers_PendFuncCall", "group__freertos__evr__timers.html#ga4b35fa6a01c96b3395a4c49143a150d4", null ],
-    [ "EvrFreeRTOSTimers_PendFuncCallFromIsr", "group__freertos__evr__timers.html#ga870fe8028016271f6ef11061fbe82fcd", null ],
+    [ "EvrFreeRTOSTimers_PendFuncCall", "group__freertos__evr__timers.html#gaf59a0654c5e8c2f6d59c53823c71ea16", null ],
+    [ "EvrFreeRTOSTimers_PendFuncCallFromIsr", "group__freertos__evr__timers.html#ga432db810ab2d460f7c43bdde90aa7d99", null ],
     [ "EvrFreeRTOSTimers_pvTimerGetTimerID", "group__freertos__evr__timers.html#gafde609fd24b0e156a4ac2f48bf95d025", null ],
     [ "EvrFreeRTOSTimers_pvTimerGetTimerID_Return", "group__freertos__evr__timers.html#ga6c909fd0549fca75ea6ba9e2c195a32e", null ],
     [ "EvrFreeRTOSTimers_TimerCommandReceived", "group__freertos__evr__timers.html#ga67fb64cd979312c3584c6be7bd8affff", null ],
