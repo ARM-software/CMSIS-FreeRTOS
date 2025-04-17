@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2023 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -981,14 +981,14 @@ void EvrFreeRTOSTasks_xTaskCreateRestrictedAffinitySet_Return (uint32_t xReturn)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreate_DISABLE))
-void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t usStackDepth, void *pvParameters, uint32_t uxPriority, /*TCB_t*/void *pxCreatedTask) {
+void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t uxStackDepth, void *pvParameters, uint32_t uxPriority, /*TCB_t*/void *pxCreatedTask) {
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
-  EventRecord4(EvtFreeRTOSTasks_xTaskCreate_0, (uint32_t)pxTaskCode, (uint32_t)pcName, usStackDepth, (uint32_t)pvParameters);
+  EventRecord4(EvtFreeRTOSTasks_xTaskCreate_0, (uint32_t)pxTaskCode, (uint32_t)pcName, uxStackDepth, (uint32_t)pvParameters);
   EventRecord2(EvtFreeRTOSTasks_xTaskCreate_1, uxPriority, (uint32_t)pxCreatedTask);
 #else
   (void)pxTaskCode;
   (void)pcName;
-  (void)usStackDepth;
+  (void)uxStackDepth;
   (void)pvParameters;
   (void)uxPriority;
   (void)pxCreatedTask;
@@ -1009,18 +1009,18 @@ void EvrFreeRTOSTasks_xTaskCreate_Return (uint32_t xReturn) {
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreateAffinitySet_DISABLE))
 void EvrFreeRTOSTasks_xTaskCreateAffinitySet (void *pxTaskCode,
                                               const char *pcName,
-                                              const uint32_t usStackDepth,
+                                              const uint32_t uxStackDepth,
                                               void *pvParameters,
                                               uint32_t uxPriority,
                                               uint32_t uxCoreAffinityMask,
                                               void *pxCreatedTask) {
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
-  EventRecord4(EvtFreeRTOSTasks_xTaskCreateAffinitySet_0, (uint32_t)pxTaskCode, (uint32_t)pcName, usStackDepth, (uint32_t)pvParameters);
+  EventRecord4(EvtFreeRTOSTasks_xTaskCreateAffinitySet_0, (uint32_t)pxTaskCode, (uint32_t)pcName, uxStackDepth, (uint32_t)pvParameters);
   EventRecord4(EvtFreeRTOSTasks_xTaskCreateAffinitySet_1, uxPriority, uxCoreAffinityMask, (uint32_t)pxCreatedTask, 0U);
 #else
   (void)pxTaskCode;
   (void)pcName;
-  (void)usStackDepth;
+  (void)uxStackDepth;
   (void)pvParameters;
   (void)uxPriority;
   (void)uxCoreAffinityMask;
@@ -2969,11 +2969,11 @@ void EvrFreeRTOSTimers_TimerExpired (/*Timer_t*/void *pxTimer) {
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_DISABLE))
-void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
+void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
-  EventRecord4(EvtFreeRTOSTimers_PendFuncCall, (uint32_t)pxFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
+  EventRecord4(EvtFreeRTOSTimers_PendFuncCall, (uint32_t)xFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
 #else
-  (void)pxFunctionToPend;
+  (void)xFunctionToPend;
   (void)pvParameter1;
   (void)ulParameter2;
   (void)xReturn;
@@ -2982,11 +2982,11 @@ void EvrFreeRTOSTimers_PendFuncCall (/*PendedFunction_t*/void *pxFunctionToPend,
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_FROM_ISR_DISABLE))
-void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
+void EvrFreeRTOSTimers_PendFuncCallFromIsr (/*PendedFunction_t*/void *xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn) {
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
-  EventRecord4(EvtFreeRTOSTimers_PendFuncCallFromIsr, (uint32_t)pxFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
+  EventRecord4(EvtFreeRTOSTimers_PendFuncCallFromIsr, (uint32_t)xFunctionToPend, (uint32_t)pvParameter1, ulParameter2, xReturn);
 #else
-  (void)pxFunctionToPend;
+  (void)xFunctionToPend;
   (void)pvParameter1;
   (void)ulParameter2;
   (void)xReturn;

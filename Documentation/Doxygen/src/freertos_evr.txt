@@ -336,7 +336,7 @@ The event \b xTaskCreateStatic is generated when function xTaskCreateStatic is c
 \b Value in the Event Recorder shows:
  - \b pxTaskCode         : pointer to task function.
  - \b pcName             : pointer to task name string.
- - \b usStackDepth       : stack depth.
+ - \b ulStackDepth       : stack depth.
  - \b pvParameters       : pointer to parameter(s) passed to task funtion.
  - \b uxPriority         : task priority.
  - \b puxStackBuffer     : pointer to buffer to be used for task stack.
@@ -360,7 +360,7 @@ The event \b xTaskCreateStaticAffinitySet is generated when function xTaskCreate
 \b Value in the Event Recorder shows:
  - \b pxTaskCode         : pointer to task function.
  - \b pcName             : pointer to task name string.
- - \b usStackDepth       : stack depth.
+ - \b ulStackDepth       : stack depth.
  - \b pvParameters       : pointer to parameter(s) passed to task funtion.
  - \b uxPriority         : task priority.
  - \b puxStackBuffer     : pointer to buffer to be used for task stack.
@@ -457,14 +457,14 @@ The event \b xTaskCreateRestrictedAffinitySet_Return is generated before functio
 */
 
 /**
-\fn void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t usStackDepth, void *pvParameters, uint32_t uxPriority, void *pxCreatedTask)
+\fn void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t uxStackDepth, void *pvParameters, uint32_t uxPriority, void *pxCreatedTask)
 \details
 The event \b xTaskCreate is generated when function xTaskCreate is called.
 
 \b Value in the Event Recorder shows:
  - \b pxTaskCode    : pointer to task function.
  - \b pcName        : pointer to task name string.
- - \b usStackDepth  : stack depth.
+ - \b uxStackDepth  : stack depth.
  - \b pvParameters  : pointer to parameter(s) passed to task funtion.
  - \b uxPriority    : task priority.
  - \b pxCreatedTask : pointer to where the created task handle is stored.
@@ -480,14 +480,14 @@ The event \b xTaskCreate_Return is generated before function xTaskCreate returns
 */
 
 /**
-\fn void EvrFreeRTOSTasks_xTaskCreateAffinitySet (void *pxTaskCode, const char *pcName, const uint32_t usStackDepth, void *pvParameters, uint32_t uxPriority, uint32_t uxCoreAffinityMask, void *pxCreatedTask) 
+\fn void EvrFreeRTOSTasks_xTaskCreateAffinitySet (void *pxTaskCode, const char *pcName, const uint32_t uxStackDepth, void *pvParameters, uint32_t uxPriority, uint32_t uxCoreAffinityMask, void *pxCreatedTask) 
 \details
 The event \b xTaskCreateAffinitySet is generated when function xTaskCreateAffinitySet is called.
 
 \b Value in the Event Recorder shows:
  - \b pxTaskCode         : pointer to task function.
  - \b pcName             : pointer to task name string.
- - \b usStackDepth       : stack depth.
+ - \b uxStackDepth       : stack depth.
  - \b pvParameters       : pointer to parameter(s) passed to task funtion.
  - \b uxPriority         : task priority.
  - \b uxCoreAffinityMask : task affinity mask
@@ -2333,24 +2333,24 @@ The event \b TimerExpired is generated when a software timer expires and before 
 */
 
 /**
-\fn void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)
+\fn void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)
 \details
 The event \b PendFuncCall is generated before the function xTimerPendFunctionCall returns.
 
 \b Value in the Event Recorder shows:
- - \b pxFunctionToPend : callback function to execute from the timer service/deamon task.
+ - \b xFunctionToPend : callback function to execute from the timer service/deamon task.
  - \b pvParameter1 : the value passed into the callback function as the first parameter.
  - \b ulParameter2 : the value passed into the callback function as the second parameter.
  - \b xReturn : execution status (1=callback passed to the timer sevice task, any other value: queue full, failed to register the callback execution)
 */
 
 /**
-\fn void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)
+\fn void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn)
 \details
 The event \b PendFuncCallFromIsr is generated before the function xTimerPendFunctionCallFromISR returns.
 
 \b Value in the Event Recorder shows:
- - \b pxFunctionToPend : callback function to execute from the timer service/deamon task.
+ - \b xFunctionToPend : callback function to execute from the timer service/deamon task.
  - \b pvParameter1 : the value passed into the callback function as the first parameter.
  - \b ulParameter2 : the value passed into the callback function as the second parameter.
  - \b xReturn : execution status (1=callback passed to the timer sevice task, any other value: queue full, failed to register the callback execution)

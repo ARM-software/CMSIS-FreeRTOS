@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -365,12 +365,12 @@ extern void EvrFreeRTOSTasks_xTaskCreateRestrictedAffinitySet_Return (uint32_t x
   \brief Event sent when function xTaskCreate is called (API).
   \param[in]  pxTaskCode         pointer to task function.
   \param[in]  pcName             pointer to task name string.
-  \param[in]  usStackDepth       stack depth.
+  \param[in]  uxStackDepth       stack depth.
   \param[in]  pvParameters       pointer to parameter(s) passed to task funtion.
   \param[in]  uxPriority         task priority.
   \param[in]  pxCreatedTask      pointer to where the created task handle is stored.
 */
-extern void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t usStackDepth, void *pvParameters, uint32_t uxPriority, /*TCB_t*/void *pxCreatedTask);
+extern void EvrFreeRTOSTasks_xTaskCreate (void *pxTaskCode, const char *pcName, uint32_t uxStackDepth, void *pvParameters, uint32_t uxPriority, /*TCB_t*/void *pxCreatedTask);
 
 /**
   \brief Event sent before function xTaskCreate returns (Op).
@@ -382,7 +382,7 @@ extern void EvrFreeRTOSTasks_xTaskCreate_Return (uint32_t xReturn);
   \brief Event sent when function xTaskCreateAffinitySet is called (API).
   \param[in]  pxTaskCode         pointer to task function.
   \param[in]  pcName             pointer to task name string.
-  \param[in]  usStackDepth       stack depth.
+  \param[in]  uxStackDepth       stack depth.
   \param[in]  pvParameters       pointer to parameter(s) passed to task funtion.
   \param[in]  uxPriority         task priority.
   \param[in]  uxCoreAffinityMask task affinity mask
@@ -390,7 +390,7 @@ extern void EvrFreeRTOSTasks_xTaskCreate_Return (uint32_t xReturn);
 */
 extern void EvrFreeRTOSTasks_xTaskCreateAffinitySet (void *pxTaskCode,
                                                      const char *pcName,
-                                                     const uint32_t usStackDepth,
+                                                     const uint32_t uxStackDepth,
                                                      void *pvParameters,
                                                      uint32_t uxPriority,
                                                      uint32_t uxCoreAffinityMask,
@@ -1596,21 +1596,21 @@ extern void EvrFreeRTOSTimers_TimerExpired (Timer_t pxTimer);
 
 /**
   \brief  Event on pass of the function execution to the timer service task (Op)
-  \param[in]  pxFunctionToPend  pointer to callback function
+  \param[in]  xFunctionToPend   pointer to callback function
   \param[in]  pvParameter1      function parameter 1.
   \param[in]  ulParameter2      function parameter 2.
   \param[in]  xReturn           return value.
 */
-extern void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
+extern void EvrFreeRTOSTimers_PendFuncCall (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
 
 /**
   \brief  Event on pass of the function execution to the timer service task from the ISR (Op)
-  \param[in]  pxFunctionToPend  pointer to callback function
+  \param[in]  xFunctionToPend   pointer to callback function
   \param[in]  pvParameter1      function parameter 1.
   \param[in]  ulParameter2      function parameter 2.
   \param[in]  xReturn           return value.
 */
-extern void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t pxFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
+extern void EvrFreeRTOSTimers_PendFuncCallFromIsr (PendedFunction_t xFunctionToPend, void *pvParameter1, uint32_t ulParameter2, uint32_t xReturn);
 
 /**
   \brief Event sent when function xTimerCreateTimerTask is called (API).
@@ -2382,7 +2382,8 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreateStatic_DISABLE))
-  #define traceENTER_xTaskCreateStatic                EvrFreeRTOSTasks_xTaskCreateStatic
+  #define traceENTER_xTaskCreateStatic(pxTC,pcN,ulS,pvP,uxP,puxS,pxTB) \
+                                                      EvrFreeRTOSTasks_xTaskCreateStatic((void*)pxTC,pcN,ulS,pvP,uxP,puxS,pxTB)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTaskCreateStatic_DISABLE))
@@ -2430,7 +2431,8 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTaskCreate_DISABLE))
-  #define traceENTER_xTaskCreate                      EvrFreeRTOSTasks_xTaskCreate
+  #define traceENTER_xTaskCreate(pxT,pcN,uxS,pvP,uxP,pxC) \
+                                                      EvrFreeRTOSTasks_xTaskCreate((void*)pxT,pcN,uxS,pvP,uxP,pxC)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTaskCreate_DISABLE))
@@ -3240,11 +3242,11 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_DISABLE))
-  #define tracePEND_FUNC_CALL(px,pv,ul,x)             EvrFreeRTOSTimers_PendFuncCall(px,pv,ul,x)
+  #define tracePEND_FUNC_CALL(xF,pvP,ulP,xR)          EvrFreeRTOSTimers_PendFuncCall((void*)xF,pvP,ulP,xR)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(tracePEND_FUNC_CALL_FROM_ISR_DISABLE))
-  #define tracePEND_FUNC_CALL_FROM_ISR(px,pv,ul,x)    EvrFreeRTOSTimers_PendFuncCallFromIsr(px,pv,ul,x)
+  #define tracePEND_FUNC_CALL_FROM_ISR(xF,pvP,ulP,xR) EvrFreeRTOSTimers_PendFuncCallFromIsr((void*)xF,pvP,ulP,xR)
 #endif
 
 
@@ -3257,7 +3259,7 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTimerCreate_DISABLE))
-  #define traceENTER_xTimerCreate                     EvrFreeRTOSTimers_xTimerCreate
+  #define traceENTER_xTimerCreate(pcT,xT,xA,pvT,pxC)  EvrFreeRTOSTimers_xTimerCreate(pcT,xT,xA,pvT,(void*)pxC)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTimerCreate_DISABLE))
@@ -3265,7 +3267,8 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTimerCreateStatic_DISABLE))
-  #define traceENTER_xTimerCreateStatic               EvrFreeRTOSTimers_xTimerCreateStatic
+  #define traceENTER_xTimerCreateStatic(pcT,xT,xA,pvT,pxC,pxT) \
+                                                      EvrFreeRTOSTimers_xTimerCreateStatic(pcT,xT,xA,pvT,(void*)pxC,pxT)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTimerCreateStatic_DISABLE))
@@ -3377,7 +3380,8 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTimerPendFunctionCallFromISR_DISABLE))
-  #define traceENTER_xTimerPendFunctionCallFromISR    EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR
+  #define traceENTER_xTimerPendFunctionCallFromISR(xF,pvP,ulP,pxH) \
+                                                      EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR((void*)xF,pvP,ulP,pxH)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTimerPendFunctionCallFromISR_DISABLE))
@@ -3385,7 +3389,8 @@ extern void EvrFreeRTOSHeap_Free (void *pvAddress, uint32_t uiSize);
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceENTER_xTimerPendFunctionCall_DISABLE))
-  #define traceENTER_xTimerPendFunctionCall           EvrFreeRTOSTimers_xTimerPendFunctionCall
+  #define traceENTER_xTimerPendFunctionCall(xF,pvP,ulP,xT)  \
+                                                      EvrFreeRTOSTimers_xTimerPendFunctionCall((void*)xF,pvP,ulP,xT)
 #endif
 
 #if (!defined(EVR_FREERTOS_DISABLE) && !defined(traceRETURN_xTimerPendFunctionCall_DISABLE))
