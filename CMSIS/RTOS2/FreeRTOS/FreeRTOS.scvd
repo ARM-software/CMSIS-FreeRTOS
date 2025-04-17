@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
-  <component name="CMSIS-FreeRTOS" version="11.1.0"/>
+  <component name="CMSIS-FreeRTOS" version="11.2.0"/>
 
   <typedefs>
     <typedef name="ListItem_t" size="20" info="List object definition (list.h)">
@@ -794,10 +794,10 @@
     <event id="0xF000 + 0x2B" level="Op"     property="xTaskCreateRestricted_Return"                   value="xReturn=%d[val1]" info=""/>
     <event id="0xF000 + 0x2C" level="API"    property="xTaskCreateRestrictedAffinitySet"               value="pxTaskDefinition=%x[val1], uxCoreAffinityMask=%x[val2], pxCreatedTask=%x[val3]" info=""/>
     <event id="0xF000 + 0x2D" level="Op"     property="xTaskCreateRestrictedAffinitySet_Return"        value="xReturn=%d[val1]" info=""/>
-    <event id="0xF000 + 0x2E" level="API"    property="xTaskCreate"                                    value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x2E" level="API"    property="xTaskCreate"                                    value="pxTaskCode=%x[val1], pcName=%x[val2], uxStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
     <event id="0xF000 + 0x2F" level="API"    property="xTaskCreate"                                    value="uxPriority=%d[val1], pxCreatedTask=%x[val2]" info=""/>
     <event id="0xF000 + 0x30" level="Op"     property="xTaskCreate_Return"                             value="xReturn=%d[val1]" info=""/>
-    <event id="0xF000 + 0x31" level="API"    property="xTaskCreateAffinitySet"                         value="pxTaskCode=%x[val1], pcName=%x[val2], ulStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
+    <event id="0xF000 + 0x31" level="API"    property="xTaskCreateAffinitySet"                         value="pxTaskCode=%x[val1], pcName=%x[val2], uxStackDepth=%d[val3], pvParameters=%x[val4]" info=""/>
     <event id="0xF000 + 0x32" level="API"    property="xTaskCreateAffinitySet"                         value="uxPriority=%d[val1], uxCoreAffinityMask=%x[val2], pxCreatedTask=%x[val3]" info=""/>
     <event id="0xF000 + 0x33" level="Op"     property="xTaskCreateAffinitySet_Return"                  value="xReturn=%d[val1]" info=""/>
     <event id="0xF000 + 0x34" level="API"    property="vTaskDelete"                                    value="xTaskToDelete=%x[val1]" info=""/>
@@ -1003,8 +1003,8 @@
     <event id="0xF200 + 0x02" level="Op"    property="TimerCommandSend"     value="xTimer=%x[val1], xMessageID=%x[val2], xOptionalValue=%x[val3], xReturn=%x[val4]" info=""/>
     <event id="0xF200 + 0x03" level="Op"    property="TimerCommandReceived" value="xTimer=%x[val1], xMessageID=%x[val2], xOptionalValue=%x[val3]" info=""/>
     <event id="0xF200 + 0x04" level="Op"    property="TimerExpired"         value="pxTimer=%x[val1]" info=""/>
-    <event id="0xF200 + 0x05" level="Op"    property="PendFuncCall"         value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
-    <event id="0xF200 + 0x06" level="Op"    property="PendFuncCallFromIsr"  value="pxFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
+    <event id="0xF200 + 0x05" level="Op"    property="PendFuncCall"         value="xFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
+    <event id="0xF200 + 0x06" level="Op"    property="PendFuncCallFromIsr"  value="xFunctionToPend=%x[val1], pvParameter1=%x[val2], ulParameter2=%x[val3], xReturn=%x[val4]" info=""/>
     
     <event id="0xF200 + 0x10" level="API"   property="xTimerCreateTimerTask"                 value="" info=""/>
     <event id="0xF200 + 0x11" level="Op"    property="xTimerCreateTimerTask_Return"          value="xReturn=%d[val1]" info=""/>
