@@ -818,6 +818,7 @@
       </files>
     </component>
 
+     <!-- FreeRTOS kernel components -->
     <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="11.2.0">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/RTOS.html</doc>
