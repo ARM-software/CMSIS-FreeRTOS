@@ -2946,6 +2946,27 @@ static void FreeBlock (MemPool_t *mp, void *block) {
 #endif /* FREERTOS_MPOOL_H_ */
 /*---------------------------------------------------------------------------*/
 
+/**
+ * Convert osStatus_t to a human-readable string.
+ */
+const char* osStatusToString(osStatus_t status) {
+    switch (status) {
+        case osOK:                     return "osOK";
+        case osError:                  return "osError";
+        case osErrorTimeout:           return "osErrorTimeout";
+        case osErrorResource:          return "osErrorResource";
+        case osErrorParameter:         return "osErrorParameter";
+        case osErrorNoMemory:          return "osErrorNoMemory";
+        case osErrorISR:               return "osErrorISR";
+        case osErrorISRRecursive:      return "osErrorISRRecursive";
+        case osErrorPriority:          return "osErrorPriority";
+        case osErrorTimeoutResource:   return "osErrorTimeoutResource";
+        case osErrorISRQueueFull:      return "osErrorISRQueueFull";
+        case osErrorStackOverflow:     return "osErrorStackOverflow";
+        default:                       return "Unknown osStatus_t";
+    }
+}
+
 /* Callback function prototypes */
 extern void vApplicationIdleHook (void);
 extern void vApplicationMallocFailedHook (void);
