@@ -1558,9 +1558,9 @@ uint32_t osEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags) {
       rflags  = xEventGroupGetBitsFromISR (hEventGroup);
       rflags |= flags;
       portYIELD_FROM_ISR (yield);
+    }
+  #endif
   }
-#endif
-}
   else {
     rflags = xEventGroupSetBits (hEventGroup, (EventBits_t)flags);
   }
