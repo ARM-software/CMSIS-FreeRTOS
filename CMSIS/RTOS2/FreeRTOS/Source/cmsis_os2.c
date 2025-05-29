@@ -534,10 +534,11 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     stack = configMINIMAL_STACK_SIZE;
     prio  = (UBaseType_t)osPriorityNormal;
 
+    name = NULL;
     mem  = -1;
 
     if (attr != NULL) {
-      /* No need to check if NULL, NULL is OK */
+      /* Take the name from attributes */
       name = attr->name;
 
       if (attr->priority != osPriorityNone) {
@@ -575,7 +576,6 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     }
     else {
       mem = 0;
-      name = NULL;
     }
 
     if (mem == 1) {
@@ -1281,9 +1281,10 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       }
 
       mem  = -1;
+      name = NULL;
 
       if (attr != NULL) {
-        /* No need to check if NULL, NULL is OK */
+        /* Take the name from attributes */
         name = attr->name;
 
         if ((attr->cb_mem != NULL) && (attr->cb_size >= sizeof(StaticTimer_t))) {
@@ -1299,7 +1300,6 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       }
       else {
         mem = 0;
-        name = NULL;
       }
       /* Store callback memory dynamic allocation flag */
       callb = (TimerCallback_t *)((uint32_t)callb | callb_dyn);
@@ -2481,11 +2481,12 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     mp = NULL;
     sz = MEMPOOL_ARR_SIZE (block_count, block_size);
 
+    name = NULL;
     mem_cb = -1;
     mem_mp = -1;
 
     if (attr != NULL) {
-      /* No need to check if NULL, NULL is OK */
+      /* Take the name from attributes */
       name = attr->name;
 
       if ((attr->cb_mem != NULL) && (attr->cb_size >= sizeof(MemPool_t))) {
@@ -2518,7 +2519,6 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
       /* Attributes not provided, allocate memory on heap */
       mem_cb = 0;
       mem_mp = 0;
-      name = NULL;
     }
 
     if (mem_cb == 0) {
