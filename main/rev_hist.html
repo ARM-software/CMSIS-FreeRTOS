@@ -133,6 +133,17 @@ $(function(){initNavTree('rev_hist.html',''); initResizable(true); });
 <tr>
 <th>Version </th><th>Description  </th></tr>
 <tr>
+<td>v11.2.0 </td><td><p class="starttd">FreeRTOS 11.2.0</p>
+<p class="endtd">Updates and bugfixes:</p><ul>
+<li>Added automatic TrustZone domain detection using Dtz and Dsecure tags (use Cortex-M and Cortex-M MPU variants)</li>
+<li>Added MPU support for Cortex v8M without TrustZone or TrustZone Disabled/Secure-only/Secure</li>
+<li>Added default configASSERT implementation to FreeRTOSConfig.h</li>
+<li>Corrected osKernelLock, osKernelUnlock and osKernelRestoreLock to support nested calls</li>
+<li>Corrected Cortex-M35P selection instead of M33 issue when using IAR toolchain</li>
+<li>Updated examples to use CMSIS-Toolbox 2.8.0 </li>
+</ul>
+</td></tr>
+<tr>
 <td>v11.1.0 </td><td><p class="starttd">FreeRTOS 11.1.0</p>
 <p class="endtd">Updates and bugfixes:</p><ul>
 <li>Add Cortex-M0plus MPU port</li>
