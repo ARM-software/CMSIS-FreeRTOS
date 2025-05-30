@@ -538,9 +538,9 @@ osThreadId_t osThreadNew (osThreadFunc_t func, void *argument, const osThreadAtt
     mem  = -1;
 
     if (attr != NULL) {
-      if (attr->name != NULL) {
-        name = attr->name;
-      }
+      /* Take the name from attributes */
+      name = attr->name;
+
       if (attr->priority != osPriorityNone) {
         prio = (UBaseType_t)attr->priority;
       }
@@ -1284,9 +1284,8 @@ osTimerId_t osTimerNew (osTimerFunc_t func, osTimerType_t type, void *argument, 
       name = NULL;
 
       if (attr != NULL) {
-        if (attr->name != NULL) {
-          name = attr->name;
-        }
+        /* Take the name from attributes */
+        name = attr->name;
 
         if ((attr->cb_mem != NULL) && (attr->cb_size >= sizeof(StaticTimer_t))) {
           /* The memory for control block is provided, use static object */
@@ -2487,9 +2486,8 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     mem_mp = -1;
 
     if (attr != NULL) {
-      if (attr->name != NULL) {
-        name = attr->name;
-      }
+      /* Take the name from attributes */
+      name = attr->name;
 
       if ((attr->cb_mem != NULL) && (attr->cb_size >= sizeof(MemPool_t))) {
         /* Static control block is provided */
