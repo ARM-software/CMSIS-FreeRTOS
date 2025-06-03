@@ -2524,7 +2524,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     if (mem_cb == 0) {
       mp = pvPortMalloc (sizeof(MemPool_t));
     } else {
-      mp = attr->cb_mem;
+      if(mem_cb == 1) {
+        mp = attr->cb_mem;
+      }
     }
 
     if (mp != NULL) {
@@ -2542,7 +2544,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
         if (mem_mp == 0) {
           mp->mem_arr = pvPortMalloc (sz);
         } else {
-          mp->mem_arr = attr->mp_mem;
+          if(mem_mp == 1) {
+            mp->mem_arr = attr->mp_mem;
+          }
         }
       }
     }
