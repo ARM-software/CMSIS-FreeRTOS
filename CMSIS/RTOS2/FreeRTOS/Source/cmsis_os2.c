@@ -2524,10 +2524,14 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
     if (mem_cb == 0) {
       mp = pvPortMalloc (sizeof(MemPool_t));
     } else {
-      mp = attr->cb_mem;
+      if(mem_cb == 1) {
+        mp = attr->cb_mem;
+      }
     }
 
     if (mp != NULL) {
+      mp->mem_arr = NULL;
+
       /* Create a semaphore (max count == initial count == block_count) */
       #if (configSUPPORT_STATIC_ALLOCATION == 1)
         mp->sem = xSemaphoreCreateCountingStatic (block_count, block_count, &mp->mem_sem);
@@ -2542,7 +2546,9 @@ osMemoryPoolId_t osMemoryPoolNew (uint32_t block_count, uint32_t block_size, con
         if (mem_mp == 0) {
           mp->mem_arr = pvPortMalloc (sz);
         } else {
-          mp->mem_arr = attr->mp_mem;
+          if(mem_mp == 1) {
+            mp->mem_arr = attr->mp_mem;
+          }
         }
       }
     }
