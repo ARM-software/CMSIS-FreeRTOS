@@ -1,7 +1,7 @@
 function writeHeader() {
-    document.write('Version 11.2.1-dev1');
+    document.write('Version 11.2.1-dev2');
 };
 
 function writeFooter()  {
-    document.write('Generated on Fri May 30 2025 06:52:19 for CMSIS-FreeRTOS 11.2.1-dev1+g1eedee6. Copyright &copy; 2025 Arm Limited (or its affiliates). All rights reserved.');
+    document.write('Generated on Tue Jul 15 2025 08:02:11 for CMSIS-FreeRTOS 11.2.1-dev2+g24846ad. Copyright &copy; 2025 Arm Limited (or its affiliates). All rights reserved.');
 };
