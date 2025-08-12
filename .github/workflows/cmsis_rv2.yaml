@@ -26,25 +26,25 @@ jobs:
 
     steps:
       - name: Checkout CMSIS-FreeRTOS
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: CMSIS-FreeRTOS
           fetch-depth: 0
       
       - name: Checkout CMSIS_6
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ARM-software/CMSIS_6
           path: CMSIS_6
 
       - name: Checkout CMSIS-RTOS2_Validation
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ARM-software/CMSIS-RTOS2_Validation
           path: CMSIS-RTOS2_Validation
 
       - name: Checkout Cortex_DFP
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ARM-software/Cortex_DFP
           path: Cortex_DFP
