@@ -1008,8 +1008,7 @@ uint32_t osThreadFlagsSet (osThreadId_t thread_id, uint32_t flags) {
   Clear the specified Thread Flags of current running thread.
 */
 uint32_t osThreadFlagsClear (uint32_t flags) {
-  TaskHandle_t hTask;
-  uint32_t rflags, cflags;
+  uint32_t rflags;
 
   if (IRQ_Context() != 0U) {
     rflags = (uint32_t)osErrorISR;
@@ -1018,19 +1017,7 @@ uint32_t osThreadFlagsClear (uint32_t flags) {
     rflags = (uint32_t)osErrorParameter;
   }
   else {
-    hTask = xTaskGetCurrentTaskHandle();
-
-    if (xTaskNotifyAndQuery (hTask, 0, eNoAction, &cflags) == pdPASS) {
-      rflags = cflags;
-      cflags &= ~flags;
-
-      if (xTaskNotify (hTask, cflags, eSetValueWithOverwrite) != pdPASS) {
-        rflags = (uint32_t)osError;
-      }
-    }
-    else {
-      rflags = (uint32_t)osError;
-    }
+    rflags = ulTaskNotifyValueClear(NULL, flags);
   }
 
   /* Return flags before clearing */
