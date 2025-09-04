@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2024 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -841,9 +841,10 @@ __NO_RETURN void osThreadExit (void) {
   Terminate execution of a thread.
 */
 osStatus_t osThreadTerminate (osThreadId_t thread_id) {
-  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   osStatus_t stat;
+
 #ifndef USE_FreeRTOS_HEAP_1
+  TaskHandle_t hTask = (TaskHandle_t)thread_id;
   eTaskState tstate;
 
   if (IRQ_Context() != 0U) {
@@ -863,6 +864,7 @@ osStatus_t osThreadTerminate (osThreadId_t thread_id) {
     }
   }
 #else
+  (void)thread_id;
   stat = osError;
 #endif
 
@@ -1434,12 +1436,13 @@ uint32_t osTimerIsRunning (osTimerId_t timer_id) {
   Delete a timer.
 */
 osStatus_t osTimerDelete (osTimerId_t timer_id) {
-  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
   osStatus_t stat;
+
 #ifndef USE_FreeRTOS_HEAP_1
-#if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
+  TimerHandle_t hTimer = (TimerHandle_t)timer_id;
+  #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
   TimerCallback_t *callb;
-#endif
+  #endif
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
@@ -1468,6 +1471,7 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
     }
   }
 #else
+  (void)timer_id;
   stat = osError;
 #endif
 
@@ -1699,10 +1703,11 @@ uint32_t osEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t opti
   Delete an Event Flags object.
 */
 osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
-  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
   osStatus_t stat;
 
 #ifndef USE_FreeRTOS_HEAP_1
+  EventGroupHandle_t hEventGroup = (EventGroupHandle_t)ef_id;
+
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
@@ -1714,6 +1719,7 @@ osStatus_t osEventFlagsDelete (osEventFlagsId_t ef_id) {
     vEventGroupDelete (hEventGroup);
   }
 #else
+  (void)ef_id;
   stat = osError;
 #endif
 
@@ -1930,6 +1936,7 @@ osThreadId_t osMutexGetOwner (osMutexId_t mutex_id) {
 */
 osStatus_t osMutexDelete (osMutexId_t mutex_id) {
   osStatus_t stat;
+
 #ifndef USE_FreeRTOS_HEAP_1
   SemaphoreHandle_t hMutex;
 
@@ -1949,6 +1956,7 @@ osStatus_t osMutexDelete (osMutexId_t mutex_id) {
     vSemaphoreDelete (hMutex);
   }
 #else
+  (void)mutex_id;
   stat = osError;
 #endif
 
@@ -2133,10 +2141,11 @@ uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id) {
   Delete a Semaphore object.
 */
 osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
-  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
   osStatus_t stat;
 
 #ifndef USE_FreeRTOS_HEAP_1
+  SemaphoreHandle_t hSemaphore = (SemaphoreHandle_t)semaphore_id;
+
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
@@ -2152,6 +2161,7 @@ osStatus_t osSemaphoreDelete (osSemaphoreId_t semaphore_id) {
     vSemaphoreDelete (hSemaphore);
   }
 #else
+  (void)semaphore_id;
   stat = osError;
 #endif
 
@@ -2427,10 +2437,11 @@ osStatus_t osMessageQueueReset (osMessageQueueId_t mq_id) {
   Delete a Message Queue object.
 */
 osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
-  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
   osStatus_t stat;
 
 #ifndef USE_FreeRTOS_HEAP_1
+  QueueHandle_t hQueue = (QueueHandle_t)mq_id;
+
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
   }
@@ -2446,6 +2457,7 @@ osStatus_t osMessageQueueDelete (osMessageQueueId_t mq_id) {
     vQueueDelete (hQueue);
   }
 #else
+  (void)mq_id;
   stat = osError;
 #endif
 
