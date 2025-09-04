@@ -2386,7 +2386,7 @@ uint32_t osMessageQueueGetSpace (osMessageQueueId_t mq_id) {
   else if (IRQ_Context() != 0U) {
     isrm = taskENTER_CRITICAL_FROM_ISR();
 
-    space = uxQueueGetQueueLength (hQueue) - uxQueueMessagesWaiting (hQueue);
+    space = uxQueueGetQueueLength (hQueue) - uxQueueMessagesWaitingFromISR (hQueue);
 
     taskEXIT_CRITICAL_FROM_ISR(isrm);
   }
