@@ -85,8 +85,8 @@
 #define EVENT_FLAGS_INVALID_BITS  (~((1UL << MAX_BITS_EVENT_GROUPS) - 1U))
 
 /* Kernel version and identification string definition (major.minor.rev: mmnnnrrrr dec) */
-#define KERNEL_VERSION            (((uint32_t)tskKERNEL_VERSION_MAJOR * 10000000UL) | \
-                                   ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) | \
+#define KERNEL_VERSION            (((uint32_t)tskKERNEL_VERSION_MAJOR * 10000000UL) + \
+                                   ((uint32_t)tskKERNEL_VERSION_MINOR *    10000UL) + \
                                    ((uint32_t)tskKERNEL_VERSION_BUILD *        1UL))
 
 #define KERNEL_ID                 ("FreeRTOS " tskKERNEL_VERSION_NUMBER)
