@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2024 Arm Limited. All rights reserved.
+ * Copyright (c) 2024-2025 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -166,7 +166,7 @@ __USED void _mutex_free      (mutex *m);
 
 /* Check if processor is in Thread or Handler mode */
 static uint32_t is_thread_mode (void) {
-  if (IS_IRQ_MODE() != 0) {
+  if (IS_IRQ_MODE() == 0) {
     return 1U; /* Thread mode  */
   } else {
     return 0U; /* Handler mode */
