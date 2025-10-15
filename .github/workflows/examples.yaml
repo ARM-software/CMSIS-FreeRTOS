@@ -27,14 +27,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-      
-      - name: Cache packs
-        uses: actions/cache@v4
-        with:
-          key: packs-${{ github.run_id }}-${{ matrix.compiler }}
-          restore-keys: |
-              packs-
-          path: /home/runner/.cache/arm/packs
 
       - name: Install LLVM dependencies and tools
         working-directory: /home/runner
@@ -46,11 +38,11 @@ jobs:
         uses: ARM-software/cmsis-actions/vcpkg@main
         with:
           config: ./CMSIS/RTOS2/FreeRTOS/Examples/vcpkg-configuration.json
-          
+
       - name: Activate Arm tool license
         run: |
           armlm activate --server https://mdk-preview.keil.arm.com --product KEMDK-COM0
-    
+
       - uses: ammaraskar/gcc-problem-matcher@master
 
       - name: Register local pack

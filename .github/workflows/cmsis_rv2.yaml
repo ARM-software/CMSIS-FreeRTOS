@@ -13,7 +13,7 @@ concurrency:
 
 env:
   CMSIS_PACK_ROOT: ${{ github.workspace }}/.packs
-  ARM_UBL_ACTIVATION_CODE: ${{ secrets.ARM_UBL_ACTIVATION_CODE }} 
+  ARM_UBL_ACTIVATION_CODE: ${{ secrets.ARM_UBL_ACTIVATION_CODE }}
 
 jobs:
   build-and-run:
@@ -21,7 +21,7 @@ jobs:
       fail-fast: true
       matrix:
         compiler: [AC6, GCC, Clang]
-    
+
     runs-on: ubuntu-24.04
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         with:
           path: CMSIS-FreeRTOS
           fetch-depth: 0
-      
+
       - name: Checkout CMSIS_6
         uses: actions/checkout@v5
         with:
@@ -52,7 +52,7 @@ jobs:
       - name: Setup Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: '3.10'    
+          python-version: '3.10'
 
       - name: Install system packages
         run: |
@@ -62,14 +62,6 @@ jobs:
       - name: Python requirements
         run: |
           pip install -r ./CMSIS-RTOS2_Validation/Project/requirements.txt
-
-      - name: Cache packs
-        uses: actions/cache@v4
-        with:
-          key: packs-${{ github.run_id }}-${{ matrix.compiler }}
-          restore-keys: |
-              packs-
-          path: /home/runner/.cache/arm/packs
 
       - name: Setup vcpkg environment
         uses: ARM-software/cmsis-actions/vcpkg@main
@@ -89,7 +81,6 @@ jobs:
         run: |
           cpackget init https://www.keil.com/pack/index.pidx
           cpackget rm ARM::CMSIS ARM::CMSIS-FreeRTOS ARM::Cortex_DFP || echo "Ok"
-
           cpackget add ./CMSIS_6/ARM.CMSIS.pdsc
           cpackget add ./CMSIS-FreeRTOS/ARM.CMSIS-FreeRTOS.pdsc
           cpackget add ./Cortex_DFP/ARM.Cortex_DFP.pdsc
@@ -97,7 +88,7 @@ jobs:
 
       - uses: ammaraskar/gcc-problem-matcher@master
         if: matrix.compiler == 'GCC'
-      
+
       - name: Build
         working-directory: ./CMSIS-RTOS2_Validation/Project
         run: |
@@ -119,7 +110,7 @@ jobs:
           else
             armlm deactivate --product KEMDK-COM0
           fi
-    
+
       - name: Upload Test Reports
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -135,7 +126,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
     steps:
       - name: Download Test Reports
         uses: actions/download-artifact@v5
@@ -151,4 +142,3 @@ jobs:
           report_individual_runs: true
           event_name: ${{ github.event.workflow_run.event }}
           files: "artifacts/**/*.junit"
-  
