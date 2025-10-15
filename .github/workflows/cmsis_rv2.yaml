@@ -67,15 +67,12 @@ jobs:
         uses: ARM-software/cmsis-actions/vcpkg@main
         with:
           config: ./CMSIS-RTOS2_Validation/Project/vcpkg-configuration.json
-          cache: "-${{ matrix.compiler }}"
 
       - name: Activate Arm tool license
-        run: |
-          if [[ -n "${{ env.ARM_UBL_ACTIVATION_CODE }}" ]]; then
-            armlm activate --code ${{ env.ARM_UBL_ACTIVATION_CODE }}
-          else
-            armlm activate --server https://mdk-preview.keil.arm.com --product KEMDK-COM0
-          fi
+        uses: ARM-software/cmsis-actions/armlm@v1
+        with:
+          server: https://mdk-preview.keil.arm.com
+          product: KEMDK-COM0
 
       - name: Register local packs
         run: |

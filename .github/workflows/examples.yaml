@@ -40,8 +40,10 @@ jobs:
           config: ./CMSIS/RTOS2/FreeRTOS/Examples/vcpkg-configuration.json
 
       - name: Activate Arm tool license
-        run: |
-          armlm activate --server https://mdk-preview.keil.arm.com --product KEMDK-COM0
+        uses: ARM-software/cmsis-actions/armlm@v1
+        with:
+          server: https://mdk-preview.keil.arm.com
+          product: KEMDK-COM0
 
       - uses: ammaraskar/gcc-problem-matcher@master
 
