@@ -1,137 +1,230 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "CM0",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M0::Bare Metal Debug::Bare Metal Debug::Cortex-M0",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM0/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM0plus",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M0plus::Bare Metal Debug::Bare Metal Debug::Cortex-M0+",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM0plus/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM3",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M3::Bare Metal Debug::Bare Metal Debug::Cortex-M3",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM3/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM4",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M4::Bare Metal Debug::Bare Metal Debug::Cortex-M4",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM4/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM7",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M7::Bare Metal Debug::Bare Metal Debug::Cortex-M7",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM7/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM23",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M23::Bare Metal Debug::Bare Metal Debug::Cortex-M23_0",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM23/fvp_config.txt",
-      "debugFrom": "Reset_Handler",
-      "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\CM23\\Debug\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\CM23\\Debug\\TZ_Secure.axf"
-      ]
-    },
-    {
-      "name": "CM23_noTZ",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M23::Bare Metal Debug::Bare Metal Debug::Cortex-M23_0",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM23_noTZ/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM33",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M33::Bare Metal Debug::Bare Metal Debug::Cortex-M33_0",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM33/fvp_config.txt",
-      "debugFrom": "Reset_Handler",
-      "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\CM33\\Debug\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\CM33\\Debug\\TZ_Secure.axf"
-      ]
-    },
-    {
-      "name": "CM33_noTZ",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm FVP::MPS2_Cortex_M33::Bare Metal Debug::Bare Metal Debug::Cortex-M33_0",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM33_noTZ/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM55",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "cdbEntry": "Arm SubSystem FVP::Corstone SSE-300 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M55",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM55/fvp_config.txt",
-      "debugFrom": "Reset_Handler",
-      "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\CM55\\Debug\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\CM55\\Debug\\TZ_Secure.axf"
-      ]
-    },
-    {
-      "name": "CM55_noTZ",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm SubSystem FVP::Corstone SSE-300 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M55",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM55_noTZ/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    },
-    {
-      "name": "CM85",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "cdbEntry": "Arm SubSystem FVP::Corstone SSE-310 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M85",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM85/fvp_config.txt",
-      "debugFrom": "Reset_Handler",
-      "programs": [
-        "${workspaceFolder}\\out\\TZ_NonSecure\\CM85\\Debug\\TZ_NonSecure.axf",
-        "${workspaceFolder}\\out\\TZ_Secure\\CM85\\Debug\\TZ_Secure.axf"
-      ]
-    },
-    {
-      "name": "CM85_noTZ",
-      "type": "arm-debugger.fvp",
-      "request": "launch",
-      "program": "${command:arm-debugger.getApplicationFile}",
-      "cdbEntry": "Arm SubSystem FVP::Corstone SSE-310 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M85",
-      "fvpParameters": "\"${workspaceFolder}\"/Target/CM85_noTZ/fvp_config.txt",
-      "debugFrom": "Reset_Handler"
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CM0",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M0::Bare Metal Debug::Bare Metal Debug::Cortex-M0",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM0\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM0plus",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M0plus::Bare Metal Debug::Bare Metal Debug::Cortex-M0+",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM0plus\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM3",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M3::Bare Metal Debug::Bare Metal Debug::Cortex-M3",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM3\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM4",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M4::Bare Metal Debug::Bare Metal Debug::Cortex-M4",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM4\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM7",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M7::Bare Metal Debug::Bare Metal Debug::Cortex-M7",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM7\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM23",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M23::Bare Metal Debug::Bare Metal Debug::Cortex-M23_0",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM23\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${workspaceFolder}\\out\\TZ_NonSecure\\CM23\\Debug\\TZ_NonSecure.axf",
+                "${workspaceFolder}\\out\\TZ_Secure\\CM23\\Debug\\TZ_Secure.axf"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM23_noTZ",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M23::Bare Metal Debug::Bare Metal Debug::Cortex-M23_0",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM23_noTZ\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM33",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M33::Bare Metal Debug::Bare Metal Debug::Cortex-M33_0",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM33\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${workspaceFolder}\\out\\TZ_NonSecure\\CM33\\Debug\\TZ_NonSecure.axf",
+                "${workspaceFolder}\\out\\TZ_Secure\\CM33\\Debug\\TZ_Secure.axf"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM33_noTZ",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm FVP::MPS2_Cortex_M33::Bare Metal Debug::Bare Metal Debug::Cortex-M33_0",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM33_noTZ\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM55",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm SubSystem FVP::Corstone SSE-300 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M55",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM55\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${workspaceFolder}\\out\\TZ_NonSecure\\CM55\\Debug\\TZ_NonSecure.axf",
+                "${workspaceFolder}\\out\\TZ_Secure\\CM55\\Debug\\TZ_Secure.axf"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM55_noTZ",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm SubSystem FVP::Corstone SSE-300 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M55",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM55_noTZ\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM85",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm SubSystem FVP::Corstone SSE-310 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M85",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM85\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${workspaceFolder}\\out\\TZ_NonSecure\\CM85\\Debug\\TZ_NonSecure.axf",
+                "${workspaceFolder}\\out\\TZ_Secure\\CM85\\Debug\\TZ_Secure.axf"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        },
+        {
+            "name": "CM85_noTZ",
+            "type": "arm-debugger.configdb",
+            "request": "launch",
+            "cdbEntry": "Arm SubSystem FVP::Corstone SSE-310 Ethos-U55 (MPS3)::Bare Metal Debug::Bare Metal Debug::Cortex-M85",
+            "cdbEntryParams": {
+                "model_params_file": [
+                    "${workspaceFolder}\\Target\\CM85_noTZ\\fvp_config.txt"
+                ]
+            },
+            "programs": [
+                "${command:arm-debugger.getApplicationFile}"
+            ],
+            "runControl": {
+                "debugFromEntrypoint": true
+            }
+        }
+    ]
 }
