@@ -126,7 +126,7 @@ jobs:
 
     steps:
       - name: Download Test Reports
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: artifacts
 
