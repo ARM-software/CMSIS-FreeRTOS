@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<package schemaVersion="1.7.40" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.40/schema/PACK.xsd">
+<package schemaVersion="1.7.54" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Open-CMSIS-Pack/Open-CMSIS-Pack-Spec/v1.7.54/schema/PACK.xsd">
   <vendor>ARM</vendor>
   <name>CMSIS-FreeRTOS</name>
-  <description>Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
+  <description overview="Overview/README.md">Bundle of FreeRTOS for Cortex-M and Cortex-A</description>
   <license>LICENSE</license>
   <licenseSets>
     <licenseSet id="all" default="true" gating="true">
