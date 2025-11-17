@@ -203,51 +203,12 @@ $(function(){initNavTree('rev_hist.html',''); initResizable(true); });
 </ul>
 </td></tr>
 <tr>
-<td>v10.3.0 </td><td><p class="starttd">FreeRTOS 10.2.1</p>
-<p class="endtd">Maintenance for CMSIS 5.4.0:</p><ul>
-<li>Added osMemoryPool functions using FreeRTOS</li>
-<li>Corrected osEventFlagsWait flag comparison when using osFlagsWaitAll</li>
-<li>Corrected osThreadGetStackSpace return value (bytes instead of words)</li>
-<li>Removed Cortex-A examples (available in device specific packs) </li>
-</ul>
-</td></tr>
-<tr>
-<td>v10.2.0 </td><td><p class="starttd">FreeRTOS 10.2.0</p>
-<p class="endtd">Maintenance for CMSIS 5.4.0:</p><ul>
-<li>Updated to CMSIS RTOS2 API 2.1.3</li>
-<li>Updated Arm standard C library interface</li>
-<li>Added configuration for the Event Recorder</li>
-<li>Added TrustZone example for Armv8M using RTOS2 API</li>
-<li>Enhanced FreeRTOS component viewer</li>
-<li>Corrected osDelayUntil execution duration</li>
-<li>Corrected SysTick_Handler execution when kernel is not started</li>
-<li>Corrected critical section for osKernelGetSysTimerCount </li>
-</ul>
-</td></tr>
-<tr>
 <td>v10.0.1 </td><td><p class="starttd">FreeRTOS 10.0.0</p>
 <p class="endtd">Maintenance for CMSIS 5.3.0:</p><ul>
 <li>Added queue registry support to CMSIS:RTOS2:FreeRTOS component.</li>
 <li>Updated CMSIS-FreeRTOS component view to display queue, mutex and semaphore objects.</li>
 <li>Updated to CMSIS RTOS2 API 2.1.2 and OS Tick API 1.0.1.</li>
 <li>Fixed context switch response latency for API calls from ISR. </li>
-</ul>
-</td></tr>
-<tr>
-<td>v9.1.0 </td><td><p class="starttd">FreeRTOS 9.0.0</p>
-<p class="endtd">Maintenance release for CMSIS 5.1.0:</p><ul>
-<li>Added support for ARM Compiler 6</li>
-<li>Updated Cortex-A example to use IRQ Controller component</li>
-<li>Corrected stack size allocation in RTOS2 osThreadNew function</li>
-<li>Added support for OS Tick component</li>
-<li>Added documentation for configuration options (native/CMSIS-RTOS2)</li>
-<li>Debug event TaskIncrementTick level set to Detail </li>
-</ul>
-</td></tr>
-<tr>
-<td>v9.0.0 </td><td>Initial release version:<ul>
-<li>native FreeRTOS component (RTOS: Variant=FreeRTOS)</li>
-<li>CMSIS-RTOS FreeRTOS for Cortex-M and Cortex-A9 (CMSIS:RTOS:FreeRTOS, CMSIS:RTOS2:FreeRTOS) </li>
 </ul>
 </td></tr>
 </table>
