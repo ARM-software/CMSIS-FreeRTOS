@@ -14,8 +14,12 @@
   <url>https://www.keil.com/pack/</url>
 
   <releases>
-    <release version="0.0.0">
+    <release version="11.2.1-dev">
       Active Development ...
+      - Correct osKernelGetInfo() to properly return the kernel version number
+      - Correct osMessageQueueGetSpace to use uxQueueMessagesWaitingFromISR when in ISR
+      - Use ulTaskNotifyValueClear to implement osThreadFlagsClear
+      - Correct memory allocation and access in osMemoryPoolNew
     </release>
   </releases>
 
