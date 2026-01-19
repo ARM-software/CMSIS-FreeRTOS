@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2026 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * --------------------------------------------------------------------------
  *
- * $Revision:   V10.7.0
+ * $Revision:   V10.7.1
  *
  * Project:     CMSIS-FreeRTOS
  * Title:       FreeRTOS configuration definitions
@@ -259,14 +259,14 @@
 //  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.
 //  <i> Enable this setting when FreeRTOS runs on the Secure side only.
 //  <i> This setting is only relevant on ARMv8-M ports.
-//  <i> Default: 0
+//  <i> Default: 1
 #define configRUN_FREERTOS_SECURE_ONLY            0
 
 //  <q>Use TrustZone Security Extension
 //  <i> Using TrustZone affects context handling.
 //  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
 //  <i> This setting is only relevant on ARMv8-M ports.
-//  <i> Default: 1
+//  <i> Default: 0
 #define configENABLE_TRUSTZONE                    0
 
 //  <o>Minimal secure stack size [words] <0-65535>
