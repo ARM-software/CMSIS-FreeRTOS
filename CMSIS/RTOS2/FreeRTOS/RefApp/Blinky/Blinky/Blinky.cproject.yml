@@ -11,6 +11,7 @@ project:
       provides:
         - CMSIS-RTOS2
       consumes:
+        - CMSIS_VIO
         - STDOUT
 
   # List components to use for your application.
