@@ -1,0 +1,46 @@
+# A project translates into one executable or library.
+project:
+
+  # List the packs used in the project.
+  packs:
+    - pack: ARM::CMSIS-FreeRTOS
+
+  # List connections used to identify compatible software layers.
+  connections:
+    - connect: Board Layer with STDOUT
+      provides:
+        - CMSIS-RTOS2
+      consumes:
+        - CMSIS_VIO
+        - STDOUT
+
+  # List components to use for your application.
+  # A software component is a re-usable unit that may be configurable.
+  components:
+    - component: CMSIS:OS Tick:SysTick
+    - component: CMSIS:RTOS2:FreeRTOS&Cortex-M
+
+    - component: RTOS&FreeRTOS:Core&Cortex-M
+    - component: RTOS&FreeRTOS:Config&CMSIS RTOS2
+    - component: RTOS&FreeRTOS:Event Groups
+    - component: RTOS&FreeRTOS:Heap&Heap_4
+    - component: RTOS&FreeRTOS:Timers
+
+  # List of source groups and files added to a project or a layer.
+  groups:
+    - group: Application
+      files:
+        - file: ./README.md
+        - file: ./Blinky.c
+
+  # List of layers used in a project.
+  layers:
+    - layer: $Board-Layer$
+      type: Board
+
+  # List executable file formats to be generated.
+  output:
+    type:
+      - elf
+      - hex
+      - map

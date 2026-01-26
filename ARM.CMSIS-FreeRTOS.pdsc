@@ -16,6 +16,7 @@
   <releases>
     <release version="11.2.1-dev">
       Active Development ...
+      - Add CMSIS-RTOS2 Blinky reference application
       - Correct osKernelGetInfo() to properly return the kernel version number
       - Correct osMessageQueueGetSpace to use uxQueueMessagesWaitingFromISR when in ISR
       - Use ulTaskNotifyValueClear to implement osThreadFlagsClear
@@ -1533,6 +1534,13 @@
   </components>
 
   <examples>
+    <example name="Blinky" folder="CMSIS/RTOS2/FreeRTOS/RefApp/Blinky" doc="./Blinky/README.md">
+      <description>CMSIS-RTOS2 based Blinky application using FreeRTOS</description>
+      <project>
+        <environment name="csolution" load="Blinky.csolution.yml"/>
+      </project>
+    </example>
+
     <example name="Hello World" folder="CMSIS/RTOS2/FreeRTOS/Examples" doc="./App/Hello/README.md">
       <description>Hello World example using FreeRTOS and CMSIS-RTOS2 for Arm Virtual Hardware</description>
       <board name="uVision Simulator" vendor="Keil"/>
