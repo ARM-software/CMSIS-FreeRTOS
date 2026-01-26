@@ -2,16 +2,12 @@
 
 The CMSIS-RTOS2 Blinky reference application is hardware agnostic application
 that can be used with any development board that provides pre-configured
-`stdout` interface. It requires [software layer][1] with API drivers for the
-specific target hardware.
+`stdout` and `CMSIS VIO` interface. It requires [software layer](https://open-cmsis-pack.github.io/cmsis-toolbox/build-overview/#software-layers)
+with API drivers for the specific target hardware.
 
-Use [Arm Keil Studio extensions for VS Code][2] to [deploy this example][3]
+Use [Arm Keil Studio extensions for VS Code](https://marketplace.visualstudio.com/items?itemName=Arm.keil-studio-pack)
+to [deploy this example](https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#configure-a-solution)
 to your development board.
 
-See [CMSIS-Toolbox - Reference Applications][4] to learn more about the concept
-of reference application in Open CMSIS Pack.
-
-[1]: https://open-cmsis-pack.github.io/cmsis-toolbox/build-overview/#software-layers
-[2]: https://marketplace.visualstudio.com/items?itemName=Arm.keil-studio-pack
-[3]: https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#configure-a-solution
-[4]: https://open-cmsis-pack.github.io/cmsis-toolbox/ReferenceApplications/
+See [CMSIS-Toolbox - Reference Applications](https://open-cmsis-pack.github.io/cmsis-toolbox/ReferenceApplications/)
+to learn more about the concept of reference application in Open CMSIS Pack.
