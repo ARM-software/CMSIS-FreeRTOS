@@ -1,11 +1,27 @@
 # Create a FreeRTOS Project {#page_create_project}
 
-You can basically choose between two options when creating a FreeRTOS project:
+The steps to create a microcontroller application using FreeRTOS are:
+
+- \ref inst_pack "Install" the pack.
+- In your IDE, create a new project and select a microcontroller device.
+
+Then, you can basically choose between two options when creating a FreeRTOS project:
 
 1. [Using the FreeRTOS API and kernel](#create_native_project).
 2. [Using the CMSIS-RTOS2 API with an underlying FreeRTOS kernel](#create_cmsis_project).
 
 Before starting, please review the brief summary of the [Pack Components](#pack_components) below to familiarize yourself with them.
+
+## Pack installation {#inst_pack}
+
+Add the ARM::CMSIS-FreeRTOS pack to your installation:
+
+```
+cpackget add ARM::CMSIS-FreeRTOS
+```
+
+Alternatively, you can download the latest version from the
+[CMSIS-FreeRTOS](https://www.keil.arm.com/packs/cmsis-freertos-arm/versions/) page.
 
 ## Pack Components {#pack_components}
 
@@ -46,9 +62,21 @@ The CMSIS-FreeRTOS pack includes the following components and their variants:
 
 ## Create a Native FreeRTOS Project {#create_native_project}
 
-The steps to create a microcontroller application using FreeRTOS are:
+### In the Arm CMSIS Solution extension
 
-- Create a new project and select a microcontroller device.
+In your IDE, open the
+[Manage software components](https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#software-components)
+dialog.
+
+1. If you cannot see the **RTOS:CORE** component in the **FreeRTOS** variant, select to display **All installed packs**.
+2. Select the **RTOS:CORE&FreeRTOS** component. Also, add **RTOS:Config** (**FreeRTOS** variant) and an applicable
+   **RTOS:Heap** scheme.
+3. **Save** the selection.
+
+![Native FreeRTOS component selection](./images/comp-sel-ext.png)
+
+### In uVision
+
 - In the Manage Run-Time Environment window, select **::Device:Startup**, **::RTOS:CORE** and
   **::RTOS:Config** in the **FreeRTOS** variant and an applicable **::RTOS:Heap** scheme
   (for more information on the heap schemes, visit the FreeRTOS documentation):
@@ -57,19 +85,13 @@ The steps to create a microcontroller application using FreeRTOS are:
 
   \n
 - If the **Validation Output** requires other components to be present, try to use the **Resolve** button.
-- Click **OK**. In the **Project** window, you will see the files that have been automatically added
-  to your project, such as **FreeRTOSConfig.h**, the source code files, as well as the system and
-  startup files:
-
-  ![Project Window FreeRTOS Native](project_window_freertos_native.png)
+- Click **OK**.
 
 ### Configure FreeRTOS {#configure_native_freertos}
 
 When you have created the native FreeRTOS project, you can configure the real-time operating system
 using the **FreeRTOSConfig.h** file. Please refer to the
 [FreeRTOS documentation](https://www.freertos.org/a00110.html) for more information on the specific settings.
-
-![FreeRTOS Config H Native](freertos_config_h_native.png)
 
 ### Interrupt Priority Configuration {#interrupt_priority_config}
 
@@ -134,9 +156,22 @@ Once the target application generates event information, it can be viewed in the
 
 ## Create a CMSIS-FreeRTOS Project {#create_cmsis_project}
 
-The steps to create a microcontroller application using CMSIS-FreeRTOS are:
+### CMSIS-FreeRTOS in the Arm CMSIS Solution extension
 
-- Create a new project and select a microcontroller device.
+In your IDE, open the
+[Manage software components](https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#software-components)
+dialog.
+
+1. If you cannot see the **CMSIS:RTOS2 (API):FreeRTOS**, select to display **All installed packs**.
+2. Select the **CMSIS:RTOS2 (API):FreeRTOS** component.
+3. Also, add **RTOS:Config** (**CMSIS RTOS2** variant), **RTOS:Timers**, **RTOS:Event Groups**, and an applicable
+   **RTOS:Heap** scheme.
+4. **Save** the selection.
+
+![CMSIS-FreeRTOS component selection](./images/comp-sel-cmsis-ext.png)
+
+### CMSIS-FreeRTOS in uVision
+
 - In the Manage Run-Time Environment window, select **::Device:Startup**, **::CMSIS::RTOS2 (API)::FreeRTOS**,
   **::RTOS:CORE** in the **FreeRTOS** variant, **::RTOS:Config** in the **CMSIS RTOS2** variant, **::RTOS:Timers**,
   **::RTOS:Event Groups**, and an applicable **::RTOS:Heap** scheme (for more information on the heap schemes,
@@ -146,10 +181,7 @@ The steps to create a microcontroller application using CMSIS-FreeRTOS are:
 
   \n
 - If the **Validation Output** requires other components to be present, try to use the **Resolve** button.
-- Click **OK**. In the **Project** window, you will see the files that have been automatically added to your project,
-  such as **FreeRTOSConfig.h**, the source code files, as well as the system and startup files:
-
-  ![Project Window FreeRTOS RTOS2](project_window_freertos_rtos2.png)
+- Click **OK**.
 
 ### Configure CMSIS-FreeRTOS {#configure_cmsis_freertos}
 
