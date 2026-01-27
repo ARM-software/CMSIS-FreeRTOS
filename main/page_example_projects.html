@@ -138,10 +138,10 @@ $(function(){initNavTree('page_example_projects.html',''); initResizable(true); 
 <p>The first example shows how to configure a simple application using FreeRTOS with CMSIS-RTOS2, whereas the second example shows how to use the FreeRTOS with CMSIS-RTOS2 in an application that utilizes TrustZone secure/non-secure execution.</p>
 <p>Provided examples use the <a href="https://open-cmsis-pack.github.io/cmsis-toolbox/YML-Input-Format/">CMSIS Solution Project File Format</a> and can be built for multiple Cortex-M targets using <a href="https://open-cmsis-pack.github.io/cmsis-toolbox/">CMSIS Toolbox</a> either from the command line or from Visual Studio Code by using <a href="https://developer.arm.com/documentation/108029/0000/?lang=en">Arm Keil Studio Cloud extensions</a>.</p>
 <p>The <b>Examples</b> solution defines projects and build information for each project.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Build and Run</h1>
 <p>The <b>Examples</b> solution supports only "Debug" Build-Type which is optimized for debugging. It disables compiler optimization and retains all debug-related information. By default, Arm Compiler 6 is used to build the projects.</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Targets</h2>
 <p>Each example can be built for multiple target processors. The below table lists supported target processors together with the corresponding context target-types and model executable that shall be used for running the application image.</p>
 <table class="markdownTable">
@@ -174,7 +174,7 @@ Targets</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyLeft">Cortex-M85   </td><td class="markdownTableBodyLeft">CM85_noTZ   </td><td class="markdownTableBodyLeft">FVP_Corstone_SSE-310   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Build in VS Code using Arm Keil Studio Pack extensions</h2>
 <ul>
 <li>See <a href="https://developer.arm.com/documentation/108029/0000/?lang=en">Arm Keil Studio Visual Studio Code Extensions User Guide</a> for more information about using the Keil Studio extensions.</li>
@@ -182,7 +182,7 @@ Build in VS Code using Arm Keil Studio Pack extensions</h2>
 </ul>
 <p>To build a project using Keil Studio extensions open CMSIS view, open "Manage CMSIS Solution" view and select "Active Context" and "Active Projects". Build Type is automatically selected since there is only one option.</p>
 <p>Once the context and projects are selected one can build them by selecting "Build" in CMSIS view.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Build via command line</h2>
 <ul>
 <li>See <a href="https://open-cmsis-pack.github.io/cmsis-toolbox/">CMSIS-Toolbox documentation</a> to learn more about CMSIS Solution project build and management tools.</li>
@@ -191,7 +191,7 @@ Build via command line</h2>
 <div class="fragment"><div class="line">cbuild Examples.csolution.yml --context &lt;project-name&gt;.&lt;build-type&gt;+&lt;target-type&gt;</div>
 </div><!-- fragment --><p>To list the available contexts execute the following command:</p>
 <div class="fragment"><div class="line">cbuild list contexts Examples.csolution.yml</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md13"></a>
 Execute on Virtual Hardware Target</h2>
 <p><a href="https://www.arm.com/products/development-tools/simulation/virtual-hardware">Arm Virtual Hardware Target</a> simulation models are used to execute the example application images.</p>
 <p>To execute application image (axf or elf) on a simulation model use the following command syntax:</p>

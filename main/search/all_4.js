@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['event_20flags_0',['Event Flags',['../page_function_overview.html#autotoc_md19',1,'']]],
+  ['event_20flags_0',['Event Flags',['../page_function_overview.html#autotoc_md23',1,'']]],
   ['event_20functions_1',['Event functions',['../group__freertos__evr.html',1,'']]],
   ['event_20groups_20functions_2',['Event Groups Functions',['../group__freertos__evr__event__groups.html',1,'']]],
   ['event_20recorder_3',['Configure Event Recorder',['../page_create_project.html#configure_evr',1,'']]],
@@ -341,6 +341,7 @@ var searchData=
   ['evrfreertostimers_5fxtimerpendfunctioncallfromisr_338',['EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR',['../group__freertos__evr__timers.html#gaee5fc763cfef769053f27d0caab2fa5d',1,'freertos_evr.h']]],
   ['evrfreertostimers_5fxtimerpendfunctioncallfromisr_5freturn_339',['EvrFreeRTOSTimers_xTimerPendFunctionCallFromISR_Return',['../group__freertos__evr__timers.html#gad143d3e20090bdb5f392be25721e7bc2',1,'freertos_evr.h']]],
   ['example_20projects_340',['Example Projects',['../page_example_projects.html',1,'']]],
-  ['execute_20on_20virtual_20hardware_20target_341',['Execute on Virtual Hardware Target',['../page_example_projects.html#autotoc_md9',1,'']]],
-  ['extensions_342',['Build in VS Code using Arm Keil Studio Pack extensions',['../page_example_projects.html#autotoc_md7',1,'']]]
+  ['execute_20on_20virtual_20hardware_20target_341',['Execute on Virtual Hardware Target',['../page_example_projects.html#autotoc_md13',1,'']]],
+  ['extension_342',['extension',['../page_create_project.html#autotoc_md4',1,'CMSIS-FreeRTOS in the Arm CMSIS Solution extension'],['../page_create_project.html#autotoc_md2',1,'In the Arm CMSIS Solution extension']]],
+  ['extensions_343',['Build in VS Code using Arm Keil Studio Pack extensions',['../page_example_projects.html#autotoc_md11',1,'']]]
 ];

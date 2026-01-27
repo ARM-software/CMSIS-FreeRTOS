@@ -130,10 +130,10 @@ $(function(){initNavTree('page_function_overview.html',''); initResizable(true);
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_src_2function__overview"></a></p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md17"></a>
 CMSIS-RTOS2 API</h1>
 <p>Overview of all CMSIS-RTOS C API v2 functions that are implemented in CMSIS-FreeRTOS.</p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 Kernel Information and Control</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__KernelCtrl.html">API reference</a> for details about Kernel Information and Control functions.</p>
 <ul>
@@ -153,7 +153,7 @@ Kernel Information and Control</h2>
 <li><b>osKernelGetSysTimerCount:</b> supported</li>
 <li><b>osKernelGetSysTimerFreq:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md19"></a>
 Thread Management</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__ThreadMgmt.html">API reference</a> for details about Thread Management functions.</p>
 <ul>
@@ -182,7 +182,7 @@ Thread Management</h2>
 <li><b>osThreadGetCount:</b> supported</li>
 <li><b>osThreadEnumerate:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Thread Flags</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__ThreadFlagsMgmt.html">API reference</a> for details about Thread Flags functions.</p>
 <ul>
@@ -191,14 +191,14 @@ Thread Flags</h2>
 <li><b>osThreadFlagsGet:</b> supported</li>
 <li><b>osThreadFlagsWait:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md21"></a>
 Generic Wait Functions</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__Wait.html">API reference</a> for details about Generic Wait functions.</p>
 <ul>
 <li><b>osDelay:</b> supported</li>
 <li><b>osDelayUntil:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Timer Management</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__TimerMgmt.html">API reference</a> for details about Timer Management functions.</p>
 <ul>
@@ -209,7 +209,7 @@ Timer Management</h2>
 <li><b>osTimerIsRunning:</b> supported</li>
 <li><b>osTimerDelete:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 Event Flags</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__EventFlags.html">API reference</a> for details about Event Flags functions. All event flags are limited to 24 bits.</p>
 <ul>
@@ -221,7 +221,7 @@ Event Flags</h2>
 <li><b>osEventFlagsWait:</b> cannot be called from an ISR.</li>
 <li><b>osEventFlagsDelete:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md20"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 Mutex Management</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__MutexMgmt.html">API reference</a> for details about Mutex Management functions. Priority inherit protocol is used as default mutex behavior (<code>osMutexNew</code> creates priority inherit mutex object by default and ignores <code>osMutexPrioInherit</code> attribute when specified). Robust mutex objects are not supported (<code>osMutexNew</code> returns NULL when <code>osMutexRobust</code> attribute is specified).</p>
 <ul>
@@ -232,7 +232,7 @@ Mutex Management</h2>
 <li><b>osMutexGetOwner:</b> supported</li>
 <li><b>osMutexDelete:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Semaphores</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__SemaphoreMgmt.html">API reference</a> for details about Semaphore functions.</p>
 <ul>
@@ -243,7 +243,7 @@ Semaphores</h2>
 <li><b>osSemaphoreGetCount:</b> supported</li>
 <li><b>osSemaphoreDelete:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 Memory Pool</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__PoolMgmt.html">API reference</a> for details about Memory Pool functions.</p>
 <ul>
@@ -257,7 +257,7 @@ Memory Pool</h2>
 <li><b>osMemoryPoolGetSpace:</b> supported</li>
 <li><b>osMemoryPoolDelete:</b> supported</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 Message Queue</h2>
 <p>See <a href="https://arm-software.github.io/CMSIS_6/latest/RTOS2/group__CMSIS__RTOS__Message.html">API reference</a> for details about Message Queue functions.</p>
 <ul>

@@ -130,12 +130,22 @@ $(function(){initNavTree('page_create_project.html',''); initResizable(true); })
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_src_2create__project"></a></p>
-<p>You can basically choose between two options when creating a FreeRTOS project:</p>
+<p>The steps to create a microcontroller application using FreeRTOS are:</p>
+<ul>
+<li><a class="el" href="#inst_pack">Install</a> the pack.</li>
+<li>In your IDE, create a new project and select a microcontroller device.</li>
+</ul>
+<p>Then, you can basically choose between two options when creating a FreeRTOS project:</p>
 <ol type="1">
 <li><a class="el" href="#create_native_project">Using the FreeRTOS API and kernel</a>.</li>
 <li><a class="el" href="#create_cmsis_project">Using the CMSIS-RTOS2 API with an underlying FreeRTOS kernel</a>.</li>
 </ol>
 <p>Before starting, please review the brief summary of the <a class="el" href="#pack_components">Pack Components</a> below to familiarize yourself with them.</p>
+<h1><a class="anchor" id="inst_pack"></a>
+Pack installation</h1>
+<p>Add the ARM::CMSIS-FreeRTOS pack to your installation:</p>
+<div class="fragment"><div class="line">cpackget add ARM::CMSIS-FreeRTOS</div>
+</div><!-- fragment --><p>Alternatively, you can download the latest version from the <a href="https://www.keil.arm.com/packs/cmsis-freertos-arm/versions/">CMSIS-FreeRTOS</a> page.</p>
 <h1><a class="anchor" id="pack_components"></a>
 Pack Components</h1>
 <p>The CMSIS-FreeRTOS pack includes the following components and their variants:</p>
@@ -194,9 +204,21 @@ Pack Components</h1>
 </blockquote>
 <h1><a class="anchor" id="create_native_project"></a>
 Create a Native FreeRTOS Project</h1>
-<p>The steps to create a microcontroller application using FreeRTOS are:</p>
+<h2><a class="anchor" id="autotoc_md2"></a>
+In the Arm CMSIS Solution extension</h2>
+<p>In your IDE, open the <a href="https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#software-components">Manage software components</a> dialog.</p>
+<ol type="1">
+<li>If you cannot see the <b>RTOS:CORE</b> component in the <b>FreeRTOS</b> variant, select to display <b>All installed packs</b>.</li>
+<li>Select the <b>RTOS:CORE&amp;FreeRTOS</b> component. Also, add <b>RTOS:Config</b> (<b>FreeRTOS</b> variant) and an applicable <b>RTOS:Heap</b> scheme.</li>
+<li><b>Save</b> the selection.</li>
+</ol>
+<div class="image">
+<img src="comp-sel-ext.png" alt=""/>
+<div class="caption">
+Native FreeRTOS component selection</div></div>
+    <h2><a class="anchor" id="autotoc_md3"></a>
+In uVision</h2>
 <ul>
-<li>Create a new project and select a microcontroller device.</li>
 <li>In the Manage Run-Time Environment window, select <b>::Device:Startup</b>, <b>::RTOS:CORE</b> and <b>::RTOS:Config</b> in the <b>FreeRTOS</b> variant and an applicable <b>::RTOS:Heap</b> scheme (for more information on the heap schemes, visit the FreeRTOS documentation):</li>
 </ul>
 <div class="image">
@@ -206,20 +228,12 @@ Manage RTE FreeRTOS Native</div></div>
     <p><br  />
 </p><ul>
 <li>If the <b>Validation Output</b> requires other components to be present, try to use the <b>Resolve</b> button.</li>
-<li>Click <b>OK</b>. In the <b>Project</b> window, you will see the files that have been automatically added to your project, such as <b>FreeRTOSConfig.h</b>, the source code files, as well as the system and startup files:</li>
+<li>Click <b>OK</b>.</li>
 </ul>
-<div class="image">
-<img src="project_window_freertos_native.png" alt=""/>
-<div class="caption">
-Project Window FreeRTOS Native</div></div>
-    <h2><a class="anchor" id="configure_native_freertos"></a>
+<h2><a class="anchor" id="configure_native_freertos"></a>
 Configure FreeRTOS</h2>
 <p>When you have created the native FreeRTOS project, you can configure the real-time operating system using the <b>FreeRTOSConfig.h</b> file. Please refer to the <a href="https://www.freertos.org/a00110.html">FreeRTOS documentation</a> for more information on the specific settings.</p>
-<div class="image">
-<img src="freertos_config_h_native.png" alt=""/>
-<div class="caption">
-FreeRTOS Config H Native</div></div>
-    <h2><a class="anchor" id="interrupt_priority_config"></a>
+<h2><a class="anchor" id="interrupt_priority_config"></a>
 Interrupt Priority Configuration</h2>
 <p>FreeRTOS implements critical sections using the <a href="https://developer.arm.com/documentation/dui0552/a/the-cortex-m3-processor/programmers-model/core-registers?lang=en">BASEPRI</a> register (available in Armv7-M and Armv8-M architecture-based devices) which masks only a subset of interrupts. This is configured via the <code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code> setting. Therefore, it is needed to properly configure this setting. It is also needed to set appropriate interrupt priorities for interrupt service routines (ISR) that use RTOS functions. This can especially impact drivers which typically use peripheral interrupts. Normally, these use the RTOS directly or indirectly through registered callbacks.</p>
 <p>Arm Cortex-M cores store interrupt priority values in the most significant bits of the interrupt priority registers which can have a maximum of eight bits. Many implementations offer only three priority bits. These three bits are shifted up to be bits five, six and seven respectively. <code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code> must not be 0 and can be xxx00000. This results in the following table:</p>
@@ -274,9 +288,22 @@ Add Event Recorder Visibility</h2>
 <p>Once the target application generates event information, it can be viewed in the µVision debugger using the <b>Event Recorder</b>.</p>
 <h1><a class="anchor" id="create_cmsis_project"></a>
 Create a CMSIS-FreeRTOS Project</h1>
-<p>The steps to create a microcontroller application using CMSIS-FreeRTOS are:</p>
+<h2><a class="anchor" id="autotoc_md4"></a>
+CMSIS-FreeRTOS in the Arm CMSIS Solution extension</h2>
+<p>In your IDE, open the <a href="https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#software-components">Manage software components</a> dialog.</p>
+<ol type="1">
+<li>If you cannot see the <b>CMSIS:RTOS2 (API):FreeRTOS</b>, select to display <b>All installed packs</b>.</li>
+<li>Select the <b>CMSIS:RTOS2 (API):FreeRTOS</b> component.</li>
+<li>Also, add <b>RTOS:Config</b> (<b>CMSIS RTOS2</b> variant), <b>RTOS:Timers</b>, <b>RTOS:Event Groups</b>, and an applicable <b>RTOS:Heap</b> scheme.</li>
+<li><b>Save</b> the selection.</li>
+</ol>
+<div class="image">
+<img src="comp-sel-cmsis-ext.png" alt=""/>
+<div class="caption">
+CMSIS-FreeRTOS component selection</div></div>
+    <h2><a class="anchor" id="autotoc_md5"></a>
+CMSIS-FreeRTOS in uVision</h2>
 <ul>
-<li>Create a new project and select a microcontroller device.</li>
 <li>In the Manage Run-Time Environment window, select <b>::Device:Startup</b>, <b>::CMSIS::RTOS2 (API)::FreeRTOS</b>, <b>::RTOS:CORE</b> in the <b>FreeRTOS</b> variant, <b>::RTOS:Config</b> in the <b>CMSIS RTOS2</b> variant, <b>::RTOS:Timers</b>, <b>::RTOS:Event Groups</b>, and an applicable <b>::RTOS:Heap</b> scheme (for more information on the heap schemes, visit the FreeRTOS documentation):</li>
 </ul>
 <div class="image">
@@ -286,13 +313,9 @@ Manage RTE FreeRTOS RTOS2</div></div>
     <p><br  />
 </p><ul>
 <li>If the <b>Validation Output</b> requires other components to be present, try to use the <b>Resolve</b> button.</li>
-<li>Click <b>OK</b>. In the <b>Project</b> window, you will see the files that have been automatically added to your project, such as <b>FreeRTOSConfig.h</b>, the source code files, as well as the system and startup files:</li>
+<li>Click <b>OK</b>.</li>
 </ul>
-<div class="image">
-<img src="project_window_freertos_rtos2.png" alt=""/>
-<div class="caption">
-Project Window FreeRTOS RTOS2</div></div>
-    <h2><a class="anchor" id="configure_cmsis_freertos"></a>
+<h2><a class="anchor" id="configure_cmsis_freertos"></a>
 Configure CMSIS-FreeRTOS</h2>
 <p>When you have created the CMSIS-FreeRTOS project, you can configure the real-time operating system using the <b>FreeRTOSConfig.h</b> file. It can be opened using the Configuration Wizard view:</p>
 <div class="image">
@@ -452,7 +475,7 @@ Add Event Recorder Visibility</h2>
 Create a Mixed-Interface Project</h1>
 <p>Using CMSIS-RTOS2 API and native FreeRTOS API simultaneously is possible and some projects do require using the native FreeRTOS API and the CMSIS-RTOS2 API at the same time. Such project should be <a class="el" href="#create_cmsis_project">created as CMSIS-FreeRTOS project</a>.</p>
 <p>Depending on the application requirements, FreeRTOS kernel can be started either by using FreeRTOS native API or by using CMSIS-RTOS2 API.</p>
-<h2><a class="anchor" id="autotoc_md2"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Start the Kernel Using CMSIS-RTOS2 API</h2>
 <div class="fragment"><div class="line"><span class="comment">/*</span></div>
 <div class="line"><span class="comment">  Application thread: Initialize and start the Application</span></div>
@@ -487,7 +510,7 @@ Start the Kernel Using CMSIS-RTOS2 API</h2>
 <ul>
 <li><code>vTaskStartScheduler</code> must not be called</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Start the Kernel Using Native API</h2>
 <div class="fragment"><div class="line"><span class="comment">/*</span></div>
 <div class="line"><span class="comment">  Application main thread: Initialize and start the application</span></div>
@@ -564,7 +587,7 @@ Configure Event Recorder</h1>
 <td class="markdownTableBodyNone">0x0F   </td><td class="markdownTableBodyNone">Enable generation of all events   </td></tr>
 </table>
 <p>Definitions <code>configEVR_LEVEL_x</code> set the recording level bitmask for events generated by each function group. They are taken into account only when recording level filter setup is enabled. Default value is <code>0x05</code>.</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Debug a CMSIS-FreeRTOS Project</h1>
 <p><b>Note:</b> The following only applies when used with <a href="https://developer.arm.com/Tools%20and%20Software/Keil%20MDK">Arm Keil MDK</a>. If you are using a different toolchain, please consult its user's manual.</p>
 <p>Apart from the debug capabilities that <a class="el" href="#configure_evr">Event Recorder</a> offers, Keil MDK also supports thread-aware breakpoints, just like for the standard CMSIS-RTOS.</p>
