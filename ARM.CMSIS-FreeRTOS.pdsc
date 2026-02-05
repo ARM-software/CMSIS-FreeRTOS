@@ -12,6 +12,7 @@
     </licenseSet>
   </licenseSets>
   <url>https://www.keil.com/pack/</url>
+  <repository type="git">https://github.com/ARM-software/CMSIS-FreeRTOS.git</repository>
 
   <releases>
     <release version="11.2.1-dev">
