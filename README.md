@@ -1,3 +1,9 @@
+[![License Apache--2.0](https://img.shields.io/badge/License-Apache--2.0-green?label=License)](https://github.com/Arm-Software/CMSIS-FreeRTOS/blob/main/LICENSE)
+[![License MIT](https://img.shields.io/badge/License-MIT-yellow?label=License)](https://github.com/Arm-Software/CMSIS-FreeRTOS/blob/main/LICENSE)
+[![Build Examples](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/examples.yaml?logo=arm&logoColor=0091bd&label=Build%20Examples)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/examples.yaml)
+[![RTOS2 Validation](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/examples.yaml?logo=arm&logoColor=0091bd&label=RTOS%20Validation)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/cmsis_rv2.yaml)
+[![Build pack](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/build.yaml?logo=arm&logoColor=0091bd&label=Build%20pack)](./.github/workflows/build.yaml)
+
 # CMSIS-FreeRTOS
 
 This repository contains the CMSIS-RTOS adoption of [FreeRTOS-Kernel Version 11.2.0](https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V11.2.0/FreeRTOS-KernelV11.2.0.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
