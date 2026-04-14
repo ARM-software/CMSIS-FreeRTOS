@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -33,10 +33,17 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#ifdef __GNUC__
-    #include "mmsystem.h"
+#ifdef WIN32_LEAN_AND_MEAN
+    #include <winsock2.h>
 #else
+    #include <winsock.h>
+#endif
+
+#ifdef _MSC_VER
+    #include <timeapi.h>
     #pragma comment(lib, "winmm.lib")
+#else
+    #include <mmsystem.h>
 #endif
 
 #define portMAX_INTERRUPTS                          ( ( uint32_t ) sizeof( uint32_t ) * 8UL ) /* The number of bits in an uint32_t. */
@@ -144,6 +151,7 @@ static DWORD WINAPI prvSimulatedPeripheralTimer( LPVOID lpParameter )
     TickType_t xWaitTimeBetweenTicks = portTICK_PERIOD_MS;
     HANDLE hTimer = NULL;
     LARGE_INTEGER liDueTime;
+    BOOL bSuccess;
 
     /* Set the timer resolution to the maximum possible. */
     if( timeGetDevCaps( &xTimeCaps, sizeof( xTimeCaps ) ) == MMSYSERR_NOERROR )
@@ -182,7 +190,8 @@ static DWORD WINAPI prvSimulatedPeripheralTimer( LPVOID lpParameter )
 
     /* Set the Waitable Timer. The timer is set to run periodically at every
     xWaitTimeBetweenTicks milliseconds. */
-    configASSERT( SetWaitableTimer( hTimer, &liDueTime, xWaitTimeBetweenTicks, NULL, NULL, 0 ) );
+    bSuccess = SetWaitableTimer( hTimer, &liDueTime, xWaitTimeBetweenTicks, NULL, NULL, 0 );
+    configASSERT( bSuccess );
 
     while( xPortRunning == pdTRUE )
     {

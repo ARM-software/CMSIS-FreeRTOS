@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -28,7 +28,7 @@
 
     .arm
     .syntax unified
-    .section privileged_functions
+    .section privileged_functions, "ax"
 
 #define FREERTOS_ASSEMBLY
     #include "portmacro_asm.h"

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -415,6 +415,8 @@
  * number of the failing assert (for example, "vAssertCalled( __FILE__, __LINE__
  * )" or it can simple disable interrupts and sit in a loop to halt all
  * execution on the failing line for viewing in a debugger. */
+
+/* *INDENT-OFF* */
 #define configASSERT( x )         \
     if( ( x ) == 0 )              \
     {                             \
@@ -422,6 +424,7 @@
         for( ; ; )                \
         ;                         \
     }
+/* *INDENT-ON* */
 
 /******************************************************************************/
 /* FreeRTOS MPU specific definitions. *****************************************/
@@ -599,10 +602,10 @@
 
 /* Set configENABLE_MVE to 1 to enable the M-Profile Vector Extension (MVE)
  * support, or 0 to leave the MVE support disabled. This option is only
- * applicable to Cortex-M55 and Cortex-M85 ports as M-Profile Vector Extension
- * (MVE) is available only on these architectures. configENABLE_MVE must be left
- * undefined, or defined to 0 for the Cortex-M23,Cortex-M33 and Cortex-M35P
- * ports. */
+ * applicable to Cortex-M52, Cortex-M55, Cortex-M85 and STAR-MC3 ports as
+ * M-Profile Vector Extension (MVE) is available only on these architectures.
+ * configENABLE_MVE must be left undefined, or defined to 0 for the
+ * Cortex-M23,Cortex-M33 and Cortex-M35P ports. */
 #define configENABLE_MVE                  1
 
 /******************************************************************************/
@@ -650,7 +653,7 @@
 #define INCLUDE_uxTaskPriorityGet              1
 #define INCLUDE_vTaskDelete                    1
 #define INCLUDE_vTaskSuspend                   1
-#define INCLUDE_vTaskDelayUntil                1
+#define INCLUDE_xTaskDelayUntil                1
 #define INCLUDE_vTaskDelay                     1
 #define INCLUDE_xTaskGetSchedulerState         1
 #define INCLUDE_xTaskGetCurrentTaskHandle      1

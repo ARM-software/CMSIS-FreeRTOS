@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -202,8 +202,8 @@ typedef struct QueueDefinition   * QueueSetMemberHandle_t;
  *  char ucData[ 20 ];
  * };
  *
- #define QUEUE_LENGTH 10
- #define ITEM_SIZE sizeof( uint32_t )
+ * #define QUEUE_LENGTH 10
+ * #define ITEM_SIZE sizeof( uint32_t )
  *
  * // xQueueBuffer will hold the queue structure.
  * StaticQueue_t xQueueBuffer;
@@ -217,10 +217,10 @@ typedef struct QueueDefinition   * QueueSetMemberHandle_t;
  *  QueueHandle_t xQueue1;
  *
  *  // Create a queue capable of containing 10 uint32_t values.
- *  xQueue1 = xQueueCreate( QUEUE_LENGTH, // The number of items the queue can hold.
- *                          ITEM_SIZE     // The size of each item in the queue
- *                          &( ucQueueStorage[ 0 ] ), // The buffer that will hold the items in the queue.
- *                          &xQueueBuffer ); // The buffer that will hold the queue structure.
+ *  xQueue1 = xQueueCreateStatic( QUEUE_LENGTH,             // The number of items the queue can hold.
+ *                                ITEM_SIZE,                // The size of each item in the queue.
+ *                                &( ucQueueStorage[ 0 ] ), // The buffer that will hold the items in the queue.
+ *                                &xQueueBuffer );          // The buffer that will hold the queue structure.
  *
  *  // The queue is guaranteed to be created successfully as no dynamic memory
  *  // allocation is used.  Therefore xQueue1 is now a handle to a valid queue.
@@ -1026,7 +1026,11 @@ void vQueueDelete( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
  *  // Now the buffer is empty we can switch context if necessary.
  *  if( xHigherPriorityTaskWoken )
  *  {
- *      taskYIELD ();
+ *      // As xHigherPriorityTaskWoken is now set to pdTRUE then a context
+ *      // switch should be requested. The macro used is port specific and
+ *      // will be either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() -
+ *      // refer to the documentation page for the port being used.
+ *      portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
  *  }
  * }
  * @endcode
@@ -1098,7 +1102,11 @@ void vQueueDelete( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
  *  // Now the buffer is empty we can switch context if necessary.
  *  if( xHigherPriorityTaskWoken )
  *  {
- *      taskYIELD ();
+ *      // As xHigherPriorityTaskWoken is now set to pdTRUE then a context
+ *      // switch should be requested. The macro used is port specific and
+ *      // will be either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() -
+ *      // refer to the documentation page for the port being used.
+ *      portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
  *  }
  * }
  * @endcode
@@ -1429,23 +1437,27 @@ BaseType_t xQueueGiveFromISR( QueueHandle_t xQueue,
  * // ISR that outputs all the characters received on the queue.
  * void vISR_Routine( void )
  * {
- * BaseType_t xTaskWokenByReceive = pdFALSE;
+ * BaseType_t xHigherPriorityTaskWoken = pdFALSE;
  * char cRxedChar;
  *
- *  while( xQueueReceiveFromISR( xQueue, ( void * ) &cRxedChar, &xTaskWokenByReceive) )
+ *  while( xQueueReceiveFromISR( xQueue, ( void * ) &cRxedChar, &xHigherPriorityTaskWoken) )
  *  {
  *      // A character was received.  Output the character now.
  *      vOutputCharacter( cRxedChar );
  *
  *      // If removing the character from the queue woke the task that was
- *      // posting onto the queue xTaskWokenByReceive will have been set to
+ *      // posting onto the queue xHigherPriorityTaskWoken will have been set to
  *      // pdTRUE.  No matter how many times this loop iterates only one
  *      // task will be woken.
  *  }
  *
- *  if( xTaskWokenByReceive != ( char ) pdFALSE;
+ *  if( xHigherPrioritytaskWoken == pdTRUE );
  *  {
- *      taskYIELD ();
+ *      // As xHigherPriorityTaskWoken is now set to pdTRUE then a context
+ *      // switch should be requested. The macro used is port specific and
+ *      // will be either portYIELD_FROM_ISR() or portEND_SWITCHING_ISR() -
+ *      // refer to the documentation page for the port being used.
+ *      portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
  *  }
  * }
  * @endcode

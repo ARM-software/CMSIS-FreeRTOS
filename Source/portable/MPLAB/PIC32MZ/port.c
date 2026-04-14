@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -233,6 +233,11 @@ static void prvTaskExitError( void )
 __attribute__(( weak )) void vApplicationSetupTickTimerInterrupt( void )
 {
 const uint32_t ulCompareMatch = ( (configPERIPHERAL_CLOCK_HZ / portTIMER_PRESCALE) / configTICK_RATE_HZ ) - 1UL;
+
+    /* PR1 is 16-bit. Ensure that the configPERIPHERAL_CLOCK_HZ and
+     * configTICK_RATE_HZ are defined such that ulCompareMatch value would fit
+     * in 16-bits. */
+    configASSERT( ( ulCompareMatch & 0xFFFF0000 ) == 0 );
 
     T1CON = 0x0000;
     T1CONbits.TCKPS = portPRESCALE_BITS;

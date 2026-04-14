@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -28,17 +28,6 @@
 
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
-
-#ifdef WIN32_LEAN_AND_MEAN
-    #include <winsock2.h>
-#else
-    #include <winsock.h>
-#endif
-
-#include <windows.h>
-#include <timeapi.h>
-#include <mmsystem.h>
-#include <winbase.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -156,22 +145,25 @@ void vPortExitCritical( void );
                          : "cc" )
 
     #else /* __GNUC__ */
+        #include <intrin.h>
 
         /* BitScanReverse returns the bit position of the most significant '1'
          * in the word. */
         #if defined( __x86_64__ ) || defined( _M_X64 )
+            #pragma intrinsic(_BitScanReverse64)
 
             #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities )    \
             do                                                                      \
             {                                                                       \
-                DWORD ulTopPriority;                                                \
+                unsigned long ulTopPriority;                                        \
                 _BitScanReverse64( &ulTopPriority, ( uxReadyPriorities ) );         \
                 uxTopPriority = ulTopPriority;                                      \
             } while( 0 )
 
         #else /* #if defined( __x86_64__ ) || defined( _M_X64 ) */
+            #pragma intrinsic(_BitScanReverse)
 
-            #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities )    _BitScanReverse( ( DWORD * ) &( uxTopPriority ), ( uxReadyPriorities ) )
+            #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities )    _BitScanReverse( ( unsigned long * ) &( uxTopPriority ), ( uxReadyPriorities ) )
 
         #endif /* #if defined( __x86_64__ ) || defined( _M_X64 ) */
 
