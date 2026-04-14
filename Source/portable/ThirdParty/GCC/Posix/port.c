@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2020 Cambridge Consultants Ltd.
  *
  * SPDX-License-Identifier: MIT
@@ -48,8 +48,8 @@
 * stdio (printf() and friends) should be called from a single task
 * only or serialized with a FreeRTOS primitive such as a binary
 * semaphore or mutex.
-* 
-* Note: When using LLDB (the default debugger on macOS) with this port, 
+*
+* Note: When using LLDB (the default debugger on macOS) with this port,
 * suppress SIGUSR1 to prevent debugger interference. This can be
 * done by adding the following line to ~/.lldbinit:
 * `process handle SIGUSR1 -n true -p false -s false`
@@ -140,6 +140,8 @@ static void prvThreadKeyDestructor( void * pvData )
 static void prvInitThreadKey( void )
 {
     pthread_key_create( &xThreadKey, prvThreadKeyDestructor );
+    /* Destroy xThreadKey when the process exits. */
+    atexit( prvDestroyThreadKey );
 }
 /*-----------------------------------------------------------*/
 
@@ -193,7 +195,7 @@ void prvFatalError( const char * pcCall,
 }
 /*-----------------------------------------------------------*/
 
-static void prvPortSetCurrentThreadName( char * pxThreadName )
+static void prvPortSetCurrentThreadName( const char * pxThreadName )
 {
     #ifdef __APPLE__
         pthread_setname_np( pxThreadName );
@@ -227,6 +229,7 @@ StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
     /* Ensure that there is enough space to store Thread_t on the stack. */
     ulStackSize = ( size_t ) ( pxTopOfStack + 1 - pxEndOfStack ) * sizeof( *pxTopOfStack );
     configASSERT( ulStackSize > sizeof( Thread_t ) );
+    ( void ) ulStackSize; /* suppress set but not used warning */
 
     thread->pxCode = pxCode;
     thread->pvParams = pvParameters;
@@ -315,8 +318,6 @@ BaseType_t xPortStartScheduler( void )
     /* Restore original signal mask. */
     ( void ) pthread_sigmask( SIG_SETMASK, &xSchedulerOriginalSignalMask, NULL );
 
-    prvDestroyThreadKey();
-
     return 0;
 }
 /*-----------------------------------------------------------*/
@@ -324,17 +325,23 @@ BaseType_t xPortStartScheduler( void )
 void vPortEndScheduler( void )
 {
     Thread_t * pxCurrentThread;
+    BaseType_t xIsFreeRTOSThread;
 
     /* Stop the timer tick thread. */
     xTimerTickThreadShouldRun = false;
     pthread_join( hTimerTickThread, NULL );
+
+    /* Check whether the current thread is a FreeRTOS thread.
+     * This has to happen before the scheduler is signaled to exit
+     * its loop to prevent data races on the thread key. */
+    xIsFreeRTOSThread = prvIsFreeRTOSThread();
 
     /* Signal the scheduler to exit its loop. */
     xSchedulerEnd = pdTRUE;
     ( void ) pthread_kill( hMainThread, SIG_RESUME );
 
     /* Waiting to be deleted here. */
-    if( prvIsFreeRTOSThread() == pdTRUE )
+    if( xIsFreeRTOSThread == pdTRUE )
     {
         pxCurrentThread = prvGetThreadFromTask( xTaskGetCurrentTaskHandle() );
         event_wait( pxCurrentThread->ev );

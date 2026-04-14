@@ -825,7 +825,7 @@
     </component>
 
      <!-- FreeRTOS kernel components -->
-    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="11.2.0">
+    <bundle Cbundle="FreeRTOS" Cclass="RTOS" Cversion="11.3.0">
       <description>FreeRTOS Real Time Kernel</description>
       <doc>https://www.freertos.org/RTOS.html</doc>
 
@@ -1346,7 +1346,7 @@
         </RTE_Components_h>
         <files>
           <file category="doc"    name="Documentation/html/page_create_project.html#configure_native_freertos"/>
-          <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.2.0"/>
+          <file category="header" attr="config" name="Source/examples/template_configuration/FreeRTOSConfig.h" version="11.3.0"/>
         </files>
       </component>
 

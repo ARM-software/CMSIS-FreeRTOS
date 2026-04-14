@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.2.0
+ * FreeRTOS Kernel V11.3.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * Copyright (c) 2021 Raspberry Pi (Trading) Ltd.
  *
@@ -38,6 +38,7 @@
 
 #include "pico.h"
 #include "hardware/sync.h"
+#include "rp2040_config.h"
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -149,6 +150,10 @@ extern void vPortYield( void );
         __asm volatile ( "mrs %0, IPSR" : "=r" ( ulIPSR )::); \
         ( ( uint8_t ) ulIPSR ) > 0; } )
 
+/* Use #define rather than inline method to make it easier for user code
+ * to work with kernel versions both with and without xPortIsInsideInterrupt */
+#define xPortIsInsideInterrupt() ((BaseType_t)portCHECK_IF_IN_ISR())
+
 void vYieldCore( int xCoreID );
 #define portYIELD_CORE( a )                  vYieldCore( a )
 
@@ -227,7 +232,7 @@ static inline void vPortRecursiveLock( BaseType_t xCoreID,
             if( ucOwnedByCore[ xCoreID ][ ulLockNum ] )
             {
                 configASSERT( ucRecursionCountByLock[ ulLockNum ] != 255u );
-                ucRecursionCountByLock[ ulLockNum ]++;
+                ucRecursionCountByLock[ ulLockNum ] = ucRecursionCountByLock[ ulLockNum ] + 1;
                 return;
             }
             spin_lock_unsafe_blocking(pxSpinLock);
@@ -241,7 +246,8 @@ static inline void vPortRecursiveLock( BaseType_t xCoreID,
         configASSERT( ( ucOwnedByCore[ xCoreID ] [ulLockNum ] ) != 0 );
         configASSERT( ucRecursionCountByLock[ ulLockNum ] != 0 );
 
-        if( !--ucRecursionCountByLock[ ulLockNum ] )
+        ucRecursionCountByLock[ ulLockNum ] = ucRecursionCountByLock[ ulLockNum ] - 1;
+        if ( ucRecursionCountByLock[ ulLockNum ] == 0U )
         {
             ucOwnedByCore[ xCoreID ] [ ulLockNum ] = 0;
             spin_unlock_unsafe(pxSpinLock);
