@@ -1708,7 +1708,7 @@
   </components>
 
   <examples>
-    <example name="Blinky" folder="CMSIS/RTOS2/FreeRTOS/RefApp/Blinky" doc="./Blinky/README.md">
+    <example name="Blinky" folder="CMSIS/RTOS2/FreeRTOS/RefApp/Blinky" doc="./README.md">
       <description>CMSIS-RTOS2 based Blinky application using FreeRTOS</description>
       <project>
         <environment name="csolution" load="Blinky.csolution.yml"/>

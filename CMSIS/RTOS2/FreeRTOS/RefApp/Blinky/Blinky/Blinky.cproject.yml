@@ -28,9 +28,12 @@ project:
 
   # List of source groups and files added to a project or a layer.
   groups:
+    - group: Documentation
+      files:
+        - file: ../README.md
+
     - group: Application
       files:
-        - file: ./README.md
         - file: ./Blinky.c
 
   # List of layers used in a project.

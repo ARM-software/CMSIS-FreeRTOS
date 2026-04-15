@@ -1,13 +1,15 @@
-# CMSIS-RTOS2 Blinky Reference Application
+# Blinky project
 
-The CMSIS-RTOS2 Blinky reference application is hardware agnostic application
-that can be used with any development board that provides pre-configured
-`stdout` and `CMSIS VIO` interface. It requires [software layer](https://open-cmsis-pack.github.io/cmsis-toolbox/build-overview/#software-layers)
-with API drivers for the specific target hardware.
+The **Blinky** project is a simple example that can be used to verify the
+basic tool setup.
 
-Use [Arm Keil Studio extensions for VS Code](https://marketplace.visualstudio.com/items?itemName=Arm.keil-studio-pack)
-to [deploy this example](https://mdk-packs.github.io/vscode-cmsis-solution-docs/create_app.html#configure-a-solution)
-to your development board.
+It is compliant to the Common Microcontroller Software Interface Standard (CMSIS)
+and uses the CMSIS-RTOS2 API interface for RTOS functionality. The CMSIS-RTOS2 API
+is available with various real-time operating systems, for example RTX5 or FreeRTOS.
 
-See [CMSIS-Toolbox - Reference Applications](https://open-cmsis-pack.github.io/cmsis-toolbox/ReferenceApplications/)
-to learn more about the concept of reference application in Open CMSIS Pack.
+## Operation
+
+- At start:
+  - outputs "Blinky example" to STDOUT
+  - blinks vioLED0 in 1 sec interval.
+- The vioBUTTON0 changes the blink frequency and start/stops vioLED1.
