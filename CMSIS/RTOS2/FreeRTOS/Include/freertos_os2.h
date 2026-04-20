@@ -30,8 +30,13 @@
 
 #if defined(_RTE_)
 #include "RTE_Components.h"             // Component selection
+#elif !defined(CMSIS_device_header)
+#error "CMSIS_device_header must be defined to point to CMSIS device header"
+#endif
+
 #include CMSIS_device_header
 
+#if defined(_RTE_)
 /* Configuration and component setup check */
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   #if !defined(EVR_FREERTOS_DISABLE)
