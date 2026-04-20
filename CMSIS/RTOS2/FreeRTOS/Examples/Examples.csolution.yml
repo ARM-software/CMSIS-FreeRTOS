@@ -1,5 +1,5 @@
 solution:
-  created-for: CMSIS-Toolbox@2.8.0
+  created-for: CMSIS-Toolbox@2.12.0
   cdefault:
 
   select-compiler:
@@ -32,75 +32,196 @@ solution:
     - type: CM0
       device: ARMCM0
       variables:
-        - Target-Layer: ../../Target/CM0/Target.clayer.yml
+        - Board-Layer: ../../Board/CM0/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M0
+            config-file: Board/CM0/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM0plus
       device: ARMCM0P
       variables:
-        - Target-Layer: ../../Target/CM0plus/Target.clayer.yml
+        - Board-Layer: ../../Board/CM0plus/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M0plus
+            config-file: Board/CM0plus/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM3
       device: ARMCM3
       variables:
-        - Target-Layer: ../../Target/CM3/Target.clayer.yml
+        - Board-Layer: ../../Board/CM3/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M3
+            config-file: Board/CM3/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM4
       device: ARMCM4
       variables:
-        - Target-Layer: ../../Target/CM4/Target.clayer.yml
+        - Board-Layer: ../../Board/CM4/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M4
+            config-file: Board/CM4/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM7
       device: ARMCM7
       variables:
-        - Target-Layer: ../../Target/CM7/Target.clayer.yml
+        - Board-Layer: ../../Board/CM7/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M7
+            config-file: Board/CM7/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM23
       device: ARMCM23
       define:
         - NS_APP_START_ADDRESS: 0x00200000
       variables:
-        - Target-Layer: ../../../Target/CM23/Target.clayer.yml
+        - Board-Layer: ../../../Board/CM23/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: TZ_NonSecure.Debug
+            - project-context: TZ_Secure.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M23
+            config-file: Board/CM23/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM23_noTZ
       device: ARMCM23
       variables:
-        - Target-Layer: ../../Target/CM23_noTZ/Target.clayer.yml
+        - Board-Layer: ../../Board/CM23_noTZ/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M23
+            config-file: Board/CM23_noTZ/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM33
       device: ARMCM33
       define:
         - NS_APP_START_ADDRESS: 0x00200000
       variables:
-        - Target-Layer: ../../../Target/CM33/Target.clayer.yml
+        - Board-Layer: ../../../Board/CM33/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: TZ_NonSecure.Debug
+            - project-context: TZ_Secure.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M33
+            config-file: Board/CM33/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM33_noTZ
       device: ARMCM33
       variables:
-        - Target-Layer: ../../Target/CM33_noTZ/Target.clayer.yml
+        - Board-Layer: ../../Board/CM33_noTZ/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_MPS2_Cortex-M33
+            config-file: Board/CM33_noTZ/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM55
       device: ARMCM55
       define:
         - NS_APP_START_ADDRESS: 0x01000000
       variables:
-        - Target-Layer: ../../../Target/CM55/Target.clayer.yml
+        - Board-Layer: ../../../Board/CM55/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: TZ_NonSecure.Debug
+            - project-context: TZ_Secure.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_Corstone_SSE-300
+            config-file: Board/CM55/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM55_noTZ
       device: ARMCM55
       variables:
-        - Target-Layer: ../../Target/CM55_noTZ/Target.clayer.yml
+        - Board-Layer: ../../Board/CM55_noTZ/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_Corstone_SSE-300
+            config-file: Board/CM55_noTZ/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM85
       device: ARMCM85
       define:
         - NS_APP_START_ADDRESS: 0x01100000
       variables:
-        - Target-Layer: ../../../Target/CM85/Target.clayer.yml
+        - Board-Layer: ../../../Board/CM85/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: TZ_NonSecure.Debug
+            - project-context: TZ_Secure.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_Corstone_SSE-310
+            config-file: Board/CM85/fvp_config.txt
+            args: --simlimit 25
 
     - type: CM85_noTZ
       device: ARMCM85
       variables:
-        - Target-Layer: ../../Target/CM85_noTZ/Target.clayer.yml
+        - Board-Layer: ../../Board/CM85_noTZ/Board.clayer.yml
+      target-set:
+        - set:
+          images:
+            - project-context: Hello.Debug
+          debugger:
+            name: Arm-FVP
+            model: FVP_Corstone_SSE-310
+            config-file: Board/CM85_noTZ/fvp_config.txt
+            args: --simlimit 25
 
   build-types:
     - type: Debug
@@ -120,14 +241,14 @@ solution:
         - +CM55_noTZ
         - +CM85_noTZ
 
-    - project: ./App/TrustZone/Secure/TZ_Secure.cproject.yml
+    - project: ./App/TrustZone/NonSecure/TZ_NonSecure.cproject.yml
       for-context:
         - +CM23
         - +CM33
         - +CM55
         - +CM85
 
-    - project: ./App/TrustZone/NonSecure/TZ_NonSecure.cproject.yml
+    - project: ./App/TrustZone/Secure/TZ_Secure.cproject.yml
       for-context:
         - +CM23
         - +CM33

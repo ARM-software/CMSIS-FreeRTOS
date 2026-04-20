@@ -4,11 +4,9 @@ project:
     trustzone: secure
 
   packs:
-    - pack: ARM::CMSIS@>=6.0.0
     - pack: ARM::CMSIS-FreeRTOS
 
   components:
-    - component: CMSIS:CORE
     - component: RTOS&FreeRTOS:TrustZone
 
   groups:
@@ -18,11 +16,18 @@ project:
 
     - group: Secure Code
       files:
-        - file: main_s.c
+        - file: app_main_s.c
 
     - group: Secure Library
       files:
         - file: library_nsc.c
 
   layers:
-    - layer: $Target-Layer$
+    - layer: $Board-Layer$
+
+  # List executable file formats to be generated.
+  output:
+    type:
+      - elf
+      - hex
+      - map

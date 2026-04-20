@@ -260,7 +260,7 @@
 //  <i> Enable this setting when FreeRTOS runs on the Secure side only.
 //  <i> This setting is only relevant on ARMv8-M ports.
 //  <i> Default: 1
-#define configRUN_FREERTOS_SECURE_ONLY            0
+#define configRUN_FREERTOS_SECURE_ONLY            1
 
 //  <q>Use TrustZone Security Extension
 //  <i> Using TrustZone affects context handling.

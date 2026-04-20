@@ -3,12 +3,10 @@ project:
 
   packs:
     - pack: ARM::CMSIS@>=6.0.0
-    - pack: ARM::Cortex_DFP
     - pack: ARM::CMSIS-FreeRTOS
     - pack: ARM::CMSIS-View
 
   components:
-    - component: CMSIS:CORE
     - component: CMSIS:OS Tick:SysTick
     - component: CMSIS:RTOS2:FreeRTOS&Cortex-M
     - component: CMSIS-View:Event Recorder&Semihosting
@@ -26,10 +24,13 @@ project:
     - group: Application
       files:
         - file: hello.c
-    - group: Board
-      files:
-        - file: main.c
 
   layers:
-    - layer: $Target-Layer$
-      type: Target
+    - layer: $Board-Layer$
+
+  # List executable file formats to be generated.
+  output:
+    type:
+      - elf
+      - hex
+      - map

@@ -1,5 +1,5 @@
-/*---------------------------------------------------------------------------
- * Copyright (c) 2024 Arm Limited (or its affiliates). All rights reserved.
+/*
+ * Copyright 2024, 2026 Arm Limited and/or its affiliates.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,16 +14,26 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *---------------------------------------------------------------------------*/
+ */
 
 #include <stdio.h>
-#include "main.h"
-#include "cmsis_os2.h"
 
-/*---------------------------------------------------------------------------
- * Application main thread
- *---------------------------------------------------------------------------*/
-static void app_main (void *argument) {
+#include "cmsis_os2.h"
+#include "main.h"
+
+/* Thread attributes */
+const osThreadAttr_t thread_attr_main  = {
+  .name = "app_main",
+  .stack_size = 1024U,
+};
+
+/* Thread IDs */
+osThreadId_t thread_id_main;
+
+/*
+  Application main thread.
+*/
+__NO_RETURN void app_main_thread (void *argument) {
   (void)argument;
 
   for(int count = 0; count < 10; count++) {
@@ -31,11 +41,22 @@ static void app_main (void *argument) {
     osDelay(1000U);
   }
   osDelay(osWaitForever);
+  for(;;);
 }
 
-/*---------------------------------------------------------------------------
- * Application initialization
- *---------------------------------------------------------------------------*/
-void app_initialize (void) {
-  osThreadNew(app_main, NULL, NULL);
+/*
+  Application initialization.
+*/
+int app_main (void) {
+
+  /* Initialize CMSIS-RTOS2 */
+  osKernelInitialize();
+
+  /* Create application main thread */
+  thread_id_main = osThreadNew(app_main_thread, NULL, &thread_attr_main);
+
+  /* Start thread execution */
+  osKernelStart();
+
+  return 0;
 }

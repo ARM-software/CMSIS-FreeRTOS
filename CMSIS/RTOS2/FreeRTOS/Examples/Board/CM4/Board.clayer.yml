@@ -1,0 +1,53 @@
+layer:
+  type: Board
+  description: Board layer for MPS2 based Cortex-M4 FVP
+  for-device: ARM::ARMCM4
+
+  # Processor features used in this project.
+  processor:
+    fpu: sp
+
+  # List connections used to identify compatible software layers.
+  connections:
+    - connect: FVP_MPS2_Cortex-M4
+      provides:
+        - CMSIS_VIO
+        - STDIN
+        - STDOUT
+        - STDERR
+        - Heap: 65536         # configured in RTE/Device/ARMCM4/regions_ARMCM4.h
+
+  # List of #define statements passed via the command line to the build tool.
+  define:
+    - CMSIS_target_header: \"ARMCM4.h\"
+
+  # List the packs used in the layer.
+  packs:
+    - pack: ARM::CMSIS@^6.0.0
+    - pack: ARM::Cortex_DFP@^1.1.0
+
+  # List of include paths passed via the command line to the build tool.
+  add-path:
+    - ./
+
+  # List components to use for your application.
+  components:
+    - component: CMSIS:CORE
+    - component: Device:Startup&C Startup
+    - component: CMSIS Driver:VIO:Custom
+
+  # List of source groups and files added to a project or a layer.
+  groups:
+    - group: Board
+      files:
+        - file: ./main.c
+        - file: ./main.h
+        - file: ./vio_custom.c
+
+    - group: FVP
+      files:
+        - file: ./fvp_config.txt
+
+  # Linker configuration and definitions.
+  linker:
+    - regions: RTE/Device/$Dname$/regions_$Dname$.h

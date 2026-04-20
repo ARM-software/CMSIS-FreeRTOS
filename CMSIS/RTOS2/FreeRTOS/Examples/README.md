@@ -71,8 +71,9 @@ cbuild list contexts Examples.csolution.yml
 ### Hello World example
 
 - Build example project for Cortex-M3
+
   ```sh
-  cbuild Examples.csolution.yml --context Hello.Debug+CM3 --update-rte
+  cbuild Examples.csolution.yml --context Hello.Debug+CM3
   ```
 
 ### TrustZone example (for ArmV8-M with TrustZone)
@@ -81,11 +82,11 @@ TrustZone example must always be build in two steps:
 
 1. Build secure side project for Cortex-M55
    ```sh
-   cbuild Examples.csolution.yml --context TZ_Secure.Debug+CM55 --update-rte
+   cbuild Examples.csolution.yml --context TZ_Secure.Debug+CM55
    ```
 2. Build non-secure side project for Cortex-M55
    ```sh
-   cbuild Examples.csolution.yml --context TZ_NonSecure.Debug+CM55 --update-rte
+   cbuild Examples.csolution.yml --context TZ_NonSecure.Debug+CM55
    ```
 
 ## Run Example Project on Virtual Hardware Target model
@@ -97,11 +98,19 @@ Run command syntax:
 Examples:
 
 - Run Hello World project executable on Cortex-M3 model
+
 ```sh
-FVP_MPS2_Cortex-M3 -f ./Target/CM3/fvp_config.txt ./out/Hello/Hello.axf
+FVP_MPS2_Cortex-M3 -f ./Board/CM3/fvp_config.txt ./out/Hello/CM3/Debug/Hello.axf --simlimit 25
+```
+
+- Run Hello World project executable on Cortex-M55 model
+
+```sh
+FVP_Corstone_SSE-300 -f ./Board/CM55_noTZ/fvp_config.txt ./out/Hello/CM55_noTZ/Debug/Hello.axf --simlimit 25
 ```
 
 - Run TrustZone executable on model for Cortex-M55
+
 ```sh
-FVP_Corstone_SSE-300 -f ./Target/CM55/fvp_config.txt -a ./out/TZ_NonSecure/TZ_NonSecure.axf -a ./out/TZ_Secure/TZ_Secure.axf
+FVP_Corstone_SSE-300 -f ./Board/CM55/fvp_config.txt -a ./out/TZ_NonSecure/CM55/Debug/TZ_NonSecure.axf -a ./out/TZ_Secure/CM55/Debug/TZ_Secure.axf --simlimit 25
 ```
