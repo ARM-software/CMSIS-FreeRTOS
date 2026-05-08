@@ -1,14 +1,5 @@
-/******************************************************************************
- * @file     irq_handler.c
- * @brief    CMSIS-FreeRTOS Interrupt Handler
- * @version  9.1.0
- * @date     11 Aug 2017
- *
- * @note
- *
- ******************************************************************************/
 /*
- * Copyright (c) 2017 Arm Limited. All rights reserved.
+ * Copyright 2017-2018, 2026 Arm Limited and/or its affiliates.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -27,7 +18,12 @@
 
 #include <stddef.h>
 
+#if defined(_RTE_)
 #include "RTE_Components.h"
+#elif !defined(CMSIS_device_header)
+#error "CMSIS_device_header must be defined to point to CMSIS device header"
+#endif
+
 #include CMSIS_device_header
 #include "irq_ctrl.h"
 

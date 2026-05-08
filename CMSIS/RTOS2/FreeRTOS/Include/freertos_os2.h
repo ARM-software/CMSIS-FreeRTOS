@@ -30,6 +30,10 @@
 
 #if defined(_RTE_)
 #include "RTE_Components.h"             // Component selection
+#elif !defined(CMSIS_device_header)
+#error "CMSIS_device_header must be defined to point to CMSIS device header"
+#endif
+
 #include CMSIS_device_header
 
 /* Configuration and component setup check */
@@ -54,7 +58,6 @@
 #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
   #define USE_FreeRTOS_HEAP_5
 #endif
-#endif /* _RTE_ */
 
 /*
   CMSIS-RTOS2 FreeRTOS image size optimization definitions.
