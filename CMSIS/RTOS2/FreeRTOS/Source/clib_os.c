@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- 
- * Copyright (c) 2024-2025 Arm Limited. All rights reserved.
+ * Copyright 2024-2026 Arm Limited and/or its affiliates.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -26,6 +26,12 @@
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "semphr.h"                     // ARM.FreeRTOS::RTOS:Core
+
+#include "cmsis_compiler.h"
+
+#if defined(_RTE_)
+#include "RTE_Components.h"
+#endif
 
 /* Event Recorder initialization before entering function "main" */
 #if (defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) && !defined(__MICROLIB))

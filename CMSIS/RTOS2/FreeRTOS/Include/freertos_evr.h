@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------------
- * Copyright (c) 2013-2025 Arm Limited. All rights reserved.
+ * Copyright 2013-2026 Arm Limited and/or its affiliates.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -26,7 +26,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#if defined(_RTE_)
 #include "RTE_Components.h"
+#endif
 
 #if !defined(RTE_Compiler_EventRecorder) && !defined(RTE_CMSIS_View_EventRecorder)
   /* Disable debug events if Event Recorder is not used */

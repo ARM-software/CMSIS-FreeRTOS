@@ -36,7 +36,6 @@
 
 #include CMSIS_device_header
 
-#if defined(_RTE_)
 /* Configuration and component setup check */
 #if defined(RTE_Compiler_EventRecorder) || defined(RTE_CMSIS_View_EventRecorder)
   #if !defined(EVR_FREERTOS_DISABLE)
@@ -59,7 +58,6 @@
 #if defined(RTE_RTOS_FreeRTOS_HEAP_5)
   #define USE_FreeRTOS_HEAP_5
 #endif
-#endif /* _RTE_ */
 
 /*
   CMSIS-RTOS2 FreeRTOS image size optimization definitions.
