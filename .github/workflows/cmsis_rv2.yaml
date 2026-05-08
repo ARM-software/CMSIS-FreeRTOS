@@ -49,27 +49,22 @@ jobs:
           repository: ARM-software/Cortex_DFP
           path: Cortex_DFP
   
-      - name: Setup Python 3.10
+      - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.10'
-
-      - name: Install system packages
-        run: |
-          sudo add-apt-repository ppa:deadsnakes/ppa
-          sudo apt-get install libpython3.9 libtinfo6
+          python-version: '3.13'
 
       - name: Python requirements
         run: |
           pip install -r ./CMSIS-RTOS2_Validation/Project/requirements.txt
 
       - name: Setup vcpkg environment
-        uses: ARM-software/cmsis-actions/vcpkg@main
+        uses: ARM-software/cmsis-actions/vcpkg@v1.1
         with:
-          config: ./CMSIS-RTOS2_Validation/Project/vcpkg-configuration.json
+          config: ./CMSIS-RTOS2_Validation/.ci/vcpkg-configuration.json
 
       - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1
+        uses: ARM-software/cmsis-actions/armlm@v1.1
         with:
           server: https://mdk-preview.keil.arm.com
           product: KEMDK-COM0
