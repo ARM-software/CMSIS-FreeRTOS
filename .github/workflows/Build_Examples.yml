@@ -1,12 +1,12 @@
-name: Example
+name: Build examples
 on:
   workflow_dispatch:
   pull_request:
     paths: 
-      - .github/workflows/examples.yaml
-      - CMSIS/RTOS2/FreeRTOS/Examples/*
-      - CMSIS/RTOS2/FreeRTOS/Include/*
-      - CMSIS/RTOS2/FreeRTOS/Source/*
+      - .github/workflows/Build_Examples.yml
+      - CMSIS/RTOS2/FreeRTOS/Examples/**/*
+      - CMSIS/RTOS2/FreeRTOS/Include/**/*
+      - CMSIS/RTOS2/FreeRTOS/Source/**/*
       - Source/**/*
       - ARM.CMSIS-FreeRTOS.pdsc
   push:

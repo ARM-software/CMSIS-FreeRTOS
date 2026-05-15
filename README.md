@@ -1,8 +1,8 @@
 [![License Apache--2.0](https://img.shields.io/badge/License-Apache--2.0-green?label=License)](https://github.com/Arm-Software/CMSIS-FreeRTOS/blob/main/LICENSE)
 [![License MIT](https://img.shields.io/badge/License-MIT-yellow?label=License)](https://github.com/Arm-Software/CMSIS-FreeRTOS/blob/main/LICENSE)
-[![Build Examples](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/examples.yaml?logo=arm&logoColor=0091bd&label=Build%20Examples)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/examples.yaml)
-[![RTOS2 Validation](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/examples.yaml?logo=arm&logoColor=0091bd&label=RTOS%20Validation)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/cmsis_rv2.yaml)
-[![Build pack](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/build.yaml?logo=arm&logoColor=0091bd&label=Build%20pack)](./.github/workflows/build.yaml)
+[![Build Examples](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/Build_Examples.yml?logo=arm&logoColor=0091bd&label=Build%20Examples)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/Build_Examples.yml)
+[![RTOS2 Validation](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/cmsis_rv2.yml?logo=arm&logoColor=0091bd&label=RTOS%20Validation)](https://github.com/Arm-Software/CMSIS-FreeRTOS/tree/main/.github/workflows/cmsis_rv2.yml)
+[![Build pack](https://img.shields.io/github/actions/workflow/status/Arm-Software/CMSIS-FreeRTOS/pack.yml?logo=arm&logoColor=0091bd&label=Build%20pack)](./.github/workflows/pack.yml)
 
 # CMSIS-FreeRTOS
 
