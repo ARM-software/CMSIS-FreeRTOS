@@ -33,8 +33,6 @@ The CMSIS-FreeRTOS pack includes the following components and their variants:
 |                      | Cortex-A                | Adds support for external IRQ controller on Cortex-A processors.                    |
 | RTOS:CORE            | Cortex-M                | Core API for Cortex-M processors, providing task scheduling and communication.      |
 |                      | Cortex-M MPU            | Adds support for the Memory Protection Unit (MPU) on Cortex-M processors.           |
-|                      | Cortex-M Non-Secure     | Core API for Cortex-M, supporting TrustZone non-secure domain operation. **[Warning: Deprecated]** |
-|                      | Cortex-M Non-Secure MPU | Combines TrustZone non-secure domain support with MPU functionality. **[Warning: Deprecated]** |
 |                      | Cortex-A                | Core API for Cortex-A processors.                                                   |
 | RTOS:Config          | CMSIS RTOS2             | Configuration file tailored for the CMSIS-RTOS2 API.                                |
 |                      | FreeRTOS                | Configuration file for native FreeRTOS API usage.                                   |
@@ -52,13 +50,11 @@ The CMSIS-FreeRTOS pack includes the following components and their variants:
 
 > **NOTE**
 >
-> CMSIS-FreeRTOS 11.2.0 adds support for TrustZone **domain detection from project** settings. Regardless of the build contexts
+> CMSIS-FreeRTOS 11.2.0 added support for TrustZone **domain detection from project** settings. Regardless of the build contexts
 > (no TrustZone, TrustZone secure or non-secure domain) the below variants shall be used:
 >
 > - RTOS:CORE&Cortex-M
 > - RTOS:CORE&Cortex-M MPU
->
-> This makes **variants Cortex-M Non-Secure and Cortex-M Non-Secure MPU obsolete** and will be removed in future releases.
 
 ## Create a Native FreeRTOS Project {#create_native_project}
 
