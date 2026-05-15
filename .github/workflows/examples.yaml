@@ -37,7 +37,7 @@ jobs:
       - name: Prepare vcpkg env
         uses: ARM-software/cmsis-actions/vcpkg@main
         with:
-          config: ./CMSIS/RTOS2/FreeRTOS/Examples/vcpkg-configuration.json
+          config: ./.ci/vcpkg-configuration.json
 
       - name: Activate Arm tool license
         uses: ARM-software/cmsis-actions/armlm@v1

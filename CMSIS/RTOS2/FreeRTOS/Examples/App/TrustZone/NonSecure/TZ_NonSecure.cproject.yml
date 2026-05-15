@@ -9,7 +9,6 @@ project:
     - pack: ARM::CMSIS-View
 
   components:
-    - component: CMSIS:CORE
     - component: CMSIS:OS Tick:SysTick
     - component: CMSIS:RTOS2:FreeRTOS&Cortex-M
     - component: CMSIS-View:Event Recorder&Semihosting
@@ -27,7 +26,7 @@ project:
 
     - group: Non-secure Code
       files:
-        - file: main_ns.c
+        - file: app_main_ns.c
 
     - group: Secure Library
       files:
@@ -35,4 +34,11 @@ project:
         - file: $cmse-lib(TZ_Secure)$
 
   layers:
-    - layer: $Target-Layer$
+    - layer: $Board-Layer$
+
+  # List executable file formats to be generated.
+  output:
+    type:
+      - elf
+      - hex
+      - map
