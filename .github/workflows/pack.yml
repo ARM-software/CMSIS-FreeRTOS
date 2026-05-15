@@ -1,4 +1,4 @@
-name: Build documentation and pack
+name: Build pack
 on:
   workflow_dispatch:
   push:
@@ -7,6 +7,11 @@ on:
     branches: [ main ]
   release:
     types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pack:
     name: Generate pack
@@ -17,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch tags
-        if: ${{ github.event_name == 'release' }}
+        if: github.event_name == 'release'
         run: |
           git fetch --tags --force
 
