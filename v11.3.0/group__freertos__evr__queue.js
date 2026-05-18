@@ -1,0 +1,28 @@
+var group__freertos__evr__queue =
+[
+    [ "EvrFreeRTOSQueue_BlockingOnQueueReceive", "group__freertos__evr__queue.html#ga77583e9fe3689604c6468d7f50c6f8bb", null ],
+    [ "EvrFreeRTOSQueue_BlockingOnQueueSend", "group__freertos__evr__queue.html#ga994e678a0194fa2d2862c8d5ff165e98", null ],
+    [ "EvrFreeRTOSQueue_CreateCountingSemaphore", "group__freertos__evr__queue.html#ga22c8b04accdd44433697e8b848bed22b", null ],
+    [ "EvrFreeRTOSQueue_CreateCountingSemaphoreFailed", "group__freertos__evr__queue.html#gab5329701b85d1d3a0142f2a1817936f6", null ],
+    [ "EvrFreeRTOSQueue_CreateMutex", "group__freertos__evr__queue.html#gae20f59e74e83d37657e9950539337c0c", null ],
+    [ "EvrFreeRTOSQueue_CreateMutexFailed", "group__freertos__evr__queue.html#ga3ec552a8f0ca9630804405e6c46f75ab", null ],
+    [ "EvrFreeRTOSQueue_GiveMutexRecursive", "group__freertos__evr__queue.html#ga685d7646105897c13f096fb26257e18b", null ],
+    [ "EvrFreeRTOSQueue_GiveMutexRecursiveFailed", "group__freertos__evr__queue.html#ga133bfa4aa98cec148bbcfe7e966fd3c8", null ],
+    [ "EvrFreeRTOSQueue_QueueCreate", "group__freertos__evr__queue.html#gaf65ca7e52be7c04919cd73c9e0927c44", null ],
+    [ "EvrFreeRTOSQueue_QueueCreateFailed", "group__freertos__evr__queue.html#ga9835b0034b54ff700734ce8d96a8884e", null ],
+    [ "EvrFreeRTOSQueue_QueueDelete", "group__freertos__evr__queue.html#gade932b1d4bfc68a5c023e94e0506ca6a", null ],
+    [ "EvrFreeRTOSQueue_QueuePeek", "group__freertos__evr__queue.html#gaa3bc9dbb9e5c5deab9fed12cd2cb627f", null ],
+    [ "EvrFreeRTOSQueue_QueuePeekFromIsr", "group__freertos__evr__queue.html#ga3a76836bcf6f9a82a8b0c7d7166185af", null ],
+    [ "EvrFreeRTOSQueue_QueuePeekFromIsrFailed", "group__freertos__evr__queue.html#ga6a0c0cfd4c954e66867adcdee0d595d8", null ],
+    [ "EvrFreeRTOSQueue_QueueReceive", "group__freertos__evr__queue.html#gaa808374145d4e6c9b15573a6d4f10b44", null ],
+    [ "EvrFreeRTOSQueue_QueueReceiveFailed", "group__freertos__evr__queue.html#ga18237d199bd932452e23b75b317b45f0", null ],
+    [ "EvrFreeRTOSQueue_QueueReceiveFromIsr", "group__freertos__evr__queue.html#ga8e31694e053094dd88fecf7fc0fa764e", null ],
+    [ "EvrFreeRTOSQueue_QueueReceiveFromIsrFailed", "group__freertos__evr__queue.html#ga2fbc27227935a83ab5b90e78f5dd617e", null ],
+    [ "EvrFreeRTOSQueue_QueueRegistryAdd", "group__freertos__evr__queue.html#ga9a8c0960e13c7ba48e9416e2b17ce0fc", null ],
+    [ "EvrFreeRTOSQueue_QueueSend", "group__freertos__evr__queue.html#ga107ec0fa12e1cc88f50be0cd0531ceb0", null ],
+    [ "EvrFreeRTOSQueue_QueueSendFailed", "group__freertos__evr__queue.html#ga9b5109c8b791ec28631d98e28649ca7d", null ],
+    [ "EvrFreeRTOSQueue_QueueSendFromIsr", "group__freertos__evr__queue.html#ga0308f241666bc80e9ff3357b701aed27", null ],
+    [ "EvrFreeRTOSQueue_QueueSendFromIsrFailed", "group__freertos__evr__queue.html#gabcbc7ca489384b8fc4cf6d88a0819960", null ],
+    [ "EvrFreeRTOSQueue_TakeMutexRecursive", "group__freertos__evr__queue.html#gae523dab25c47359f13267aa5f1496a6e", null ],
+    [ "EvrFreeRTOSQueue_TakeMutexRecursiveFailed", "group__freertos__evr__queue.html#gaf0e44408b746e8fa9c2ae43494717eb0", null ]
+];
