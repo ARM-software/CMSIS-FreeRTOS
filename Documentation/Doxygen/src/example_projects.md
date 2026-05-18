@@ -75,7 +75,7 @@ cbuild list contexts Examples.csolution.yml
 To execute application image (axf or elf) on a simulation model use the following command syntax:
 
 ```shell
-<model-executable> -f ./Target/<target_type>/fvp_config.txt -a ./out/<project>/<project>.axf
+<model-executable> -f ./Board/<target_type>/fvp_config.txt ./out/<project>/<target_type>/Debug/<project>.axf
 ```
 
 ## Hello World {#example_hello_world}
@@ -101,7 +101,7 @@ The following cbuild command may be used to build Hello World example project fo
 To execute simulation model and run Hello World project executable for Cortex-M3 use the following command:
 
 ```shell
-  FVP_MPS2_Cortex-M3 -f ./Target/CM3/fvp_config.txt -a ./out/Hello/Hello.axf
+  FVP_MPS2_Cortex-M3 -f ./Board/CM3/fvp_config.txt ./out/Hello/CM3/Debug/Hello.axf --simlimit 25
 ```
 
 When executed, application outputs the following to the serial terminal:
@@ -138,7 +138,7 @@ TrustZone example must always be built in two steps:
 To execute simulation model and run TrustZone project executable for Cortex-M55 use the following command:
 
 ```shell
-  FVP_Corstone_SSE-300 -f ./Target/CM55/fvp_config.txt -a ./out/TZ_NonSecure/TZ_NonSecure.axf -a ./out/TZ_Secure/TZ_Secure.axf
+  FVP_Corstone_SSE-300 -f ./Board/CM55/fvp_config.txt -a ./out/TZ_NonSecure/CM55/Debug/TZ_NonSecure.axf -a ./out/TZ_Secure/CM55/Debug/TZ_Secure.axf --simlimit 25
 ```
 
 When executed, application outputs the following to the serial terminal:
