@@ -161,10 +161,6 @@ Pack Components</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M MPU   </td><td class="markdownTableBodyNone">Adds support for the Memory Protection Unit (MPU) on Cortex-M processors.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M Non-Secure   </td><td class="markdownTableBodyNone">Core API for Cortex-M, supporting TrustZone non-secure domain operation. <b>[Warning: Deprecated]</b>    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-M Non-Secure MPU   </td><td class="markdownTableBodyNone">Combines TrustZone non-secure domain support with MPU functionality. <b>[Warning: Deprecated]</b>    </td></tr>
-<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"></td><td class="markdownTableBodyNone">Cortex-A   </td><td class="markdownTableBodyNone">Core API for Cortex-A processors.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">RTOS:Config   </td><td class="markdownTableBodyNone">CMSIS RTOS2   </td><td class="markdownTableBodyNone">Configuration file tailored for the CMSIS-RTOS2 API.    </td></tr>
@@ -195,12 +191,11 @@ Pack Components</h1>
 </table>
 <blockquote class="doxtable">
 <p><b>NOTE</b></p>
-<p>CMSIS-FreeRTOS 11.2.0 adds support for TrustZone <b>domain detection from project</b> settings. Regardless of the build contexts (no TrustZone, TrustZone secure or non-secure domain) the below variants shall be used:</p>
+<p>CMSIS-FreeRTOS 11.2.0 added support for TrustZone <b>domain detection from project</b> settings. Regardless of the build contexts (no TrustZone, TrustZone secure or non-secure domain) the below variants shall be used:</p>
 <ul>
 <li>RTOS:CORE&amp;Cortex-M</li>
-<li>RTOS:CORE&amp;Cortex-M MPU</li>
+<li>RTOS:CORE&amp;Cortex-M MPU </li>
 </ul>
-<p>This makes <b>variants Cortex-M Non-Secure and Cortex-M Non-Secure MPU obsolete</b> and will be removed in future releases. </p>
 </blockquote>
 <h1><a class="anchor" id="create_native_project"></a>
 Create a Native FreeRTOS Project</h1>

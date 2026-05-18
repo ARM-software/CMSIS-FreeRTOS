@@ -195,7 +195,7 @@ Build via command line</h2>
 Execute on Virtual Hardware Target</h2>
 <p><a href="https://www.arm.com/products/development-tools/simulation/virtual-hardware">Arm Virtual Hardware Target</a> simulation models are used to execute the example application images.</p>
 <p>To execute application image (axf or elf) on a simulation model use the following command syntax:</p>
-<div class="fragment"><div class="line">&lt;model-executable&gt; -f ./Target/&lt;target_type&gt;/fvp_config.txt -a ./out/&lt;project&gt;/&lt;project&gt;.axf</div>
+<div class="fragment"><div class="line">&lt;model-executable&gt; -f ./Board/&lt;target_type&gt;/fvp_config.txt ./out/&lt;project&gt;/&lt;target_type&gt;/Debug/&lt;project&gt;.axf</div>
 </div><!-- fragment --><h1><a class="anchor" id="example_hello_world"></a>
 Hello World</h1>
 <p>The <b>Hello World</b> application can be used as a starting point when developing a new application. Using it, one can verify initial system setup and configuration.</p>
@@ -210,7 +210,7 @@ Hello World</h1>
 <div class="fragment"><div class="line">cbuild Examples.csolution.yml --context Hello.Debug+CM3 --update-rte</div>
 </div><!-- fragment --><h3>Execute via command line</h3>
 <p>To execute simulation model and run Hello World project executable for Cortex-M3 use the following command:</p>
-<div class="fragment"><div class="line">FVP_MPS2_Cortex-M3 -f ./Target/CM3/fvp_config.txt -a ./out/Hello/Hello.axf</div>
+<div class="fragment"><div class="line">FVP_MPS2_Cortex-M3 -f ./Board/CM3/fvp_config.txt ./out/Hello/CM3/Debug/Hello.axf --simlimit 25</div>
 </div><!-- fragment --><p>When executed, application outputs the following to the serial terminal:</p>
 <p><img src="hello_out.png" alt="" class="inline" title="Hello Output"/>    </p>
 <p>(Press Ctrl + C to stop the simulation model.)</p>
@@ -233,7 +233,7 @@ TrustZone</h1>
 </ol>
 <h3>Execute via command line</h3>
 <p>To execute simulation model and run TrustZone project executable for Cortex-M55 use the following command:</p>
-<div class="fragment"><div class="line">FVP_Corstone_SSE-300 -f ./Target/CM55/fvp_config.txt -a ./out/TZ_NonSecure/TZ_NonSecure.axf -a ./out/TZ_Secure/TZ_Secure.axf</div>
+<div class="fragment"><div class="line">FVP_Corstone_SSE-300 -f ./Board/CM55/fvp_config.txt -a ./out/TZ_NonSecure/CM55/Debug/TZ_NonSecure.axf -a ./out/TZ_Secure/CM55/Debug/TZ_Secure.axf --simlimit 25</div>
 </div><!-- fragment --><p>When executed, application outputs the following to the serial terminal:</p>
 <p><img src="trustzone_out.png" alt="" class="inline" title="TrustZone Output"/>    </p>
 <p>(Press Ctrl + C to stop the simulation model.) </p>
