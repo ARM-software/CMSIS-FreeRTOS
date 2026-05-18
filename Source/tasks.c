@@ -6489,6 +6489,7 @@ static void prvCheckTasksWaitingTermination( void )
             /* The task can only have been allocated dynamically - free both
              * the stack and TCB. */
             vPortFreeStack( pxTCB->pxStack );
+            pxTCB->pxStack = NULL;
             vPortFree( pxTCB );
         }
         #elif ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 )
@@ -6501,6 +6502,7 @@ static void prvCheckTasksWaitingTermination( void )
                 /* Both the stack and TCB were allocated dynamically, so both
                  * must be freed. */
                 vPortFreeStack( pxTCB->pxStack );
+                pxTCB->pxStack = NULL;
                 vPortFree( pxTCB );
             }
             else if( pxTCB->ucStaticallyAllocated == tskSTATICALLY_ALLOCATED_STACK_ONLY )
