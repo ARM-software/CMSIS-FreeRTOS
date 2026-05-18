@@ -15,14 +15,8 @@
   <repository type="git">https://github.com/ARM-software/CMSIS-FreeRTOS.git</repository>
 
   <releases>
-    <release version="11.2.1-dev">
+    <release version="11.3.1-dev">
       Active Development ...
-      - Add CMSIS-RTOS2 Blinky reference application
-      - Correct osThreadNew to also handle osThreadPrivileged attribute
-      - Correct osKernelGetInfo() to properly return the kernel version number
-      - Correct osMessageQueueGetSpace to use uxQueueMessagesWaitingFromISR when in ISR
-      - Use ulTaskNotifyValueClear to implement osThreadFlagsClear
-      - Correct memory allocation and access in osMemoryPoolNew
     </release>
   </releases>
 
@@ -879,7 +873,7 @@
 
   <components>
     <!-- CMSIS-RTOS2 FreeRTOS component -->
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.2.2" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-M" Cversion="11.3.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexM">
       <description>CMSIS-RTOS2 implementation for Cortex-M based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
@@ -893,7 +887,7 @@
       </files>
     </component>
 
-    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.2.2" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
+    <component Cclass="CMSIS" Cgroup="RTOS2" Csub="FreeRTOS" Cvariant="Cortex-A" Cversion="11.3.0" Capiversion="2.3.0" condition="CMSIS RTOS2 FreeRTOS CortexA">
       <description>CMSIS-RTOS2 implementation for Cortex-A based on FreeRTOS</description>
       <RTE_Components_h>
         #define RTE_CMSIS_RTOS2                 /* CMSIS-RTOS2 */
