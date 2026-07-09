@@ -133,6 +133,21 @@ $(function(){initNavTree('rev_hist.html',''); initResizable(true); });
 <tr>
 <th>Version </th><th>Description  </th></tr>
 <tr>
+<td>v11.3.0 </td><td><p class="starttd">FreeRTOS 11.3.0</p>
+<p class="endtd">Updates and bugfixes:</p><ul>
+<li>Add support for Cortex-M52 and Star-MC3</li>
+<li>Add CMSIS-RTOS2 Blinky reference application</li>
+<li>Update pre-configured examples</li>
+<li>Modify default configASSERT macro to disable interrupts before infinite loop</li>
+<li>Correct osThreadNew to also handle osThreadPrivileged attribute</li>
+<li>Correct osKernelGetInfo() to properly return the kernel version number</li>
+<li>Correct osMessageQueueGetSpace to use uxQueueMessagesWaitingFromISR when in ISR</li>
+<li>Use ulTaskNotifyValueClear to implement osThreadFlagsClear</li>
+<li>Correct memory allocation and access in osMemoryPoolNew</li>
+<li>Removed variants 'Cortex-M Non-Secure' and 'Cortex-M Non-Secure MPU' (now automatically detected) </li>
+</ul>
+</td></tr>
+<tr>
 <td>v11.2.0 </td><td><p class="starttd">FreeRTOS 11.2.0</p>
 <p class="endtd">Updates and bugfixes:</p><ul>
 <li>Added automatic TrustZone domain detection using Dtz and Dsecure tags (use Cortex-M and Cortex-M MPU variants)</li>
