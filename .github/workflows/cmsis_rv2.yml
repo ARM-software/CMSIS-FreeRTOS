@@ -22,7 +22,7 @@ jobs:
       matrix:
         compiler: [AC6, GCC, Clang]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout CMSIS-FreeRTOS
@@ -59,12 +59,12 @@ jobs:
           pip install -r ./CMSIS-RTOS2_Validation/Project/requirements.txt
 
       - name: Setup vcpkg environment
-        uses: ARM-software/cmsis-actions/vcpkg@v1.1
+        uses: ARM-software/cmsis-actions/vcpkg@v1
         with:
           config: ./CMSIS-RTOS2_Validation/.ci/vcpkg-configuration.json
 
       - name: Activate Arm tool license
-        uses: ARM-software/cmsis-actions/armlm@v1.1
+        uses: ARM-software/cmsis-actions/armlm@v1
         with:
           server: https://mdk-preview.keil.arm.com
           product: KEMDK-COM0
@@ -113,7 +113,7 @@ jobs:
 
   publish-test-results:
     needs: [build-and-run]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
     env:
