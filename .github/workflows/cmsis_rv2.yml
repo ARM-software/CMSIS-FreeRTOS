@@ -15,6 +15,10 @@ env:
   CMSIS_PACK_ROOT: ${{ github.workspace }}/.packs
   ARM_UBL_ACTIVATION_CODE: ${{ secrets.ARM_UBL_ACTIVATION_CODE }}
 
+
+permissions:
+  contents: read
+
 jobs:
   build-and-run:
     strategy:
@@ -115,6 +119,9 @@ jobs:
     needs: [build-and-run]
     runs-on: ubuntu-24.04
     if: github.event_name == 'pull_request'
+    permissions:
+      checks: write
+      pull-requests: write
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -127,7 +134,7 @@ jobs:
 
       - name: Publish Test Results
         if: ${{ env.GITHUB_TOKEN }}
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
         with:
           commit: ${{ github.event.workflow_run.head_sha }}
           event_file: ${{ github.event_path }}
