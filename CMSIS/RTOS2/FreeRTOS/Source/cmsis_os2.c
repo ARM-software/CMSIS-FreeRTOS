@@ -97,6 +97,13 @@ typedef struct {
   void         *arg;
 } TimerCallback_t;
 
+#if ((configUSE_OS2_TIMER == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) && !defined(USE_FreeRTOS_HEAP_1)
+static void TimerCallback       (TimerHandle_t hTimer);
+static void TimerDeleteCallback (TimerHandle_t hTimer,
+                                 TimerCallbackFunction_t callback,
+                                 void *timer_id);
+#endif
+
 /* Kernel initialization state */
 static osKernelState_t KernelState = osKernelInactive;
 
@@ -221,6 +228,11 @@ osStatus_t osKernelInitialize (void) {
       #if defined(USE_FreeRTOS_HEAP_5) && (HEAP_5_REGION_SETUP == 1)
         /* Initialize the memory regions when using heap_5 variant */
         vPortDefineHeapRegions (configHEAP_5_REGIONS);
+      #endif
+      #if ((configUSE_OS2_TIMER == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1)) && !defined(USE_FreeRTOS_HEAP_1)
+        /* Release dynamically allocated CMSIS timer callback context only when */
+        /* the timer daemon has processed the asynchronous delete command.      */
+        vTimerDeleteCallbackRegister (TimerDeleteCallback);
       #endif
       KernelState = osKernelReady;
       stat = osOK;
@@ -1224,6 +1236,23 @@ static void TimerCallback (TimerHandle_t hTimer) {
   }
 }
 
+#if (configSUPPORT_DYNAMIC_ALLOCATION == 1) && !defined(USE_FreeRTOS_HEAP_1)
+static void TimerDeleteCallback (TimerHandle_t hTimer,
+                                 TimerCallbackFunction_t callback,
+                                 void *timer_id) {
+  TimerCallback_t *callb;
+
+  (void)hTimer;
+
+  /* Only CMSIS timers own a dynamically allocated TimerCallback_t. */
+  if ((callback == TimerCallback) && (((uint32_t)timer_id & 1U) != 0U)) {
+    /* Remove dynamic allocation flag and return memory to dynamic pool. */
+    callb = (TimerCallback_t *)((uint32_t)timer_id & ~1U);
+    vPortFree (callb);
+  }
+}
+#endif
+
 /*
   Create and Initialize a timer.
 */
@@ -1432,9 +1461,6 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
 
 #ifndef USE_FreeRTOS_HEAP_1
   TimerHandle_t hTimer = (TimerHandle_t)timer_id;
-  #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-  TimerCallback_t *callb;
-  #endif
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
@@ -1443,20 +1469,7 @@ osStatus_t osTimerDelete (osTimerId_t timer_id) {
     stat = osErrorParameter;
   }
   else {
-    #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-    callb = (TimerCallback_t *)pvTimerGetTimerID (hTimer);
-    #endif
-
     if (xTimerDelete (hTimer, 0) == pdPASS) {
-      #if (configSUPPORT_DYNAMIC_ALLOCATION == 1)
-        if ((uint32_t)callb & 1U) {
-          /* Callback memory was allocated from dynamic pool, clear flag */
-          callb = (TimerCallback_t *)((uint32_t)callb & ~1U);
-
-          /* Return allocated memory to dynamic pool */
-          vPortFree (callb);
-        }
-      #endif
       stat = osOK;
     } else {
       stat = osErrorResource;
