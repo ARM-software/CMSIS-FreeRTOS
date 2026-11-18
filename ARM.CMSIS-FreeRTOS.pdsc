@@ -34,6 +34,7 @@
     <condition id="GCC">
       <accept Tcompiler="GCC"/>
       <accept Tcompiler="CLANG"/>
+      <accept Tcompiler="XC"/>
     </condition>
     <condition id="IAR">
       <require Tcompiler="IAR"/>
