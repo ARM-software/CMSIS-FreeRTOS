@@ -83,6 +83,16 @@ typedef struct tmrTimerControl * TimerHandle_t;
 typedef void (* TimerCallbackFunction_t)( TimerHandle_t xTimer );
 
 /*
+ * Defines the prototype for a callback invoked by the timer daemon when it
+ * processes a timer delete command. The timer is still valid when the callback
+ * runs, so wrapper-owned resources referenced by the timer can be released
+ * before the timer control block itself is freed.
+ */
+typedef void (* TimerDeleteCallbackFunction_t)( TimerHandle_t xTimer,
+                                                TimerCallbackFunction_t pxCallbackFunction,
+                                                void * pvTimerID );
+
+/*
  * Defines the prototype to which functions used with the
  * xTimerPendFunctionCallFromISR() function must conform.
  */
@@ -1287,6 +1297,18 @@ void vTimerSetReloadMode( TimerHandle_t xTimer,
  * pdFALSE is returned.
  */
 BaseType_t xTimerGetReloadMode( TimerHandle_t xTimer ) PRIVILEGED_FUNCTION;
+
+/**
+ * void vTimerDeleteCallbackRegister( TimerDeleteCallbackFunction_t pxDeleteCallback );
+ *
+ * Registers a callback that the timer daemon invokes immediately before it
+ * deletes a timer. This allows an API wrapper to release resources whose
+ * lifetime must extend until an asynchronous xTimerDelete() command is
+ * processed.
+ *
+ * @param pxDeleteCallback The callback to invoke, or NULL to unregister it.
+ */
+void vTimerDeleteCallbackRegister( TimerDeleteCallbackFunction_t pxDeleteCallback ) PRIVILEGED_FUNCTION;
 
 /**
  * UBaseType_t uxTimerGetReloadMode( TimerHandle_t xTimer );
