@@ -1058,6 +1058,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
   TaskHandle_t hTask;
   uint32_t rflags, nval;
   uint32_t clear;
+  uint32_t restore = 0U;
   TickType_t t0, td, tout;
   BaseType_t rval;
   BaseType_t notify = pdFALSE;
@@ -1096,7 +1097,8 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
             break;
           } else {
             if (timeout == 0U) {
-              rflags = (uint32_t)osErrorResource;
+              restore = rflags & clear;
+              rflags  = (uint32_t)osErrorResource;
               break;
             }
           }
@@ -1122,6 +1124,8 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
         }
       }
       else {
+        restore = rflags & clear;
+
         if (timeout == 0) {
           rflags = (uint32_t)osErrorResource;
         } else {
@@ -1130,6 +1134,13 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout) 
       }
     }
     while (rval != pdFAIL);
+  }
+
+  if (restore != 0U) {
+    hTask = xTaskGetCurrentTaskHandle();
+
+    /* Wait failed, set back the flags that were cleared while waiting */
+    (void)xTaskNotify(hTask, restore, eSetBits);
   }
 
   if (notify == pdTRUE) {
