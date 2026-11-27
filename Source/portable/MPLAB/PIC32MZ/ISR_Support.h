@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -174,7 +174,7 @@
     la          k0, uxInterruptNesting
     lw          s6, (k0)
 
-    /* If the nesting count is 0 then swap to the the system stack, otherwise
+    /* If the nesting count is 0 then swap to the system stack, otherwise
     the system stack is already being used. */
     bne         s6, zero, 1f
     nop

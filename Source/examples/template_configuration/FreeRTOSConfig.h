@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -136,7 +136,7 @@
  *
  * Defining configTICK_TYPE_WIDTH_IN_BITS as TICK_TYPE_WIDTH_64_BITS causes
  * TickType_t to be defined (typedef'ed) as an unsigned 64-bit type. */
-#define configTICK_TYPE_WIDTH_IN_BITS              TICK_TYPE_WIDTH_64_BITS
+#define configTICK_TYPE_WIDTH_IN_BITS              TICK_TYPE_WIDTH_32_BITS
 
 /* Set configIDLE_SHOULD_YIELD to 1 to have the Idle task yield to an
  * application task if there is an Idle priority (priority 0) application task
@@ -558,6 +558,13 @@
  * tskNO_AFFINITY if left undefined. */
 #define configTIMER_SERVICE_TASK_CORE_AFFINITY    tskNO_AFFINITY
 
+/* When using SMP (i.e. configNUMBER_OF_CORES is greater than one), set
+ * configIDLE_AFFINITY to 1 to pin each Idle task to its corresponding
+ * core. When set to 1, Idle task N will only run on core N, using an affinity
+ * mask of (1 << N).  Set to 0 to allow the scheduler to run Idle tasks on any
+ * available core.  Defaults to 0 if left undefined. */
+#define configIDLE_AFFINITY                       0
+
 /******************************************************************************/
 /* ARMv8-M secure side port related definitions. ******************************/
 /******************************************************************************/
@@ -570,7 +577,7 @@
 /* Defines the kernel provided implementation of
  * vApplicationGetIdleTaskMemory() and vApplicationGetTimerTaskMemory()
  * to provide the memory that is used by the Idle task and Timer task
- * respectively. The application can provide it's own implementation of
+ * respectively. The application can provide its own implementation of
  * vApplicationGetIdleTaskMemory() and vApplicationGetTimerTaskMemory() by
  * setting configKERNEL_PROVIDED_STATIC_MEMORY to 0 or leaving it undefined. */
 #define configKERNEL_PROVIDED_STATIC_MEMORY    1

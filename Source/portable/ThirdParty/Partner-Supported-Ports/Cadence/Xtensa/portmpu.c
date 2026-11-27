@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -408,7 +408,6 @@ prvSetupMPU(void)
 }
 
 typedef void TCB_t;
-extern volatile TCB_t * volatile pxCurrentTCB;
 
 static void PRIVILEGED_FUNCTION
 init_private_mpu_regions(const struct xMEMORY_REGION * const xRegions,

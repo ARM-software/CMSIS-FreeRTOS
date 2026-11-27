@@ -1,3 +1,43 @@
+Notes for Version 3.13
+----------------------
+- FreeRTOS SMP support for newlib (experimental).
+- FreeRTOS SMP context switching performance improvements.
+- FreeRTOS SMP config option "XT_USE_L2RAM" moves data into L2RAM
+  for context switching performance improvements.  Disabled by default.
+- FreeRTOS SMP config option "XT_USE_DATARAM" moves per-core data into
+  dataram for performance improvements.  Disabled by default.
+- Based on FreeRTOS-Kernel V11.2.0 release in 3/2025.
+- Also tested on FreeRTOS-Kernel V11.3.0 release in 3/2026.
+
+
+Notes for Version 3.12
+----------------------
+
+- FreeRTOS SMP fully implements thread-safe and multi-core reentrancy
+  using xclib built with __DYNAMIC_REENT__ enabled.
+- FreeRTOS SMP fixes for some coprocessor save/restore problems.
+
+
+Notes for Version 3.11
+----------------------
+
+- FreeRTOS SMP only calls main() on core 0; non-zero cores bypass main()
+  and wait for core 0 to start the scheduler before running tasks.
+- FreeRTOS SMP no longer requires dataram.
+- FreeRTOS SMP no longer requires non-zero cores to be held in RunStall
+  during initialization.  
+- See readme_xtensa.txt for updated details and requirements.
+
+
+Notes for Version 3.10
+----------------------
+
+- This version supports FreeRTOS SMP.
+  See readme_xtensa.txt for details and requirements.
+
+- Bugfix for imprecise exception handling (NX).
+
+
 Notes for Version 3.00
 ----------------------
 

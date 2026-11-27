@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * Copyright 2025 Arm Limited and/or its affiliates
  * <open-source-office@arm.com>
@@ -689,7 +689,7 @@ static void prvTaskExitError( void )
         }
 
         /* Shift the code by one before returning so it can be written directly
-         * into the the correct bit position of the attribute register. */
+         * into the correct bit position of the attribute register. */
         return( ulReturnValue << 1UL );
     }
 
@@ -1470,7 +1470,7 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
 #if ( ( configENABLE_MPU == 1 ) && ( configUSE_MPU_WRAPPERS_V1 == 0 ) )
 
     BaseType_t xPortIsAuthorizedToAccessBuffer( const void * pvBuffer,
-                                                uint32_t ulBufferLength,
+                                                size_t xBufferLength,
                                                 uint32_t ulAccessRequested ) /* PRIVILEGED_FUNCTION */
 
     {
@@ -1494,10 +1494,10 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
         }
         else
         {
-            if( portADD_UINT32_WILL_OVERFLOW( ( ( uint32_t ) pvBuffer ), ( ulBufferLength - 1UL ) ) == pdFALSE )
+            if( portADD_UINT32_WILL_OVERFLOW( ( ( uint32_t ) pvBuffer ), ( ( uint32_t ) xBufferLength - 1UL ) ) == pdFALSE )
             {
                 ulBufferStartAddress = ( uint32_t ) pvBuffer;
-                ulBufferEndAddress = ( ( ( uint32_t ) pvBuffer ) + ulBufferLength - 1UL );
+                ulBufferEndAddress = ( ( ( uint32_t ) pvBuffer ) + ( uint32_t ) xBufferLength - 1UL );
 
                 for( i = 0; i < portTOTAL_NUM_REGIONS; i++ )
                 {

@@ -30,6 +30,11 @@ ifeq ($(OVERLAY),1)
 OVLYFLAGS   = -DXT_USE_THREAD_SAFE_CLIB=1 -DXT_USE_OVLY=1
 endif
 
+# Build without SMP support
+ifeq ($(SMP),0)
+SMPFLAGS    = -DconfigNUMBER_OF_CORES=1
+endif
+
 SRCROOT     = $(subst /,$(S),$(CURDIR))
 TSTROOT     = $(subst /,$(S),$(abspath $(SRCROOT)$(S)..$(S)..$(S)..$(S)..$(S)..$(S)..$(S)Demo$(S)ThirdParty$(S)Partner-Supported-Demos$(S)Cadence_Xtensa_ISS_xt-clang$(SMALL)))
 BLDROOT     = $(TSTROOT)$(S)build
@@ -79,7 +84,7 @@ endif
 IFLAGS      = \
   -I$(FR_SRCDIR)$(S)include -I$(XT_SRCDIR) -I$(TSTROOT)$(S)common$(S)config_files -I$(BLDDIR)
 
-CSTD        = -std=c99
+CSTD        = -std=c11
 ifeq ($(OVERLAY),1)
 CFLAGS      = -Os -g
 else
@@ -87,8 +92,11 @@ CFLAGS      = -O2 -g
 endif
 WFLAGS      = -Werror -Wall -Wextra
 CFGFLAGS   ?= 
-CCFLAGS     = $(CSTD) $(CFGFLAGS) $(CFLAGS) $(WFLAGS) -mno-coproc -mlongcalls -ffunction-sections -mno-l32r-flix $(DFLAGS) $(MPUFLAGS) $(OVLYFLAGS)
-ASFLAGS     = $(CCFLAGS)
+CCFLAGS     = $(CSTD) $(CFGFLAGS) $(CFLAGS) $(WFLAGS) -mno-coproc -mlongcalls -ffunction-sections -mno-l32r-flix $(DFLAGS) $(MPUFLAGS) $(OVLYFLAGS) $(SMPFLAGS)
+
+# Avoid LTO due to build issues related to inline assembly
+CCFLAGS_F   = $(filter-out -flto,$(CCFLAGS))
+ASFLAGS     = $(CCFLAGS_F)
 
 # File-specific flags
 
@@ -120,12 +128,12 @@ $(OSLIB) : $(LIB_O_LIST)
 	$(AR) -rs $@ $^
 
 $(BLDDIR)/asm-offsets.h : asm-offsets.c $(BLDDIR)/.mkdir
-	$(CC) $(CCFLAGS) $(IFLAGS) -MD -MF $(subst .h,.d,$@) -MT $@ -ffunction-sections -fdata-sections -Wl,--gc-sections -o $@.exe $<
+	$(CC) $(CCFLAGS_F) $(IFLAGS) -MD -MF $(subst .h,.d,$@) -MT $@ -ffunction-sections -fdata-sections -Wl,--gc-sections -o $@.exe $< -lxtutil
 	$(ISS) $@.exe > $@
 	$(RM) $(subst /,$(S),$@.exe)
 
 $(BLDDIR)/%.o : %.c $(BLDDIR)/.mkdir
-	$(CC) $(CCFLAGS) $(IFLAGS) $(FLAGS_$*) -mtext-section-literals -MD -MF $(subst .o,.d,$@) -c -o $@ $<
+	$(CC) $(CCFLAGS_F) $(IFLAGS) $(FLAGS_$*) -mtext-section-literals -MD -MF $(subst .o,.d,$@) -c -o $@ $<
 
 $(BLDDIR)/%.o : %.S $(BLDDIR)/.mkdir
 	$(CC) $(ASFLAGS) $(IFLAGS) $(FLAGS_$*) -MD -MF $(subst .o,.d,$@) -c -o $@ $<

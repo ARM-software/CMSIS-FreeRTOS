@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -30,6 +30,7 @@
 #include "xtensa_rtos.h"
 #include "portmacro.h"
 #include "asm-offsets.h"
+#include "xtensa_asm.h"
 
 #include <xtensa/hal.h>
 
@@ -82,7 +83,7 @@ Entry Conditions:
     .align  4
 _xt_mpu_restore:
 
-    movi    A2, pxCurrentTCB
+    pxctcb  A2, A3                      /* pxCurrentTCB or pxCurrentTCBs[] */
     l32i    A2, A2, 0
     beqz    A2, .Lset
 

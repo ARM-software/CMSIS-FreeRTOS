@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT

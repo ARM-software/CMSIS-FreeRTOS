@@ -1,6 +1,6 @@
- /*
+/*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -143,9 +143,14 @@ _xt_context_save:
     s32i    a3,  sp, XT_STK_LBEG
     rsr     a3,  LEND
     s32i    a3,  sp, XT_STK_LEND
-    rsr     a3,  LCOUNT
+    movi    a3,  0
+    #if (defined XT_USE_OVLY) && (defined XT_OV_SCRATCH) && (XT_OV_SCRATCH == LCOUNT)
+    rsr     a3,  LCOUNT                 /* preserve LCOUNT for overlay store logic */
+    #else
+    xsr     a3,  LCOUNT                 /* clear LCOUNT to prevent looping in ISR */
+    #endif // XT_USE_OVLY
     s32i    a3,  sp, XT_STK_LCOUNT
-    #endif
+    #endif // XCHAL_HAVE_LOOPS
 
     #if XCHAL_HAVE_EXCLUSIVE
     /* Save and clear state of ATOMCTL */
@@ -186,10 +191,15 @@ _xt_context_save:
     _xt_overlay_get_state    a9, a12, a13
     s32i    a9,  sp, XT_STK_OVLY        /* save overlay state */
     #if (defined XT_OV_SCRATCH)         /* In newer liboverlay versions */
+    #if (XT_OV_SCRATCH == LCOUNT)
+    movi    a9,  0                      /* clear LCOUNT to prevent looping in ISR */
+    xsr     a9,  XT_OV_SCRATCH          /* save XT_OV_SCRATCH/LCOUNT register */
+    #else
     rsr     a9,  XT_OV_SCRATCH          /* save XT_OV_SCRATCH register */
+    #endif // XT_OV_SCRATCH == LCOUNT
     s32i    a9,  sp, XT_STK_OVLY_SCRATCH
-    #endif
-    #endif
+    #endif // XT_OV_SCRATCH
+    #endif // XT_USE_OVLY
 
     l32i    a12, sp, XT_STK_A12         /* recover original a9,12,13 */
     l32i    a13, sp, XT_STK_A13
@@ -314,13 +324,13 @@ _xt_context_restore:
 
     #ifdef XT_USE_SWPRI
     /* Restore virtual interrupt priority and interrupt enable */
-    movi    a3,  xt_intdata
-    l32i    a4,  a3, 0                  /* a4 = xt_intenable */
-    l32i    a5,  sp, XT_STK_VPRI        /* a5 = saved xt_vpri_mask */
+    pintdata a3, a4
+    l32i    a4,  a3, PORTINT_INTENABLE_OFF  /* a4 = xt_intenable */
+    l32i    a5,  sp, XT_STK_VPRI            /* a5 = saved xt_vpri_mask */
     and     a4,  a4, a5
-    wsr     a4,  INTENABLE              /* update INTENABLE */
-    s32i    a5,  a3, 4                  /* restore xt_vpri_mask */
-    #endif
+    wsr     a4,  INTENABLE                  /* update INTENABLE */
+    s32i    a5,  a3, PORTINT_VPRI_MASK_OFF  /* restore xt_vpri_mask */
+    #endif  // XT_USE_SWPRI
 
     l32i    a3,  sp, XT_STK_SAR
     l32i    a2,  sp, XT_STK_A2
@@ -388,7 +398,11 @@ _xt_coproc_init:
 
     /* Initialize thread co-processor ownerships to 0 (unowned). */
     movi    a2, _xt_coproc_owner_sa         /* a2 = base of owner array */
+#if (defined configNUMBER_OF_CORES)
+    addi    a3, a2, (XCHAL_CP_MAX * configNUMBER_OF_CORES) << 2 /* a3 = top+1 of owner array */
+#else
     addi    a3, a2, XCHAL_CP_MAX << 2       /* a3 = top+1 of owner array */
+#endif
     movi    a4, 0                           /* a4 = 0 (unowned) */
 1:  s32i    a4, a2, 0
     addi    a2, a2, 4
@@ -432,7 +446,11 @@ _xt_coproc_release:
     ENTRY0                                  /* a2 = base of save area */
 
     movi    a3, _xt_coproc_owner_sa         /* a3 = base of owner array */
+#if (defined configNUMBER_OF_CORES)
+    addi    a4, a3, (XCHAL_CP_MAX * configNUMBER_OF_CORES) << 2 /* a4 = top+1 of owner array */
+#else
     addi    a4, a3, XCHAL_CP_MAX << 2       /* a4 = top+1 of owner array */
+#endif
     movi    a5, 0                           /* a5 = 0 (unowned) */
 
 #if XCHAL_HAVE_XEA3

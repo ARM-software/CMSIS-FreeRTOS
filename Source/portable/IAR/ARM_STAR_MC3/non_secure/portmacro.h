@@ -1,7 +1,8 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * Copyright (c) 2026 Arm Technology (China) Co., Ltd.All Rights Reserved.
+ * Copyright 2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
  *
  * SPDX-License-Identifier: MIT
  *
@@ -58,6 +59,7 @@
 #define portHAS_ARMV8M_MAIN_EXTENSION    1
 #define portARMV8M_MINOR_VERSION         1
 #define portDONT_DISCARD                 __root
+#define portVALIDATED_FOR_SMP            0
 /*-----------------------------------------------------------*/
 
 /* ARMv8-M common port configurations. */

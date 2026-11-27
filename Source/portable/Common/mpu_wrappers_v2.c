@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -114,14 +114,14 @@
     #define CONVERT_TO_INTERNAL_INDEX( lIndex )    ( ( lIndex ) - INDEX_OFFSET )
 
 /**
- * @brief Max value that fits in a uint32_t type.
+ * @brief Max value that fits in a UBaseType_t type.
  */
-    #define mpuUINT32_MAX    ( ~( ( uint32_t ) 0 ) )
+    #define mpuUBASETYPE_MAX    ( ~( ( UBaseType_t ) 0 ) )
 
 /**
  * @brief Check if multiplying a and b will result in overflow.
  */
-    #define mpuMULTIPLY_UINT32_WILL_OVERFLOW( a, b )    ( ( ( a ) > 0 ) && ( ( b ) > ( mpuUINT32_MAX / ( a ) ) ) )
+    #define mpuMULTIPLY_BASETYPE_WILL_OVERFLOW( a, b )    ( ( ( a ) > 0 ) && ( ( b ) > ( mpuUBASETYPE_MAX / ( a ) ) ) )
 
 /**
  * @brief Get the index of a free slot in the kernel object pool.
@@ -1061,13 +1061,11 @@
             UBaseType_t uxReturn = 0;
             BaseType_t xIsTaskStatusArrayWriteable = pdFALSE;
             BaseType_t xIsTotalRunTimeWriteable = pdFALSE;
-            uint32_t ulArraySize = ( uint32_t ) uxArraySize;
-            uint32_t ulTaskStatusSize = ( uint32_t ) sizeof( TaskStatus_t );
 
-            if( mpuMULTIPLY_UINT32_WILL_OVERFLOW( ulTaskStatusSize, ulArraySize ) == 0 )
+            if( mpuMULTIPLY_BASETYPE_WILL_OVERFLOW( sizeof( TaskStatus_t ), uxArraySize ) == 0 )
             {
                 xIsTaskStatusArrayWriteable = xPortIsAuthorizedToAccessBuffer( pxTaskStatusArray,
-                                                                               ulTaskStatusSize * ulArraySize,
+                                                                               sizeof( TaskStatus_t ) * ( size_t ) uxArraySize,
                                                                                tskMPU_WRITE_PERMISSION );
 
                 if( pulTotalRunTime != NULL )
@@ -1080,7 +1078,7 @@
                 if( ( xIsTaskStatusArrayWriteable == pdTRUE ) &&
                     ( ( pulTotalRunTime == NULL ) || ( xIsTotalRunTimeWriteable == pdTRUE ) ) )
                 {
-                    uxReturn = uxTaskGetSystemState( pxTaskStatusArray, ( UBaseType_t ) ulArraySize, pulTotalRunTime );
+                    uxReturn = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, pulTotalRunTime );
                 }
             }
 
@@ -3881,6 +3879,40 @@
                 if( xInternalTimerHandle != NULL )
                 {
                     xReturn = xTimerGenericCommandFromISR( xInternalTimerHandle, xCommandID, xOptionalValue, pxHigherPriorityTaskWoken, xTicksToWait );
+                }
+            }
+
+            return xReturn;
+        }
+
+    #endif /* if ( configUSE_TIMERS == 1 ) */
+/*-----------------------------------------------------------*/
+
+    #if ( configUSE_TIMERS == 1 )
+
+        BaseType_t MPU_xTimerDelete( TimerHandle_t xTimer, TickType_t xTicksToWait ) /* PRIVILEGED_FUNCTION */
+        {
+            BaseType_t xReturn = pdFALSE;
+            TimerHandle_t xInternalTimerHandle = NULL;
+            int32_t lIndex;
+
+            lIndex = ( int32_t ) xTimer;
+
+            if( IS_EXTERNAL_INDEX_VALID( lIndex ) != pdFALSE )
+            {
+                xInternalTimerHandle = MPU_GetTimerHandleAtIndex( CONVERT_TO_INTERNAL_INDEX( lIndex ) );
+
+                if( xInternalTimerHandle != NULL )
+                {
+                    xReturn = xTimerGenericCommandFromTask( xInternalTimerHandle,
+                                                            tmrCOMMAND_DELETE,
+                                                            0U, /* xOptionalValue */
+                                                            NULL, /* pxHigherPriorityTaskWoken */
+                                                            xTicksToWait );
+                    if( xReturn != pdFALSE )
+                    {
+                        MPU_SetIndexFreeInKernelObjectPool( CONVERT_TO_INTERNAL_INDEX( lIndex ) );
+                    }
                 }
             }
 

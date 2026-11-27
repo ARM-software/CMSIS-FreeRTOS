@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -98,7 +98,6 @@ void vPortSetupTimerInterrupt( void ) __attribute__( ( weak ) );
 uint64_t ullNextTime = 0ULL;
 const uint64_t * pullNextTime = &ullNextTime;
 const size_t uxTimerIncrementsForOneTick = ( size_t ) ( ( configCPU_CLOCK_HZ ) / ( configTICK_RATE_HZ ) ); /* Assumes increment won't go over 32-bits. */
-UBaseType_t const ullMachineTimerCompareRegisterBase = configMTIMECMP_BASE_ADDRESS;
 volatile uint64_t * pullMachineTimerCompareRegister = NULL;
 
 /* Holds the critical nesting value - deliberately non-zero at start up to
@@ -169,7 +168,7 @@ static void prvTaskExitError( void )
 
         __asm volatile ( "csrr %0, 0xf14" : "=r" ( ulHartId ) ); /* 0xf14 is HART ID. */
 
-        pullMachineTimerCompareRegister = ( volatile uint64_t * ) ( ullMachineTimerCompareRegisterBase + ( ulHartId * sizeof( uint64_t ) ) );
+        pullMachineTimerCompareRegister = ( volatile uint64_t * ) ( configMTIMECMP_BASE_ADDRESS + ( ulHartId * sizeof( uint64_t ) ) );
 
         do
         {
@@ -187,7 +186,7 @@ static void prvTaskExitError( void )
         ullNextTime += ( uint64_t ) uxTimerIncrementsForOneTick;
     }
 
-#endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIME_BASE_ADDRESS != 0 ) */
+#endif /* ( configMTIME_BASE_ADDRESS != 0 ) && ( configMTIMECMP_BASE_ADDRESS != 0 ) */
 /*-----------------------------------------------------------*/
 
 BaseType_t xPortStartScheduler( void )

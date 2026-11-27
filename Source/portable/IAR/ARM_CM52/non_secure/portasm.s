@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * Copyright 2024 Arm Limited and/or its affiliates
  * <open-source-office@arm.com>
@@ -39,6 +39,16 @@ files (__ICCARM__ is defined by the IAR C compiler but not by the IAR assembler.
 
 #ifndef configUSE_MPU_WRAPPERS_V1
     #define configUSE_MPU_WRAPPERS_V1 0
+#endif
+
+#if ( configENABLE_MPU == 1 )
+    #if ( configENABLE_PAC == 1 )
+        #define SECURE_CONTEXT_OFFSET   -36
+    #else
+        #define SECURE_CONTEXT_OFFSET   -20
+    #endif
+#else
+    #define SECURE_CONTEXT_OFFSET       0
 #endif
 
     EXTERN pxCurrentTCB
@@ -463,7 +473,7 @@ PendSV_Handler:
         msr  PAC_KEY_P_0, r6
         clrm {r3-r6}                        /* Clear r3-r6. */
     #endif /* configENABLE_PAC */
-        ldmia r2!, {r0, r3, lr}             http://files.iar.com/ftp/pub/box/bxarm-9.60.3.deb/* Read from stack - r0 = xSecureContext, r3 = PSPLIM and LR restored. */
+        ldmia r2!, {r0, r3, lr}             /* Read from stack - r0 = xSecureContext, r3 = PSPLIM and LR restored. */
         msr psplim, r3                      /* Restore the PSPLIM register value for the task. */
         ldr r3, =xSecureContext             /* Read the location of xSecureContext i.e. &( xSecureContext ). */
         str r0, [r3]                        /* Restore the task's xSecureContext. */
@@ -532,8 +542,8 @@ SVC_Handler:
 
 vPortFreeSecureContext:
     /* r0 = uint32_t *pulTCB. */
-    ldr r2, [r0]                            /* The first item in the TCB is the top of the stack. */
-    ldr r1, [r2]                            /* The first item on the stack is the task's xSecureContext. */
+    ldr r2, [r0]                            /* The first item in the TCB is the stored context location. */
+    ldr r1, [r2, #SECURE_CONTEXT_OFFSET]    /* Read xSecureContext from the task's context. */
     cmp r1, #0                              /* Raise svc if task's xSecureContext is not NULL. */
     it ne
     svcne 101                               /* Secure context is freed in the supervisor call. portSVC_FREE_SECURE_CONTEXT = 101. */

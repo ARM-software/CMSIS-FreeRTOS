@@ -130,7 +130,7 @@
       #define _impure_ptr                   _reent_ptr
 
       void _reclaim_reent(struct _reent * ptr);
-    #endif
+    #endif  // !__ASSEMBLER__
   #elif XSHAL_CLIB == XTHAL_CLIB_NEWLIB
     #define XT_HAVE_THREAD_SAFE_CLIB        1
     #if !defined __ASSEMBLER__
@@ -139,14 +139,24 @@
       #define XT_CLIB_GLOBAL_PTR            _impure_ptr
 
       void _reclaim_reent(struct _reent * ptr);
-    #endif
-  #else
+    #endif  // !__ASSEMBLER__
+  #else     // XTHAL_CLIB_XCLIB || XTHAL_CLIB_NEWLIB
     #define XT_HAVE_THREAD_SAFE_CLIB        0
     #error The selected C runtime library is not thread safe.
-  #endif
+  #endif    // XTHAL_CLIB_XCLIB || XTHAL_CLIB_NEWLIB
+  #if (defined __DYNAMIC_REENT__)
+    // For xclib/newlib with support for custom reent_ptr_() we keep
+    // XT_CLIB_GLOBAL_PTR within interrupt data struct
+    #if (configNUMBER_OF_CORES > 1)
+    #define configSET_TLS_BLOCK(xTLSBlock)  ( _XT_INTDATA(portGET_CORE_ID()).xt_reent_p = \
+                                                &( xTLSBlock ) )
+    #else
+    #define configSET_TLS_BLOCK(xTLSBlock)  ( _xt_intdata.xt_reent_p = &( xTLSBlock ) )
+    #endif
+  #endif // __DYNAMIC_REENT__
 #else
   #define XT_CLIB_CONTEXT_AREA_SIZE         0
-#endif
+#endif      // XT_USE_THREAD_SAFE_CLIB
 
 /*------------------------------------------------------------------------------
   Extra size -- interrupt frame plus coprocessor save area plus hook space.
@@ -180,6 +190,64 @@
 
 /* Default system (interrupt) stack size */
 #define XT_SYSTEM_STACK_SIZE      0x400
+
+/**
+ * XT_USE_L2RAM is defined in xtensa_config.h and can be enabled to improve
+ * performance for SMP configurations.  When set, all "PRIVILEGED_DATA" 
+ * structures are moved to L2RAM instead of L2-cached sysram.  Both locations
+ * are cached per coherence protocol in each core's L1 data cache.
+ *
+ * It's worth noting that the default FreeRTOS heap is privileged and is moved
+ * along with these structures, so sufficient L2RAM space must be provisioned.
+ */
+#if (configNUMBER_OF_CORES > 1)
+    /* Not usable if L2 is configured as all-cache */
+    #if XCHAL_L2CACHE_ONLY
+    #undef  XT_USE_L2RAM
+    #define XT_USE_L2RAM          0
+    #endif
+    /* Default is to not use L2RAM for shared data structures;
+     * enabling this can improve context switching performance.
+     */
+    #if !(defined XT_USE_L2RAM)
+    #define XT_USE_L2RAM          0
+    #endif
+#else
+    #undef  XT_USE_L2RAM
+    #define XT_USE_L2RAM          0
+#endif
+
+#if XT_USE_L2RAM
+    /**
+     * The 50/50 L2CACHE/L2RAM split defined here may not work for all systems.
+     * These defines must be absolute numerical values, not expressions.
+     */
+    #define XT_L2RAM_SIXTEENTHS                         8
+    #define XT_L2CACHE_SIXTEENTHS                       8
+
+    #define PRIVILEGED_DATA        __attribute__( ( section( ".l2ram.bss" ) ) )
+#endif
+
+/**
+ * XT_USE_DATARAM is defined in xtensa_config.h and can be enabled to improve
+ * performance for SMP configurations.  When set, the _xt_intdata per-core
+ * structures are moved to dataram on each core.  This reduces overhead of
+ * indexing the shared structure and provides fast access to RTOS data.
+ *
+ * TODO: may also improve performance for single-core configs.
+ */
+#if ((configNUMBER_OF_CORES > 1) && (XCHAL_NUM_DATARAM > 0))
+    #if !(defined XT_USE_DATARAM)
+    #define XT_USE_DATARAM        0
+    #endif
+#else
+    #undef  XT_USE_DATARAM
+    #define XT_USE_DATARAM        0
+#endif
+
+#if XT_USE_DATARAM
+    #define XT_DATARAM_ATTR       __attribute__ ((section(".dram0.data")))
+#endif
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

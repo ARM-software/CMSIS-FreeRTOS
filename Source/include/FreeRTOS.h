@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -375,6 +375,10 @@
 
 #ifndef configIDLE_SHOULD_YIELD
     #define configIDLE_SHOULD_YIELD    1
+#endif
+
+#ifndef configIDLE_AFFINITY
+    #define configIDLE_AFFINITY    0
 #endif
 
 #if configMAX_TASK_NAME_LEN < 1
@@ -1764,6 +1768,14 @@
 
 #ifndef traceRETURN_vTaskDelete
     #define traceRETURN_vTaskDelete()
+#endif
+
+#ifndef traceENTER_xTaskPeriodicDelay
+    #define traceENTER_xTaskPeriodicDelay( pxPreviousWakeTime, xTimeIncrement )
+#endif
+
+#ifndef traceRETURN_xTaskPeriodicDelay
+    #define traceRETURN_xTaskPeriodicDelay( xIncrements )
 #endif
 
 #ifndef traceENTER_xTaskDelayUntil

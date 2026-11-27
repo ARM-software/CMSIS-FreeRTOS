@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -45,6 +45,12 @@
 
 #if ( configENABLE_FPU == 1 )
     #error Cortex-M23 does not have a Floating Point Unit (FPU) and therefore configENABLE_FPU must be set to 0.
+#endif
+
+#if ( configENABLE_MPU == 1 )
+    #define SECURE_CONTEXT_OFFSET   -20
+#else
+    #define SECURE_CONTEXT_OFFSET   0
 #endif
 
 #if ( configENABLE_MPU == 1 )
@@ -120,9 +126,9 @@
             " restore_general_regs_first_task:                \n"
             "    subs r2, #32                                 \n"
             "    ldmia r2!, {r4-r7}                           \n" /* r4-r7 contain half of the hardware saved context. */
-            "    stmia r3!, {r4-r7}                           \n" /* Copy half of the the hardware saved context on the task stack. */
+            "    stmia r3!, {r4-r7}                           \n" /* Copy half of the hardware saved context on the task stack. */
             "    ldmia r2!, {r4-r7}                           \n" /* r4-r7 contain rest half of the hardware saved context. */
-            "    stmia r3!, {r4-r7}                           \n" /* Copy rest half of the the hardware saved context on the task stack. */
+            "    stmia r3!, {r4-r7}                           \n" /* Copy rest half of the hardware saved context on the task stack. */
             "    subs r2, #48                                 \n"
             "    ldmia r2!, {r4-r7}                           \n" /* Restore r8-r11. */
             "    mov r8, r4                                   \n" /* r8 = r4. */
@@ -396,9 +402,9 @@ void vClearInterruptMask( __attribute__( ( unused ) ) uint32_t ulMask ) /* __att
             " restore_general_regs:                           \n"
             "    subs r2, #32                                 \n"
             "    ldmia r2!, {r4-r7}                           \n" /* r4-r7 contain half of the hardware saved context. */
-            "    stmia r3!, {r4-r7}                           \n" /* Copy half of the the hardware saved context on the task stack. */
+            "    stmia r3!, {r4-r7}                           \n" /* Copy half of the hardware saved context on the task stack. */
             "    ldmia r2!, {r4-r7}                           \n" /* r4-r7 contain rest half of the hardware saved context. */
-            "    stmia r3!, {r4-r7}                           \n" /* Copy rest half of the the hardware saved context on the task stack. */
+            "    stmia r3!, {r4-r7}                           \n" /* Copy rest half of the hardware saved context on the task stack. */
             "    subs r2, #48                                 \n"
             "    ldmia r2!, {r4-r7}                           \n" /* Restore r8-r11. */
             "    mov r8, r4                                   \n" /* r8 = r4. */
@@ -590,15 +596,16 @@ void vPortFreeSecureContext( uint32_t * pulTCB ) /* __attribute__ (( naked )) PR
     (
         "   .syntax unified                                 \n"
         "                                                   \n"
-        "   ldr r2, [r0]                                    \n" /* The first item in the TCB is the top of the stack. */
-        "   ldr r1, [r2]                                    \n" /* The first item on the stack is the task's xSecureContext. */
+        "   ldr r2, [r0]                                    \n" /* The first item in the TCB is the stored context location. */
+        "   adds r2, r2, %0                                 \n" /* r2 = r2 + SECURE_CONTEXT_OFFSET. */
+        "   ldr r1, [r2]                                    \n" /* Read xSecureContext from the task's context. */
         "   cmp r1, #0                                      \n" /* Raise svc if task's xSecureContext is not NULL. */
         "   bne free_secure_context                         \n" /* Branch if r1 != 0. */
         "   bx lr                                           \n" /* There is no secure context (xSecureContext is NULL). */
         " free_secure_context:                              \n"
-        "   svc %0                                          \n" /* Secure context is freed in the supervisor call. */
+        "   svc %1                                          \n" /* Secure context is freed in the supervisor call. */
         "   bx lr                                           \n" /* Return. */
-        ::"i" ( portSVC_FREE_SECURE_CONTEXT ) : "memory"
+        ::"i" ( SECURE_CONTEXT_OFFSET ), "i" ( portSVC_FREE_SECURE_CONTEXT ) : "memory"
     );
 }
 /*-----------------------------------------------------------*/
