@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -563,7 +563,7 @@ BaseType_t xQueueGenericReset( QueueHandle_t xQueue,
         return pxNewQueue;
     }
 
-#endif /* configSUPPORT_STATIC_ALLOCATION */
+#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
 /*-----------------------------------------------------------*/
 
 static void prvInitialiseNewQueue( const UBaseType_t uxQueueLength,
@@ -2261,6 +2261,8 @@ void vQueueDelete( QueueHandle_t xQueue )
     traceENTER_vQueueDelete( xQueue );
 
     configASSERT( pxQueue );
+    configASSERT( listLIST_IS_EMPTY( &( pxQueue->xTasksWaitingToSend ) ) );
+    configASSERT( listLIST_IS_EMPTY( &( pxQueue->xTasksWaitingToReceive ) ) );
     traceQUEUE_DELETE( pxQueue );
 
     #if ( configQUEUE_REGISTRY_SIZE > 0 )
@@ -3223,7 +3225,16 @@ BaseType_t xQueueIsQueueFullFromISR( const QueueHandle_t xQueue )
 
         taskENTER_CRITICAL();
         {
-            if( ( ( Queue_t * ) xQueueOrSemaphore )->pxQueueSetContainer != NULL )
+            if( ( ( Queue_t * ) xQueueSet )->uxItemSize != ( UBaseType_t ) sizeof( Queue_t * ) )
+            {
+                /* The object passed as the queue set is not a queue set. A queue
+                 * set always has an item size of sizeof( Queue_t * ). Reject any
+                 * other object to prevent a type confusion in which
+                 * prvNotifyQueueSetContainer() would later copy uxItemSize bytes
+                 * from a single pointer on the stack. */
+                xReturn = pdFAIL;
+            }
+            else if( ( ( Queue_t * ) xQueueOrSemaphore )->pxQueueSetContainer != NULL )
             {
                 /* Cannot add a queue/semaphore to more than one queue set. */
                 xReturn = pdFAIL;
@@ -3300,7 +3311,13 @@ BaseType_t xQueueIsQueueFullFromISR( const QueueHandle_t xQueue )
 
         traceENTER_xQueueSelectFromSet( xQueueSet, xTicksToWait );
 
-        ( void ) xQueueReceive( ( QueueHandle_t ) xQueueSet, &xReturn, xTicksToWait );
+        /* Check the pointer is not NULL. */
+        configASSERT( ( xQueueSet ) );
+
+        if( ( ( Queue_t * ) xQueueSet )->uxItemSize == ( UBaseType_t ) sizeof( Queue_t * ) )
+        {
+            ( void ) xQueueReceive( ( QueueHandle_t ) xQueueSet, &xReturn, xTicksToWait );
+        }
 
         traceRETURN_xQueueSelectFromSet( xReturn );
 
@@ -3318,7 +3335,13 @@ BaseType_t xQueueIsQueueFullFromISR( const QueueHandle_t xQueue )
 
         traceENTER_xQueueSelectFromSetFromISR( xQueueSet );
 
-        ( void ) xQueueReceiveFromISR( ( QueueHandle_t ) xQueueSet, &xReturn, NULL );
+        /* Check the pointer is not NULL. */
+        configASSERT( ( xQueueSet ) );
+
+        if( ( ( Queue_t * ) xQueueSet )->uxItemSize == ( UBaseType_t ) sizeof( Queue_t * ) )
+        {
+            ( void ) xQueueReceiveFromISR( ( QueueHandle_t ) xQueueSet, &xReturn, NULL );
+        }
 
         traceRETURN_xQueueSelectFromSetFromISR( xReturn );
 

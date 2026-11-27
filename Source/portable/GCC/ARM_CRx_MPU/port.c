@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -489,7 +489,7 @@ static uint32_t prvGetMPURegionSizeEncoding( uint32_t ulActualMPURegionSize )
     }
 
     /* Shift the code by one before returning so it can be written directly
-     * into the the correct bit position of the attribute register. */
+     * into the correct bit position of the attribute register. */
     return ulReturnValue << 1UL;
 }
 
@@ -622,7 +622,7 @@ static BaseType_t prvMPURegionAuthorizesBuffer( const xMPU_REGION_REGISTERS * xT
 
 /* PRIVILEGED_FUNCTION */
 BaseType_t xPortIsAuthorizedToAccessBuffer( const void * pvBuffer,
-                                            uint32_t ulBufferLength,
+                                            size_t xBufferLength,
                                             uint32_t ulAccessRequested )
 {
     BaseType_t xAccessGranted = pdFALSE;
@@ -652,7 +652,7 @@ BaseType_t xPortIsAuthorizedToAccessBuffer( const void * pvBuffer,
             {
                 xAccessGranted = prvMPURegionAuthorizesBuffer( &( xTaskMPUSettings->xRegion[ ulRegionIndex ] ),
                                                                ( uint32_t ) pvBuffer,
-                                                               ulBufferLength,
+                                                               ( uint32_t ) xBufferLength,
                                                                ulAccessRequested );
 
                 if( xAccessGranted == pdTRUE )

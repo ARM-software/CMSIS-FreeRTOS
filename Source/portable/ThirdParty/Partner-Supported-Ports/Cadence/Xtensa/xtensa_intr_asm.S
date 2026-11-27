@@ -1,6 +1,6 @@
  /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -45,30 +45,18 @@
 /*
 -------------------------------------------------------------------------------
   INTENABLE virtualization information.
+
+  Moved to _xt_intdata structure for better cache performance
 -------------------------------------------------------------------------------
 */
-
-#if XCHAL_HAVE_XEA2 && (XCHAL_NUM_INTERRUPTS <= 32)
-
-    .data
-    .global xt_intdata
-    .align  8
-xt_intdata:
-    .global xt_intenable
-    .type   xt_intenable,@object
-    .size   xt_intenable,4
-    .global xt_vpri_mask
-    .type   xt_vpri_mask,@object
-    .size   xt_vpri_mask,4
-
-xt_intenable:     .word   0             /* Virtual INTENABLE     */
-xt_vpri_mask:     .word   0xFFFFFFFF    /* Virtual priority mask */
-
-#endif
 
 /*
 -------------------------------------------------------------------------------
   System interrupt stack.
+
+  For SMP configurations, (configNUMBER_OF_CORES * configISR_STACK_SIZE) bytes
+  are allocated.  Avoid placing this in per-core memory (usually dataram) as 
+  that is a valuable resource.
 -------------------------------------------------------------------------------
 */
 
@@ -85,6 +73,11 @@ xt_vpri_mask:     .word   0xFFFFFFFF    /* Virtual priority mask */
 xt_interrupt_stack:
     .space  configISR_STACK_SIZE
 xt_interrupt_stack_top:
+#if ( configNUMBER_OF_CORES > 1 )
+    .rept   configNUMBER_OF_CORES - 1
+    .space  configISR_STACK_SIZE
+    .endr
+#endif
 
 
 /*
@@ -92,6 +85,10 @@ xt_interrupt_stack_top:
   Table of C-callable interrupt handlers for each interrupt. For XEA2 configs,
   not all slots can be filled, because interrupts at level > EXCM_LEVEL will
   not be dispatched to a C handler by default.
+
+  NOTE: This is not replicated for SMP systems, so registering an interrupt 
+  handler on one core will register the same handler for that interrupt on all
+  cores.  However, Interrupts are enabled and disabled on a per-core basis.
 -------------------------------------------------------------------------------
 */
 

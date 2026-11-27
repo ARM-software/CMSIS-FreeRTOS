@@ -37,8 +37,8 @@
 #include <stdint.h>
 #include <xtensa/hal.h>
 
-#include "mpu_wrappers.h"
 #include "xtensa_context.h"
+#include "mpu_wrappers.h"
 
 
 /* Typedef for C-callable interrupt handler function */
@@ -77,6 +77,16 @@ extern xt_exc_handler xt_set_exception_handler( uint32_t n, xt_exc_handler f ) P
 -------------------------------------------------------------------------------
 */
 extern xt_handler xt_set_interrupt_handler( uint32_t n, xt_handler f, void * arg ) PRIVILEGED_FUNCTION;
+
+
+/*
+-------------------------------------------------------------------------------
+  Call this function to get a handler for the specified interrupt.
+ 
+    n        - Interrupt number.
+-------------------------------------------------------------------------------
+*/
+extern xt_handler xt_get_interrupt_handler( uint32_t n ) PRIVILEGED_FUNCTION;
 
 
 /*

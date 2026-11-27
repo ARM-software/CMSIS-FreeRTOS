@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -257,13 +257,22 @@ typedef struct StreamBufferDef_t
 static size_t prvBytesInBuffer( const StreamBuffer_t * const pxStreamBuffer ) PRIVILEGED_FUNCTION;
 
 /*
+ * Returns pdTRUE when the amount of buffered data should unblock a task that
+ * is waiting to receive data. Stream batching buffers require the buffered
+ * data to exceed the trigger level, whereas stream and message buffers unblock
+ * when the trigger level is reached.
+ */
+static BaseType_t prvBytesInBufferMeetTriggerLevel( const StreamBuffer_t * const pxStreamBuffer,
+                                                    size_t xBytesInBuffer ) PRIVILEGED_FUNCTION;
+
+/*
  * Add xCount bytes from pucData into the pxStreamBuffer's data storage area.
  * This function does not update the buffer's xHead pointer, so multiple writes
  * may be chained together "atomically". This is useful for Message Buffers where
  * the length and data bytes are written in two separate chunks, and we don't want
  * the reader to see the buffer as having grown until after all data is copied over.
  * This function takes a custom xHead value to indicate where to write to (necessary
- * for chaining) and returns the the resulting xHead position.
+ * for chaining) and returns the resulting xHead position.
  * To mark the write as complete, manually set the buffer's xHead field with the
  * returned xHead from this function.
  */
@@ -305,7 +314,7 @@ static size_t prvWriteMessageToBuffer( StreamBuffer_t * const pxStreamBuffer,
  * the writer to see the buffer as having more free space until after all data is
  * copied over, especially if we have to abort the read due to insufficient receiving space.
  * This function takes a custom xTail value to indicate where to read from (necessary
- * for chaining) and returns the the resulting xTail position.
+ * for chaining) and returns the resulting xTail position.
  * To mark the read as complete, manually set the buffer's xTail field with the
  * returned xTail from this function.
  */
@@ -919,7 +928,7 @@ size_t xStreamBufferSend( StreamBufferHandle_t xStreamBuffer,
         traceSTREAM_BUFFER_SEND( xStreamBuffer, xReturn );
 
         /* Was a task waiting for the data? */
-        if( prvBytesInBuffer( pxStreamBuffer ) >= pxStreamBuffer->xTriggerLevelBytes )
+        if( prvBytesInBufferMeetTriggerLevel( pxStreamBuffer, prvBytesInBuffer( pxStreamBuffer ) ) != pdFALSE )
         {
             prvSEND_COMPLETED( pxStreamBuffer );
         }
@@ -976,7 +985,7 @@ size_t xStreamBufferSendFromISR( StreamBufferHandle_t xStreamBuffer,
     if( xReturn > ( size_t ) 0 )
     {
         /* Was a task waiting for the data? */
-        if( prvBytesInBuffer( pxStreamBuffer ) >= pxStreamBuffer->xTriggerLevelBytes )
+        if( prvBytesInBufferMeetTriggerLevel( pxStreamBuffer, prvBytesInBuffer( pxStreamBuffer ) ) != pdFALSE )
         {
             /* MISRA Ref 4.7.1 [Return value shall be checked] */
             /* More details at: https://github.com/FreeRTOS/FreeRTOS-Kernel/blob/main/MISRA.md#dir-47 */
@@ -1584,6 +1593,35 @@ static size_t prvBytesInBuffer( const StreamBuffer_t * const pxStreamBuffer )
     }
 
     return xCount;
+}
+/*-----------------------------------------------------------*/
+
+static BaseType_t prvBytesInBufferMeetTriggerLevel( const StreamBuffer_t * const pxStreamBuffer,
+                                                    size_t xBytesInBuffer )
+{
+    BaseType_t xReturn = pdFALSE;
+
+    if( ( pxStreamBuffer->ucFlags & sbFLAGS_IS_BATCHING_BUFFER ) != ( uint8_t ) 0 )
+    {
+        if( xBytesInBuffer > pxStreamBuffer->xTriggerLevelBytes )
+        {
+            xReturn = pdTRUE;
+        }
+        else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+    }
+    else if( xBytesInBuffer >= pxStreamBuffer->xTriggerLevelBytes )
+    {
+        xReturn = pdTRUE;
+    }
+    else
+    {
+        mtCOVERAGE_TEST_MARKER();
+    }
+
+    return xReturn;
 }
 /*-----------------------------------------------------------*/
 

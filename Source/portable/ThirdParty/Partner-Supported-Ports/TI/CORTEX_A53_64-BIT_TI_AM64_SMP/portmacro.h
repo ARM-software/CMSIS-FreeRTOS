@@ -187,11 +187,11 @@ void vPortTaskUsesFPU( void );
 #define portRTOS_LOCK_COUNT 2
 #define portMAX_CORE_COUNT 2
 
-#define portRELEASE_ISR_LOCK()  vPortRecursiveLock(ISR_LOCK, pdFALSE)
-#define portGET_ISR_LOCK()  vPortRecursiveLock(ISR_LOCK, pdTRUE)
+#define portRELEASE_ISR_LOCK( xCoreID ) vPortRecursiveLock( ( xCoreID ), ISR_LOCK, pdFALSE )
+#define portGET_ISR_LOCK( xCoreID )     vPortRecursiveLock( ( xCoreID ), ISR_LOCK, pdTRUE )
 
-#define portRELEASE_TASK_LOCK()  vPortRecursiveLock(TASK_LOCK, pdFALSE)
-#define portGET_TASK_LOCK()  vPortRecursiveLock(TASK_LOCK, pdTRUE)
+#define portRELEASE_TASK_LOCK( xCoreID )    vPortRecursiveLock( ( xCoreID ), TASK_LOCK, pdFALSE )
+#define portGET_TASK_LOCK( xCoreID )        vPortRecursiveLock( ( xCoreID ), TASK_LOCK, pdTRUE )
 
 /* Interrupt number to interrupt a core for task yield */
 #define YIELD_CORE_INTERRUPT_NO     (0U)
@@ -218,9 +218,8 @@ uint32_t GateWord[ portRTOS_LOCK_COUNT ];
 int32_t GateSmp_tryLock(uint32_t* gateWord);
 void GateSmp_unlock(uint32_t* gateWord);
 
-static inline void vPortRecursiveLock(uint32_t ulLockNum, BaseType_t uxAcquire)
+static inline void vPortRecursiveLock(BaseType_t xCoreID, uint32_t ulLockNum, BaseType_t uxAcquire)
 {
-    uint32_t ulCoreNum = portGET_CORE_ID();
     uint32_t ulLockBit = 1u << ulLockNum;
 
     /* Lock acquire */
@@ -234,7 +233,7 @@ static inline void vPortRecursiveLock(uint32_t ulLockNum, BaseType_t uxAcquire)
         if( GateSmp_tryLock( &GateWord[ulLockNum] ) != 0)
         {
             /* Check if the core owns the spinlock */
-            if( Get_64(&ucOwnedByCore[ulCoreNum]) & ulLockBit )
+            if( Get_64(&ucOwnedByCore[xCoreID]) & ulLockBit )
             {
                 configASSERT( Get_64(&ucRecursionCountByLock[ulLockNum]) != 255u);
                 Set_64(&ucRecursionCountByLock[ulLockNum], (Get_64(&ucRecursionCountByLock[ulLockNum])+1));
@@ -261,13 +260,13 @@ static inline void vPortRecursiveLock(uint32_t ulLockNum, BaseType_t uxAcquire)
         /* Set lock count as 1 */
         Set_64(&ucRecursionCountByLock[ulLockNum], 1);
         /* Set ucOwnedByCore */
-        Set_64(&ucOwnedByCore[ulCoreNum], (Get_64(&ucOwnedByCore[ulCoreNum]) | ulLockBit));
+        Set_64(&ucOwnedByCore[xCoreID], (Get_64(&ucOwnedByCore[xCoreID]) | ulLockBit));
     }
     /* Lock release */
     else
     {
         /* Assert the lock is not free already */
-        configASSERT( (Get_64(&ucOwnedByCore[ulCoreNum]) & ulLockBit) != 0 );
+        configASSERT( (Get_64(&ucOwnedByCore[xCoreID]) & ulLockBit) != 0 );
         configASSERT( Get_64(&ucRecursionCountByLock[ulLockNum]) != 0 );
 
         /* Reduce ucRecursionCountByLock by 1 */
@@ -275,7 +274,7 @@ static inline void vPortRecursiveLock(uint32_t ulLockNum, BaseType_t uxAcquire)
 
         if( !Get_64(&ucRecursionCountByLock[ulLockNum]) )
         {
-            Set_64(&ucOwnedByCore[ulCoreNum], (Get_64(&ucOwnedByCore[ulCoreNum]) & ~ulLockBit));
+            Set_64(&ucOwnedByCore[xCoreID], (Get_64(&ucOwnedByCore[xCoreID]) & ~ulLockBit));
             GateSmp_unlock(&GateWord[ulLockNum]);
             /* Add barrier to ensure lock is taken before we proceed */
             __asm__ __volatile__ (

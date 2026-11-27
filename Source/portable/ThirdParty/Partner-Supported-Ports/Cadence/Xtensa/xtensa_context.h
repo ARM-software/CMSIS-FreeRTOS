@@ -1,6 +1,6 @@
  /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -48,6 +48,9 @@
 #include    <xtensa/config/tie.h>
 #include    <xtensa/corebits.h>
 #include    <xtensa/config/system.h>
+
+/* For configNUMBER_OF_CORES */
+#include    <FreeRTOSConfig.h>
 
 
 /* Align a value up to nearest n-byte boundary, where n is a power of 2. */
@@ -272,6 +275,19 @@ XSTRUCT_END(XtExcFrame)
   co-processor state (which can be quite large) and in particular remove that
   overhead from interrupt handlers.
 
+  An exception to this rule applies to SMP configurations. If a thread using
+  a coprocessor is pinned to a specific core (using the task "Affinity" APIs)
+  then the usual "lazy" co-processor context switching is used. However, if a
+  task can migrate to another core, its co-processor state needs to be saved
+  before it is swapped out since it may be required on a different core,
+  increasing context switching latency. For this reason, it is recommended
+  (but not required) that all tasks using a co-processor be pinned to a core.
+
+  NOTE: SMP applications should only change affinity masks on the currently-
+  running task or on a task that has fully saved/released its coprocessors;
+  changing the affinity on an inactive preempted task could result in 
+  coprocessor data loss and must be avoided.
+
   The co-processor state save area may be in any convenient per-thread location
   such as in the thread control block or above the thread stack area. It need
   not be in the interrupt stack frame since interrupts don't use co-processors.
@@ -287,7 +303,7 @@ XSTRUCT_END(XtExcFrame)
     When a thread solicits a context-swtich, its CPENABLE is cleared - the
     compiler has saved the (caller-saved) co-proc state if it needs to.
     When a non-running thread loses ownership of a CP, its bit is cleared.
-    When a thread runs, it's XT_CPENABLE is loaded into the CPENABLE reg.
+    When a thread runs, its XT_CPENABLE is loaded into the CPENABLE reg.
     Avoids co-processor exceptions when no change of ownership is needed.
 
   XT_CPSTORED
@@ -413,6 +429,7 @@ XSTRUCT_END(XtExcFrame)
 #ifdef __ASSEMBLER__
 
 #include "asm-offsets.h"
+#include "xtensa_asm.h"
 
     // RTOS-specific entry macro. Use only a8, a12-a14.
 
@@ -427,11 +444,11 @@ XSTRUCT_END(XtExcFrame)
 
     // Check scheduler state and interrupt nest state.
 
+    pintdata a10, a8                            // a10 <- &port_interruptNesting
     movi     a8,  port_xSchedulerRunning
-    movi     a9,  port_interruptNesting
     l32i     a8,  a8, 0                         // a8 <- port_xSchedulerRunning
     beqz     a8,  .Lnested                      // scheduler not running, no tasks
-    l32i     a8,  a9, 0                         // a8 <- port_interruptNesting
+    l32i     a8,  a10, PORTINT_NEST_OFF         // a8 <- port_interruptNesting
     bnez     a8,  .Lnested                      // != 0 means nested, skip ahead
     movi     a8,  port_yield_flag
     l32i     a9,  a8, 0                         // a9 <- port_yield_flag
@@ -440,14 +457,13 @@ XSTRUCT_END(XtExcFrame)
     s32i     a9,  a8, 0                         // zero out for next time
     j        .Lyield                            // no context save needed
 2:
-    movi     a8,  pxCurrentTCB
+    pxctcb   a8,  a9                            // pxCurrentTCB or pxCurrentTCBs[]
     l32i     a9,  a8, 0                         // a9 <- pxCurrentTCB
     beqz     a9,  .Lsched                       // no current, go to scheduler
-    movi    a10,  port_switch_flag
-    l32i    a11, a10, 0                         // a11 <- port_switch_flag
+    l32i    a11, a10, PORTINT_SWITCH_OFF        // a11 <- port_switch_flag
     beqz    a11,  .Lnested                      // = 0 means no switch
     movi    a11,  0
-    s32i    a11, a10, 0                         // zero out for next time
+    s32i    a11, a10, PORTINT_SWITCH_OFF        // zero out for next time
 
     // Preemption, save remaining state of current (outgoing) thread
 
@@ -496,18 +512,24 @@ XSTRUCT_END(XtExcFrame)
 
     addi     a1,  a1, -XT_STK_FRMSZ -32
 #ifdef __XTENSA_WINDOWED_ABI__
-    movi    a10, vTaskSwitchContext
-    callx8  a10
-#else
-    movi    a10, vTaskSwitchContext
-    callx0  a10
+#if ( configNUMBER_OF_CORES > 1 )
+    coreid  a10, a9
 #endif
+    movi     a9, vTaskSwitchContext
+    callx8   a9
+#else
+#if ( configNUMBER_OF_CORES > 1 )
+    coreid   a2, a9
+#endif
+    movi     a9, vTaskSwitchContext
+    callx0   a9
+#endif  // __XTENSA_WINDOWED_ABI__
 
 .Lyield:
     // Come here directly if the outgoing task yielded. pxCurrentTCB
     // has already been updated.
 
-    movi     a9,  pxCurrentTCB
+    pxctcb   a9,  a10                           // pxCurrentTCB or pxCurrentTCBs[]
     l32i     a9,  a9, 0                         // a9 <- pxCurrentTCB
 
 #if XCHAL_CP_NUM > 0

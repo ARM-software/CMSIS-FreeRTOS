@@ -324,12 +324,12 @@
     add     a2, a4, a4                      /* a2 = a4 << 1 */
     addi    a2, a2, -1                      /* a2 = mask of 1's <= a4 bit */
     and     a2, a2, a3                      /* a2 = mask of all bits <= a4 at this level */
-    movi    a3, xt_intdata
-    l32i    a6, a3, 4                       /* a6 = xt_vpri_mask */
+    pintdata a3, a6
+    l32i    a6, a3, PORTINT_VPRI_MASK_OFF   /* a6 = xt_vpri_mask */
     neg     a2, a2
     addi    a2, a2, -1                      /* a2 = mask to apply */
     and     a5, a6, a2                      /* mask off all bits <= a4 bit */
-    s32i    a5, a3, 4                       /* update xt_vpri_mask */
+    s32i    a5, a3, PORTINT_VPRI_MASK_OFF   /* update xt_vpri_mask */
     rsr     a3, INTENABLE
     and     a3, a3, a2                      /* mask off all bits <= a4 bit */
     wsr     a3, INTENABLE
@@ -375,9 +375,9 @@
     */
 
     rsil    a3, \level
-    movi    a3, xt_intdata
-    l32i    a4, a3, 0                       /* a4 = xt_intenable    */
-    s32i    a2, a3, 4                       /* update xt_vpri_mask  */
+    pintdata a3, a4
+    l32i    a4, a3, PORTINT_INTENABLE_OFF   /* a4 = xt_intenable    */
+    s32i    a2, a3, PORTINT_VPRI_MASK_OFF   /* update xt_vpri_mask  */
     and     a4, a4, a2                      /* a4 = masked intenable */
     wsr     a4, INTENABLE                   /* update INTENABLE      */
 
@@ -427,8 +427,8 @@ _xt_panic:
     simcall
     #else
     rsil    a2, XT_IRQ_LOCK_LEVEL           /* disable all low & med ints */
-1:  j       1b                              /* loop infinitely */
     #endif
+1:  j       1b                              /* loop infinitely */
 
     .section    .rodata, "a"
     .align      4

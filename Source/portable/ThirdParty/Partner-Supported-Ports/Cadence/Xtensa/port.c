@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -42,19 +42,19 @@
 #include <xtensa/tie/xt_exception_dispatch.h>
 #endif
 
+#include "FreeRTOS.h"
+#include "xtensa_config.h"
+
 #include "xtensa_api.h"
 #include "xtensa_rtos.h"
 
-#include "FreeRTOS.h"
 #include "task.h"
 
 /* Heap area (see heap_4.c). When MPU in use, align it to the MPU
    region boundary to avoid overlapping with non-heap data. */
-#if portUSING_MPU_WRAPPERS
+#if portUSING_MPU_WRAPPERS && configAPPLICATION_ALLOCATED_HEAP
 #define HEAP_SIZE    ((configTOTAL_HEAP_SIZE + XCHAL_MPU_ALIGN - 1) & -XCHAL_MPU_ALIGN)
 PRIVILEGED_DATA uint8_t ucHeap[ HEAP_SIZE ] __attribute__((aligned(XCHAL_MPU_ALIGN)));
-#else
-uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
 #endif
 
 #if portUSING_MPU_WRAPPERS
@@ -81,6 +81,12 @@ extern void _xt_task_start( void );
 extern void _xt_task_start_user( void );
 #endif
 
+#if ( configNUMBER_OF_CORES > 1 )
+extern uint32_t _bss_table_start;
+extern uint32_t _bss_table_end;
+extern void __bss_init(uint32_t * table_start, uint32_t * table_end);
+#endif
+
 // Timer tick interval in cycles.
 static uint32_t xt_tick_cycles;
 TickType_t xMaxSuppressedTicks;
@@ -99,8 +105,181 @@ int32_t xt_sw_intnum = -1;
 // Duplicate of inaccessible xSchedulerRunning.
 uint32_t port_xSchedulerRunning = 0U;
 
-// Interrupt nesting level.
-uint32_t port_interruptNesting  = 0U;
+#if (defined __DYNAMIC_REENT__)
+  #if ( configNUMBER_OF_CORES > 1 )
+    #if XSHAL_CLIB == XTHAL_CLIB_XCLIB
+    #define _XT_INTDATA_REENT_INIT(x)   NULL, NULL, { 0 },
+    #elif XSHAL_CLIB == XTHAL_CLIB_NEWLIB
+      #if ( XT_USE_DATARAM )
+      #define _XT_INTDATA_REENT_INIT(x)   NULL, NULL, _REENT_INIT(_xt_intdata.xt_reent),
+      #else
+      #define _XT_INTDATA_REENT_INIT(x)   NULL, NULL, _REENT_INIT(_xt_intdata[(x)].xt_reent),
+      #endif
+    #else
+    #error Specified CLIB not reentrant
+    #endif
+  #else
+    #define _XT_INTDATA_REENT_INIT      NULL,
+  #endif    // configNUMBER_OF_CORES > 1
+#else
+  #if ( configNUMBER_OF_CORES > 1 )
+    #define _XT_INTDATA_REENT_INIT(x)
+  #else
+    #define _XT_INTDATA_REENT_INIT
+  #endif
+#endif      // __DYNAMIC_REENT__
+
+#if ( configNUMBER_OF_CORES == 1 )
+
+// Interrupt nesting level and task switch flag maintained together.
+xt_internal_data_t _xt_intdata = {
+    0, 0, 0, 0xffffffff, _XT_INTDATA_REENT_INIT
+};
+
+#else
+
+#if ( XT_USE_DATARAM )
+
+// Per-core struct contains interrupt variables and uxCriticalNestings
+// When in dataram, structure is in per-core memory and not padded.
+xt_internal_data_t XT_DATARAM_ATTR
+_xt_intdata = { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(0) };
+
+#else       // XT_USE_DATARAM
+
+// Per-core struct contains interrupt variables and uxCriticalNestings
+// When in shared sysram, structure is padded to cache line and indexed per-core
+xt_internal_data_t __attribute__((aligned (XCHAL_DCACHE_LINESIZE)))
+_xt_intdata[ configNUMBER_OF_CORES ] = {
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(0) { 0 } },
+#if ( configNUMBER_OF_CORES >= 2 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(1) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES >= 3 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(2) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES >= 4 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(3) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES >= 5 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(4) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES >= 6 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(5) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES >= 7 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(6) { 0 } },
+#endif
+#if ( configNUMBER_OF_CORES == 8 )
+    { 0, 0, 0, 0, 0xffffffff, 0, _XT_INTDATA_REENT_INIT(7) { 0 } },
+#endif
+};
+
+#endif      // XT_USE_DATARAM
+
+PRIVILEGED_DATA xt_mutex __attribute__((aligned (XCHAL_DCACHE_LINESIZE))) _xt_mutex_ISR;
+PRIVILEGED_DATA xt_mutex __attribute__((aligned (XCHAL_DCACHE_LINESIZE))) _xt_mutex_task;
+
+#if (XT_USE_L2RAM)
+XTHAL_L2_SETUP(XCHAL_L2RAM_RESET_PADDR, XT_L2RAM_SIXTEENTHS, XT_L2CACHE_SIXTEENTHS);
+#endif
+
+/*
+ * Initialize the mutex.
+ */
+void
+xt_mutex_init(xt_mutex_p pmtx)
+{
+    if (pmtx != NULL) {
+        pmtx->owner = 0U;
+        pmtx->count = 0U;
+    }
+}
+
+/*
+ * Lock the mutex, busy wait until lock acquired. Can be called repeatedly
+ * to lock an already owned mutex. Note the locking is not protected against
+ * interrupts. This is a potentially blocking function and should not be
+ * called from an interrupt handler anyway.
+ */
+int32_t
+xt_mutex_lock(xt_mutex_p pmtx)
+{
+    uint32_t id = (portGET_CORE_ID()) + 1U;
+
+    if (pmtx != NULL) {
+        if (pmtx->owner == id) {
+            pmtx->count++;
+        }
+        else {
+            int32_t ret;
+
+            do {
+#if XCHAL_HAVE_EXCLUSIVE
+                /* Streamline implementation for SMP case.
+                 * %0 : ret
+                 * %1 : address &(pmtx->owner)
+                 *    : test value (0) optimized w/ bnez
+                 * %2 : set value (id) preserved for loop
+                 * %3 : temp reg 1
+                 * %4 : temp reg 2
+                 */
+                uint32_t t1 = 0, t2 = 1;    /* Different values trick optimizer */
+                __asm__ volatile ("mov     %3, %2   /* %3 = copy of set_value */        \n\t"
+                                  "1:                                                   \n\t"
+                                  "l32ex   %0, %1   /* %0 = *address, set monitor */    \n\t"
+                                  "bnez    %0, 2f   /* skip write if *address != 0 */   \n\t"
+                                  "mov     %4, %3   /* %4 = set_value */                \n\t"
+                                  "s32ex   %4, %1   /* *address = set_value */          \n\t"
+                                  "getex   %4       /* get result of store */           \n\t"
+                                  "beqz    %4, 1b                                       \n\t"
+                                  "2:                                                   \n\t"
+                                  "clrex            /* in case we skipped write */      \n\t"
+                                  : "=&r"(ret)
+                                  : "r"(&(pmtx->owner)), "r"(id), "r"(t1), "r"(t2));
+#else
+                ret = xthal_compare_and_set((int32_t *) &(pmtx->owner), 0, (int32_t) id);
+#endif
+            } while (ret != 0);
+            pmtx->count = 1U;
+        }
+        return 0;
+    }
+
+    return -1;
+}
+
+/*
+ * Unlock the mutex. Can be called repeatedly to unlock the same mutex.
+ * The lock is only released when the lock count goes to zero.
+ */
+int32_t
+xt_mutex_unlock(xt_mutex_p pmtx)
+{
+    uint32_t id = (portGET_CORE_ID()) + 1U;
+
+    if ((pmtx != NULL) && (pmtx->owner == id)) {
+        pmtx->count--;
+        if (pmtx->count == 0U) {
+            pmtx->owner = 0U;
+        }
+        return 0;
+    }
+
+    return -1;
+}
+
+
+// Ensure SMP initialization flag values are non-zero so it gets linked
+// into .data and not .bss.
+typedef enum {
+    XT_SMP_SYNC_INITVAL = 1,
+    XT_SMP_SYNC_DONE = 2,
+} xt_smp_sync_t;
+
+volatile xt_smp_sync_t xt_smp_sync = XT_SMP_SYNC_INITVAL;
+
+#endif // ( configNUMBER_OF_CORES == 1 )
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
@@ -134,12 +313,12 @@ static void xt_tick_handler( void )
         // Interrupts upto configMAX_SYSCALL_INTERRUPT_PRIORITY must be
         // disabled before calling xTaskIncrementTick as it accesses the
         // kernel lists.
-        interruptMask = portSET_INTERRUPT_MASK_FROM_ISR();
+        interruptMask = taskENTER_CRITICAL_FROM_ISR();
         {
             ret = xTaskIncrementTick();
             ++xt_tick_count;
         }
-        portCLEAR_INTERRUPT_MASK_FROM_ISR( interruptMask );
+        taskEXIT_CRITICAL_FROM_ISR( interruptMask );
 
         portYIELD_FROM_ISR( ret );
 
@@ -187,6 +366,25 @@ static void xt_tick_timer_stop( void )
     xt_set_ccompare( XT_TIMER_INDEX, 0 );
 }
 
+#if ( configNUMBER_OF_CORES > 1 )
+//-----------------------------------------------------------------------------
+// IPI interrupts used for multicore scheduler
+//-----------------------------------------------------------------------------
+const uint32_t xt_ipi_intnum[configNUMBER_OF_CORES] = XCHAL_SUBSYS_IPI_S0_INTLIST;
+
+//-----------------------------------------------------------------------------
+// portYIELD_CORE IPI handler wrapper
+//-----------------------------------------------------------------------------
+static void xt_ipi_yield_wrapper( void * arg )
+{
+    // Flag a context switch and exit; _Interrupt() will do the rest.
+    // Do NOT call vPortYieldFromInt() directly, which would result in twice
+    // saving and clearing CPENABLE, corrupting the coprocessor state.
+    UNUSED(arg);
+    portYIELD_FROM_ISR(1);  // Flag a context switch and exit
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // Start the scheduler.
 //-----------------------------------------------------------------------------
@@ -194,7 +392,12 @@ BaseType_t xPortStartScheduler( void )
 {
     #if XCHAL_HAVE_XEA3
     extern void xt_sched_handler(void * arg);
+    extern void xt_unhandled_interrupt(void * arg);
     int32_t i;
+    #endif
+    #if (configNUMBER_OF_CORES > 1 )
+    uint32_t c;
+    uint32_t my_core = portGET_CORE_ID();
     #endif
 
     // Interrupts are disabled at this point and stack contains PS with
@@ -214,8 +417,11 @@ BaseType_t xPortStartScheduler( void )
     // Select a software interrupt to use for scheduling.
     for (i = 0; i < XCHAL_NUM_INTERRUPTS; i++) {
         if ((Xthal_inttype[i] == XTHAL_INTTYPE_SOFTWARE) && (Xthal_intlevel[i] == 1)) {
-            xt_sw_intnum = i;
-            break;
+            if (xt_get_interrupt_handler(i) == &xt_unhandled_interrupt) {
+                // Finalize the interrupt if not already in use
+                xt_sw_intnum = i;
+                break;
+            }
         }
     }
 
@@ -233,15 +439,54 @@ BaseType_t xPortStartScheduler( void )
     #if XCHAL_HAVE_ISL
     XT_WSR_ISL(0);
     #endif
-    #endif
+    #endif  // XCHAL_HAVE_XEA3
 
+    #if ( configNUMBER_OF_CORES > 1 )
+    // Initialize SMP mutexes
+    if (my_core == 0) {
+        xt_mutex_init(&_xt_mutex_ISR);
+        xt_mutex_init(&_xt_mutex_task);
+    } else {
+        // Ensure core 0 started first.
+        // NOTE: if this assert triggers, ensure all nonzero cores start in RunStall.
+        // On XTSC, that may entail setting the RunOnReset InitValue in subsys.yml.
+        configASSERT( port_xSchedulerRunning );
+    }
+
+    // Limit the number of cacheops to prevent hangs in case the test uses large 
+    // number of CacheOPs at the same time on multiple cores
+    xthal_L2_prefetch_set_limit(XCHAL_L2CC_MAX_REQ/2);
+
+    // Configure inter-processor interrupts that can be triggered by other cores;
+    // used for portYIELD_CORE().
+    for (c = 0; c < configNUMBER_OF_CORES; c++) {
+        if (c != my_core) {
+            if (!xt_set_interrupt_handler(xt_ipi_intnum[c], xt_ipi_yield_wrapper, NULL)) {
+                return pdFALSE;
+            }
+            xt_interrupt_enable(xt_ipi_intnum[c]);
+        }
+    }
+
+    if (my_core == configTICK_CORE) {
+        // Set up and enable timer tick.
+        xt_tick_timer_init();
+    }
+    #else   // configNUMBER_OF_CORES
     // Set up and enable timer tick.
     xt_tick_timer_init();
+    #endif  // configNUMBER_OF_CORES
 
     #if XT_USE_THREAD_SAFE_CLIB
     // Init C library
-    vPortClibInit();
-    #endif
+    #if ( configNUMBER_OF_CORES > 1 )
+    if (my_core == 0)
+    #endif  // ( configNUMBER_OF_CORES > 1 )
+    {
+        // Init C library
+        vPortClibInit();
+    }
+    #endif  // XT_USE_THREAD_SAFE_CLIB
 
     #if portUSING_MPU_WRAPPERS
     // Setup MPU
@@ -251,11 +496,35 @@ BaseType_t xPortStartScheduler( void )
 
     port_xSchedulerRunning = 1U;
 
+    #if ( configNUMBER_OF_CORES > 1 )
+    if (my_core == 0) {
+        // Cache-coherence means writeback operations are unnecessary.
+        xt_smp_sync = XT_SMP_SYNC_DONE;
+
+        // Release other cores last
+        if (xthal_run_cores(XTSUB_RUN_ALL_CORES)) {
+            return pdFALSE;
+        }
+    } else {
+        // Used by xt-gdb thread-aware debug support
+        _XT_INTDATA(my_core).xt_core_init_done = 1;
+    }
+    #endif
+
+    // Spill and invalidate prior register windows so that solicited
+    // restores do not inadvertently pick up starting register window
+    xthal_window_spill();
+
     // Cannot be directly called from C; never returns
     __asm__ volatile ("call0    _frxt_dispatch\n");
 
     // Should never get here.
     return pdFALSE;
+}
+
+BaseType_t xPortIsInsideInterrupt( void )
+{
+    return (_XT_INTDATA(portGET_CORE_ID()).port_interruptNesting) > 0 ? pdTRUE : pdFALSE;
 }
 
 //-----------------------------------------------------------------------------
@@ -266,6 +535,46 @@ void vPortEndScheduler( void )
     xt_tick_timer_stop();
     port_xSchedulerRunning = 0U;
 }
+
+
+#if ( configNUMBER_OF_CORES > 1 )
+//-----------------------------------------------------------------------------
+// Starting with port v3.11, the SMP init process is slightly different: only
+// core 0 calls main(); other cores enter the scheduler directly via _start().
+//
+// Since SMP requires coherent shared memory, core 0 must do the following:
+// 1) initialize BSS in shared memories, and 
+// 2) call __clibrary_init()
+//
+// Nonzero cores will skip these steps and wait here until core 0 calls
+// xPortStartScheduler(), ensuring all cores are synchronized, regardless of
+// the order reset was released.
+//
+// This process is implemented by overriding the __memmap_init() hook in the
+// XTOS CRT init sequence.  Note that BSS is not initialized at this point so
+// we must only reference initialized global data.  Any systems that require
+// additional MMU/TLB setup will need to hook in here as well.
+//-----------------------------------------------------------------------------
+void __memmap_init(void)
+{
+    if (portGET_CORE_ID() > 0) {
+        portDISABLE_INTERRUPTS();
+        while (xt_smp_sync != XT_SMP_SYNC_DONE) {
+            // Busy-wait
+        }
+
+        // By this point core 0 will have initialized BSS in shared memory
+        // but we still need to initialize per-core BSS segments
+        __bss_init(&_bss_table_start, &_bss_table_end);
+
+        (void) xPortStartScheduler();
+
+        // Does not return here
+        configASSERT( 0 );
+    }
+}
+#endif // ( configNUMBER_OF_CORES > 1 )
+
 
 //-----------------------------------------------------------------------------
 // Stack initialization.
@@ -513,6 +822,7 @@ void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime )
 
 #if portUSING_MPU_WRAPPERS
 extern void vPortResetPrivilege(BaseType_t previous);
+
 void vPortEnterCritical( void )
 {
     // TODO: handle configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS
@@ -525,7 +835,6 @@ void vPortEnterCritical( void )
     }
     else
     {
-        // TODO: handle port_interruptNesting
         vTaskEnterCritical();
     }
 }
@@ -542,7 +851,6 @@ void vPortExitCritical( void )
     }
     else
     {
-        // TODO: handle port_interruptNesting
         vTaskExitCritical();
     }
 }

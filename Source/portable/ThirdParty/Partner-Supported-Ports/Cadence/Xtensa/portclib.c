@@ -1,6 +1,6 @@
 /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -30,6 +30,8 @@
 #include "FreeRTOS.h"
 
 #if XT_USE_THREAD_SAFE_CLIB
+
+#define MTX_LOCK_ATTEMPTS_BEFORE_YIELD  5
 
 #if XSHAL_CLIB == XTHAL_CLIB_XCLIB
 
@@ -87,8 +89,22 @@ _Mtxdst(_Rmtx * mtx)
 void
 _Mtxlock(_Rmtx * mtx)
 {
+    int retries = 0;
+    TickType_t ticks_to_wait = portMAX_DELAY;
     if ((mtx != NULL) && (*mtx != NULL)) {
-        xSemaphoreTakeRecursive(*mtx, portMAX_DELAY);
+#if ( ( INCLUDE_xTaskGetSchedulerState == 1 ) || ( configUSE_TIMERS == 1 ) )
+        if (xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED) {
+            // Making this a non-blocking call enables the heap_3 memory manager,
+            // which calls malloc() with the scheduler suspended (and would trigger
+            // an assertion at queue.c:1675).
+            ticks_to_wait = 0;
+        }
+#endif
+        while (xSemaphoreTakeRecursive(*mtx, ticks_to_wait) != pdPASS) {
+            if (++retries >= MTX_LOCK_ATTEMPTS_BEFORE_YIELD) {
+                taskYIELD();
+            }
+        }
     }
 }
 
@@ -103,16 +119,17 @@ _Mtxunlock(_Rmtx * mtx)
     }
 }
 
+extern char _end[];
+extern char _heap_sentry;
+char * _heap_sentry_ptr = &_heap_sentry;
+char * heap_ptr;
+
 //-----------------------------------------------------------------------------
 //  Called by malloc() to allocate blocks of memory from the heap.
 //-----------------------------------------------------------------------------
 void *
 _sbrk_r (struct _reent * reent, int32_t incr)
 {
-    extern char _end[];
-    extern char _heap_sentry;
-    static char * _heap_sentry_ptr = &_heap_sentry;
-    static char * heap_ptr;
     char * base;
 
     if (!heap_ptr)
@@ -166,13 +183,28 @@ static uint32_t  ulClibInitDone = 0;
 void
 __malloc_lock(struct _reent * ptr)
 {
+    int retries = 0;
+    TickType_t ticks_to_wait = portMAX_DELAY;
+
     // Suppress compiler warning.
     (void) ptr;
 
     if (!ulClibInitDone)
         return;
 
-    xSemaphoreTakeRecursive(xClibMutex, portMAX_DELAY);
+#if ( ( INCLUDE_xTaskGetSchedulerState == 1 ) || ( configUSE_TIMERS == 1 ) )
+    if (xTaskGetSchedulerState() == taskSCHEDULER_SUSPENDED) {
+        // Making this a non-blocking call enables the heap_3 memory manager,
+        // which calls malloc() with the scheduler suspended (and would trigger
+        // an assertion at queue.c:1675).
+        ticks_to_wait = 0;
+    }
+#endif
+    while (xSemaphoreTakeRecursive(xClibMutex, ticks_to_wait) != pdPASS) {
+        if (++retries >= MTX_LOCK_ATTEMPTS_BEFORE_YIELD) {
+            taskYIELD();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -210,16 +242,17 @@ __env_unlock(struct _reent * ptr)
     __malloc_unlock(ptr);
 }
 
+extern char _end[];
+extern char _heap_sentry;
+char * _heap_sentry_ptr = &_heap_sentry;
+char * heap_ptr;
+
 //-----------------------------------------------------------------------------
 //  Called by malloc() to allocate blocks of memory from the heap.
 //-----------------------------------------------------------------------------
 void *
 _sbrk_r (struct _reent * reent, int32_t incr)
 {
-    extern char _end[];
-    extern char _heap_sentry;
-    static char * _heap_sentry_ptr = &_heap_sentry;
-    static char * heap_ptr;
     char * base;
 
     if (!heap_ptr)
@@ -257,5 +290,57 @@ _reclaim_reent(struct _reent * ptr)
 }
 
 #endif /* XSHAL_CLIB == XTHAL_CLIB_NEWLIB */
+
+//-----------------------------------------------------------------------------
+//  If xclib/newlib support overriding reent_ptr_ as a function, use it instead
+//  of FreeRTOS' configSET_TLS_BLOCK() hook. Required for coherent libc support
+//  on SMP; single-core is overridden too since _reent_ptr is not an lvalue.
+//-----------------------------------------------------------------------------
+#if (defined __DYNAMIC_REENT__)
+
+  #if (configNUMBER_OF_CORES > 1)
+
+struct _reent *
+__getreent(void)
+{
+    xt_internal_data_t *xt_intdata_p = &(_XT_INTDATA(portGET_CORE_ID()));
+    #if ( configUSE_C_RUNTIME_TLS_SUPPORT == 1 )
+    if (xt_intdata_p->xt_reent_p) {
+        return xt_intdata_p->xt_reent_p;
+    }
+    #endif /* configUSE_C_RUNTIME_TLS_SUPPORT */
+
+    // If TLS not configured or libc is used prior to starting the scheduler
+    return &(xt_intdata_p->xt_reent);
+}
+
+  #else /* (configNUMBER_OF_CORES == 1) */
+
+#if XSHAL_CLIB == XTHAL_CLIB_XCLIB
+static struct _reent xt_reent __attribute__ ((section (".clib.percpu.bss")));
+#endif
+
+struct _reent *
+__getreent(void)
+{
+    #if ( configUSE_C_RUNTIME_TLS_SUPPORT == 1 )
+    if (_xt_intdata.xt_reent_p) {
+        return _xt_intdata.xt_reent_p;
+    }
+    #endif /* configUSE_C_RUNTIME_TLS_SUPPORT */
+
+    // If TLS not configured or libc is used prior to starting the scheduler
+    #if XSHAL_CLIB == XTHAL_CLIB_XCLIB
+    return &xt_reent;
+    #elif XSHAL_CLIB == XTHAL_CLIB_NEWLIB
+    return _impure_ptr;
+    #else
+    #error The selected C runtime library is not thread safe.
+    #endif
+}
+
+  #endif /* configNUMBER_OF_CORES */
+
+#endif /* __DYNAMIC_REENT__ */
 
 #endif /* XT_USE_THREAD_SAFE_CLIB */

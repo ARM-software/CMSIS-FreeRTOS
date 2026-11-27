@@ -1,6 +1,6 @@
  /*
  * FreeRTOS Kernel <DEVELOPMENT BRANCH>
- * Copyright (C) 2015-2024 Cadence Design Systems, Inc.
+ * Copyright (C) 2015-2025 Cadence Design Systems, Inc.
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -34,6 +34,7 @@
 
 #include "xtensa_context.h"
 #include "xtensa_rtos.h"
+#include "xtensa_asm.h"
 
 
 #if XCHAL_CP_NUM > 0
@@ -49,7 +50,11 @@
         .global _xt_coproc_owner_sa
         .align  16,,XCHAL_CP_MAX << 2   //  minimize crossing cache boundaries
 _xt_coproc_owner_sa:
+#if (defined configNUMBER_OF_CORES)
+        .rept   (XCHAL_CP_MAX * configNUMBER_OF_CORES)
+#else
         .rept   XCHAL_CP_MAX
+#endif
         .word   0
         .endr
 
@@ -107,6 +112,22 @@ _xt_coproc_handler:
         addx4   a0,  a5, a0                     // a0 = &_xt_coproc_mask[n]
         l32i    a0,  a0, 0                      // a0 = (n << 16) | (1 << n)
         movi    a3,  _xt_coproc_owner_sa
+#if ( configNUMBER_OF_CORES > 1 )
+        // Increment _xt_coproc_owner_sa (a3) to per-core area
+        coreid  a2
+#ifdef XCHAL_HAVE_MUL32
+        movi    a6, (XCHAL_CP_MAX * 4)
+        mull    a2, a2, a6
+        add     a3, a3, a2
+#else
+1:
+        beqz    a2, 2f
+        addi    a3, a3, (XCHAL_CP_MAX * 4)
+        addi    a2, a2, -1
+        j       1b
+2:
+#endif
+#endif
         extui   a2,  a0, 0, 16                  // coprocessor bitmask portion
         or      a4,  a4, a2                     // a4 = CPENABLE | (1 << n)
         wsr     a4,  CPENABLE
@@ -202,6 +223,107 @@ _xt_coproc_handler:
         j       .L_xt_coproc_err
 
 
+#if ( configNUMBER_OF_CORES > 1 )
+
+//-----------------------------------------------------------------------------
+// _xt_coproc_saveall
+//
+// Saves all active coprocessor state to current thread's save area and disables
+// all CPENABLE bits.  Obeys ABI conventions on entry.
+// Register use:
+//   a0 - on entry, return address
+//   a1 - ...
+//   a2 - pointer to coprocessor state save area
+//   a3-a15 - may all be used and trashed by this routine.
+//-----------------------------------------------------------------------------
+
+        .text
+        .align  4
+        .global _xt_coproc_saveall
+        .type   _xt_coproc_saveall,@function
+_xt_coproc_saveall:
+
+        ENTRY(16)
+
+        // Get coprocessor state save area of new owner thread
+        mov     a11, a2                         // a11 = owner's save area
+        beqz    a11, .L_xt_coproc_saveall_inv   // not in a thread (invalid)
+        l32i    a4,  a11, XT_CP_ASA             // actual save area address
+        beqz    a4,  .L_xt_coproc_saveall_inv   // thread has no save area
+
+        // Find first CP to save
+        movi    a9,  0                          // a9 = CP index
+        movi    a8,  1                          // a8 = CP mask
+.L_check_done:
+        movi    a3,  XCHAL_CP_MASK              // a3  = Valid CP mask
+        rsr     a10, CPENABLE                   // a10 = CPENABLE
+        and     a10, a10, a3                    // Ignore invalid CPENABLE bits
+        beqz    a10, .L_xt_coproc_saveall_done
+        bany    a10, a8, .L_save_cp
+.L_check_next:
+        addi    a9,  a9, 1                      // a9 = next CP index
+        slli    a8,  a8, 1                      // a8 = next CP mask
+        bany    a10, a8, .L_save_cp
+        j       .L_check_next
+
+.L_save_cp:
+        // Clear coprocessor owner thread (save area ptr)
+        movi    a3,  _xt_coproc_owner_sa
+
+        // Increment _xt_coproc_owner_sa (a3) to per-core area
+        coreid  a5
+1:
+        beqz    a5, 2f
+        addi    a3, a3, (XCHAL_CP_MAX * 4)
+        addi    a5, a5, -1
+        j       1b
+2:      // NOTE: a5 is 0 by the time we get here
+
+        addx4   a3,  a9, a3                     // a3 = &_xt_coproc_owner_sa[n]
+        s32i    a5,  a3, 0                      // _xt_coproc_owner_sa[n] = NULL
+
+        // We need to save owner's coprocessor state
+        movi    a5,  _xt_coproc_sa_offset
+
+        // Mark owner state as no longer active (CPENABLE bit n clear)
+        xor     a4,  a10, a8                    // clear CP in owner's CPENABLE
+        s16i    a4,  a11, XT_CPENABLE           // update owner's CPENABLE
+
+        addx4   a5,  a9, a5                     // a5 = &_xt_coproc_sa_offset[n]
+
+        // Mark owner state as saved (CPSTORED bit n set)
+        l16ui   a4,  a11, XT_CPSTORED           // a4 = old owner's CPSTORED
+        l32i    a5,  a5, 0                      // a5 = XT_CP[n]_SA offset
+        or      a4,  a4, a8                     // set CP in old owner's CPSTORED
+        s16i    a4,  a11, XT_CPSTORED           // update old owner's CPSTORED
+        l32i    a2,  a11, XT_CP_ASA             // ptr to actual (aligned) save area
+        mov     a3,  a9
+        add     a2,  a2, a5                     // a2 = old owner's area for CP n
+
+        // The config-specific HAL macro invoked below destroys a2-a6.
+        // It is theoretically possible for Xtensa processor designers to write TIE
+        // that causes more address registers to be affected, but it is generally
+        // unlikely. If that ever happens, more registers needs to be saved/restored
+        // around this macro invocation, and the value in a11 needs to be recomputed.
+
+        xchal_cpi_store_funcbody
+        xor     a10, a10, a8                    // clear CP in CPENABLE
+        wsr     a10, CPENABLE
+        bnez    a10, .L_check_next
+
+.L_xt_coproc_saveall_done:
+        movi    a2,  0                          // a2 <- 0 == OK
+.L_xt_coproc_saveall_err:
+        RET(16)
+
+.L_xt_coproc_saveall_inv:
+        // Coprocessor exception occurred outside a thread or the thread
+        // did not allocate space to save coprocessor state. Return error.
+        movi    a2,  1
+        j       .L_xt_coproc_saveall_err
+
+#endif // ( configNUMBER_OF_CORES > 1 )
+
 //-----------------------------------------------------------------------------
 // _xt_coproc_savecs
 //
@@ -240,68 +362,116 @@ _xt_coproc_savecs:
         s16i    a11, a15, XT_CP_CS_ST           // save mask of CPs being stored
         movi    a13, _xt_coproc_sa_offset       // array of CP save offsets
         l32i    a15, a15, XT_CP_ASA             // a15 = base of aligned save area
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a12, _xt_coproc_owner_sa
+        coreid  a14
+#ifdef XCHAL_HAVE_MUL32
+        movi    a10, (XCHAL_CP_MAX * 4)
+        mull    a14, a14, a10
+        add     a12, a12, a14
+#else
+1:
+        beqz    a14, 2f
+        addi    a12, a12, (XCHAL_CP_MAX * 4)    // a12 = &_xt_coproc_owner_sa[core]
+        addi    a14, a14, -1
+        j       1b
+2:
+#endif
+#endif  /* configNUMBER_OF_CORES > 1 */
 
 #if XCHAL_CP0_SA_SIZE
         bbci.l  a11, 0, 2f                      // CP 0 not enabled
         l32i    a14, a13, 0                     // a14 = _xt_coproc_sa_offset[0]
-        add     a12, a14, a15                   // a12 = save area for CP 0
-        xchal_cp0_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15                   // a14 = save area for CP 0
+        xchal_cp0_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 0                      // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP1_SA_SIZE
         bbci.l  a11, 1, 2f                      // CP 1 not enabled
         l32i    a14, a13, 4                     // a14 = _xt_coproc_sa_offset[1]
-        add     a12, a14, a15                   // a12 = save area for CP 1
-        xchal_cp1_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15                   // a14 = save area for CP 1
+        xchal_cp1_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 4                      // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP2_SA_SIZE
         bbci.l  a11, 2, 2f
         l32i    a14, a13, 8
-        add     a12, a14, a15
-        xchal_cp2_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp2_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 8                      // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP3_SA_SIZE
         bbci.l  a11, 3, 2f
         l32i    a14, a13, 12
-        add     a12, a14, a15
-        xchal_cp3_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp3_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 12                     // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP4_SA_SIZE
         bbci.l  a11, 4, 2f
         l32i    a14, a13, 16
-        add     a12, a14, a15
-        xchal_cp4_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp4_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 16                     // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP5_SA_SIZE
         bbci.l  a11, 5, 2f
         l32i    a14, a13, 20
-        add     a12, a14, a15
-        xchal_cp5_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp5_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 20                     // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP6_SA_SIZE
         bbci.l  a11, 6, 2f
         l32i    a14, a13, 24
-        add     a12, a14, a15
-        xchal_cp6_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp6_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 24                     // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 
 #if XCHAL_CP7_SA_SIZE
         bbci.l  a11, 7, 2f
         l32i    a14, a13, 28
-        add     a12, a14, a15
-        xchal_cp7_store a12, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+        add     a14, a14, a15
+        xchal_cp7_store a14, a7, a8, a9, a10 continue=0 ofs=-1 select=XTHAL_SAS_TIE|XTHAL_SAS_NOCC|XTHAL_SAS_CALE alloc=XTHAL_SAS_ALL
+#if ( configNUMBER_OF_CORES > 1 )
+        movi    a7, 0
+        s32i    a7, a12, 28                     // _xt_coproc_owner_sa[core][n] = NULL
+#endif
 2:
 #endif
 

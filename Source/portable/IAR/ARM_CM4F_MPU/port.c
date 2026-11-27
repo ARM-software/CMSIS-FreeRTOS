@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * Copyright 2025 Arm Limited and/or its affiliates
  * <open-source-office@arm.com>
@@ -66,9 +66,19 @@
     #define portNVIC_SYSTICK_CLK_BIT    ( 0 )
 #endif
 
+/* Unprivileged critical sections are not supported when using MPU wrappers
+ * version 2. Default the option to 0 and reject an explicit value of 1. */
 #ifndef configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS
-    #warning "configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS is not defined. We recommend defining it to 0 in FreeRTOSConfig.h for better security."
-    #define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS    1
+    #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
+        #define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS    0
+    #else
+        #warning "configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS is not defined. We recommend defining it to 0 in FreeRTOSConfig.h for better security."
+        #define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS    1
+    #endif
+#else
+    #if ( ( configUSE_MPU_WRAPPERS_V1 == 0 ) && ( configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS == 1 ) )
+        #error configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS is not supported with MPU wrappers version 2 ( configUSE_MPU_WRAPPERS_V1 == 0 ).
+    #endif
 #endif
 
 /* Prototype of all Interrupt Service Routines (ISRs). */
@@ -110,9 +120,11 @@ typedef void ( * portISR_t )( void );
 #define portCORTEX_M7_r0p1_ID                     ( 0x410FC271UL )
 #define portCORTEX_M7_r0p0_ID                     ( 0x410FC270UL )
 
+/* Constants to manipulate FreeRTOS interrupt priorities. */
 #define portMIN_INTERRUPT_PRIORITY                ( 255UL )
 #define portNVIC_PENDSV_PRI                       ( ( ( uint32_t ) portMIN_INTERRUPT_PRIORITY ) << 16UL )
 #define portNVIC_SYSTICK_PRI                      ( ( ( uint32_t ) portMIN_INTERRUPT_PRIORITY ) << 24UL )
+#define portNVIC_SVC_PRI                          ( ( ( uint32_t ) configMAX_SYSCALL_INTERRUPT_PRIORITY - 1UL ) << 24UL )
 
 /* Constants used to check the installation of the FreeRTOS interrupt handlers. */
 #define portSCB_VTOR_REG                          ( *( ( portISR_t ** ) 0xE000ED08 ) )
@@ -852,11 +864,11 @@ BaseType_t xPortStartScheduler( void )
     }
     #endif /* configASSERT_DEFINED */
 
-    /* Make PendSV and SysTick the lowest priority interrupts, and make SVCall
-     * the highest priority. */
+    /* Make PendSV and SysTick the lowest priority interrupts, and configure
+     * SVCall for sufficient preemption priority. */
     portNVIC_SHPR3_REG |= portNVIC_PENDSV_PRI;
     portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
-    portNVIC_SHPR2_REG = 0;
+    portNVIC_SHPR2_REG = portNVIC_SVC_PRI;
 
     /* Configure the regions in the MPU that are common to all tasks. */
     prvSetupMPU();
@@ -1129,7 +1141,7 @@ static uint32_t prvGetMPURegionSizeSetting( uint32_t ulActualSizeInBytes )
     }
 
     /* Shift the code by one before returning so it can be written directly
-     * into the the correct bit position of the attribute register. */
+     * into the correct bit position of the attribute register. */
     return( ulReturnValue << 1UL );
 }
 /*-----------------------------------------------------------*/
@@ -1257,7 +1269,7 @@ void vPortStoreTaskMPUSettings( xMPU_SETTINGS * xMPUSettings,
 #if ( configUSE_MPU_WRAPPERS_V1 == 0 )
 
     BaseType_t xPortIsAuthorizedToAccessBuffer( const void * pvBuffer,
-                                                uint32_t ulBufferLength,
+                                                size_t xBufferLength,
                                                 uint32_t ulAccessRequested ) /* PRIVILEGED_FUNCTION */
 
     {
@@ -1279,10 +1291,10 @@ void vPortStoreTaskMPUSettings( xMPU_SETTINGS * xMPUSettings,
         }
         else
         {
-            if( portADD_UINT32_WILL_OVERFLOW( ( ( uint32_t ) pvBuffer ), ( ulBufferLength - 1UL ) ) == pdFALSE )
+            if( portADD_UINT32_WILL_OVERFLOW( ( ( uint32_t ) pvBuffer ), ( ( uint32_t ) xBufferLength - 1UL ) ) == pdFALSE )
             {
                 ulBufferStartAddress = ( uint32_t ) pvBuffer;
-                ulBufferEndAddress = ( ( ( uint32_t ) pvBuffer ) + ulBufferLength - 1UL );
+                ulBufferEndAddress = ( ( ( uint32_t ) pvBuffer ) + ( uint32_t ) xBufferLength - 1UL );
 
                 for( i = 0; i < portTOTAL_NUM_REGIONS_IN_TCB; i++ )
                 {

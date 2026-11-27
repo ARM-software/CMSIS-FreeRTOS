@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V11.3.0
+ * FreeRTOS Kernel V11.3.3
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -27,7 +27,7 @@
  */
 
 /*
- * The FreeRTOS kernel's RISC-V port is split between the the code that is
+ * The FreeRTOS kernel's RISC-V port is split between the code that is
  * common across all currently supported RISC-V chips (implementations of the
  * RISC-V ISA), and code that tailors the port to a specific RISC-V chip:
  *

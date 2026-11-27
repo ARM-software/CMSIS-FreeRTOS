@@ -6,7 +6,7 @@
 
 # CMSIS-FreeRTOS
 
-This repository contains the CMSIS-RTOS adoption of [FreeRTOS-Kernel Version 11.2.0](https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V11.2.0/FreeRTOS-KernelV11.2.0.zip) as it is released as Software Pack on http://www.keil.com/pack. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
+This repository contains the CMSIS-RTOS adoption of [FreeRTOS-Kernel Version 11.3.3](https://github.com/FreeRTOS/FreeRTOS-Kernel/releases/download/V11.3.3/FreeRTOS-KernelV11.3.3.zip) as it is released as Software Pack on https://www.keil.arm.com/packs/. The [documentation](https://arm-software.github.io/CMSIS-FreeRTOS/) is available under https://arm-software.github.io/CMSIS-FreeRTOS/.
 
 Use *Issues* to provide feedback and report problems for CMSIS FreeRTOS implementation.
 
@@ -14,7 +14,7 @@ Use *main* branch for pull-requests.
 
 ## Directory Structure
 
-| Directory                     | Content                             |                
+| Directory                     | Content                             |
 | ----------------------------- | ------------------------------------|
 | CMSIS                         | CMSIS-FreeRTOS related files        |
 | CMSIS/RTOS2/FreeRTOS/Config   | CMSIS-FreeRTOS configuration file   |

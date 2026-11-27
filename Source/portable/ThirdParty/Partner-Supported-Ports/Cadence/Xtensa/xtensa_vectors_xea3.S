@@ -276,11 +276,11 @@ _xt_entry:
         //    a0 holds return address (Tailchain+3)
         // For call0:
         //   a11 holds ExcCause, also saved in [oldsp - 72]
-        //   a15 holds exception SP, a1 points to exception frame
+        //   a15 holds exception SP, a1 points to exception frame (for precise exc)
         // For windowed:
         //    a3 holds ExcCause, also saved in [oldsp - 72]
-        //    a1 holds new SP
-        //    New SP + XT_STK_XTRA_SZ points to exception frame
+        //    a7 holds exception SP, a1 points to exception frame (for precise exc)
+        // For imprecise exceptions a1 is now pointing into the interrupt stack.
 
         .global _xt_exception
 
@@ -307,7 +307,25 @@ _xt_exception:
 #else
         mov      a2,  a1                    // Argument = Exception frame ptr
 #endif
+        extui    a5,  a3, EXCCAUSE_IMPR_SHIFT, EXCCAUSE_IMPR_BITS    // Extract imprecise bits
+        bnez     a5,  .Limprecise
         jx       a4                         // Return directly from handler
+
+.Limprecise:
+        // For imprecise exceptions the stack has been switched to the
+        // interrupt stack, but the exception frame is on the application
+        // stack. Adjust the argument (a2) accordingly.
+#ifdef __XTENSA_CALL0_ABI__
+        mov      a2, a15                    // a15 holds exception SP
+#else
+        mov      a2,  a7                    // a7 holds exception SP
+#endif
+#if portUSING_MPU_WRAPPERS && !(defined __XTENSA_CALL0_ABI__)
+        addi     a2,  a2, -96 - 4           // Adjust for XT_STK_A2
+#else
+        addi     a2,  a2, -96
+#endif
+        jx       a4                         // Jump to handler
 
 #if portUSING_MPU_WRAPPERS
         .align      4

@@ -1,7 +1,7 @@
         FreeRTOS Port for Xtensa Configurable Processors
         ================================================
 
-                FreeRTOS Kernel Version 11.0.0
+                FreeRTOS Kernel Version 11.3.0
 
 
 Introduction
@@ -11,7 +11,8 @@ This document describes the Xtensa port for FreeRTOS multitasking RTOS.
 For an introduction to FreeRTOS itself, please refer to FreeRTOS
 documentation.
 
-This port currently works with FreeRTOS kernel version 11.0.0.
+This port was developed and tested with FreeRTOS kernel version 11.2.0,
+and also currently works with FreeRTOS kernel version 11.3.0.
 
 
 Xtensa Configuration Requirements and Restrictions
@@ -76,8 +77,8 @@ kernel from:
     https://github.com/FreeRTOS/FreeRTOS-Kernel
     https://www.freertos.org/
 
-The Xtensa port files are included in the official package under the 
-"Partner-Supported-Ports" and "Partner-Supported-Demos" submodules, but 
+The Xtensa port files are included in the official package under the
+"Partner-Supported-Ports" and "Partner-Supported-Demos" submodules, but
 may not be the latest versions available.
 
 All source is provided along with a Makefile that works for any host
@@ -110,9 +111,9 @@ Building FreeRTOS for Xtensa
 ----------------------------
 
 To build the FreeRTOS library and the example programs, go into the
-directory 'Demo/.../Cadence_Xtensa_ISS_xt-clang' and use the makefile 
-in that directory. "make all" will build all the examples. There is 
-another makefile in the 'portable/.../Cadence/Xtensa' directory that 
+directory 'Demo/.../Cadence_Xtensa_ISS_xt-clang' and use the makefile
+in that directory. "make all" will build all the examples. There is
+another makefile in the 'portable/.../Cadence/Xtensa' directory that
 builds just the FreeRTOS library.
 
 By default, you will build for the Xtensa instruction set simulator. If
@@ -234,7 +235,7 @@ define this to 1 if either newlib or xclib is detected.
 The space for the per-thread C library context data is allocated within
 the FreeRTOS TCB structure.
 
-The MPU example must be built separately since it requires the FreeRTOS 
+The MPU example must be built separately since it requires the FreeRTOS
 library to be rebuilt with -DportUSING_MPU_WRAPPERS=1 -DportALIGN_SECTIONS
 which is handled by the makefile if you do the following:
 
@@ -764,6 +765,85 @@ Overlay Support
     the application code, and requires liboverlay.a to be specified at link
     time. See the overlay example and the Xtensa system SW reference manual
     for more details.
+
+
+SMP Support For Xtensa LX
+-------------------------
+
+FreeRTOS v11 SMP configuration is supported beginning with Xtensa port
+version 3.10.  General details regarding SMP on FreeRTOS can be found here:
+
+https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/13-Symmetric-multiprocessing-introduction
+
+Important information regarding Xtensa SMP support:
+
+- Current core configuration requirements for FreeRTOS SMP:
+
+  1. MPU hardware (for coherence)
+  2. 1 set of inter-processor interrupts (IPIs) <= EXCM_LEVEL
+  3. Only coherent LX8 multicore configurations are supported at this time;
+     as such, the exclusive access option is subsequently required
+  4. Unrelated to SMP, 1 timer per core <= EXCM_LEVEL and
+     1 software interrupt per core <= EXCM_LEVEL are required
+
+- SMP support requires Xtensa toolchain version RJ-2025.5-p1 or newer.
+
+- Starting with Xtensa port v3.13, SMP mode is enabled by default for LX/SMP
+  Xtensa configurations (where XCHAL_SUBSYS_NUM_CORES > 1), and is disabled
+  for all other configs.  SMP mode is enabled within the kernel by defining
+  configNUMBER_OF_CORES > 1.  For the Xtensa Demo suite, this setting is
+  found in common/config_files/FreeRTOSConfig.h, and can be enabled by
+  running "make SMP=1" in Cadence_Xtensa_ISS_xt-clang/.
+
+- SMP support relies on coherent shared memory being enabled prior to FreeRTOS
+  initialization.  It is enabled by default in the LX8 multicore boot code.
+
+- SMP core power-shutoff (PSO) support is not standardized in FreeRTOS-Kernel.
+  Xtensa PSO support is described in Cadence_Xtensa_ISS_xt-clang/README.md.
+
+- MPU hardware support is required for the Xtensa coherence protocol to
+  function, as all coherent memory regions must be configured as inner-
+  shareable or outer-shareable.  This is usually specified in the MPU table
+  that is linked into the executable and used to program the MPU at boot-up.
+
+- MPU software support in FreeRTOS is currently not compatible with SMP and
+  must be disabled.  This allows FreeRTOS to maintain a fully-coherent memory
+  map such that system state is always available and shared across cores.
+
+- Overlay software support in FreeRTOS is currently not compatible with SMP
+  and must be disabled.
+
+- FreeRTOS manages coprocessor state through "lazy"/on-demand context switches
+  for efficiency, as described in xtensa_context.h.  On SMP systems, any tasks
+  that reference coprocessor state should be pinned to a specific core to
+  minimize unsolicited context switch overhead; otherwise, full coprocessor
+  state will be saved and restored to ensure CP state is coherent across cores.
+
+- SMP examples are provided in common/application_code/cadence_code/xt_smp.c
+  and common/application_code/cadence_code/xt_mc_demo.c and can be built
+  by running "make SMP=1" in Cadence_Xtensa_ISS_xt-clang/.
+
+- The Xtensa system interrupt stack (mentioned above) is replicated per-core
+  in order to properly handle interrupts on a shared-memory system.  These
+  stacks are typically too large to be an efficient use of dataram, so they
+  are replicated and placed alongside other default .data objects.
+
+- A single interrupt dispatch table is shared for all cores in the SMP system.
+  Therefore, registering an ISR on one core will result in the same handler
+  being registered for that interrupt on all cores.  However, interrupts are
+  still enabled and disabled on a per-core basis.
+
+- Xtensa-specific config option "XT_USE_L2RAM" moves data structures for timer,
+  scheduler, etc. to L2RAM instead of the default L2-cached system memory.
+  This can improve context switching performance.  L1 data cache ensures
+  coherence in both cases.  See xtensa_config.h for more details.  This option
+  is disabled by default.
+
+- Xtensa-specific config option "XT_USE_DATARAM" moves data structures for
+  interrupt dispatch and reentrancy to dataram instead of the default L2-cached
+  system memory.  This removes the need to index these structures per-core and
+  can improve performance.  See xtensa_config.h for more details.  This option
+  is disabled by default.
 
 
 -End-
